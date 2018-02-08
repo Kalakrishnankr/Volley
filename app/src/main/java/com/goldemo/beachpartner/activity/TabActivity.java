@@ -11,6 +11,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.fragments.BPFinderFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
 
 public class TabActivity extends AppCompatActivity {
@@ -29,12 +30,20 @@ public class TabActivity extends AppCompatActivity {
                     HomeFragment homeFragment = new HomeFragment();
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                    transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
                     transaction.commit();
                     return true;
-                /*case R.id.navigation_dashboard:
+                case R.id.navigation_bp:
+
+                    BPFinderFragment bpFinderFragment = new BPFinderFragment();
+                    FragmentManager mng = getSupportFragmentManager();
+                    FragmentTransaction tran = mng.beginTransaction();
+                    tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
+                    tran.commit();
                     return true;
-                case R.id.navigation_notifications:
+
+
+                /*case R.id.navigation_notifications:
                     return true;*/
             }
             return false;
@@ -57,7 +66,6 @@ public class TabActivity extends AppCompatActivity {
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
-        transaction.addToBackStack(null);
         transaction.commit();
 
 
