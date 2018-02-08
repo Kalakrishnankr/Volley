@@ -1,3 +1,37 @@
 <resources>
     <string name="app_name">BeachPartner</string>
+    <string name="welcome">Welcome!!!</string>
+    <string name="loginBtn">LOGIN</string>
+    <string name="connect">Connect with</string>
+    <string name="dntaccount">Don\'t have an account ?</string>
+    <string name="signup">SignUp</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_userName">UserName</string>
+    <string name="registration">REGISTER</string>
+    <string name="hint_fname">First Name</string>
+    <string name="hint_lname">Last Name</string>
+    <string name="hint_gender">I am</string>
+    <string name="hint_dob">Birth Date</string>
+    <string name="hint_city">City</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_mobile">Mobile Number</string>
+    <string name="hint_male">Male</string>
+    <string name="hint_female">Female</string>
+    <string name="already_account">Already have an account?</string>
+    <string name="login">Login</string>
+    <string name="hint_confirmpwd">Confirm Password</string>
+    <string name="ChooseVideo">Choose Cover Video</string>
+    <string name="title_activity_tab">TabActivity</string>
+    <string name="title_home"></string>
+    <string name="title_profile"></string>
+    <string name="title_bp"></string>
+    <string name="title_calendar" />
+    <string name="title_more" />
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="upcoming_tournaments">My Upcoming Tournaments</string>
+    <string name="next">Next</string>
+    <string name="messages">Messages</string>
+    <string name="partnerintrest">Partners Intrested in You</string>
 </resources>
