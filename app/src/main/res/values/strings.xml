@@ -28,10 +28,26 @@
     <string name="title_calendar" />
     <string name="title_more" />
 
+    <!--For Facebook only-->
+
+    <string name="facebook_app_id">168647583665332</string>
+    <string name="fb_login_protocol_scheme">fb168647583665332</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="upcoming_tournaments">My Upcoming Tournaments</string>
     <string name="next">Next</string>
     <string name="messages">Messages</string>
     <string name="partnerintrest">Partners Intrested in You</string>
+    <string name="nameerror">Enter Your Name</string>
+    <string name="lnameerror">Enter Your Last Name</string>
+    <string name="doberror">Choose Your Birth Date</string>
+    <string name="emailerror">Enter Valid Email</string>
+    <string name="mobilerror">Enter Your Mob Number</string>
+    <string name="cityerror">Enter Your Location</string>
+    <string name="invalid_password">Enter Password</string>
+    <string name="invalid_confirmpassword">Password does not match</string>
+
+    <string name="settings">Settings</string>
+    <string name="editProfile">Edit Profile</string>
 </resources>

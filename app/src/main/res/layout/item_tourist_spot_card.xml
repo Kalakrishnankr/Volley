@@ -26,13 +26,19 @@
 
 
 
-
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
             <VideoView
                 android:id="@+id/item_tourist_spot_card_image"
-                android:layout_centerInParent="true"
-                android:layout_width="match_parent"
-                android:layout_height="450dp"/>
+                android:layout_width="fill_parent"
+                android:layout_height="500dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true"/>
 
+        </RelativeLayout>
 
 
 
@@ -75,6 +81,12 @@
                 android:textStyle="bold"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"/>
+
+            <Button
+                android:id="@+id/btnInfo"
+                android:text="Info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         </LinearLayout>
 

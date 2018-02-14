@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.BPFinderFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
+import com.goldemo.beachpartner.fragments.ProfileFragment;
 
 public class TabActivity extends AppCompatActivity {
 
@@ -40,6 +41,15 @@ public class TabActivity extends AppCompatActivity {
                     FragmentTransaction tran = mng.beginTransaction();
                     tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
                     tran.commit();
+                    return true;
+
+                case R.id.navigation_profile:
+
+                    ProfileFragment pf = new ProfileFragment();
+                    FragmentManager mang = getSupportFragmentManager();
+                    FragmentTransaction trans = mang.beginTransaction();
+                    trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
+                    trans.commit();
                     return true;
 
 

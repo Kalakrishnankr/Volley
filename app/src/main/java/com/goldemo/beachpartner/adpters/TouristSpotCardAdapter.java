@@ -2,10 +2,13 @@ package com.goldemo.beachpartner.adpters;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +33,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             holder = new ViewHolder(contentView);
             holder.videoView.setVisibility(View.GONE);
             holder.progressBar.setVisibility(View.GONE);
-            
+
             contentView.setTag(holder);
         } else {
             holder = (ViewHolder) contentView.getTag();
@@ -41,15 +44,22 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
         holder.name.setText(spot.name);
         holder.city.setText(spot.city);
         Glide.with(getContext()).load(spot.img_url).into(holder.image);
+        holder.info.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
 
        /* Video Tag onclick listener start*/
 
-       /* holder.image.setOnTouchListener(new View.OnTouchListener() {
+        holder.image.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 holder.image.setVisibility(View.GONE);
                 holder.videoView.setVisibility(View.VISIBLE);
+                holder.videoView.clearAnimation();
                 holder.videoView.setVideoURI(Uri.parse(spot.url));
                // dialog.setMessage("Please wait");
                 holder.progressBar.setVisibility(View.VISIBLE);
@@ -59,7 +69,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
                 return false;
             }
         });
-            */
         //End video tag here 8/02/2018
 
 
@@ -142,6 +151,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
         public ImageView image;
         public VideoView videoView;
         ProgressBar progressBar;
+        public Button info;
         //public VideoPlayView videoPlayView;
         // public FullscreenVideoLayout videoLayout;
 
@@ -151,6 +161,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             this.image = (ImageView) view.findViewById(R.id.img_view);
             this.videoView = (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
             this.progressBar=(ProgressBar)view.findViewById(R.id.prsbar);
+            this.info = (Button)view.findViewById(R.id.btnInfo);
             //this.videoLayout = (FullscreenVideoLayout) view.findViewById(R.id.item_tourist_spot_card_image);
             //this.image = (ImageView) view.findViewById(R.id.item_tourist_spot_card_image);
             // this.videoPlayView = (VideoPlayView) view.findViewById(R.id.picassoVideoView);

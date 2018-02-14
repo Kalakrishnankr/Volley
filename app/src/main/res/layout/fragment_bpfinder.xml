@@ -6,58 +6,66 @@
     tools:context="com.goldemo.beachpartner.fragments.BPFinderFragment">
 
 
-    <LinearLayout
+ <!--   <RelativeLayout
         android:id="@+id/llvtop"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content">-->
 
-        <LinearLayout
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:layout_weight="1.5"
             android:orientation="horizontal">
 
-            <HorizontalScrollView
+
+
+-->
+    <FrameLayout
+        android:id="@+id/frmeOne"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="50dp">
+
+        <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="6dp">
+                    android:padding="6dp">-->
 
                     <ImageView
                         android:id="@+id/img_bpfinder"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
                         android:background="@mipmap/ic_person" />
-
-
-                </LinearLayout>
+               <!-- </LinearLayout>-->
 
 
             </HorizontalScrollView>
+    </FrameLayout>
+        <!--</LinearLayout>-->
 
-        </LinearLayout>
-
-    </LinearLayout>
+<!--    </RelativeLayout>-->
 
 
-    <FrameLayout
+    <RelativeLayout
+        android:id="@+id/rr"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <com.goldemo.beachpartner.cardstackview.CardStackView
             android:id="@+id/activity_main_card_stack_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="32dp"
-            android:paddingBottom="32dp"
-            android:paddingLeft="16dp"
-            android:paddingRight="16dp"
+            android:paddingTop="55dp"
+            android:paddingBottom="130dp"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"
             android:clipToPadding="false"
-            app:visibleCount="5"
+            app:visibleCount="4"
             app:swipeThreshold="0.75"
             app:translationDiff="8"
             app:scaleDiff="0.03"
@@ -71,14 +79,36 @@
 
         <ProgressBar
             android:id="@+id/activity_main_progress_bar"
-            android:layout_width="match_parent"
+            android:layout_height="fill_parent"
+            android:layout_width="50dp"
+            android:layout_gravity="center_vertical"
+            android:indeterminate="true"
+            android:layout_centerInParent="true"/>
+
+
+
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:layout_marginBottom="30dp"
+        android:layout_alignBottom="@id/rr">
+
+        <Button
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_centerInParent="true"
+            android:background="@drawable/roundbox" />
+        <ImageView
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/logo" />
 
 
-
-
-    </FrameLayout>
+    </RelativeLayout>
 
 
 </RelativeLayout>
