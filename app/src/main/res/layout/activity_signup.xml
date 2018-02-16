@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:background="@drawable/bgimage"
     android:weightSum="2">
@@ -36,8 +36,8 @@
 
                 <ImageView
                     android:id="@+id/imgVideo"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_marginTop="20dp"
                     android:layout_gravity="center_horizontal"
                     android:background="@drawable/ic_chvideo"/>
@@ -55,7 +55,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/ChooseVideo"
                     android:textColor="@color/white"
-                    android:layout_gravity="center_vertical"
+                    android:layout_gravity="bottom"
                     android:textAlignment="center"/>
 
                 <VideoView
@@ -106,12 +106,14 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                         android:weightSum="1">
 
                         <com.goldemo.beachpartner.MyEditText
                             android:id="@+id/input_firstname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary"
                             android:hint="@string/hint_fname"
                             android:inputType="text" />
                     </android.support.design.widget.TextInputLayout>
@@ -121,12 +123,14 @@
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                         android:weightSum="1">
 
                         <com.goldemo.beachpartner.MyEditText
                             android:id="@+id/input_lastname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/colorPrimary"
                             android:hint="@string/hint_lname"
                             android:inputType="text" />
                     </android.support.design.widget.TextInputLayout>
@@ -145,12 +149,14 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_dob"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_dob"
                     android:focusable="false"/>
             </android.support.design.widget.TextInputLayout>
@@ -162,17 +168,25 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:weightSum="2"
+                android:padding="5dp"
                 android:orientation="horizontal">
 
                 <com.goldemo.beachpartner.MyButton
+                    android:id="@+id/btnMale"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:background="@color/imgBacgnd"
                     android:text="@string/hint_male"/>
+                <Space
+                    android:layout_width="5dp"
+                    android:layout_height="wrap_content" />
 
                 <com.goldemo.beachpartner.MyButton
+                    android:id="@+id/btnFemale"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:background="@color/imgBacgnd"
                     android:layout_weight="1"
                     android:text="@string/hint_female"/>
 
@@ -183,12 +197,14 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_email"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
@@ -198,12 +214,14 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_password"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
@@ -213,12 +231,14 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_confirm_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_confirmpwd"
                     android:inputType="textPassword" />
             </android.support.design.widget.TextInputLayout>
@@ -230,12 +250,14 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_city"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_city"
                     android:inputType="text" />
             </android.support.design.widget.TextInputLayout>
@@ -245,12 +267,15 @@
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+
                 android:weightSum="1">
 
                 <com.goldemo.beachpartner.MyEditText
                     android:id="@+id/input_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textColor="@color/colorPrimary"
                     android:hint="@string/hint_mobile"
                     android:inputType="number" />
             </android.support.design.widget.TextInputLayout>

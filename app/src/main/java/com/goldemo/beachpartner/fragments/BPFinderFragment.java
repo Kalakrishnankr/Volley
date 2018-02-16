@@ -3,29 +3,45 @@ package com.goldemo.beachpartner.fragments;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.TouristSpot;
 import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
 import com.goldemo.beachpartner.cardstackview.SwipeDirection;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 
-public class BPFinderFragment extends Fragment {
+public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     private ProgressBar progressBar;
     private CardStackView cardStackView;
     private TouristSpotCardAdapter adapter;
+    private RelativeLayout rr;
+    private CoordinatorLayout llv;
+    private ImageView imgview;
+    private TextView tvname,tvmonth;
 
 
     // TODO: Rename parameter arguments, choose names that match
@@ -37,6 +53,7 @@ public class BPFinderFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
     public BPFinderFragment() {
         // Required empty public constructor
@@ -77,14 +94,26 @@ public class BPFinderFragment extends Fragment {
         setUp(view);
         reload();
 
+
         return view;
     }
 
-    private void setUp(View view) {
+    public void setUp(final View view) {
 
-        progressBar = (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
+        progressBar     = (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
+        rr              = (RelativeLayout) view.findViewById(R.id.rr);
+        llv             = (CoordinatorLayout)view.findViewById(R.id.llMoreinfo);
+        imgview         = (ImageView)view.findViewById(R.id.img_profile);
+        //tvname          = (TextView)view.findViewById(R.id.txt_name);
+        cardStackView   = (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
+        tvmonth         = (TextView) view.findViewById(R.id.txtv_month);
+        final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
+        compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
+        compactCalendarView.setUseThreeLetterAbbreviation(true);
+        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)view. findViewById(R.id.CollapsingToolbarLayout1);
+        collapsingToolbarLayout.setTitle("Collapsing Toolbar");
 
-        cardStackView = (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
+
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
             @Override
             public void onCardDragging(float percentX, float percentY) {
@@ -117,8 +146,65 @@ public class BPFinderFragment extends Fragment {
             }
         });
 
+        //Calendar
+
+
+        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+
+
+
+               // long dateInMilli = DatetoMilli(dateClicked);
+                //ListView simpleListView=(ListView) view.findViewById(R.id.List1);
+
+               /* for(int i=0;i<eventLists.size();i++){
+                    if(eventLists.get(i).getTimeInMilli()==dateInMilli){
+                        CustomAdapter customAdapter= new CustomAdapter(getActivity(),eventLists);
+                        simpleListView.setAdapter(customAdapter);
+
+                    }else {
+                        simpleListView.setAdapter(null);
+
+                    }
+
+
+
+
+                }*/
+
+
+
+//                simpleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    @Override
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+////                        Toast.makeText(getContext(),"Hello "+ eventLists.get(position).getData(),Toast.LENGTH_SHORT).show();
+//
+//
+//
+//
+//                    }
+//                });
+
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+                //Log.d(TAG, "Month was scrolled to: " + firstDayOfNewMonth);
+                tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
+            }
+
+
+        });
+
+
+       // String newFormat= "dd MMMM";
+        tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
+
 
     }
+
+
 
     private void paginate() {
 
@@ -153,7 +239,7 @@ public class BPFinderFragment extends Fragment {
     }
 
     private TouristSpotCardAdapter createTouristSpotCardAdapter() {
-        final TouristSpotCardAdapter adapter = new TouristSpotCardAdapter(getContext());
+        final TouristSpotCardAdapter adapter = new TouristSpotCardAdapter(getContext(),this);
         adapter.addAll(createTouristSpots());
         return adapter;
     }
@@ -164,6 +250,15 @@ public class BPFinderFragment extends Fragment {
 
     }
 
+    @Override
+    public void addView(String url,String nm) {
+        rr.setVisibility(View.GONE);
+        llv.setVisibility(View.VISIBLE);
+        Glide.with(getContext()).load(url).into(imgview);
+        //imgview.setImageURI(Uri.parse(url));
+//        tvname.setText(nm);
+
+    }
 
 
     /**

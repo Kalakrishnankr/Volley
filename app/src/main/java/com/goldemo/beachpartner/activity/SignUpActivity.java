@@ -1,5 +1,6 @@
 package com.goldemo.beachpartner.activity;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.content.Intent;
@@ -40,11 +41,11 @@ public class SignUpActivity extends AppCompatActivity{
     private VideoView videoView;
     private EditText user_fname,user_lname,user_dob,user_email,user_password,user_confPasswd,user_location,user_mobileno;
     private String userName,lastName,dob,email,pass,confnPass,location,mobileno;
-    private Button btnsignUp;
+    private Button btnsignUp,user_male,user_female;
     private AwesomeValidation awesomeValidation;
     private  Uri selectedImageUri,selectedVideoUri;
     Calendar myCalendar = Calendar.getInstance();
-
+    private static String sex=null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +68,8 @@ public class SignUpActivity extends AppCompatActivity{
         user_fname      = (EditText)  findViewById(R.id.input_firstname);
         user_lname      = (EditText)  findViewById(R.id.input_lastname);
         user_dob        = (EditText)  findViewById(R.id.input_dob);
+        user_male       = (Button)    findViewById(R.id.btnMale);
+        user_female     = (Button)    findViewById(R.id.btnFemale);
         user_email      = (EditText)  findViewById(R.id.input_email);
         user_password   = (EditText)  findViewById(R.id.input_password);
         user_confPasswd = (EditText)  findViewById(R.id.input_confirm_password);
@@ -74,6 +77,25 @@ public class SignUpActivity extends AppCompatActivity{
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
 
+
+        user_male.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                 sex="male";
+                user_male.setTextColor(getResources().getColor(R.color.colorPrimary));
+                user_female.setTextColor(getResources().getColor(R.color.white));
+            }
+        });
+
+        user_female.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceAsColor")
+            @Override
+            public void onClick(View view) {
+                sex="female";
+                user_female.setTextColor(getResources().getColor(R.color.colorPrimary));
+                user_male.setTextColor(getResources().getColor(R.color.white));
+            }
+        });
 
         //Browse video from gallery
         imgVideo.setOnClickListener(new View.OnClickListener() {
@@ -146,15 +168,28 @@ public class SignUpActivity extends AppCompatActivity{
                     mobileno     = user_mobileno.getText().toString().trim();
 
                     addValidationToViews();//Method for validate feilds
-                    submitForm();//action submit
+                    if(awesomeValidation.validate()){
+                        if(sex!=null){
+                            if(selectedImageUri!=null && selectedVideoUri!=null){
+
+                                submitForm();
+
+                            }else {
+                                Toast.makeText(SignUpActivity.this, "Please select video ", Toast.LENGTH_LONG).show();
+                            }
+
+                        }else {
+                            Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
             }
         });
 
 
 
     }
-
-
 
 
     private void addValidationToViews() {
@@ -174,14 +209,7 @@ public class SignUpActivity extends AppCompatActivity{
 
     private void submitForm() {
 
-        if (awesomeValidation.validate() && selectedImageUri!=null && selectedVideoUri!=null)  {
-
-
-              Toast.makeText(SignUpActivity.this, "Form Validated Successfully", Toast.LENGTH_LONG).show();
-        }else {
-            Toast.makeText(SignUpActivity.this, "Form Validated Failed", Toast.LENGTH_LONG).show();
-
-        }
+            Toast.makeText(SignUpActivity.this, "Form Validated Successfully", Toast.LENGTH_LONG).show();
 
     }
 

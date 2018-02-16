@@ -13,6 +13,8 @@ public class MyEditText extends EditText {
         super(context);
     }
 
+
+
     public MyEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -23,5 +25,9 @@ public class MyEditText extends EditText {
 
     public MyEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
+    }
+
+    private void init() {
+
     }
 }

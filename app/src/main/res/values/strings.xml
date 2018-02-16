@@ -6,7 +6,7 @@
     <string name="dntaccount">Don\'t have an account ?</string>
     <string name="signup">SignUp</string>
     <string name="hint_password">Password</string>
-    <string name="hint_userName">UserName</string>
+    <string name="hint_userName">Username</string>
     <string name="registration">REGISTER</string>
     <string name="hint_fname">First Name</string>
     <string name="hint_lname">Last Name</string>

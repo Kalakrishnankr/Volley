@@ -15,12 +15,18 @@ import android.widget.TextView;
 import android.widget.VideoView;
 
 import com.bumptech.glide.Glide;
+import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 
 public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
 
-    public TouristSpotCardAdapter(Context context) {
+    private String YOUR_FRAGMENT_STRING_TAG;
+    private Context mContext;
+    MyInterface myInterface;
+
+    public TouristSpotCardAdapter(Context context,MyInterface myInterface) {
         super(context, 0);
+        this.myInterface=myInterface;
     }
 
     @Override
@@ -33,8 +39,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             holder = new ViewHolder(contentView);
             holder.videoView.setVisibility(View.GONE);
             holder.progressBar.setVisibility(View.GONE);
-
             contentView.setTag(holder);
+
         } else {
             holder = (ViewHolder) contentView.getTag();
         }
@@ -48,6 +54,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             @Override
             public void onClick(View view) {
 
+                myInterface.addView(spot.img_url,spot.city);
+                //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -69,6 +77,27 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
                 return false;
             }
         });
+        /*holder.image.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                holder.image.setVisibility(View.GONE);
+                holder.videoView.setVisibility(View.VISIBLE);
+                holder.videoView.clearAnimation();
+                holder.videoView.setVideoURI(Uri.parse(spot.url));
+                // dialog.setMessage("Please wait");
+                holder.progressBar.setVisibility(View.VISIBLE);
+                playVideo(holder);
+
+                return false;
+            }
+        });
+*/
+
+
+
+
+
+
         //End video tag here 8/02/2018
 
 
@@ -162,6 +191,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             this.videoView = (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
             this.progressBar=(ProgressBar)view.findViewById(R.id.prsbar);
             this.info = (Button)view.findViewById(R.id.btnInfo);
+
             //this.videoLayout = (FullscreenVideoLayout) view.findViewById(R.id.item_tourist_spot_card_image);
             //this.image = (ImageView) view.findViewById(R.id.item_tourist_spot_card_image);
             // this.videoPlayView = (VideoPlayView) view.findViewById(R.id.picassoVideoView);

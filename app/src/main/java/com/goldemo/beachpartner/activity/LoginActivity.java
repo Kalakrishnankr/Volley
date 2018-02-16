@@ -1,23 +1,29 @@
 package com.goldemo.beachpartner.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
+import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.facebook.login.widget.LoginButton;
 import com.goldemo.beachpartner.R;
 
 import org.json.JSONObject;
@@ -27,19 +33,42 @@ import java.util.Arrays;
 public class LoginActivity extends AppCompatActivity {
 
     private EditText userName,password;
-    private Button btnLogin;
-    private ImageView fbLogin,instaLogin;
+    private Button btnLogin,approve,cancel;
+    ;
+    private ImageView loginButton,instaLogin;
     private String uname,passwd;
-    private TextView tsignUp;
+    private TextView tsignUp,txt_forgotPass,result;
     CallbackManager callbackManager;
     private static final String EMAIL = "email";
-    LoginButton loginButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        // Callback registration
         callbackManager = CallbackManager.Factory.create();
+        LoginManager.getInstance().registerCallback(callbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        Log.d("Success", "Login");
+
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(LoginActivity.this, exception.getMessage(), Toast.LENGTH_LONG).show();
+                    }
+                });
+
 
         initActivity();
 
@@ -50,13 +79,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initActivity() {
 
-        userName = (EditText) findViewById(R.id.input_username);
-        password = (EditText) findViewById(R.id.input_password);
-        btnLogin = (Button)   findViewById(R.id.btnLogin);
-        //fbLogin  = (ImageView)findViewById(R.id.fbLogin);
-        instaLogin=(ImageView)findViewById(R.id.instaLogin);
-        tsignUp  = (TextView) findViewById(R.id.tSignUp);
-        loginButton = (LoginButton) findViewById(R.id.login_button);
+        userName    = (EditText) findViewById(R.id.input_username);
+        password    = (EditText) findViewById(R.id.input_password);
+        btnLogin    = (Button)   findViewById(R.id.btnLogin);
+        instaLogin  =(ImageView)findViewById(R.id.instaLogin);
+        tsignUp     = (TextView) findViewById(R.id.tSignUp);
+        loginButton = (ImageView) findViewById(R.id.login_button);
+        txt_forgotPass=(TextView) findViewById(R.id.forgotPass);
 
         //Login button click
         btnLogin.setOnClickListener(new View.OnClickListener() {
@@ -94,36 +123,14 @@ public class LoginActivity extends AppCompatActivity {
         });
 
         //Fb login click
-        loginButton.setReadPermissions(Arrays.asList(EMAIL));
-
-        // Callback registration
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                // App code
-
-                getUserDetails(loginResult);
-            }
-
-            @Override
-            public void onCancel() {
-                // App code
-            }
-
-            @Override
-            public void onError(FacebookException error) {
-
-            }
-
-
-        });
-
-       /* fbLogin.setOnClickListener(new View.OnClickListener() {
+        loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "user_friends"));
             }
-        });*/
+        });
+
+
 
         //Insta Login
         instaLogin.setOnClickListener(new View.OnClickListener() {
@@ -141,6 +148,47 @@ public class LoginActivity extends AppCompatActivity {
                 Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
                 startActivity(intent);
             }
+        });
+
+        //forget password
+        txt_forgotPass.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.dialog_forgot_password, null);
+
+                result = (EditText) alertLayout.findViewById(R.id.editTextDialogUserInput);
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                alert.setTitle("Reset Password");
+                alert.setView(alertLayout);
+                alert.setCancelable(false);
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                 @Override public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getBaseContext(), "Reset cancelled", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String user_email = result.getText().toString().trim();
+                    if(isValidateUserName(user_email)){
+                        Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
+                    }else {
+                        Toast.makeText(getBaseContext(), "Please check your email" , Toast.LENGTH_SHORT).show();
+
+                    }}
+                });
+                AlertDialog dialog = alert.create();
+                dialog.show();
+
+            }
+
         });
 
 

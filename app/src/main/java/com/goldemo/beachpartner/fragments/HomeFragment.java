@@ -2,6 +2,8 @@ package com.goldemo.beachpartner.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private ImageView img_bpprofile;
+    private RecyclerView mRecyclerview;
 
 
     public HomeFragment() {
@@ -43,7 +46,9 @@ public class HomeFragment extends Fragment {
     private void initView(View view) {
 
         img_bpprofile = (ImageView) view.findViewById(R.id.img_bpfinder);
-
+        LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        mRecyclerview = (RecyclerView)view.findViewById(R.id.rcv);
+        mRecyclerview.setLayoutManager(layoutmnger);
     }
 
 

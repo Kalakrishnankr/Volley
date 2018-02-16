@@ -68,6 +68,7 @@ public class TabActivity extends AppCompatActivity {
 
         FrameLayout fg = (FrameLayout)findViewById(R.id.container);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
         /*Load default HomeFragment*/
