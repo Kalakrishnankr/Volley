@@ -22,11 +22,11 @@
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
     <string name="title_activity_tab">TabActivity</string>
-    <string name="title_home"></string>
-    <string name="title_profile"></string>
+    <string name="title_home">Home</string>
+    <string name="title_profile">Profile</string>
     <string name="title_bp"></string>
-    <string name="title_calendar" />
-    <string name="title_more" />
+    <string name="title_calendar">Calendar</string>
+    <string name="title_more">More</string>
 
     <!--For Facebook only-->
 

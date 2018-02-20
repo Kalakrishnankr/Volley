@@ -1,5 +1,9 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,6 +32,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,9 +45,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TouristSpotCardAdapter adapter;
     private RelativeLayout rr;
     private CoordinatorLayout llv;
-    private ImageView imgview;
+    private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi;
     private TextView tvname,tvmonth;
-
+    private CollapsingToolbarLayout collapsingToolbarLayout;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,7 +57,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
 
     public BPFinderFragment() {
@@ -103,15 +108,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         progressBar     = (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
         rr              = (RelativeLayout) view.findViewById(R.id.rr);
         llv             = (CoordinatorLayout)view.findViewById(R.id.llMoreinfo);
-        imgview         = (ImageView)view.findViewById(R.id.img_profile);
+        imgv_profilepic = (ImageView)view.findViewById(R.id.img_profile);
         //tvname          = (TextView)view.findViewById(R.id.txt_name);
         cardStackView   = (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
         tvmonth         = (TextView) view.findViewById(R.id.txtv_month);
+        ImageView toggle = (ImageView) view.findViewById(R.id.toggle);
+        rrvBottom       =   (RelativeLayout) view.findViewById(R.id.rrv_bottomMenus);
+
+
         final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         compactCalendarView.setUseThreeLetterAbbreviation(true);
-        CollapsingToolbarLayout collapsingToolbarLayout = (CollapsingToolbarLayout)view. findViewById(R.id.CollapsingToolbarLayout1);
-        collapsingToolbarLayout.setTitle("Collapsing Toolbar");
+        collapsingToolbarLayout = (CollapsingToolbarLayout)view. findViewById(R.id.CollapsingToolbarLayout1);
+
+        imgv_rvsecard   =   (ImageView) view.findViewById(R.id.ic_rvsecard);
+        imgv_highfi     =   (ImageView) view.findViewById(R.id.ic_high);
+        imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
 
 
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
@@ -148,6 +160,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         //Calendar
 
+        toggle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                rr.setVisibility(View.VISIBLE);
+                llv.setVisibility(View.GONE);
+            }
+        });
 
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -202,7 +222,33 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
 
 
+        //Card reverse onclick
+        imgv_rvsecard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                reverse();
+            }
+        });
+
+        //High fi
+        imgv_highfi.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                swipeUp();
+            }
+        });
+
+        //Get Location
+
+        imgv_location.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLocation();
+            }
+        });
+
     }
+
 
 
 
@@ -216,11 +262,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
         spots.add(new TouristSpot("Brooklyn Bridge", "New York", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/AWh9C-QjhE4/600x800"));
-        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://abhiandroid-8fb4.kxcdn.com/ui/wp-content/uploads/2016/04/videoviewtestingvideo.mp4","https://source.unsplash.com/HN-5Z6AmxrM/600x800"));
-        spots.add(new TouristSpot("Bamboo Forest", "Kyoto", "http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4","https://source.unsplash.com/LrMWHKqilUw/600x800"));
+        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/HN-5Z6AmxrM/600x800"));
+        spots.add(new TouristSpot("Bamboo Forest", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/LrMWHKqilUw/600x800"));
         spots.add(new TouristSpot("Brooklyn Bridge", "New York", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/USrZRcRS2Lw/600x800"));
-        spots.add(new TouristSpot("Yasaka Shrine", "Kyoto", "http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4","https://source.unsplash.com/CdVAUADdqEc/600x800"));
-        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://www.quirksmode.org/html5/videos/big_buck_bunny.mp4","https://source.unsplash.com/AWh9C-QjhE4/600x800"));
+        spots.add(new TouristSpot("Yasaka Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/CdVAUADdqEc/600x800"));
+        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/AWh9C-QjhE4/600x800"));
         return spots;
     }
 
@@ -254,12 +300,62 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     public void addView(String url,String nm) {
         rr.setVisibility(View.GONE);
         llv.setVisibility(View.VISIBLE);
-        Glide.with(getContext()).load(url).into(imgview);
+        Glide.with(getContext()).load(url).into(imgv_profilepic);
+        collapsingToolbarLayout.setTitle(nm);
+        rrvBottom.setVisibility(View.GONE);
         //imgview.setImageURI(Uri.parse(url));
 //        tvname.setText(nm);
 
     }
 
+    //Method for card reverse
+
+    private void reverse() {
+        cardStackView.reverse();
+    }
+
+    private LinkedList<TouristSpot> extractRemainingTouristSpots() {
+        LinkedList<TouristSpot> spots = new LinkedList<>();
+        for (int i = cardStackView.getTopIndex(); i < adapter.getCount(); i++) {
+            spots.add(adapter.getItem(i));
+        }
+        return spots;
+    }
+
+    //Method for SwipeUp
+
+    private void swipeUp() {
+
+        List<TouristSpot> spots = extractRemainingTouristSpots();
+        if (spots.isEmpty()) {
+            return;
+        }
+
+        View target = cardStackView.getTopView();
+
+        ValueAnimator rotation = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("rotation", 0f));
+        rotation.setDuration(200);
+        ValueAnimator translateX = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationX", 0f, 0f));
+        ValueAnimator translateY = ObjectAnimator.ofPropertyValuesHolder(
+                target, PropertyValuesHolder.ofFloat("translationY", 0f, -2000f));
+        translateX.setStartDelay(100);
+        translateY.setStartDelay(100);
+        translateX.setDuration(500);
+        translateY.setDuration(500);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(rotation, translateX, translateY);
+
+        cardStackView.swipe(SwipeDirection.Top, set);
+    }
+
+    //Method for getting current location
+
+    private void getLocation() {
+
+
+    }
 
     /**
      * This interface must be implemented by activities that contain this

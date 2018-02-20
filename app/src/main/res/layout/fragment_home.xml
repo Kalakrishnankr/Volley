@@ -29,11 +29,16 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <ImageView
+                   <!-- <ImageView
                         android:id="@+id/img_bpfinder"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:background="@mipmap/ic_person" />
+                        android:background="@mipmap/ic_person" />-->
+
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rrv_topProfile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
 
 
                 </LinearLayout>
@@ -85,16 +90,15 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            android:layout_weight="1.5">
+            android:layout_weight="1.5"
+            android:weightSum="1"
+            android:orientation="vertical">
 
-
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.8">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv"
@@ -106,8 +110,20 @@
 
                 </LinearLayout>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.2">
 
-            </HorizontalScrollView>
+                <!--<me.relex.circleindicator.CircleIndicator
+                    android:id="@+id/indicator"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>-->
+            </LinearLayout>
+
+
+
+
 
 
         </LinearLayout>
@@ -191,15 +207,36 @@
             <com.goldemo.beachpartner.MyTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.4"
+                android:layout_weight="1"
                 android:padding="5dp"
                 android:textColor="@color/white"
                 android:text="@string/partnerintrest" />
 
+
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.2"
+                android:layout_margin="4dp"
+                android:background="@drawable/ic_message_send"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.1"/>
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.2"
+                android:layout_margin="4dp"
+                android:background="@drawable/ic_received_msg"/>
+
             <com.goldemo.beachpartner.MyTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:gravity="end"
                 android:padding="5dp"
                 android:textColor="@color/white"

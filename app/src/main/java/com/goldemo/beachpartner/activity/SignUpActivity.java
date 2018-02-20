@@ -3,15 +3,14 @@ package com.goldemo.beachpartner.activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
-import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.RequiresApi;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -20,13 +19,25 @@ import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.ApiService;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * Created by seq-kala on 7/2/18.
@@ -46,6 +57,7 @@ public class SignUpActivity extends AppCompatActivity{
     private  Uri selectedImageUri,selectedVideoUri;
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
+    private String android_id;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,18 +65,15 @@ public class SignUpActivity extends AppCompatActivity{
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         initActivity();
-
+        android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
+        //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
 
     }
 
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
     private void initActivity() {
 
-        imgVideo        = (ImageView) findViewById(R.id.imgVideo);
-        videoView       = (VideoView) findViewById(R.id.videoView);
-        imgPlay         = (ImageView) findViewById(R.id.imgPlay);
-        imgProfile      = (ImageView) findViewById(R.id.profile_pic);
         user_fname      = (EditText)  findViewById(R.id.input_firstname);
         user_lname      = (EditText)  findViewById(R.id.input_lastname);
         user_dob        = (EditText)  findViewById(R.id.input_dob);
@@ -98,36 +107,36 @@ public class SignUpActivity extends AppCompatActivity{
         });
 
         //Browse video from gallery
-        imgVideo.setOnClickListener(new View.OnClickListener() {
+        /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
                 Intent intent= new Intent();
-                intent.setType("video/*");
+                intent.setType("video*//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_TAKE_GALLERY_VIDEO);
 
             }
         });
-
+*/
         //browse profile picture from  gallery
-        imgProfile.setOnClickListener(new View.OnClickListener() {
+        /*imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent();
-                intent.setType("image/*");
+                intent.setType("image*//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
             }
-        });
+        });*/
 
         //play video
-        imgPlay.setOnClickListener(new View.OnClickListener() {
+        /*imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 videoView.start();
             }
-        });
+        });*/
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -158,7 +167,7 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                    userName     = user_lname.getText().toString().trim();
+                    userName     = user_fname.getText().toString().trim();
                     lastName     = user_lname.getText().toString().trim();
                     dob          = user_dob.getText().toString().trim();
                     email        = user_email.getText().toString().trim();
@@ -170,13 +179,7 @@ public class SignUpActivity extends AppCompatActivity{
                     addValidationToViews();//Method for validate feilds
                     if(awesomeValidation.validate()){
                         if(sex!=null){
-                            if(selectedImageUri!=null && selectedVideoUri!=null){
-
-                                submitForm();
-
-                            }else {
-                                Toast.makeText(SignUpActivity.this, "Please select video ", Toast.LENGTH_LONG).show();
-                            }
+                            submitForm();
 
                         }else {
                             Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
@@ -209,7 +212,81 @@ public class SignUpActivity extends AppCompatActivity{
 
     private void submitForm() {
 
-            Toast.makeText(SignUpActivity.this, "Form Validated Successfully", Toast.LENGTH_LONG).show();
+
+        JSONObject object = new JSONObject();
+        try {
+            object.put("firstname",userName);
+            object.put("lastname",lastName);
+            object.put("dob",dob);
+            object.put("gender",sex);
+            object.put("email",email);
+            object.put("password",pass);
+            object.put("location",location);
+            object.put("phoneNumber",mobileno);
+            object.put("loginType",1);
+            object.put("deviceId",android_id);
+            object.put("authToken","");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONObject jo= new JSONObject();
+        try {
+            jo.put("usertype",1);
+            jo.put("userDetails",object);
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SIGNUP, jo,
+                new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("response--", response.toString());
+
+                try {
+                    String statusCode = response.getString("statusCode").toString().trim();
+                    if(response!=null && statusCode.equals("000")){
+
+                        Toast.makeText(SignUpActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+
+
+
+            }
+        },
+        new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.d("error--", error.toString());
+                Toast toast = Toast.makeText(SignUpActivity.this, "Couldn't connect to Server", Toast.LENGTH_LONG);
+                toast.setGravity(Gravity.TOP, 0, 0);
+                toast.show();
+                //progressDialog.dismiss();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("Request", objectRequest.toString());
+        requestQueue.add(objectRequest);
 
     }
 
@@ -222,7 +299,7 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();
@@ -247,10 +324,10 @@ public class SignUpActivity extends AppCompatActivity{
 
             }
         }
-    }
+    }*/
 
     // UPDATED!
-    public String getPath(Uri uri) {
+    /*public String getPath(Uri uri) {
         String[] projection = { MediaStore.Video.Media.DATA };
         Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
@@ -262,6 +339,6 @@ public class SignUpActivity extends AppCompatActivity{
             return cursor.getString(column_index);
         } else
             return null;
-    }
+    }*/
 
 }

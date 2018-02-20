@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="5dp"
+    app:cardUseCompatPadding="true">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="2">
 
@@ -22,17 +24,19 @@
             <ImageView
                 android:background="@drawable/ic_calendar"
                 android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
                 android:layout_weight="0.5"/>
 
             <TextView
                 android:id="@+id/txtv_date"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.8"/>
+                android:layout_weight="0.8"
+                android:gravity="center_vertical"
+                android:textAlignment="center"/>
             <Space
-                android:layout_width="2dp"
+                android:layout_width="5dp"
                 android:layout_height="match_parent"
                 android:background="@color/colorPrimary"/>
 
@@ -40,14 +44,17 @@
                 android:id="@+id/txtv_place"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1.7"/>
+                android:layout_weight="1.7"
+                android:gravity="center_vertical"
+                android:textAlignment="textStart"/>
 
         </LinearLayout>
 
         <!--second row-->
         <Space
             android:layout_width="match_parent"
-            android:layout_height="1dp" />
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -59,15 +66,17 @@
             <ImageView
                 android:background="@drawable/ic_partners"
                 android:layout_width="0dp"
-                android:layout_gravity="center"
                 android:layout_height="match_parent"
+                android:layout_margin="5dp"
                 android:layout_weight="0.5"/>
 
             <TextView
                 android:id="@+id/txtv_players"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="2.5"/>
+                android:layout_weight="2.5"
+                android:gravity="center_vertical"
+                android:textAlignment="textStart"/>
 
 
 
