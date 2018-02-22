@@ -71,7 +71,7 @@
                 android:clickable="true"
                 android:src="@android:drawable/ic_menu_edit" />
 
-            <com.goldemo.beachpartner.MyTextView
+            <com.goldemo.beachpartner.CustomTextView
                 android:layout_below="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,7 +90,7 @@
                 android:clickable="true"
                 android:src="@android:drawable/ic_menu_edit" />
 
-            <com.goldemo.beachpartner.MyTextView
+            <com.goldemo.beachpartner.CustomTextView
                 android:layout_below="@+id/settings"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -99,7 +99,7 @@
                 android:text="@string/settings"/>
 
 
-            <com.goldemo.beachpartner.MyTextView
+            <com.goldemo.beachpartner.CustomTextView
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -121,7 +121,7 @@
                 android:textColor="#fff"
                 android:textSize="16sp" />-->
 
-            <com.goldemo.beachpartner.MyTextView
+            <com.goldemo.beachpartner.CustomTextView
                 android:id="@+id/designation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

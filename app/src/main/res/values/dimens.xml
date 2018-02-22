@@ -3,4 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="parallax_image_height">180dp</dimen>
+
+    <!--Main Header text size for all pages-->
+    <dimen name="textsize_header">20sp</dimen>
+    <dimen name="txtview_textsize">12sp</dimen>
 </resources>

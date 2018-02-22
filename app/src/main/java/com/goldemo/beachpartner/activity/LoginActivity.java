@@ -16,6 +16,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -25,6 +27,10 @@ import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.instagram.Instagram;
+import com.goldemo.beachpartner.instagram.InstagramSession;
+import com.goldemo.beachpartner.instagram.InstagramUser;
 
 import org.json.JSONObject;
 
@@ -34,13 +40,14 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText userName,password;
     private Button btnLogin,approve,cancel;
-    ;
     private ImageView loginButton,instaLogin;
     private String uname,passwd;
     private TextView tsignUp,txt_forgotPass,result;
     CallbackManager callbackManager;
     private static final String EMAIL = "email";
-
+    private InstagramSession mInstagramSession;
+    private Instagram mInstagram;
+    private AwesomeValidation awesomeValidation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +63,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(LoginResult loginResult) {
                         Log.d("Success", "Login");
 
+                        startActivity(new Intent(LoginActivity.this,TabActivity.class));
+
                     }
 
                     @Override
@@ -69,6 +78,9 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 });
 
+        mInstagram          = new Instagram(this, ApiService.CLIENT_ID, ApiService.CLIENT_SECRET, ApiService.REDIRECT_URI);
+
+        mInstagramSession   = mInstagram.getSession();
 
         initActivity();
 
@@ -87,6 +99,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton = (ImageView) findViewById(R.id.login_button);
         txt_forgotPass=(TextView) findViewById(R.id.forgotPass);
 
+        awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
+
         //Login button click
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,29 +110,29 @@ public class LoginActivity extends AppCompatActivity {
                 uname = userName.getText().toString().trim();
                 passwd= password.getText().toString().trim();
 
+
+                //addValidationToViews();
                 startLoginProcess();
-                /*if(uname!=null && userName.getText().toString().length()!=0){
-                    if(isValidateUserName(uname)){
-                        if(passwd!=null && password.getText().toString().length()!=0){
 
-                            if((uname.equals("admin@gmail.com")) &&(passwd.equals("admin"))){
-                                //start Login
-                                startLoginProcess();
-                            }else {
-                                Toast.makeText(LoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-                            }
+               /* if(awesomeValidation.validate()){
 
+                    if(uname.equals("admin@gmail.com") && (passwd.equals("123456"))){
 
-                        }else {
-                            Toast.makeText(LoginActivity.this, "Please enter your password", Toast.LENGTH_SHORT).show();
-                        }
+                        startLoginProcess();
+                        userName.setText("");
+                        password.setText("");
+                        userName.requestFocus();
 
                     }else {
-                        Toast.makeText(LoginActivity.this, "Please enter valid username", Toast.LENGTH_SHORT).show();
+
+                        Toast.makeText(LoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
                     }
-                }else {
-                    Toast.makeText(LoginActivity.this, "Please enter username", Toast.LENGTH_SHORT).show();
+
                 }*/
+
+
+
+
 
             }
         });
@@ -136,6 +151,8 @@ public class LoginActivity extends AppCompatActivity {
         instaLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                mInstagram.authorize(mAuthListener);
 
             }
         });
@@ -194,6 +211,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void addValidationToViews() {
+        awesomeValidation.addValidation(LoginActivity.this, R.id.input_username, Patterns.EMAIL_ADDRESS, R.string.error_username);
+        String regx=".{5,}";
+        awesomeValidation.addValidation(LoginActivity.this,R.id.input_password,regx,R.string.invalid_password);
+    }
+
 
     //Method for login
     private void startLoginProcess() {
@@ -201,6 +224,32 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent= new Intent(getApplicationContext(),TabActivity.class);
         startActivity(intent);
     }
+
+
+    private Instagram.InstagramAuthListener mAuthListener = new Instagram.InstagramAuthListener() {
+        @Override
+        public void onSuccess(InstagramUser user) {
+
+            finish();
+            String insta_username = user.fullName;
+            Toast.makeText(LoginActivity.this, "Your are logged in as : "+insta_username, Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+            startActivity(intent);
+//            startActivity(new Intent(LoginActivity.this, TabActivity.class));
+
+        }
+
+        @Override
+        public void onError(String error) {
+            Toast.makeText(LoginActivity.this, error, Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onCancel() {
+            Toast.makeText(LoginActivity.this, "OK. Maybe later?", Toast.LENGTH_SHORT).show();
+
+        }
+    };
 
     public final static boolean isValidateUserName(CharSequence target) {
         return (!TextUtils.isEmpty(target) && Patterns.EMAIL_ADDRESS.matcher(target).matches());

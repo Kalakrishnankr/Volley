@@ -16,7 +16,8 @@ import android.widget.ImageView;
  * Created by seq-kala on 12/2/18.
  */
 
-public class CircularImageView extends android.support.v7.widget.AppCompatImageView
+@SuppressLint("AppCompatCustomView")
+public class CircularImageView extends ImageView
 {
     private int borderWidth = 4;
     private int viewWidth;

@@ -3,6 +3,7 @@ package com.goldemo.beachpartner.activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -50,14 +52,18 @@ public class SignUpActivity extends AppCompatActivity{
     private static final int REQUEST_TAKE_GALLERY_IMAGE=2;
     private ImageView imgVideo,imgProfile,imgPlay;
     private VideoView videoView;
+
     private EditText user_fname,user_lname,user_dob,user_email,user_password,user_confPasswd,user_location,user_mobileno;
-    private String userName,lastName,dob,email,pass,confnPass,location,mobileno;
+    private String userName,lastName,dob,email,pass,confnPass,location,mobileno,android_id;
     private Button btnsignUp,user_male,user_female;
     private AwesomeValidation awesomeValidation;
     private  Uri selectedImageUri,selectedVideoUri;
+
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
-    private String android_id;
+    private LinearLayout llogin;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +91,7 @@ public class SignUpActivity extends AppCompatActivity{
         user_location   = (EditText)  findViewById(R.id.input_city);
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
-
+        llogin          = (LinearLayout) findViewById(R.id.login);
 
         user_male.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,6 +109,15 @@ public class SignUpActivity extends AppCompatActivity{
                 sex="female";
                 user_female.setTextColor(getResources().getColor(R.color.colorPrimary));
                 user_male.setTextColor(getResources().getColor(R.color.white));
+            }
+        });
+
+        llogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -156,9 +171,12 @@ public class SignUpActivity extends AppCompatActivity{
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new DatePickerDialog(SignUpActivity.this, date, myCalendar
+                DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dialog.show();
+
             }
         });
 
@@ -258,11 +276,6 @@ public class SignUpActivity extends AppCompatActivity{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-
-
-
-
             }
         },
         new Response.ErrorListener() {

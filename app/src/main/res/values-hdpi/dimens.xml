@@ -1,0 +1,5 @@
+<resources>
+	<dimen name="activity_vertical_margin">19.2dp</dimen>
+	<dimen name="activity_horizontal_margin">19.2dp</dimen>
+	<dimen name="parallax_image_height">216dp</dimen>
+</resources>
