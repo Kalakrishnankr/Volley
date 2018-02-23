@@ -91,13 +91,13 @@ public class LoginActivity extends AppCompatActivity {
 
     private void initActivity() {
 
-        userName    = (EditText) findViewById(R.id.input_username);
-        password    = (EditText) findViewById(R.id.input_password);
-        btnLogin    = (Button)   findViewById(R.id.btnLogin);
-        instaLogin  =(ImageView)findViewById(R.id.instaLogin);
-        tsignUp     = (TextView) findViewById(R.id.tSignUp);
-        loginButton = (ImageView) findViewById(R.id.login_button);
-        txt_forgotPass=(TextView) findViewById(R.id.forgotPass);
+        userName        =   (EditText) findViewById(R.id.input_username);
+        password        =   (EditText) findViewById(R.id.input_password);
+        btnLogin        =   (Button)   findViewById(R.id.btnLogin);
+        instaLogin      =   (ImageView)findViewById(R.id.instaLogin);
+        tsignUp         =   (TextView) findViewById(R.id.tSignUp);
+        loginButton     =   (ImageView)findViewById(R.id.login_button);
+        txt_forgotPass  =   (TextView) findViewById(R.id.forgotPass);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 

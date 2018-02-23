@@ -39,6 +39,7 @@ public class HomeFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
+
     }
 
     @Override

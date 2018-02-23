@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <!--MyProfile-->
+    <item android:id="@+id/profile"
+        android:title="@string/hint_profile"
+        app:showAsAction="collapseActionView"/>
+    <!--About Us-->
+    <item android:id="@+id/about_us"
+        android:title="@string/hint_aboutus"
+        app:showAsAction="collapseActionView"/>
+    <!--Feedback-->
+    <item android:id="@+id/feedback"
+        android:title="@string/hint_feedback"
+        app:showAsAction="collapseActionView"/>
+    <!--Settings-->
+    <item android:id="@+id/settings"
+        android:title="@string/hint_settings"
+        app:showAsAction="collapseActionView"/>
+    <!--Help-->
+    <item android:id="@+id/help"
+        android:title="@string/hint_help"
+        app:showAsAction="collapseActionView"/>
+    <!--Logout-->
+    <item android:id="@+id/logout"
+        android:title="@string/hint_title"
+        app:showAsAction="collapseActionView"/>
+</menu>
