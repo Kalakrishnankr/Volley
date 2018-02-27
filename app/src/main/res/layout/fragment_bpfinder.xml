@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.goldemo.beachpartner.fragments.BPFinderFragment">
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    tools:context="com.goldemo.beachpartner.fragments.BPFinderFragment"
+    tools:ignore="NamespaceTypo">
 
     <FrameLayout
         android:id="@+id/frmeOne"
@@ -29,9 +31,290 @@
 
         </HorizontalScrollView>
     </FrameLayout>
-    <!--</LinearLayout>-->
 
-    <!--    </RelativeLayout>-->
+
+    <LinearLayout
+        android:id="@+id/llFilter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/frmeOne"
+        android:orientation="vertical"
+        android:weightSum="4.5">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.2">
+
+        <android.support.v7.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/card_margin"
+            card_view:cardCornerRadius="5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:weightSum="2">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.8"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="Age Limit"/>
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:id="@+id/txtv_age"
+                        android:layout_width="0dp"
+                        android:textAlignment="center"
+                        android:gravity="center_vertical"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"/>
+
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1.2"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Min"
+                        android:gravity="center"
+                        android:layout_weight="0.3"/>
+
+                    <com.appyvet.materialrangebar.RangeBar
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/rangebar"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2.4"
+                        app:mrb_pinMaxFont="10sp"
+                        app:mrb_selectorBoundaryColor="@color/colorAccent"
+                        app:mrb_selectorBoundarySize="2dp"
+                        app:mrb_pinTextColor="#ACD123"
+                        app:mrb_selectorSize="10dp"
+                        app:mrb_tickEnd="50"
+                        app:mrb_tickInterval="1"
+                        app:mrb_tickStart="5"/>
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:text="Max"
+                        android:gravity="center"
+                        android:layout_weight="0.3"/>
+
+                    <!--<SeekBar
+                        android:id="@+id/ageBar"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />-->
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+
+        </LinearLayout>
+
+        <com.goldemo.beachpartner.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:text="@string/hint_age"/>
+
+        <!--Location card-->
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/card_margin"
+                card_view:cardCornerRadius="5dp">
+
+               <LinearLayout
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content"
+                   android:orientation="horizontal"
+                   android:layout_gravity="center_vertical"
+                   android:weightSum="2">
+
+                   <com.goldemo.beachpartner.CustomTextView
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:gravity="center_horizontal"
+                       android:layout_weight="1"
+                       android:text="Location"/>
+
+                   <!--<com.goldemo.beachpartner.CustomTextView
+                       android:id="@+id/txtv_location"
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:layout_weight="1"
+                       android:text="Location"/>-->
+
+                   <Spinner
+                       android:id="@+id/spinner_location"
+                       android:layout_width="0dp"
+                       android:layout_height="match_parent"
+                       android:layout_weight="1"/>
+
+               </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+        <com.goldemo.beachpartner.CustomTextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:text="@string/hint_age"/>
+
+        <!--card GEnder-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/card_margin"
+                card_view:cardCornerRadius="5dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2"
+                    android:orientation="vertical">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:orientation="horizontal"
+                            android:layout_weight="1"
+                            android:weightSum="2">
+
+                            <com.goldemo.beachpartner.CustomTextView
+                                android:layout_width="0dp"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:layout_weight="1"
+                                android:text="Show me"/>
+
+                            <com.goldemo.beachpartner.CustomTextView
+                                android:id="@+id/txtv_gender"
+                                android:layout_width="0dp"
+                                android:gravity="center_vertical"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"/>
+
+
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
+                            android:weightSum="2"
+                            android:layout_margin="10dp"
+                            android:orientation="horizontal">
+
+                            <com.goldemo.beachpartner.CustomButton
+                                android:id="@+id/btnMen"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="MEN"
+                                android:layout_weight="1"/>
+
+                            <com.goldemo.beachpartner.CustomButton
+                                android:id="@+id/btnWomen"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:text="WOMEN"
+                                android:layout_weight="1"/>
+
+
+                        </LinearLayout>
+
+
+
+                </LinearLayout>
+
+            </android.support.v7.widget.CardView>
+
+
+
+        </LinearLayout>
+
+
+
+        <!--play button-->
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imgPlay"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_gravity="center"
+                android:background="@drawable/ic_person"/>
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Play"
+                android:gravity="center"/>
+
+
+        </LinearLayout>
+
+
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+
+    <!--Layout for Card and bottom menus-->
 
     <RelativeLayout
         android:id="@+id/rrv_bottomMenus"
@@ -40,8 +323,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_marginBottom="60dp"
-        android:gravity="center">
+        android:gravity="center"
+        android:visibility="gone">
 
         <RelativeLayout
             android:layout_width="200dp"
@@ -86,7 +369,8 @@
     <RelativeLayout
         android:id="@+id/rr"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <com.goldemo.beachpartner.cardstackview.CardStackView
             android:id="@+id/activity_main_card_stack_view"
@@ -96,7 +380,7 @@
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:paddingTop="55dp"
-            android:paddingBottom="150dp"
+            android:paddingBottom="80dp"
             app:elevationEnabled="true"
             app:leftOverlay="@layout/overlay_left"
             app:rightOverlay="@layout/overlay_right"

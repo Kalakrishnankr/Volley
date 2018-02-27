@@ -14,11 +14,16 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.appyvet.materialrangebar.RangeBar;
 import com.bumptech.glide.Glide;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.goldemo.beachpartner.MyInterface;
@@ -45,10 +50,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TouristSpotCardAdapter adapter;
     private RelativeLayout rr;
     private CoordinatorLayout llv;
-    private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi;
-    private TextView tvname,tvmonth;
+    private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi,btnPlay;
+    private TextView tvname,tvmonth,txtv_age,txtv_gender;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
+    private Spinner spinner_location;
+    private RangeBar age_bar;
+    public Button btnMale,btnFemale;
+
+    private LinearLayout llvFilter;
+
+    ArrayList<String>Location = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -64,32 +76,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BPFinderFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BPFinderFragment newInstance(String param1, String param2) {
-        BPFinderFragment fragment = new BPFinderFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -105,15 +93,27 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     public void setUp(final View view) {
 
-        progressBar     = (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
-        rr              = (RelativeLayout) view.findViewById(R.id.rr);
-        llv             = (CoordinatorLayout)view.findViewById(R.id.llMoreinfo);
-        imgv_profilepic = (ImageView)view.findViewById(R.id.img_profile);
+        progressBar         =   (ProgressBar) view.findViewById(R.id.activity_main_progress_bar);
+        rr                  =   (RelativeLayout) view.findViewById(R.id.rr);
+        llv                 =   (CoordinatorLayout)view.findViewById(R.id.llMoreinfo);
+        imgv_profilepic     =   (ImageView)view.findViewById(R.id.img_profile);
         //tvname          = (TextView)view.findViewById(R.id.txt_name);
-        cardStackView   = (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
-        tvmonth         = (TextView) view.findViewById(R.id.txtv_month);
-        ImageView toggle = (ImageView) view.findViewById(R.id.toggle);
-        rrvBottom       =   (RelativeLayout) view.findViewById(R.id.rrv_bottomMenus);
+        cardStackView       =   (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
+        tvmonth             =   (TextView) view.findViewById(R.id.txtv_month);
+        ImageView toggle    =   (ImageView) view.findViewById(R.id.toggle);
+        rrvBottom           =   (RelativeLayout) view.findViewById(R.id.rrv_bottomMenus);
+
+        //Layout for filters
+
+        llvFilter           =   (LinearLayout) view.findViewById(R.id.llFilter);
+        txtv_age            =   (TextView) view.findViewById(R.id.txtv_age);
+        age_bar             =   (RangeBar)  view.findViewById(R.id.rangebar);
+        spinner_location    =   (Spinner) view.findViewById(R.id.spinner_location);
+        txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
+
+        btnMale             =   (Button)view.findViewById(R.id.btnMen);
+        btnFemale           =   (Button)view.findViewById(R.id.btnWomen);
+        btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
 
 
         final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
@@ -124,6 +124,55 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_rvsecard   =   (ImageView) view.findViewById(R.id.ic_rvsecard);
         imgv_highfi     =   (ImageView) view.findViewById(R.id.ic_high);
         imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
+
+
+        addLocation();
+
+        //play button
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                llvFilter.setVisibility(View.GONE);
+                rr.setVisibility(View.VISIBLE);
+                rrvBottom.setVisibility(View.VISIBLE);
+            }
+        });
+
+
+        //age range bar
+        age_bar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+            @Override
+            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+
+                txtv_age.setText(""+leftPinValue+"-"+""+rightPinValue);
+
+            }
+        });
+
+        //button male
+
+        btnMale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                txtv_gender.setText("MALE");
+            }
+        });
+
+        //button Female
+
+        btnFemale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                txtv_gender.setText("FEMALE");
+            }
+        });
+
+        //choose Location
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, Location);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_location.setAdapter(dataAdapter);
 
 
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
@@ -249,7 +298,28 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    private void addLocation() {
+        Location.add("India");
+        Location.add("China");
+        Location.add("Bahamas");
+        Location.add("Cambodia");
+        Location.add("American Samoa");
+        Location.add("Anguilla");
+        Location.add("Benin");
+        Location.add("Bangladesh");
+        Location.add("Brazil");
+        Location.add("Canada");
+        Location.add("Denmark");
+        Location.add("Dominica");
+        Location.add("Egypt");
+        Location.add("Greenland");
+        Location.add("Iceland");
+        Location.add("Indonesia");
+        Location.add("Japan");
+        Location.add("Malaysia");
+        Location.add("Morocco");
 
+    }
 
 
     private void paginate() {

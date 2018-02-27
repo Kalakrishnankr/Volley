@@ -2,4 +2,9 @@
 	<dimen name="activity_vertical_margin">48dp</dimen>
 	<dimen name="activity_horizontal_margin">48dp</dimen>
 	<dimen name="parallax_image_height">540dp</dimen>
+
+
+	<dimen name="margin_button">15dp</dimen>
+	<dimen name="text_size">18sp</dimen>
+	<dimen name="header_text_size">30sp</dimen>
 </resources>

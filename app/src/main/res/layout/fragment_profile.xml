@@ -1,33 +1,32 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.goldemo.beachpartner.fragments.ProfileFragment">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/layout">
+        android:layout_height="wrap_content"
+        android:id="@+id/rrTop">
 
 
-        <ImageView
-            android:id="@+id/header_cover_image"
+        <FrameLayout
+            android:id="@+id/header_cover_video"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_height="110dp"
+            android:background="@color/imgBacgnd"
             android:scaleType="centerCrop"/>
 
 
         <com.goldemo.beachpartner.CircularImageView
             android:id="@+id/row_icon"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_below="@+id/header_cover_image"
-            android:layout_marginTop="82dp"
+            android:layout_below="@+id/header_cover_video"
+            android:layout_marginTop="60dp"
             android:contentDescription="@string/app_name"
             android:padding="10dp"
             app:civ_border_width="10dp"
@@ -35,29 +34,13 @@
             android:scaleType="fitCenter"
             android:src="@drawable/mario" />
 
-        <!--<de.hdodenhof.circleimageview.CircleImageView
-            android:clickable="true"
-            app:civ_border_width="3dp"
-            app:civ_border_color="#FFFFFFFF"
-            android:id="@+id/profile"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
-            android:layout_below="@+id/header_cover_image"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="-60dp"
-            android:elevation="5dp"
-            android:padding="20dp"
-            android:scaleType="centerCrop"
-            android:src="@drawable/logo" />-->
 
         <RelativeLayout
             android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/header_cover_image"
-            android:background="#ebca0707"
-            android:elevation="4dp"
-            android:paddingBottom="24dp">
+            android:layout_below="@+id/header_cover_video"
+            android:background="#ebca0707">
 
 
             <ImageView
@@ -69,7 +52,7 @@
                 android:layout_marginRight="20dp"
                 android:layout_marginTop="60dp"
                 android:clickable="true"
-                android:src="@android:drawable/ic_menu_edit" />
+                android:src="@drawable/ic_edit" />
 
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_below="@+id/edit"
@@ -79,142 +62,921 @@
                 android:layout_marginRight="10dp"
                 android:text="@string/editProfile"/>
 
-            <ImageView
-                android:id="@+id/settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="60dp"
-                android:clickable="true"
-                android:src="@android:drawable/ic_menu_edit" />
-
             <com.goldemo.beachpartner.CustomTextView
-                android:layout_below="@+id/settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_alignParentLeft="true"
-                android:text="@string/settings"/>
-
-
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/name"
+                android:id="@+id/profile_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="90dp"
+                android:layout_marginTop="50dp"
                 android:text="Laxman Marothiya"
                 android:textColor="#fff"
-                android:textSize="24sp"
                 android:textStyle="bold" />
 
-           <!-- <TextView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/designation"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:text="Surat"
-                android:textColor="#fff"
-                android:textSize="16sp" />-->
 
             <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/designation"
+                android:id="@+id/profile_designation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/name"
+                android:layout_below="@+id/profile_name"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="10dp"
                 android:text="(Adhyaksh)"
-                android:textColor="#fff"
-                android:textSize="18sp" />
+                android:textColor="#fff"/>
         </RelativeLayout>
 
-        <!--kkr-->
-
-        <View
-            android:id="@+id/viewOne"
-            android:layout_width="match_parent"
-            android:layout_height="3dp"
-            android:background="@color/colorPrimary"
-            android:layout_below="@+id/profile_layout"/>
-
-
-        <LinearLayout
-            android:id="@+id/ut"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/viewOne"
-            android:elevation="4dp"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <Button
-                android:id="@+id/basicInfo"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-
-            <Button
-                android:id="@+id/moreInfo"
-                android:layout_weight="1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-        <!--kkr ends-->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/ut">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="5dp"
-            android:layout_marginTop="5dp"
-            android:background="#fff"
-            android:orientation="vertical"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"
-            android:paddingRight="5dp"
-            android:paddingLeft="5dp"
-            android:weightSum="8">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:weightSum="2"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/txtvFname"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="5dp"
-                    android:text="@string/hint_fname"
-                    android:textStyle="bold"
-                    android:layout_weight="1" />
-
-                <TextView
-
-                    android:layout_width="match_parent"
-                    android:text=""
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"/>
-
-
-            </LinearLayout>
-
-
-
-        </LinearLayout>
-
-        </ScrollView>
     </RelativeLayout>
 
-</RelativeLayout>
+    <!--kkr-->
+
+    <View
+        android:id="@+id/viewOne"
+        android:layout_width="match_parent"
+        android:layout_height="3dp"
+        android:background="@color/colorPrimary"
+        android:layout_below="@+id/rrTop"/>
+
+
+    <LinearLayout
+        android:id="@+id/tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="1"
+        android:orientation="vertical">
+
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"/>
+
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.8"/>
+
+       <!-- <View
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2"
+            android:background="@color/colorPrimary"/>-->
+
+
+        <!--<com.goldemo.beachpartner.CustomTextView
+            android:id="@+id/basicInfo"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:text="@string/hint_basicinfo"/>
+
+        <com.goldemo.beachpartner.CustomTextView
+            android:id="@+id/moreInfo"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:textAlignment="center"
+            android:gravity="center_vertical"
+            android:layout_height="match_parent"
+            android:text="@string/hint_moreinfo"/>-->
+
+    </LinearLayout>
+
+    <!--kkr ends-->
+
+    <!--Basic Info-->
+    <!--<LinearLayout-->
+        <!--android:id="@+id/llBaseInfo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp">-->
+
+
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_below="@+id/tab"-->
+            <!--tools:ignore="UnknownId">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical"-->
+                <!--android:padding="5dp"-->
+                <!--android:weightSum="16">-->
+
+                <!--&lt;!&ndash; First Name&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_fname"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvFname"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Last Name&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_lname"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvLname"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+                <!--&lt;!&ndash;GEnder&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="Gender"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_gender"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Birth Date&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="Birth Date"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_dob"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;city&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="City"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_city"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:editable="false"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;phone Number&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="Phone"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_mobileno"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;password&ndash;&gt;-->
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="Password"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_password1"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="asdasdasd"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+            <!--</LinearLayout>-->
+
+        <!--</ScrollView>-->
+    <!--</LinearLayout>-->
+
+
+    <!--More Information-->
+
+
+    <!--<LinearLayout-->
+        <!--android:id="@+id/llMoreInfo"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:orientation="vertical">-->
+
+        <!--<ScrollView-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content">-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:orientation="vertical"-->
+                <!--android:layout_marginLeft="5dp"-->
+                <!--android:layout_marginRight="5dp">-->
+
+            <!--&lt;!&ndash; Experience&ndash;&gt;-->
+
+            <!--<LinearLayout-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:layout_weight="2"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:weightSum="2">-->
+
+                <!--<com.goldemo.beachpartner.CustomTextView-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:text="@string/hint_experience"-->
+                    <!--android:textStyle="bold" />-->
+
+                <!--<com.goldemo.beachpartner.CustomEditText-->
+                    <!--android:id="@+id/txtvExp"-->
+                    <!--android:editable="false"-->
+                    <!--android:layout_width="0dp"-->
+                    <!--android:text="Haiiiiiiiiiii"-->
+                    <!--android:gravity="center_vertical"-->
+                    <!--android:layout_height="match_parent"-->
+                    <!--android:layout_weight="1" />-->
+
+
+            <!--</LinearLayout>-->
+
+               <!--&lt;!&ndash; Court Side Preference&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_pref"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvPref"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Position&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_position"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvPos"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Height&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_height"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvHeight"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Tournament Level Interest&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_intrest"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvIntrest"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Tours Played&ndash;&gt;-->
+
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_tourplayed"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvPlayed"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Highest Tour Rating Earned&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_highest"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvHighest"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+                <!--&lt;!&ndash;CBVA Player Number&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_CBVANo"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvCBVANo"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;CBVA First Name&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_CBVAFName"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvCBVAFName"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;CBVA Last Name&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_CBVALName"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvCBVALName"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Willingness To Travel&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_WtoTravel"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvWtoTravel"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;High school attended&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_highschool"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvHighschool"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+                <!--&lt;!&ndash;Indoor Club played at&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_indoorclub"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvIndoorClub"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;College (Club)&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_collgeclub"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvColgClub"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;College (Beach)&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_collgebeach"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvColgBeach"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;College (indoor)&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_colgindoor"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvColgIndoor"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Points&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_points"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvPoints"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;YouTube Link&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_youlink"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvYouLinks"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Bio Link&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_biolink"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvBioLinks"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+                <!--&lt;!&ndash;Ranking&ndash;&gt;-->
+
+                <!--<LinearLayout-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="0dp"-->
+                    <!--android:layout_weight="2"-->
+                    <!--android:orientation="horizontal"-->
+                    <!--android:weightSum="2">-->
+
+                    <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:text="@string/hint_rank"-->
+                        <!--android:textStyle="bold" />-->
+
+                    <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtvRank"-->
+                        <!--android:editable="false"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:text="Haiiiiiiiiiii"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                <!--</LinearLayout>-->
+
+
+            <!--</LinearLayout>-->
+
+        <!--</ScrollView>-->
+
+
+    <!--</LinearLayout>-->
+
+
+</LinearLayout>

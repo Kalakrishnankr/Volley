@@ -1,232 +1,239 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:background="@drawable/bgimage"
-    android:weightSum="2">
+    android:orientation="vertical"
+    android:weightSum="10">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.75" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.3"
-        android:gravity="center_horizontal">
+        android:layout_weight="2"
+        android:gravity="center"
+        android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="75dp"
-            android:layout_height="75dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center"
             android:background="@drawable/logo" />
-
     </LinearLayout>
 
 
-
     <LinearLayout
-        android:layout_width="300dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_gravity="center"
-        android:orientation="vertical"
-        android:layout_weight="1.4"
-        android:background="@drawable/bg_box">
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="30dp"
+        android:layout_weight="6"
+        android:background="@drawable/bg_box"
+        android:orientation="vertical">
 
 
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="25dp"
-            android:weightSum="11">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="25dp"
+                android:weightSum="8">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1.2"
-                    android:weightSum="2"
-                    android:orientation="vertical">
+                    android:layout_height="0dp"
+                    android:layout_weight="1.5"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <!--First Name-->
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                        android:weightSum="1">
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                         <com.goldemo.beachpartner.CustomEditText
                             android:id="@+id/input_firstname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/colorPrimary"
                             android:hint="@string/hint_fname"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="@color/colorPrimary" />
                     </android.support.design.widget.TextInputLayout>
 
                     <!--Last Name-->
 
                     <android.support.design.widget.TextInputLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                        android:weightSum="1">
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                         <com.goldemo.beachpartner.CustomEditText
                             android:id="@+id/input_lastname"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/colorPrimary"
                             android:hint="@string/hint_lname"
-                            android:inputType="text" />
+                            android:inputType="text"
+                            android:textColor="@color/colorPrimary" />
                     </android.support.design.widget.TextInputLayout>
 
 
                 </LinearLayout>
-                
-                
-                
-                
 
 
-            <!--Date of Birth-->
+                <!--Date of Birth-->
 
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_dob"
+                <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_dob"
-                    android:focusable="false"/>
-            </android.support.design.widget.TextInputLayout>
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_dob"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:focusable="false"
+                        android:hint="@string/hint_dob"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
 
                 <!--Gender-->
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:weightSum="2"
-                android:padding="5dp"
-                android:orientation="horizontal">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.5"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                <com.goldemo.beachpartner.CustomButton
-                    android:id="@+id/btnMale"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    <com.goldemo.beachpartner.CustomButton
+                        android:id="@+id/btnMale"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/imgBacgnd"
+                        android:drawableRight="@drawable/male"
+                        android:text="@string/hint_male"
+                        android:textSize="@dimen/text_size" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content" />
+
+                    <com.goldemo.beachpartner.CustomButton
+                        android:id="@+id/btnFemale"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@color/imgBacgnd"
+                        android:drawableRight="@drawable/female"
+                        android:text="@string/hint_female"
+
+                        android:textSize="@dimen/text_size" />
+
+                </LinearLayout>
+
+                <!--Contact Email-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:background="@color/imgBacgnd"
-                    android:text="@string/hint_male"/>
-                <Space
-                    android:layout_width="5dp"
-                    android:layout_height="wrap_content" />
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                <com.goldemo.beachpartner.CustomButton
-                    android:id="@+id/btnFemale"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:background="@color/imgBacgnd"
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_email"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <!--Password-->
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
                     android:layout_weight="1"
-                    android:text="@string/hint_female"/>
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_password"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!-- Confirm Password-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_confirm_password"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_confirmpwd"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+
+
+                <!--City-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_city"
+                        android:inputType="text"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+
+                <!--Phone Number-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/input_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hint_mobile"
+                        android:inputType="number"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
             </LinearLayout>
-
-            <!--Contact Email-->
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_email"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_email"
-                    android:inputType="textEmailAddress" />
-            </android.support.design.widget.TextInputLayout>
-
-
-            <!--Password-->
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_password"
-                    android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
-
-            <!-- Confirm Password-->
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_confirm_password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_confirmpwd"
-                    android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
-
-
-
-            <!--City-->
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_city"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_city"
-                    android:inputType="text" />
-            </android.support.design.widget.TextInputLayout>
-
-            <!--Phone Number-->
-
-            <android.support.design.widget.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-
-                android:weightSum="1">
-
-                <com.goldemo.beachpartner.CustomEditText
-                    android:id="@+id/input_mobile"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/colorPrimary"
-                    android:hint="@string/hint_mobile"
-                    android:inputType="number" />
-            </android.support.design.widget.TextInputLayout>
-        </LinearLayout>
 
 
         </ScrollView>
@@ -239,8 +246,8 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
+        android:layout_weight="1.25"
         android:orientation="vertical"
-        android:layout_weight="0.3"
         android:weightSum="2">
 
         <com.goldemo.beachpartner.CustomButton
@@ -250,28 +257,28 @@
             android:layout_weight="1"
             android:background="@color/btnColor"
             android:text="@string/registration"
-            android:textColor="@color/white" />
-
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="5dp"
-            android:weightSum="2"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="2">
 
 
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_gravity="end"
                 android:layout_weight="1.3"
-                android:textAlignment="textEnd"
                 android:text="@string/already_account"
-                android:textSize="@dimen/txtview_textsize"
-                android:textColor="@color/white"
-                android:layout_gravity="end" />
+                android:textAlignment="textEnd"
+                android:textColor="@color/white" />
+
             <Space
                 android:layout_width="2dp"
                 android:layout_height="1dp" />
@@ -279,30 +286,23 @@
             <LinearLayout
                 android:id="@+id/login"
                 android:layout_width="0dp"
-                android:layout_weight="0.4"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_weight="0.4">
 
                 <com.goldemo.beachpartner.CustomTextView
                     android:id="@+id/tSignUp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/login"
-                    android:textSize="@dimen/txtview_textsize"
                     android:textColor="@color/blueDark" />
 
             </LinearLayout>
-
-
-
-
-
 
 
         </LinearLayout>
 
 
     </LinearLayout>
-
 
 
 </LinearLayout>

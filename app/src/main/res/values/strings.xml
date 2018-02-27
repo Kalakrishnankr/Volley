@@ -23,7 +23,7 @@
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
 
-        <!--Tab Icons-->
+    <!--Tab Icons-->
     <string name="title_activity_tab">TabActivity</string>
     <string name="title_home">Home</string>
     <string name="title_profile">Profile</string>
@@ -64,4 +64,38 @@
     <string name="hint_settings">Settings</string>
     <string name="hint_help">Help</string>
     <string name="hint_title">Logout</string>
+
+
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="iagree">I Agree</string>
+    <string name="hint_continue">Continue</string>
+    <string name="conditions">These Website Standard Terms and Conditions written on this webpage shall manage your use of this website. These Terms will be applied fully and affect to your use of this Website. By using this Website, you agreed to accept all terms and conditions written in here. You must not use this Website if you disagree with any of these Website Standard Terms and Conditions</string>
+    <string name="hint_age">Select the age limit you are looking for</string>
+
+
+    <string name="hint_basicinfo">Basic Information</string>
+    <string name="hint_moreinfo">More Information</string>
+
+    <!--More Information-->
+
+    <string name="hint_experience">Experience</string>
+    <string name="hint_pref">Court Side Preference</string>
+    <string name="hint_position">Position</string>
+    <string name="hint_height">Height</string>
+    <string name="hint_intrest">Tournament Level Interest</string>
+    <string name="hint_tourplayed">Tours Played</string>
+    <string name="hint_highest">Highest Tour Rating Earned</string>
+    <string name="hint_CBVANo">CBVA Player Number</string>
+    <string name="hint_CBVAFName">CBVA First Name</string>
+    <string name="hint_CBVALName">CBVA Last Name</string>
+    <string name="hint_WtoTravel">Willingness To Travel</string>
+    <string name="hint_highschool">High school attended</string>
+    <string name="hint_indoorclub">Indoor Club played at</string>
+    <string name="hint_collgeclub">College (Club)</string>
+    <string name="hint_collgebeach">College (Beach)</string>
+    <string name="hint_colgindoor">College (indoor)</string>
+    <string name="hint_points">Points</string>
+    <string name="hint_youlink">YouTube Link</string>
+    <string name="hint_biolink">Bio Link</string>
+    <string name="hint_rank">Ranking</string>
 </resources>

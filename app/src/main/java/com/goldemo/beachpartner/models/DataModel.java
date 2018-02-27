@@ -9,6 +9,7 @@ import java.util.ArrayList;
 public class DataModel {
     private String headerTitle;
     private ArrayList<SingleItemModel> allItemsInSection;
+    public boolean isExpanded = false;
 
 
     public DataModel() {
