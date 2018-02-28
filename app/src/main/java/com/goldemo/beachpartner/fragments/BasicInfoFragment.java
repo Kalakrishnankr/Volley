@@ -91,6 +91,8 @@ public class BasicInfoFragment extends Fragment implements OnClickListener {
     public void click() {
 
 
+
+
         editFname.setFocusable(true);
         editLname.setFocusable(true);
         editGender.setFocusable(true);

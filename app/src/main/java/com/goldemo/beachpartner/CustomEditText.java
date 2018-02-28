@@ -35,6 +35,8 @@ public class CustomEditText extends EditText {
     private void init() {
 
         Typeface face = Typeface.createFromAsset(getContext().getAssets(),"fonts/SanFranciscoTextRegular.ttf");
+        setTextColor(getResources().getColor(R.color.blueDark));
+
         setTypeface(face);
 
     }

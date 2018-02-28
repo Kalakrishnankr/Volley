@@ -1,6 +1,7 @@
 package com.goldemo.beachpartner.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -14,12 +15,23 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
 
     private Button btnContinue;
     private CheckBox tickContinue;
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_termsconditions);
-        initActivity();
+        SharedPreferences prefs = getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        Boolean value = prefs.getBoolean("condition",false);
+        if(!value){
+            setContentView(R.layout.activity_termsconditions);
+            initActivity();
+        }
+        else {
+            Intent intent= new Intent(this,LoginActivity.class);
+            startActivity(intent);
+            finish();
+        }
+
     }
 
     private void initActivity() {
@@ -33,6 +45,10 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         if(tickContinue.isChecked()){
+
+            SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE).edit();
+            editor.putBoolean("condition",tickContinue.isChecked());
+            editor.apply();
 
             Intent intent= new Intent(this,LoginActivity.class);
             startActivity(intent);

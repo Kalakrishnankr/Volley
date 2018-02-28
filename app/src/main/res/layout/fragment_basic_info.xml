@@ -5,7 +5,11 @@
     tools:context="com.goldemo.beachpartner.fragments.BasicInfoFragment">
 
 
-
+    <LinearLayout
+        android:id="@+id/llBasicDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -259,6 +263,7 @@
 
         </ScrollView>
 
+    </LinearLayout>
 
 
 </FrameLayout>

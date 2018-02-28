@@ -11,6 +11,8 @@ import android.widget.ImageView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
+import com.goldemo.beachpartner.adpters.MessageAdapter;
+import com.goldemo.beachpartner.adpters.PartnerAdapter;
 import com.goldemo.beachpartner.adpters.ProfileAdapter;
 import com.goldemo.beachpartner.models.DataModel;
 import com.goldemo.beachpartner.models.SingleItemModel;
@@ -23,8 +25,10 @@ public class HomeFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private ImageView img_bpprofile;
-    private RecyclerView mRecyclerview,pRecyclerview;
+    private RecyclerView mRecyclerview,pRecyclerview,msgRecyclerview,parRecyclerview;
     CardAdapter adapter;
+    MessageAdapter messageAdapter;
+    PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
     ArrayList<DataModel> allSampleData;
 
@@ -59,17 +63,37 @@ public class HomeFragment extends Fragment {
         createDummyData();
 
         img_bpprofile = (ImageView) view.findViewById(R.id.img_bpfinder);
+
+
+
+
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
-        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
-        pRecyclerview.setAdapter(profileAdapter);
-        pRecyclerview.setHasFixedSize(true);
+//        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
+//        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
+//        pRecyclerview.setAdapter(profileAdapter);
+//        pRecyclerview.setHasFixedSize(true);
 
         mRecyclerview = (RecyclerView)view.findViewById(R.id.rcv);//This recycler view for upcoming events
         adapter = new CardAdapter(getContext(),allSampleData);
         mRecyclerview.setAdapter(adapter);
         mRecyclerview.setLayoutManager(layoutmnger);
         mRecyclerview.setHasFixedSize(true);
+
+
+        msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);
+        LinearLayoutManager layoutmngerOne = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
+        msgRecyclerview.setAdapter(messageAdapter);
+        msgRecyclerview.setLayoutManager(layoutmngerOne);
+        msgRecyclerview.setHasFixedSize(true);
+
+
+        parRecyclerview =  (RecyclerView)view.findViewById(R.id.rcv_partners);
+        LinearLayoutManager layoutmngerTwo = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
+        parRecyclerview.setAdapter(partnerAdapter);
+        parRecyclerview.setLayoutManager(layoutmngerTwo);
+        parRecyclerview.setHasFixedSize(true);
 
 
     }

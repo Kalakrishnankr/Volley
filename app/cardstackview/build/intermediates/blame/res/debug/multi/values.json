@@ -1,0 +1,26 @@
+[
+    {
+        "outputFile": "/home/seq-kala/AndroidProjects/cards/CardStackView-master/cardstackview/build/intermediates/incremental/mergeDebugResources/merged.dir/values/values.xml",
+        "map": [
+            {
+                "to": {
+                    "startLine": 11,
+                    "startColumn": 4,
+                    "startOffset": 956,
+                    "endColumn": 50,
+                    "endOffset": 1002
+                },
+                "from": {
+                    "file": "/home/seq-kala/AndroidProjects/cards/CardStackView-master/cardstackview/src/main/res/values/strings.xml",
+                    "position": {
+                        "startLine": 3,
+                        "startColumn": 4,
+                        "startOffset": 56,
+                        "endColumn": 50,
+                        "endOffset": 102
+                    }
+                }
+            }
+        ]
+    }
+]

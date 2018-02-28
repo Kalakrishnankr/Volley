@@ -32,6 +32,7 @@ import com.goldemo.beachpartner.adpters.TouristSpot;
 import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
 import com.goldemo.beachpartner.cardstackview.SwipeDirection;
+import com.ramotion.foldingcell.FoldingCell;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private Spinner spinner_location;
     private RangeBar age_bar;
     public Button btnMale,btnFemale;
-
+    private FoldingCell fc;
     private LinearLayout llvFilter;
 
     ArrayList<String>Location = new ArrayList<>();
@@ -114,7 +115,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMale             =   (Button)view.findViewById(R.id.btnMen);
         btnFemale           =   (Button)view.findViewById(R.id.btnWomen);
         btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
-
+        fc                  =   (FoldingCell)view. findViewById(R.id.folding_cell);
 
         final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
@@ -148,7 +149,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             }
         });
-
+        // attach click listener to folding cell
+        fc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fc.toggle(false);
+            }
+        });
         //button male
 
         btnMale.setOnClickListener(new View.OnClickListener() {
@@ -355,6 +362,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     private TouristSpotCardAdapter createTouristSpotCardAdapter() {
+
         final TouristSpotCardAdapter adapter = new TouristSpotCardAdapter(getContext(),this);
         adapter.addAll(createTouristSpots());
         return adapter;

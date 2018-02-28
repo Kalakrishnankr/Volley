@@ -29,16 +29,46 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                   <!-- <ImageView
+                    <ImageView
                         android:id="@+id/img_bpfinder"
                         android:layout_width="50dp"
                         android:layout_height="wrap_content"
-                        android:background="@mipmap/ic_person" />-->
+                        android:background="@mipmap/ic_person" />
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rrv_topProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"/>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:background="@mipmap/ic_person" />
+
+
+                    <!--<android.support.v7.widget.RecyclerView-->
+                        <!--android:id="@+id/rrv_topProfile"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"/>-->
 
 
                 </LinearLayout>
@@ -184,7 +214,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rcv_message"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
+                    </android.support.v7.widget.RecyclerView>
 
 
                 </LinearLayout>
@@ -266,6 +301,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent">
 
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/rcv_partners"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
 
 
 

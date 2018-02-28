@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.goldemo.beachpartner.SplashScreenActivity"
-    android:background="@color/btnColor">
+    android:background="@drawable/bpsplash">
 
 
     <ImageView

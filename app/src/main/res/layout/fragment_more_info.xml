@@ -6,7 +6,8 @@
 
     <!-- TODO: Update blank fragment layout -->
     <LinearLayout
-        android:id="@+id/llMoreInfo"
+        android:visibility="gone"
+        android:id="@+id/llMoreInfoDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">

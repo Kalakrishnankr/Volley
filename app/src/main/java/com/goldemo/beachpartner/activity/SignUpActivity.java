@@ -18,6 +18,8 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -62,6 +64,9 @@ public class SignUpActivity extends AppCompatActivity{
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
     private LinearLayout llogin;
+    RadioGroup userTypeRadio;
+    RadioButton rb;
+    String userType;
 
 
     @Override
@@ -92,11 +97,24 @@ public class SignUpActivity extends AppCompatActivity{
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
         llogin          = (LinearLayout) findViewById(R.id.login);
+        userTypeRadio   = (RadioGroup) findViewById(R.id.user_type);
+
+        userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                rb =(RadioButton) findViewById(checkedId);
+                userType    = rb.getText().toString();
+                //Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
+
+            }
+
+
+        });
 
         user_male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                 sex="male";
+                sex="male";
                 user_male.setTextColor(getResources().getColor(R.color.colorPrimary));
                 user_female.setTextColor(getResources().getColor(R.color.white));
             }
@@ -185,25 +203,36 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                    userName     = user_fname.getText().toString().trim();
-                    lastName     = user_lname.getText().toString().trim();
-                    dob          = user_dob.getText().toString().trim();
-                    email        = user_email.getText().toString().trim();
-                    pass         = user_password.getText().toString().trim();
-                    confnPass    = user_confPasswd.getText().toString().trim();
-                    location     = user_location.getText().toString().trim();
-                    mobileno     = user_mobileno.getText().toString().trim();
+                userName     = user_fname.getText().toString().trim();
+                lastName     = user_lname.getText().toString().trim();
+                dob          = user_dob.getText().toString().trim();
+                email        = user_email.getText().toString().trim();
+                pass         = user_password.getText().toString().trim();
+                confnPass    = user_confPasswd.getText().toString().trim();
+                location     = user_location.getText().toString().trim();
+                mobileno     = user_mobileno.getText().toString().trim();
 
-                    addValidationToViews();//Method for validate feilds
-                    if(awesomeValidation.validate()){
-                        if(sex!=null){
-                            submitForm();
 
-                        }else {
-                            Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
-                        }
+                addValidationToViews();//Method for validate feilds
+                if(awesomeValidation.validate()){
+                    if(sex!=null){
+                        submitForm();
 
+                    }else {
+                        Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
                     }
+
+                }
+
+                if(awesomeValidation.validate()){
+                    if(userType!=null){
+                        submitForm();
+
+                    }else {
+                        Toast.makeText(SignUpActivity.this, "Please select Your UserType", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
 
             }
         });
@@ -261,33 +290,33 @@ public class SignUpActivity extends AppCompatActivity{
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SIGNUP, jo,
                 new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                Log.d("response--", response.toString());
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response--", response.toString());
 
-                try {
-                    String statusCode = response.getString("statusCode").toString().trim();
-                    if(response!=null && statusCode.equals("000")){
+                        try {
+                            String statusCode = response.getString("statusCode").toString().trim();
+                            if(response!=null && statusCode.equals("000")){
 
-                        Toast.makeText(SignUpActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUpActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
 
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        },
-        new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.d("error--", error.toString());
-                Toast toast = Toast.makeText(SignUpActivity.this, "Couldn't connect to Server", Toast.LENGTH_LONG);
-                toast.setGravity(Gravity.TOP, 0, 0);
-                toast.show();
-                //progressDialog.dismiss();
-            }
-        }) {
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("error--", error.toString());
+                        Toast toast = Toast.makeText(SignUpActivity.this, "Couldn't connect to Server", Toast.LENGTH_LONG);
+                        toast.setGravity(Gravity.TOP, 0, 0);
+                        toast.show();
+                        //progressDialog.dismiss();
+                    }
+                }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();

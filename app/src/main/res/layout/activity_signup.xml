@@ -20,8 +20,8 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
             android:layout_gravity="center"
             android:background="@drawable/logo" />
     </LinearLayout>
@@ -48,12 +48,12 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="25dp"
-                android:weightSum="8">
+                android:weightSum="9.5">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.5"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -146,6 +146,33 @@
                         android:textSize="@dimen/text_size" />
 
                 </LinearLayout>
+
+
+                <!--Athlete-Coach Radio Button-->
+                <RadioGroup
+                    android:id="@+id/user_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="2"
+                    android:orientation="horizontal">
+                    <RadioButton
+                        android:id="@+id/athlete_user"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="Athlete"
+                        android:gravity="center"
+                        />
+                    <RadioButton
+                        android:id="@+id/coach_user"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:layout_weight="1"
+                        android:text="Coach"
+                        />
+                </RadioGroup>
 
                 <!--Contact Email-->
 

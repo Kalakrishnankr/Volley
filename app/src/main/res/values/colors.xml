@@ -9,4 +9,5 @@
     <color name="white">#FFFFFF</color>
     <color name="imgBacgnd">#c6c0c0</color>
     <color name="menubar">#283873</color>
+    <color name="black">#FF000000</color>
 </resources>
