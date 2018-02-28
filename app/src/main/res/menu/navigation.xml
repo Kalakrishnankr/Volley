@@ -9,7 +9,7 @@
 
     <item
         android:id="@+id/navigation_connection"
-        android:icon="@drawable/ic_profile"
+        android:icon="@drawable/icon_connection"
         android:title="" />
 
         <!--android:title="@string/title_connections" />-->
@@ -21,7 +21,7 @@
 
     <item
         android:id="@+id/navigation_calendar"
-        android:icon="@drawable/ic_calendar"
+        android:icon="@drawable/ic_calendars"
         android:title="" />
         <!--android:title="@string/title_calendar" />-->
 
