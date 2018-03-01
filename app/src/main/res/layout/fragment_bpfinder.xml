@@ -98,13 +98,16 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
+                        android:layout_margin="5dp"
                         android:gravity="center_vertical"
+                        android:textColor="@color/menubar"
                         android:text="Age Limit"/>
 
                     <com.goldemo.beachpartner.CustomTextView
                         android:id="@+id/txtv_age"
                         android:layout_width="0dp"
                         android:textAlignment="center"
+                        android:textColor="@color/menubar"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
                         android:layout_weight="1"/>
@@ -136,10 +139,10 @@
                         app:mrb_pinMaxFont="10sp"
                         app:mrb_selectorBoundaryColor="@color/colorAccent"
                         app:mrb_selectorBoundarySize="2dp"
-                        app:mrb_pinTextColor="#ACD123"
+                        app:mrb_pinTextColor="#FFFFFF"
                         app:mrb_selectorSize="10dp"
-                        app:mrb_tickEnd="50"
-                        app:mrb_tickInterval="1"
+                        app:mrb_tickEnd="80"
+                        app:mrb_tickInterval="2"
                         app:mrb_tickStart="5"/>
 
                     <com.goldemo.beachpartner.CustomTextView
@@ -168,6 +171,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2"
+            android:layout_marginLeft="15dp"
             android:text="@string/hint_age"/>
 
         <!--Location card-->
@@ -195,7 +199,7 @@
                    <com.goldemo.beachpartner.CustomTextView
                        android:layout_width="0dp"
                        android:layout_height="match_parent"
-                       android:gravity="center_horizontal"
+                       android:gravity="center"
                        android:layout_weight="1"
                        android:text="Location"/>
 
@@ -222,6 +226,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2"
+            android:layout_marginLeft="15dp"
             android:text="@string/hint_age"/>
 
         <!--card GEnder-->
@@ -255,6 +260,7 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
+                                android:layout_margin="5dp"
                                 android:layout_weight="1"
                                 android:text="Show me"/>
 
@@ -273,7 +279,7 @@
                             android:layout_height="0dp"
                             android:layout_weight="1"
                             android:weightSum="2"
-                            android:layout_margin="10dp"
+                            android:layout_margin="20dp"
                             android:orientation="horizontal">
 
                             <com.goldemo.beachpartner.CustomButton
@@ -281,12 +287,17 @@
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:text="MEN"
+                                android:background="@color/imgBacgnd"
                                 android:layout_weight="1"/>
+                            <Space
+                                android:layout_width="4dp"
+                                android:layout_height="match_parent" />
 
                             <com.goldemo.beachpartner.CustomButton
                                 android:id="@+id/btnWomen"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
+                                android:background="@color/imgBacgnd"
                                 android:text="WOMEN"
                                 android:layout_weight="1"/>
 
@@ -319,7 +330,7 @@
                 android:layout_width="75dp"
                 android:layout_height="75dp"
                 android:layout_gravity="center"
-                android:background="@drawable/ic_person"/>
+                android:background="@drawable/icon_play"/>
 
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="match_parent"
@@ -355,8 +366,8 @@
         android:visibility="gone">
 
         <RelativeLayout
-            android:layout_width="200dp"
-            android:layout_height="88dp"
+            android:layout_width="180dp"
+            android:layout_height="80dp"
             android:background="@drawable/ic_bpbg">
 
             <ImageView
@@ -364,17 +375,17 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_alignBottom="@+id/ic_high"
-                android:layout_marginBottom="6dp"
-                android:layout_marginEnd="12dp"
-                android:layout_marginRight="12dp"
+                android:layout_marginBottom="4dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/ic_high"
                 android:layout_toStartOf="@+id/ic_high"
                 android:background="@drawable/ic_backcard" />
 
             <ImageView
                 android:id="@+id/ic_high"
-                android:layout_width="75dp"
-                android:layout_height="75dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:background="@drawable/ic_high_five" />
@@ -407,8 +418,8 @@
             android:clipToPadding="false"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
-            android:paddingTop="55dp"
-            android:paddingBottom="80dp"
+            android:paddingTop="60dp"
+            android:paddingBottom="70dp"
             app:elevationEnabled="true"
             app:leftOverlay="@layout/overlay_left"
             app:rightOverlay="@layout/overlay_right"
@@ -511,7 +522,7 @@
                         android:layout_marginTop="180dp"
                         android:layout_marginRight="20dp"
                         android:elevation="20dp"
-                        android:background="@drawable/icon_fb" />
+                        android:background="@drawable/ic_up" />
 
                 </RelativeLayout>
 
@@ -578,8 +589,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1">
+                    android:layout_height="wrap_content">
 
                     <!-- <ListView
                          android:layout_width="match_parent"
@@ -590,37 +600,75 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="25dp"
-                        card_view:cardCornerRadius="5dp">
+                        card_view:cardCornerRadius="1dp">
 
                         <com.ramotion.foldingcell.FoldingCell
-                            xmlns:android="http://schemas.android.com/apk/res/android"
                             android:id="@+id/folding_cell"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content">
-                            ​
+
                             <FrameLayout
                                 android:id="@+id/cell_content_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@android:color/holo_green_dark"
                                 android:visibility="gone">
-                                <TextView
-                                    android:text="SEQATO"
+
+                                <LinearLayout
                                     android:layout_width="match_parent"
-                                    android:layout_height="250dp" />
+                                    android:layout_height="250dp"
+                                    android:orientation="vertical"
+                                    android:weightSum="3">
+
+                                    <com.goldemo.beachpartner.CustomTextView
+                                        android:text="EVP indoor Volleyball"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:gravity="center"
+                                        android:layout_weight="1"/>
+                                    <com.goldemo.beachpartner.CustomTextView
+                                        android:text="JVP indoor Volleyball"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:gravity="center"
+                                        android:layout_weight="1"/>
+
+                                    <com.goldemo.beachpartner.CustomTextView
+                                        android:text="EVP indoor Volleyball "
+                                        android:layout_width="match_parent"
+                                        android:layout_height="0dp"
+                                        android:gravity="center"
+                                        android:layout_weight="1"/>
+
+
+
+                                    </LinearLayout>
+
                             </FrameLayout>
-                            ​
-                            <FrameLayout
+                            <LinearLayout
                                 android:id="@+id/cell_title_view"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content">
-                                <TextView
-                                    android:text="Hello"
+                                android:layout_height="50dp"
+                                android:layout_margin="5dp"
+                                android:orientation="vertical"
+                                android:weightSum="2">
+
+                                <ImageView
+                                    android:id="@+id/badge"
+                                    android:layout_width="50dp"
+                                    android:layout_height="0dp"
+                                    android:layout_gravity="center_horizontal"
+                                    android:layout_weight="1.2"
+                                    android:background="@drawable/ic_badge"/>
+
+                                <com.goldemo.beachpartner.CustomTextView
                                     android:layout_width="match_parent"
-                                    android:layout_height="100dp"
-                                    android:background="@android:color/holo_blue_dark" />
-                            </FrameLayout>
-                            ​
+                                    android:layout_height="0dp"
+                                    android:gravity="center"
+                                    android:layout_weight="0.8"
+                                    android:text="Top 3 Finishes in Last Year" />
+
+                            </LinearLayout>
+
                         </com.ramotion.foldingcell.FoldingCell>
 
                     </android.support.v7.widget.CardView>
@@ -646,15 +694,18 @@
                      android:layout_width="match_parent"
                      android:layout_height="2dp"
                      android:background="@color/menubar"/>
+
+
                 <!--Calender-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
+                    android:weightSum="6"
                     android:orientation="vertical">
 
-                    <TextView
+                   <!-- <TextView
                         android:id="@+id/txtv_month"
                         android:layout_width="match_parent"
                         android:layout_height="30dp"
@@ -671,38 +722,75 @@
                         app:compactCalendarMultiEventIndicatorColor="#46b664"
                         app:compactCalendarTargetHeight="200dp"
                         app:compactCalendarTextColor="#213184"
-                        app:compactCalendarTextSize="12sp" />
+                        app:compactCalendarTextSize="12sp" />-->
+
+
+                    <LinearLayout
+                        android:id="@+id/llmonthview"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:weightSum="10"
+                        android:orientation="horizontal">
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"/>
+                        <ImageButton
+                            android:id="@+id/prev_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_gravity="center_vertical"
+                            android:background="@drawable/ic_action_name"/>
+                        <TextView
+                            android:id="@+id/month_name"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:textColor="#283873"/>
+                        <ImageButton
+                            android:id="@+id/next_button"
+                            android:background="@drawable/ic_next_arrow"
+                            android:layout_gravity="center_vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"/>
+
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2"/>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_below="@id/llmonthview"
+                        android:layout_weight="5">
+
+                        <com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView
+                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                            android:id="@+id/compactcalendar_view"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:compactCalendarTargetHeight="250dp"
+                            app:compactCalendarTextSize="12sp"
+                            app:compactCalendarBackgroundColor="#fff"
+                            app:compactCalendarTextColor="#534c4c"
+                            app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
+                            app:compactCalendarCurrentSelectedDayTextColor="#fff"
+                            app:compactCalendarCurrentDayTextColor="#fff"
+                            app:compactCalendarCurrentDayBackgroundColor="#283873"
+                            app:compactCalendarCurrentDayIndicatorStyle="fill_large_indicator"
+                            app:compactCalendarEventIndicatorStyle="small_indicator"
+                            app:compactCalendarOtherMonthDaysTextColor="#534c4c"
+                            app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="true"
+                            />
+                    </LinearLayout>
 
                 </LinearLayout>
-                <!--<LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtv_month1"
-                        android:layout_width="match_parent"
-                        android:layout_height="30dp"
-                        android:gravity="center"/>
-
-                    <com.github.sundeepk.compactcalendarview.CompactCalendarView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/compactcalendar_view1"
-                        android:layout_width="match_parent"
-                        android:layout_below="@id/txtv_month"
-                        android:layout_height="250dp"
-                        app:compactCalendarTargetHeight="200dp"
-                        app:compactCalendarTextSize="12sp"
-                        app:compactCalendarBackgroundColor="#fff"
-                        app:compactCalendarTextColor="#213184"
-                        app:compactCalendarCurrentSelectedDayBackgroundColor="#E57373"
-                        app:compactCalendarCurrentDayBackgroundColor="#4f6e36"
-                        app:compactCalendarMultiEventIndicatorColor="#46b664"/>
-
-                </LinearLayout>-->
-
-
             </LinearLayout>
         </android.support.v4.widget.NestedScrollView>
 

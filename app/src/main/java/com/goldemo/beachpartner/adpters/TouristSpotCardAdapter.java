@@ -68,8 +68,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
                 holder.progressBar.setVisibility(View.GONE);
                 holder.videoView.start();
                 //playVideo(holder);
-
-
                 return false;
             }
         });

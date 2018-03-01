@@ -92,7 +92,7 @@
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.4"
+                android:layout_weight="1.7"
                 android:padding="5dp"
                 android:textColor="@color/white"
                 android:text="@string/upcoming_tournaments" />
@@ -101,7 +101,7 @@
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:gravity="end"
                 android:padding="5dp"
                 android:text="@string/next"
@@ -109,9 +109,10 @@
                 android:textAlignment="textEnd" />
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_next"/>
 
         </LinearLayout>
 
@@ -127,29 +128,28 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.8">
+                    android:layout_height="match_parent">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                     </android.support.v7.widget.RecyclerView>
 
 
                 </LinearLayout>
 
-            <LinearLayout
+           <!-- <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="0.2">
 
-                <!--<me.relex.circleindicator.CircleIndicator
+                &lt;!&ndash;<me.relex.circleindicator.CircleIndicator
                     android:id="@+id/indicator"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>-->
-            </LinearLayout>
+                    android:layout_height="wrap_content"/>&ndash;&gt;
+            </LinearLayout>-->
 
 
 
@@ -171,7 +171,7 @@
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1.2"
+                android:layout_weight="1.5"
                 android:padding="5dp"
                 android:text="@string/messages"
                 android:textColor="@color/white"/>
@@ -185,7 +185,7 @@
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.4"
+                android:layout_weight="0.3"
                 android:gravity="end"
                 android:text="@string/next"
                 android:padding="5dp"
@@ -193,9 +193,10 @@
                 android:textAlignment="textEnd" />
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_next"/>
 
         </LinearLayout>
 
@@ -206,25 +207,25 @@
             android:layout_height="150dp"
             android:layout_weight="1.5">
 
-            <HorizontalScrollView
+            <!--<HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">-->
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv_message"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                     </android.support.v7.widget.RecyclerView>
 
 
                 </LinearLayout>
 
-            </HorizontalScrollView>
+            <!--</HorizontalScrollView>-->
 
 
         </LinearLayout>
@@ -242,19 +243,17 @@
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="1.6"
                 android:padding="5dp"
                 android:textColor="@color/white"
                 android:text="@string/partnerintrest" />
 
-
-
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2"
-                android:layout_margin="4dp"
-                android:background="@drawable/ic_message_send"/>
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/ic_msg_send"/>
 
             <Space
                 android:layout_width="0dp"
@@ -262,11 +261,11 @@
                 android:layout_weight="0.1"/>
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.2"
-                android:layout_margin="4dp"
-                android:background="@drawable/ic_received_msg"/>
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:layout_marginTop="1dp"
+                android:background="@drawable/ic_msg_recv"/>
 
             <com.goldemo.beachpartner.CustomTextView
                 android:layout_width="0dp"
@@ -279,9 +278,10 @@
                 android:textAlignment="textEnd" />
 
             <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2" />
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:layout_gravity="center"
+                android:background="@drawable/icon_next"/>
 
         </LinearLayout>
 
@@ -293,18 +293,18 @@
             android:layout_height="150dp"
             android:layout_weight="1.5">
 
-            <HorizontalScrollView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            <!--<HorizontalScrollView-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content">-->
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv_partners"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
+                        android:layout_height="match_parent">
 
                     </android.support.v7.widget.RecyclerView>
 
@@ -312,7 +312,7 @@
 
                 </LinearLayout>
 
-            </HorizontalScrollView>
+            <!--</HorizontalScrollView>-->
 
 
         </LinearLayout>

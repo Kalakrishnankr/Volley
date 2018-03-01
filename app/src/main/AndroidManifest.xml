@@ -36,7 +36,8 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.SplashActivity">
+        <activity android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -45,13 +46,21 @@
         </activity>
         <activity
             android:name=".activity.SignUpActivity"
-            android:windowSoftInputMode="adjustPan" />
-        <activity android:name=".activity.LoginActivity" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
+        <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
         <activity
             android:name=".activity.TabActivity"
-            android:label="@string/title_activity_tab" />
-        <activity android:name=".fragments.HomeFragment" />
-        <activity android:name=".activity.TermsConditionsActivity"></activity>
+            android:label="@string/title_activity_tab"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".fragments.HomeFragment"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".activity.TermsConditionsActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar"/>
     </application>
 
 </manifest>

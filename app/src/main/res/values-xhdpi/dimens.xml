@@ -8,4 +8,15 @@
 	<dimen name="text_size">16sp</dimen>
 	<dimen name="header_text_size">28sp</dimen>
 
+	<!--framelayout that contains videView height-->
+	<dimen name="frame_layout_profileVide_height">160dp</dimen>
+
+	<!--Width and height of circular image inside in profile-->
+	<dimen name="circular_img_height">90dp</dimen>
+	<dimen name="circular_img_width">90dp</dimen>
+	<dimen name="circular_img_marginTop">130dp</dimen>
+
+	<!--marginTop of text under circular image view-->
+	<dimen name="margin_top_text_under_circularImage">60dp</dimen>
+
 </resources>

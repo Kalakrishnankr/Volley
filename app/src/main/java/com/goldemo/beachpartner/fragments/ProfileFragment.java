@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private ViewPager viewPager;
     private FrameLayout videoFrame;
-    private ImageView imgEdit, imgVideo ,imgPlay;
+    private ImageView imgEdit, imgVideo ,imgPlay,profile_img_editIcon;
     private CircularImageView imgProfile;
     private TextView profileName,profileDesig,edit_tag;
     private OnClickListener mOnClickListener;
@@ -69,7 +69,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initActivity(View view) {
-
+        profile_img_editIcon =(ImageView) view.findViewById(R.id.edit_profile_img_vid);
         //tabs        =   (TabLayout)view.findViewById(R.id.tabs);
         //viewPager   =   (ViewPager) view.findViewById(R.id.pager);
         //videoFrame  =   (FrameLayout)view.findViewById(R.id.header_cover_video);
@@ -144,13 +144,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
 
-       // setupViewPager(viewPager);
-       // tabs.setupWithViewPager(viewPager);
+        // setupViewPager(viewPager);
+        // tabs.setupWithViewPager(viewPager);
 
         imgEdit.setOnClickListener(this);
         imgVideo.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
+
+
+
+//        Buttons click action for saving
+        basicBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoSave();
+            }
+        });
+        moreBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoSave();
+            }
+        });
+
+
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -245,8 +263,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 break;
 
 
-                default:
-                    break;
+            default:
+                break;
         }
     }
 
@@ -256,46 +274,200 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
 
+
+
+
     private void editBasicInfo() {
 
+        //Profile image edit icon active
+        profile_img_editIcon.setVisibility(View.VISIBLE);
 
         editFname.setEnabled(true);
-        editFname.setEnabled(true);
+        editFname.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editLname.setEnabled(true);
+        editLname.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editGender.setEnabled(true);
+        editGender.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editDob.setEnabled(true);
+        editDob.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editCity.setEnabled(true);
+        editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPhone.setEnabled(true);
+        editPhone.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPassword.setEnabled(true);
+        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
     }
 
     private void editMoreInfo() {
 
         editExp.setEnabled(true);
+        editExp.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPref.setEnabled(true);
+        editPref.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPos.setEnabled(true);
+        editPos.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editHeight.setEnabled(true);
+        editHeight.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
+
         editIntrest.setEnabled(true);
+        editIntrest.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPlayed.setEnabled(true);
+        editPlayed.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editHighest.setEnabled(true);
+        editHighest.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editCBVANo.setEnabled(true);
+        editCBVANo.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editCBVAFName.setEnabled(true);
+        editCBVAFName.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editCBVALName.setEnabled(true);
+        editCBVALName.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editWtoTravel.setEnabled(true);
+        editWtoTravel.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editHighschool.setEnabled(true);
+        editHighschool.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editIndoorClub.setEnabled(true);
+        editIndoorClub.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editColgClub.setEnabled(true);
+        editColgClub.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editColgBeach.setEnabled(true);
+        editColgBeach.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editColgIndoor.setEnabled(true);
+        editColgIndoor.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editPoints.setEnabled(true);
+        editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editYouLinks.setEnabled(true);
+        editYouLinks.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editBioLinks.setEnabled(true);
+        editBioLinks.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
         editRank.setEnabled(true);
+        editRank.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
+    }
+
+    //Saving information after edit
+    public void InfoSave(){
+
+        profile_img_editIcon.setVisibility(View.GONE);
+
+        //BasicInfo
+
+        editFname.setEnabled(false);
+        editFname.setBackground(null);
+
+        editLname.setEnabled(false);
+        editLname.setBackground(null);
+
+        editGender.setEnabled(false);
+        editGender.setBackground(null);
+
+        editDob.setEnabled(false);
+        editDob.setBackground(null);
+
+        editCity.setEnabled(false);
+        editCity.setBackground(null);
+
+        editPhone.setEnabled(false);
+        editPhone.setBackground(null);
+
+        editPassword.setEnabled(false);
+        editPassword.setBackground(null);
+
+
+        //MoreInfo
+        editExp.setEnabled(false);
+        editExp.setBackground(null);
+
+        editPref.setEnabled(false);
+        editPref.setBackground(null);
+
+        editPos.setEnabled(false);
+        editPos.setBackground(null);
+
+        editHeight.setEnabled(false);
+        editHeight.setBackground(null);
+
+
+        editIntrest.setEnabled(false);
+        editIntrest.setBackground(null);
+
+        editPlayed.setEnabled(false);
+        editPlayed.setBackground(null);
+
+        editHighest.setEnabled(false);
+        editHighest.setBackground(null);
+
+        editCBVANo.setEnabled(false);
+        editCBVANo.setBackground(null);
+
+        editCBVAFName.setEnabled(false);
+        editCBVAFName.setBackground(null);
+
+        editCBVALName.setEnabled(false);
+        editCBVALName.setBackground(null);
+
+        editWtoTravel.setEnabled(false);
+        editWtoTravel.setBackground(null);
+
+        editHighschool.setEnabled(false);
+        editHighschool.setBackground(null);
+
+        editIndoorClub.setEnabled(false);
+        editIndoorClub.setBackground(null);
+
+        editColgClub.setEnabled(false);
+        editColgClub.setBackground(null);
+
+        editColgBeach.setEnabled(false);
+        editColgBeach.setBackground(null);
+
+        editColgIndoor.setEnabled(false);
+        editColgIndoor.setBackground(null);
+
+        editPoints.setEnabled(false);
+        editPoints.setBackground(null);
+
+        editYouLinks.setEnabled(false);
+        editYouLinks.setBackground(null);
+
+        editBioLinks.setEnabled(false);
+        editBioLinks.setBackground(null);
+
+        editRank.setEnabled(false);
+        editRank.setBackground(null);
+
     }
 
 
+
+
     //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
-        //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
+    //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
 
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -339,7 +511,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();
                 // String filemanagerstring = selectedVideoUri.getPath();
-               // String selectedVideoPath = getPath(selectedVideoUri);
+                // String selectedVideoPath = getPath(selectedVideoUri);
                 if (selectedVideoUri != null) {
 
                     imgVideo.setVisibility(View.GONE);

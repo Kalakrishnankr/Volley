@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -25,11 +26,11 @@ import android.widget.TextView;
 
 import com.appyvet.materialrangebar.RangeBar;
 import com.bumptech.glide.Glide;
-import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.TouristSpot;
 import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
+import com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
 import com.goldemo.beachpartner.cardstackview.SwipeDirection;
 import com.ramotion.foldingcell.FoldingCell;
@@ -52,7 +53,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private RelativeLayout rr;
     private CoordinatorLayout llv;
     private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi,btnPlay;
-    private TextView tvname,tvmonth,txtv_age,txtv_gender;
+    private TextView tvmonth,txtv_age,txtv_gender;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private Spinner spinner_location;
@@ -60,6 +61,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     public Button btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
+
+    private ImageButton showPreviousMonthButton,showNextMonthButton;
 
     ArrayList<String>Location = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
@@ -85,6 +88,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_bpfinder, container, false);
+//       actionBar.setTitle("Beach Partner Finder");
         setUp(view);
         reload();
 
@@ -100,7 +104,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_profilepic     =   (ImageView)view.findViewById(R.id.img_profile);
         //tvname          = (TextView)view.findViewById(R.id.txt_name);
         cardStackView       =   (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
-        tvmonth             =   (TextView) view.findViewById(R.id.txtv_month);
+        tvmonth             =   (TextView) view.findViewById(R.id.month_name);
         ImageView toggle    =   (ImageView) view.findViewById(R.id.toggle);
         rrvBottom           =   (RelativeLayout) view.findViewById(R.id.rrv_bottomMenus);
 
@@ -117,6 +121,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
         fc                  =   (FoldingCell)view. findViewById(R.id.folding_cell);
 
+        showPreviousMonthButton = (ImageButton) view.findViewById(R.id.prev_button);
+        showNextMonthButton = (ImageButton) view.findViewById(R.id.next_button);
+
         final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         compactCalendarView.setUseThreeLetterAbbreviation(true);
@@ -127,7 +134,24 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
 
 
+
+
+
         addLocation();
+
+        showPreviousMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                compactCalendarView.showPreviousMonth();
+            }
+        });
+
+        showNextMonthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                compactCalendarView.showNextMonth();
+            }
+        });
 
         //play button
         btnPlay.setOnClickListener(new View.OnClickListener() {
@@ -156,12 +180,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 fc.toggle(false);
             }
         });
+
         //button male
 
         btnMale.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 txtv_gender.setText("MALE");
+                btnMale.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                btnMale.setTextColor(getResources().getColor(R.color.white));
             }
         });
 
@@ -171,6 +198,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onClick(View view) {
                 txtv_gender.setText("FEMALE");
+                btnFemale.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                btnFemale.setTextColor(getResources().getColor(R.color.white));
             }
         });
 
@@ -180,6 +209,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 android.R.layout.simple_spinner_item, Location);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner_location.setAdapter(dataAdapter);
+
+
+        //add data to shared preference
+
+
+
 
 
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
@@ -222,6 +257,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 rr.setVisibility(View.VISIBLE);
                 llv.setVisibility(View.GONE);
+                rrvBottom.setVisibility(View.VISIBLE);
+
             }
         });
 
@@ -434,6 +471,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

@@ -33,6 +33,7 @@ public class TabActivity extends AppCompatActivity {
                 case R.id.navigation_home:
 
                     HomeFragment homeFragment = new HomeFragment();
+                    getSupportActionBar().setTitle("Beach Partner");
                     FragmentManager manager = getSupportFragmentManager();
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
@@ -41,6 +42,7 @@ public class TabActivity extends AppCompatActivity {
                 case R.id.navigation_bp:
 
                     BPFinderFragment bpFinderFragment = new BPFinderFragment();
+                    getSupportActionBar().setTitle("Beach Partner Finder");
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();
                     tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
@@ -50,6 +52,7 @@ public class TabActivity extends AppCompatActivity {
                 case R.id.navigation_connection:
 
                     ConnectionFragment connectionFragment = new ConnectionFragment();
+                    getSupportActionBar().setTitle("Connections");
                     FragmentManager mngr = getSupportFragmentManager();
                     FragmentTransaction trans = mngr.beginTransaction();
                     trans.replace(R.id.container,connectionFragment,YOUR_FRAGMENT_STRING_TAG);
@@ -65,11 +68,12 @@ public class TabActivity extends AppCompatActivity {
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tab);
-
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         FrameLayout fg = (FrameLayout)findViewById(R.id.container);
         BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
@@ -80,6 +84,7 @@ public class TabActivity extends AppCompatActivity {
 
         HomeFragment homeFragment = new HomeFragment();
         FragmentManager manager = getSupportFragmentManager();
+        getSupportActionBar().setTitle("Beach Partner");
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
         transaction.commit();
@@ -104,8 +109,9 @@ public class TabActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.profile:
-                Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
                     ProfileFragment pf = new ProfileFragment();
+                    getSupportActionBar().setTitle("Profile");
                     FragmentManager mang = getSupportFragmentManager();
                     FragmentTransaction trans = mang.beginTransaction();
                     trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
