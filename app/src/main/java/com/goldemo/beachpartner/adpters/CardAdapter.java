@@ -30,6 +30,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(itemView);
+        itemView.setMinimumWidth(parent.getMeasuredWidth());
 
         return myViewHolder;
     }
@@ -37,7 +38,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
         holder.txtv_date.setText("11/10/2018");
-        holder.txtv_place.setText("america");
+        holder.txtv_place.setText("America");
         holder.txtv_players.setText("Martin,David.john,Hari");
 
     }

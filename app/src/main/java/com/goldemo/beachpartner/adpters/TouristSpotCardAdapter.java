@@ -23,9 +23,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
     private Context mContext;
     MyInterface myInterface;
 
-    public TouristSpotCardAdapter(Context context,MyInterface myInterface) {
-        super(context, 0);
-        this.myInterface=myInterface;
+    public TouristSpotCardAdapter(Context context,MyInterface inter) {
+        super(context,0);
+        this.mContext=context;
+        this.myInterface=inter;
+
     }
 
     @Override

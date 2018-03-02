@@ -43,9 +43,9 @@
                         android:id="@+id/txtvExp"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -73,9 +73,9 @@
                         android:id="@+id/txtvPref"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -104,9 +104,9 @@
                         android:id="@+id/txtvPos"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -134,9 +134,9 @@
                         android:id="@+id/txtvHeight"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -164,9 +164,9 @@
                         android:id="@+id/txtvIntrest"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -196,9 +196,9 @@
                         android:id="@+id/txtvPlayed"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -226,9 +226,9 @@
                         android:id="@+id/txtvHighest"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -257,9 +257,9 @@
                         android:id="@+id/txtvCBVANo"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -287,9 +287,9 @@
                         android:id="@+id/txtvCBVAFName"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -317,9 +317,9 @@
                         android:id="@+id/txtvCBVALName"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -348,9 +348,9 @@
                         android:id="@+id/txtvWtoTravel"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -378,9 +378,9 @@
                         android:id="@+id/txtvHighschool"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -409,9 +409,9 @@
                         android:id="@+id/txtvIndoorClub"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -439,9 +439,9 @@
                         android:id="@+id/txtvColgClub"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -470,9 +470,9 @@
                         android:id="@+id/txtvColgBeach"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -500,9 +500,9 @@
                         android:id="@+id/txtvColgIndoor"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -530,9 +530,9 @@
                         android:id="@+id/txtvPoints"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -560,9 +560,9 @@
                         android:id="@+id/txtvYouLinks"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -590,9 +590,9 @@
                         android:id="@+id/txtvBioLinks"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -620,9 +620,9 @@
                         android:id="@+id/txtvRank"
                         android:enabled="false"
                         android:layout_width="0dp"
-                        android:text="Haiiiiiiiiiii"
                         android:gravity="center_vertical"
                         android:layout_height="match_parent"
+                        android:maxLines="1"
                         android:paddingLeft="5dp"
                         android:layout_weight="1" />
 
@@ -633,10 +633,12 @@
                 <!--button-->
 
                 <LinearLayout
+                    android:id="@+id/more_info_btns_bottom"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
                     android:orientation="horizontal"
-                    android:padding="10dp"
+                    android:visibility="gone"
+                    android:layout_margin="10dp"
                     android:weightSum="2">
 
                     <com.goldemo.beachpartner.CustomButton

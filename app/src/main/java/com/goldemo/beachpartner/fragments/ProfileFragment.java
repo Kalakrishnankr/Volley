@@ -3,6 +3,7 @@ package com.goldemo.beachpartner.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -14,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
@@ -51,6 +53,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private EditText editFname,editLname,editGender,editDob,editCity,editPhone,editPassword;
     private EditText editExp,editPref,editPos,editHeight,editIntrest,editPlayed,editHighest,editCBVANo,editCBVAFName,editCBVALName,editWtoTravel,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,editYouLinks,editBioLinks,editRank;
     private Button moreBtnSave,moreBtnCancel,basicBtnSave,basicBtnCancel;
+    private LinearLayout btnsBottom,more_info_btns_bottom;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +64,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().getWindow().setSoftInputMode(
+                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_profile, container, false);
 
@@ -69,41 +74,45 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initActivity(View view) {
-        profile_img_editIcon =(ImageView) view.findViewById(R.id.edit_profile_img_vid);
+
+        profile_img_editIcon    =       (ImageView) view.findViewById(R.id.edit_profile_img_vid);
+        btnsBottom              =       (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+
+        more_info_btns_bottom   =       (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
         //tabs        =   (TabLayout)view.findViewById(R.id.tabs);
         //viewPager   =   (ViewPager) view.findViewById(R.id.pager);
         //videoFrame  =   (FrameLayout)view.findViewById(R.id.header_cover_video);
-        imgEdit         =   (ImageView)view.findViewById(R.id.edit);
+        imgEdit                 =       (ImageView)view.findViewById(R.id.edit);
 
-        imgProfile      =   (CircularImageView)view.findViewById(R.id.row_icon);
-        profileName     =   (TextView)view.findViewById(R.id.profile_name);
-        profileDesig    =   (TextView)view.findViewById(R.id.profile_designation);
-        edit_tag       =   (TextView)view.findViewById(R.id.edit_text);
+        imgProfile              =       (CircularImageView)view.findViewById(R.id.row_icon);
+        profileName             =       (TextView)view.findViewById(R.id.profile_name);
+        profileDesig            =       (TextView)view.findViewById(R.id.profile_designation);
+        edit_tag                =       (TextView)view.findViewById(R.id.edit_text);
 
 
-        imgVideo        = (ImageView)view. findViewById(R.id.imgVideo);
-        videoView       = (VideoView)view. findViewById(R.id.videoView);
-        imgPlay         = (ImageView)view. findViewById(R.id.imgPlay);
+        imgVideo                =       (ImageView)view. findViewById(R.id.imgVideo);
+        videoView               =       (VideoView)view. findViewById(R.id.videoView);
+        imgPlay                 =       (ImageView)view. findViewById(R.id.imgPlay);
 
         /*This for demo only start*/
 
-        llMenuBasic     =    (LinearLayout)view.findViewById(R.id.llMenuBasic);
-        llMenuMore      =    (LinearLayout)view.findViewById(R.id.llMenuMore);
+        llMenuBasic             =    (LinearLayout)view.findViewById(R.id.llMenuBasic);
+        llMenuMore              =    (LinearLayout)view.findViewById(R.id.llMenuMore);
 
-        llBasicDetails  =    (LinearLayout)view.findViewById(R.id.llBasicDetails);
-        llMoreDetails   =    (LinearLayout)view.findViewById(R.id.llMoreInfoDetails);
+        llBasicDetails          =    (LinearLayout)view.findViewById(R.id.llBasicDetails);
+        llMoreDetails           =    (LinearLayout)view.findViewById(R.id.llMoreInfoDetails);
 
-        viewBasic       =    (View)view.findViewById(R.id.viewBasic);
-        viewMore        =    (View)view.findViewById(R.id.viewMore);
+        viewBasic               =    (View)view.findViewById(R.id.viewBasic);
+        viewMore                =    (View)view.findViewById(R.id.viewMore);
 
         //For Basic Details
 
-        editFname       =   (EditText)view.findViewById(R.id.txtvFname);
-        editLname       =   (EditText)view.findViewById(R.id.txtvLname);
-        editGender      =   (EditText)view.findViewById(R.id.txtv_gender);
-        editDob         =   (EditText)view.findViewById(R.id.txtv_dob);
-        editCity        =   (EditText)view.findViewById(R.id.txtv_city);
-        editPhone       =   (EditText)view.findViewById(R.id.txtv_mobileno);
+        editFname               =   (EditText)view.findViewById(R.id.txtvFname);
+        editLname               =   (EditText)view.findViewById(R.id.txtvLname);
+        editGender              =   (EditText)view.findViewById(R.id.txtv_gender);
+        editDob                 =   (EditText)view.findViewById(R.id.txtv_dob);
+        editCity                =   (EditText)view.findViewById(R.id.txtv_city);
+        editPhone               =   (EditText)view.findViewById(R.id.txtv_mobileno);
         editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
         basicBtnSave    =   (Button)view.findViewById(R.id.btnsave);
@@ -167,6 +176,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 InfoSave();
             }
         });
+
 
 
         //Browse video from gallery
@@ -237,10 +247,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 startActivityForResult(Intent.createChooser(intent1,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
                 break;
             case R.id.imgPlay:
-                videoView.start();
+                videoView.setVisibility(View.VISIBLE);
+                playVideo();
+               // videoView.start();
                 break;
-
-
 
             //Demo Only
 
@@ -262,13 +272,36 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
                 break;
 
+           /* case R.id.btnsave:
+                InfoSave();
+                break;
+
+            case R.id.btn_save:
+                InfoSave();
+                break;*/
+
 
             default:
                 break;
         }
     }
 
+    private void playVideo() {
+        videoView.start();
+        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+            @Override
+            public void onCompletion(MediaPlayer mediaPlayer) {
+                videoView.setVisibility(View.GONE);
+                imgPlay.setVisibility(View.VISIBLE);
+
+            }
+        });
+    }
+
     private void editCustomView() {
+
+        imgVideo.setVisibility(View.VISIBLE);
+        profile_img_editIcon.setVisibility(View.VISIBLE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
         edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
     }
@@ -280,6 +313,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     private void editBasicInfo() {
 
         //Profile image edit icon active
+
+        btnsBottom.setVisibility(View.VISIBLE);
+        more_info_btns_bottom.setVisibility(View.VISIBLE);
+
         profile_img_editIcon.setVisibility(View.VISIBLE);
 
         editFname.setEnabled(true);
@@ -374,7 +411,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void InfoSave(){
 
         profile_img_editIcon.setVisibility(View.GONE);
-
+        imgVideo.setVisibility(View.GONE);
+        btnsBottom.setVisibility(View.GONE);
+        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+        edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+        more_info_btns_bottom.setVisibility(View.GONE);
         //BasicInfo
 
         editFname.setEnabled(false);
@@ -515,7 +556,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 if (selectedVideoUri != null) {
 
                     imgVideo.setVisibility(View.GONE);
-                    videoView.setVisibility(View.VISIBLE);
+                    //videoView.setVisibility(View.VISIBLE);
                     imgPlay.setVisibility(View.VISIBLE);
                     videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
 

@@ -111,12 +111,12 @@ public class LoginActivity extends AppCompatActivity {
                 passwd= password.getText().toString().trim();
 
 
-                //addValidationToViews();
-                startLoginProcess();
+                addValidationToViews();
+                //startLoginProcess();
 
-               /* if(awesomeValidation.validate()){
+                if(awesomeValidation.validate()){
 
-                    if(uname.equals("admin@gmail.com") && (passwd.equals("123456"))){
+                    if(uname.equals("admin@gmail.com") && (passwd.equals("admin"))){
 
                         startLoginProcess();
                         userName.setText("");
@@ -128,7 +128,8 @@ public class LoginActivity extends AppCompatActivity {
                         Toast.makeText(LoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
                     }
 
-                }*/
+
+                }
 
 
 

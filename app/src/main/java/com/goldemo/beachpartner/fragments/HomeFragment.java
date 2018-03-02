@@ -3,7 +3,9 @@ package com.goldemo.beachpartner.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,7 +67,7 @@ public class HomeFragment extends Fragment {
         img_bpprofile = (ImageView) view.findViewById(R.id.img_bpfinder);
 
 
-
+        SnapHelper snapHelper = new PagerSnapHelper();
 
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
 //        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
@@ -76,6 +78,7 @@ public class HomeFragment extends Fragment {
         mRecyclerview = (RecyclerView)view.findViewById(R.id.rcv);//This recycler view for upcoming events
         adapter = new CardAdapter(getContext(),allSampleData);
         mRecyclerview.setAdapter(adapter);
+        snapHelper.attachToRecyclerView(mRecyclerview);
         mRecyclerview.setLayoutManager(layoutmnger);
         mRecyclerview.setHasFixedSize(true);
 
@@ -84,6 +87,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutmngerOne = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
         msgRecyclerview.setAdapter(messageAdapter);
+        SnapHelper snapMsg = new PagerSnapHelper();
+        snapMsg.attachToRecyclerView(msgRecyclerview);
         msgRecyclerview.setLayoutManager(layoutmngerOne);
         msgRecyclerview.setHasFixedSize(true);
 
@@ -92,6 +97,8 @@ public class HomeFragment extends Fragment {
         LinearLayoutManager layoutmngerTwo = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
         parRecyclerview.setAdapter(partnerAdapter);
+        SnapHelper snapPartner = new PagerSnapHelper();
+        snapPartner.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerTwo);
         parRecyclerview.setHasFixedSize(true);
 

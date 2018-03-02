@@ -24,10 +24,12 @@
 
             <ImageView
                 android:id="@+id/imgVideo"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_chvideo" />
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:visibility="gone"
+                android:layout_gravity="bottom|right"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_edit_profile" />
 
             <ImageView
                 android:id="@+id/imgPlay"
@@ -66,9 +68,11 @@
             <ImageView
                 android:id="@+id/edit_profile_img_vid"
                 android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|bottom"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginTop="65dp"
+                android:elevation="10dp"
+                android:layout_gravity="center"
                 android:src="@drawable/ic_edit_profile"/>
 
         </FrameLayout>
@@ -235,6 +239,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_below="@+id/tab"
+                    android:isScrollContainer="false"
                     tools:ignore="UnknownId">
 
                     <LinearLayout
@@ -263,8 +268,9 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtvFname"
                                 android:enabled="false"
+                                android:maxLines="1"
                                 android:layout_width="0dp"
-                                android:text="Haiiiiiiiiiii"
+                                android:text=""
                                 android:gravity="center_vertical"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1" />
@@ -292,6 +298,7 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtvLname"
                                 android:layout_width="0dp"
+                                android:maxLines="1"
                                 android:layout_height="match_parent"
                                 android:enabled="false"
                                 android:layout_weight="1" />
@@ -321,6 +328,7 @@
                                 android:layout_width="0dp"
                                 android:gravity="center_vertical"
                                 android:layout_height="match_parent"
+                                android:maxLines="1"
                                 android:enabled="false"
                                 android:layout_weight="1" />
 
@@ -348,6 +356,7 @@
                                 android:layout_width="0dp"
                                 android:gravity="center_vertical"
                                 android:layout_height="match_parent"
+                                android:maxLines="1"
                                 android:enabled="false"
                                 android:layout_weight="1" />
 
@@ -376,6 +385,7 @@
                                 android:layout_height="match_parent"
                                 android:enabled="false"
                                 android:gravity="center_vertical"
+                                android:maxLines="1"
                                 android:layout_weight="1" />
 
 
@@ -402,6 +412,7 @@
                                 android:layout_width="0dp"
                                 android:enabled="false"
                                 android:layout_height="match_parent"
+                                android:maxLines="1"
                                 android:gravity="center_vertical"
                                 android:layout_weight="1" />
 
@@ -429,6 +440,7 @@
                                 android:layout_width="0dp"
                                 android:enabled="false"
                                 android:layout_height="match_parent"
+                                android:maxLines="1"
                                 android:gravity="center_vertical"
                                 android:layout_weight="1" />
 
@@ -439,17 +451,18 @@
                         <!--button-->
 
                         <LinearLayout
+                            android:id="@+id/btns_at_bottom"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:padding="5dp"
+                            android:layout_height="30dp"
+                            android:visibility="gone"
+                            android:layout_margin="10dp"
                             android:orientation="horizontal"
-                            android:layout_marginBottom="10dp"
                             android:weightSum="2">
 
                             <com.goldemo.beachpartner.CustomButton
                                 android:id="@+id/btncancel"
                                 android:layout_width="0dp"
-                                android:layout_height="match_parent"
+                                android:layout_height="wrap_content"
                                 android:layout_weight="1"
                                 android:textColor="@color/white"
                                 android:text="CANCEL"

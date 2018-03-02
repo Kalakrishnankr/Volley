@@ -115,8 +115,9 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 sex="male";
-                user_male.setTextColor(getResources().getColor(R.color.colorPrimary));
-                user_female.setTextColor(getResources().getColor(R.color.white));
+                user_male.setTextColor(getResources().getColor(R.color.white));
+                user_female.setTextColor(getResources().getColor(R.color.btnColor));
+                user_male.setBackgroundColor(getResources().getColor(R.color.btnColor));
             }
         });
 
@@ -125,8 +126,9 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 sex="female";
-                user_female.setTextColor(getResources().getColor(R.color.colorPrimary));
-                user_male.setTextColor(getResources().getColor(R.color.white));
+                user_female.setTextColor(getResources().getColor(R.color.white));
+                user_male.setTextColor(getResources().getColor(R.color.btnColor));
+                user_female.setBackgroundColor(getResources().getColor(R.color.btnColor));
             }
         });
 
@@ -215,12 +217,12 @@ public class SignUpActivity extends AppCompatActivity{
 
                 addValidationToViews();//Method for validate feilds
                 if(awesomeValidation.validate()){
-                    if(sex!=null){
+                    //if(sex!=null){
                         submitForm();
 
-                    }else {
+                    /*}else {
                         Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
 
                 }
 

@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -15,14 +16,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.appyvet.materialrangebar.RangeBar;
 import com.bumptech.glide.Glide;
@@ -39,9 +42,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
+
+import static android.content.Context.MODE_PRIVATE;
 
 
 public class BPFinderFragment extends Fragment implements MyInterface {
@@ -58,11 +65,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private Spinner spinner_location;
     private RangeBar age_bar;
-    public Button btnMale,btnFemale;
+    public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
-
+    ArrayAdapter<String> dataAdapter;
     private ImageButton showPreviousMonthButton,showNextMonthButton;
+
+    private Switch sCoach;
+
+    public static final String MY_PREFS_FILTER = "MyPrefsFile";
 
     ArrayList<String>Location = new ArrayList<>();
     // TODO: Rename parameter arguments, choose names that match
@@ -90,6 +101,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         View view=inflater.inflate(R.layout.fragment_bpfinder, container, false);
 //       actionBar.setTitle("Beach Partner Finder");
         setUp(view);
+        btnFemale.setText("Women");
+        btnMale.setText("Men");
+        btnFemale.setTextOff("Women");
+        btnMale.setTextOff("Men");
+        btnFemale.setTextOn("Women");
+        btnMale.setTextOn("Men");
         reload();
 
 
@@ -116,13 +133,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         spinner_location    =   (Spinner) view.findViewById(R.id.spinner_location);
         txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
 
-        btnMale             =   (Button)view.findViewById(R.id.btnMen);
-        btnFemale           =   (Button)view.findViewById(R.id.btnWomen);
+        btnMale             =   (ToggleButton) view.findViewById(R.id.btnMen);
+        btnFemale           =   (ToggleButton) view.findViewById(R.id.btnWomen);
         btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
         fc                  =   (FoldingCell)view. findViewById(R.id.folding_cell);
 
         showPreviousMonthButton = (ImageButton) view.findViewById(R.id.prev_button);
         showNextMonthButton = (ImageButton) view.findViewById(R.id.next_button);
+
+        sCoach              =   (Switch) view.findViewById(R.id.swich_coach);
 
         final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
@@ -153,16 +172,55 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
-        //play button
-        btnPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                llvFilter.setVisibility(View.GONE);
-                rr.setVisibility(View.VISIBLE);
-                rrvBottom.setVisibility(View.VISIBLE);
-            }
-        });
+        //choose Location
 
+        dataAdapter = new ArrayAdapter<String>(getActivity(),
+                android.R.layout.simple_spinner_item, Location);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner_location.setAdapter(dataAdapter);
+
+        String minValue= null;
+        String maxValue=null;
+        Set<String>fetch;
+        //check shared prefvalue
+        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
+        if(prefs!=null){
+
+            int location     =   prefs.getInt("location",0);
+            String Sgender   =   prefs.getString("gender",null);
+            Boolean isCoach  =   prefs.getBoolean("isCoachActive",false);
+            fetch    =   prefs.getStringSet("agerange",null);
+            if(fetch!=null){
+                ArrayList<String>data = new ArrayList<>(fetch);
+                for(int i=0;i<data.size();i++){
+                    minValue    = data.get(0);
+                    maxValue    = data.get(1);
+                }
+                age_bar.setRangePinsByValue(Float.parseFloat(minValue),Float.parseFloat(maxValue));
+                spinner_location.setSelection(location);
+                txtv_age.setText(""+minValue+"-"+""+maxValue);
+                sCoach.setChecked(isCoach);
+                if(Sgender.equals("Men")){
+                    txtv_gender.setText("Men");
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                }else if(Sgender.equals("Women")){
+                    txtv_gender.setText("Women");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+
+                }else {
+                    txtv_gender.setText("Both");
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                }
+               // int position = dataAdapter.getPosition(location);
+                //spinner_location.setSelection(position);
+            }
+
+        }
 
         //age range bar
         age_bar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
@@ -173,6 +231,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             }
         });
+
+
         // attach click listener to folding cell
         fc.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,39 +241,100 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
-        //button male
+        //button Men
 
-        btnMale.setOnClickListener(new View.OnClickListener() {
+
+        btnMale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                txtv_gender.setText("MALE");
-                btnMale.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                btnMale.setTextColor(getResources().getColor(R.color.white));
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(btnFemale.isChecked()&&isChecked){
+                    txtv_gender.setText("Both");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                }
+                else if(isChecked){
+                    txtv_gender.setText("Men");
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                }
+                else if(btnFemale.isChecked()&&!!isChecked){
+                    txtv_gender.setText("Women");
+                    btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnMale.setTextColor(getResources().getColor(R.color.black));
+                }
+                else{
+                    txtv_gender.setText("  ");
+                    btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnMale.setTextColor(getResources().getColor(R.color.black));
+                }
+
+
             }
         });
 
-        //button Female
 
-        btnFemale.setOnClickListener(new View.OnClickListener() {
+
+        //button Women
+
+        btnFemale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View view) {
-                txtv_gender.setText("FEMALE");
-                btnFemale.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-                btnFemale.setTextColor(getResources().getColor(R.color.white));
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(btnMale.isChecked()&&isChecked){
+                    txtv_gender.setText("Both");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                }
+                else if(isChecked){
+                    txtv_gender.setText("Women");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                }
+                else if(btnMale.isChecked()&&!!isChecked){
+                    txtv_gender.setText("Men");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnFemale.setTextColor(getResources().getColor(R.color.black));
+                }
+                else{
+                    txtv_gender.setText("  ");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnFemale.setTextColor(getResources().getColor(R.color.black));
+                }
+
+
+
             }
         });
 
-        //choose Location
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, Location);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner_location.setAdapter(dataAdapter);
 
 
         //add data to shared preference
 
+        //play button
+        btnPlay.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Set<String> range = new HashSet<>();
+                range.add(age_bar.getLeftPinValue());
+                range.add(age_bar.getRightPinValue());
 
+
+                SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                preferences.putInt("location",spinner_location.getSelectedItemPosition());
+                preferences.putStringSet("agerange",range);
+                preferences.putString("gender",txtv_gender.getText().toString());
+                preferences.putBoolean("isCoachActive",sCoach.isChecked());
+                preferences.apply();
+                preferences.commit();
+                llvFilter.setVisibility(View.GONE);
+                rr.setVisibility(View.VISIBLE);
+                rrvBottom.setVisibility(View.VISIBLE);
+            }
+        });
 
 
 
@@ -375,16 +496,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Brooklyn Bridge", "New York", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/AWh9C-QjhE4/600x800"));
-        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/HN-5Z6AmxrM/600x800"));
-        spots.add(new TouristSpot("Bamboo Forest", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/LrMWHKqilUw/600x800"));
-        spots.add(new TouristSpot("Brooklyn Bridge", "New York", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/USrZRcRS2Lw/600x800"));
-        spots.add(new TouristSpot("Yasaka Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/CdVAUADdqEc/600x800"));
-        spots.add(new TouristSpot("Fushimi Inari Shrine", "Kyoto", "http://clips.vorwaerts-gmbh.de/VfE_html5.mp4","https://source.unsplash.com/AWh9C-QjhE4/600x800"));
+        spots.add(new TouristSpot("Amanda Dowdy", "Toronto", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
+        spots.add(new TouristSpot("Brittany Tiegs", "Ottawa", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
+        spots.add(new TouristSpot("Caitlin Ledoux", "Victoria", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
+        spots.add(new TouristSpot("Emily Day", "Thunder Bay", "http://seqato.com/bp/videos/4.mp4","http://seqato.com/bp/images/4.jpg"));
+        spots.add(new TouristSpot("Geena Urango", "Barrie", "http://seqato.com/bp/videos/5.mp4","http://seqato.com/bp/images/5.jpg"));
+        spots.add(new TouristSpot("Irene Pollock", "Kingston", "http://seqato.com/bp/videos/6.mp4","http://seqato.com/bp/images/6.jpg"));
+        spots.add(new TouristSpot("Jessica Stubinski", "Austin", "http://seqato.com/bp/videos/7.mp4","http://seqato.com/bp/images/7.jpg"));
+        spots.add(new TouristSpot("Kelly Claes", "Los Angeles", "http://seqato.com/bp/videos/8.mp4","http://seqato.com/bp/images/8.jpg"));
+        spots.add(new TouristSpot("Jace Pardon", "North West", "http://seqato.com/bp/videos/9.mp4","http://seqato.com/bp/images/9.jpg"));
+        spots.add(new TouristSpot("Jessica Stubinski", "Nasville", "http://seqato.com/bp/videos/10.mp4","http://seqato.com/bp/images/10.jpg"));
         return spots;
     }
 
-    private void reload() {
+   /* private void reload() {
         cardStackView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
@@ -396,11 +521,29 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 progressBar.setVisibility(View.GONE);
             }
         }, 1000);
-    }
+    }*/
+   private void reload() {
+       cardStackView.setVisibility(View.GONE);
+       progressBar.setVisibility(View.VISIBLE);
+       new Handler().postDelayed(new Runnable() {
+           @Override
+           public void run() {
+               if (getActivity() != null && cardStackView != null) {
+                   if(adapter == null) {
+                       adapter = createTouristSpotCardAdapter();
+                   }
+                   cardStackView.setAdapter(adapter);
+                   adapter.notifyDataSetChanged();
+                   cardStackView.setVisibility(View.VISIBLE);
+                   progressBar.setVisibility(View.GONE);
+               }
+           }
+       }, 1000);
+   }
 
     private TouristSpotCardAdapter createTouristSpotCardAdapter() {
 
-        final TouristSpotCardAdapter adapter = new TouristSpotCardAdapter(getContext(),this);
+        adapter = new TouristSpotCardAdapter(getActivity(),this);
         adapter.addAll(createTouristSpots());
         return adapter;
     }
@@ -410,7 +553,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         super.onAttach(context);
 
     }
-
     @Override
     public void addView(String url,String nm) {
         rr.setVisibility(View.GONE);

@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical"
         android:weightSum="7.5">
 
@@ -23,45 +23,61 @@
 
             <HorizontalScrollView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="match_parent">
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent">
 
                     <ImageView
                         android:id="@+id/img_bpfinder"
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@mipmap/ic_person" />
+                    <ImageView
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:background="@mipmap/ic_person" />
 
 
@@ -83,7 +99,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:background="@color/menubar"
             android:layout_weight="0.5"
             android:orientation="horizontal"
@@ -162,7 +178,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:background="@color/menubar"
             android:orientation="horizontal"
             android:layout_weight="0.5"
@@ -235,7 +251,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="30dp"
+            android:layout_height="35dp"
             android:background="@color/menubar"
             android:orientation="horizontal"
             android:layout_weight="0.5"
