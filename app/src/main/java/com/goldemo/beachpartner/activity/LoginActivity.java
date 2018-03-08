@@ -111,10 +111,10 @@ public class LoginActivity extends AppCompatActivity {
                 passwd= password.getText().toString().trim();
 
 
-                addValidationToViews();
-                //startLoginProcess();
+                //addValidationToViews();
+                startLoginProcess();
 
-                if(awesomeValidation.validate()){
+                /*if(awesomeValidation.validate()){
 
                     if(uname.equals("admin@gmail.com") && (passwd.equals("admin"))){
 
@@ -129,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
 
 
-                }
+                }*/
 
 
 

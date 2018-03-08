@@ -1,0 +1,203 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.goldemo.beachpartner.fragments.CalendarFragment">
+    
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:weightSum="4">
+
+
+        <!--Top menu bar-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:background="@color/colorPrimaryDark">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="20dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:weightSum="2"
+                android:background="@drawable/button_box">
+
+                <com.goldemo.beachpartner.CustomTextView
+                    android:id="@+id/txtMaster"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:text="Master Calendar"
+                    android:textColor="@color/white"/>
+
+                <com.goldemo.beachpartner.CustomTextView
+                    android:id="@+id/txtMycalendar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textAlignment="center"
+                    android:text="My Calendar"
+                    android:textColor="@color/white"/>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <!--Calender View-->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2.1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="6"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/llmonthview"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:weightSum="10"
+                    android:orientation="horizontal">
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"/>
+                    <ImageButton
+                        android:id="@+id/prev_button"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/ic_action_name"/>
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:id="@+id/month_name"
+                        android:layout_weight="4"
+                        android:gravity="center"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:textColor="#283873"/>
+                    <ImageButton
+                        android:id="@+id/next_button"
+                        android:background="@drawable/ic_next_arrow"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"/>
+
+                    <android.support.v4.widget.Space
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="2"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_below="@id/llmonthview"
+                    android:layout_weight="5">
+
+                    <com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/compactcalendar"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:compactCalendarTargetHeight="250dp"
+                        app:compactCalendarTextSize="12sp"
+                        app:compactCalendarBackgroundColor="#fff"
+                        app:compactCalendarTextColor="#534c4c"
+                        app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
+                        app:compactCalendarCurrentSelectedDayTextColor="#fff"
+                        app:compactCalendarCurrentDayTextColor="#fff"
+                        app:compactCalendarCurrentDayBackgroundColor="#283873"
+                        app:compactCalendarCurrentDayIndicatorStyle="fill_large_indicator"
+                        app:compactCalendarEventIndicatorStyle="small_indicator"
+                        app:compactCalendarOtherMonthDaysTextColor="#534c4c"
+                        app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="true"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!--Tab Event For-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.3"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal"
+            android:weightSum="2">
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4"
+                android:text="Event for"
+                android:gravity="center"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"
+                android:layout_marginLeft="5dp"/>
+
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/tview_date"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.6"
+                android:gravity="center"
+                android:textAlignment="textStart"
+                android:textColor="@color/white"/>
+
+        </LinearLayout>
+
+
+
+        <!--Event Details-->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.1">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcv_events"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+    
+
+
+    </LinearLayout>
+
+
+
+
+
+
+

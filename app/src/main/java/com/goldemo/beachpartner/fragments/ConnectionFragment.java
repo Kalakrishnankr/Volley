@@ -21,7 +21,7 @@ import com.goldemo.beachpartner.models.SingleItemModel;
 import java.util.ArrayList;
 
 
-public class ConnectionFragment extends Fragment {
+public class ConnectionFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
@@ -61,10 +61,9 @@ public class ConnectionFragment extends Fragment {
 
 
         rcv_conn    =   (RecyclerView)view.findViewById(R.id.rcv_connection);
-        adapter     =   new ConnectionAdapter(getContext(),allSampleData);
         txtv_athlete=   (TextView)view.findViewById(R.id.txtAthlete);
         txtv_coach  =   (TextView)view.findViewById(R.id.txtCoach);
-
+        adapter     =   new ConnectionAdapter(getContext(),allSampleData);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
         rcv_conn.setLayoutManager(layoutManager);
         rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
@@ -73,23 +72,8 @@ public class ConnectionFragment extends Fragment {
 
         activeAthletTab();
 
-        txtv_athlete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view){
-
-                activeAthletTab();
-
-            }
-
-        });
-
-        txtv_coach.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                activeCoachTab();
-
-            }
-        });
+        txtv_athlete.setOnClickListener(this);
+        txtv_coach.setOnClickListener(this);
 
     }
 
@@ -129,6 +113,27 @@ public class ConnectionFragment extends Fragment {
             allSampleData.add(dm);
 
         }
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()){
+
+            case R.id.txtAthlete:
+                activeAthletTab();
+                break;
+
+            case R.id.txtCoach:
+                activeCoachTab();
+                break;
+
+                default:
+                    break;
+
+
+        }
+
     }
 
 

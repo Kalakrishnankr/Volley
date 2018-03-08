@@ -10,7 +10,8 @@
     <FrameLayout
         android:id="@+id/frmeOne"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:visibility="gone">
 
         <HorizontalScrollView
             android:layout_width="match_parent"
@@ -470,7 +471,7 @@
                 android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/ic_high"
                 android:layout_toStartOf="@+id/ic_high"
-                android:background="@drawable/ic_backcard" />
+                android:background="@drawable/ic_backcard_disable" />
 
             <ImageView
                 android:id="@+id/ic_high"

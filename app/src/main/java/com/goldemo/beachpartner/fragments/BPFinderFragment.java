@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -70,22 +71,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private LinearLayout llvFilter;
     ArrayAdapter<String> dataAdapter;
     private ImageButton showPreviousMonthButton,showNextMonthButton;
-
     private Switch sCoach;
+    private FrameLayout topFrameLayout;
 
     public static final String MY_PREFS_FILTER = "MyPrefsFile";
-
     ArrayList<String>Location = new ArrayList<>();
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
+    public boolean reverseCount=false;
+
 
     public BPFinderFragment() {
         // Required empty public constructor
@@ -137,6 +131,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFemale           =   (ToggleButton) view.findViewById(R.id.btnWomen);
         btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
         fc                  =   (FoldingCell)view. findViewById(R.id.folding_cell);
+        topFrameLayout      =   (FrameLayout)view.findViewById(R.id.frmeOne);
+
+
 
         showPreviousMonthButton = (ImageButton) view.findViewById(R.id.prev_button);
         showNextMonthButton = (ImageButton) view.findViewById(R.id.next_button);
@@ -151,9 +148,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_rvsecard   =   (ImageView) view.findViewById(R.id.ic_rvsecard);
         imgv_highfi     =   (ImageView) view.findViewById(R.id.ic_high);
         imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
-
-
-
 
 
         addLocation();
@@ -274,8 +268,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
-
-
         //button Women
 
         btnFemale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -333,6 +325,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 llvFilter.setVisibility(View.GONE);
                 rr.setVisibility(View.VISIBLE);
                 rrvBottom.setVisibility(View.VISIBLE);
+                topFrameLayout.setVisibility(View.VISIBLE);
             }
         });
 
@@ -346,6 +339,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             @Override
             public void onCardSwiped(SwipeDirection direction) {
+                //abraham 08-03-2018
+                reverseCount=true;
+                imgv_rvsecard.setBackground(getResources().getDrawable(R.drawable.ic_backcard));
+
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
@@ -356,6 +353,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             @Override
             public void onCardReversed() {
+                reverseCount=false;
                 Log.d("CardStackView", "onCardReversed");
             }
 
@@ -463,6 +461,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+
     private void addLocation() {
         Location.add("India");
         Location.add("China");
@@ -568,7 +567,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Method for card reverse
 
     private void reverse() {
-        cardStackView.reverse();
+
+        if(reverseCount) {
+            cardStackView.reverse();
+            imgv_rvsecard.setBackground(getResources().getDrawable(R.drawable.ic_backcard_disable));
+        }
     }
 
     private LinkedList<TouristSpot> extractRemainingTouristSpots() {

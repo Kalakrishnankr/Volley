@@ -1,7 +1,9 @@
 package com.goldemo.beachpartner.adpters;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,6 +18,7 @@ import android.widget.VideoView;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.utils.RotateLoading;
 
 public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
 
@@ -39,7 +42,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             contentView = inflater.inflate(R.layout.item_tourist_spot_card, parent, false);
             holder = new ViewHolder(contentView);
 
-            holder.progressBar.setVisibility(View.GONE);
+            holder.progressBar.setVisibility(View.VISIBLE);
             contentView.setTag(holder);
 
         } else {
@@ -50,6 +53,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
 
         holder.videoView.stopPlayback();
         holder.videoView.setVisibility(View.GONE);
+        holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
 
         holder.name.setText(spot.name);
@@ -64,12 +68,15 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             public boolean onTouch(View v, MotionEvent event) {
 
                 holder.image.setVisibility(View.GONE);
+                //holder.progressBar.setVisibility(View.VISIBLE);
+                holder.spinnerView.setVisibility(View.VISIBLE);
+                holder.spinnerView.start();
                 holder.videoView.setVisibility(View.VISIBLE);
                 holder.videoView.setVideoURI(Uri.parse(spot.url));
                // dialog.setMessage("Please wait");
-                holder.progressBar.setVisibility(View.GONE);
-                holder.videoView.start();
-                //playVideo(holder);
+
+                //holder.videoView.start();
+                playvideo(holder);
                 return false;
             }
         });
@@ -96,25 +103,29 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
     }
 
 
-    /*private void playVideo(final ViewHolder holder) {
+    private void playvideo(final ViewHolder holder) {
 
-        holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-               holder.progressBar.setVisibility(View.GONE);
+        holder.videoView.start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            holder.videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                @Override
+                public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
+                    if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
+                        holder.spinnerView.setVisibility(View.GONE);
+                    }
+                    if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
+                        holder.spinnerView.start();
+                        holder.spinnerView.setVisibility(View.VISIBLE);
+                    }
+                    if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
+                        holder.spinnerView.setVisibility(View.GONE);
+                    }
+                    return false;
+                }
+            });
+        }
+    }
 
-              //  DisplayMetrics metrics = new DisplayMetrics(); ((WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE))
-                        //.getDefaultDisplay().getMetrics(metrics);
-               // android.widget.LinearLayout.LayoutParams params = (android.widget.LinearLayout.LayoutParams) holder.videoView.getLayoutParams();
-                //params.width =  (int) (350*metrics.density);
-                //params.height = (int) (250*metrics.density);
-               // params.width =  metrics.widthPixels;
-               // params.height = (int) (550*metrics.density);
-               // holder.videoView.setLayoutParams(params);
-                holder.videoView.start();
-            }
-        });
-    }*/
 
 
     private static class ViewHolder {
@@ -122,7 +133,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
         public TextView city;
         public ImageView image;
         public VideoView videoView;
-        ProgressBar progressBar;
+        public ProgressBar progressBar;
+        public RotateLoading spinnerView;
         public Button info;
         //public VideoPlayView videoPlayView;
         // public FullscreenVideoLayout videoLayout;
@@ -134,6 +146,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             videoView = (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
             progressBar=(ProgressBar)view.findViewById(R.id.prsbar);
             info = (Button)view.findViewById(R.id.btnInfo);
+
+            spinnerView  =   (RotateLoading)view.findViewById(R.id.my_spinner);
 
             //this.videoLayout = (FullscreenVideoLayout) view.findViewById(R.id.item_tourist_spot_card_image);
             //this.image = (ImageView) view.findViewById(R.id.item_tourist_spot_card_image);

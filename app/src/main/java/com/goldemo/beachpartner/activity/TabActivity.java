@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.BPFinderFragment;
+import com.goldemo.beachpartner.fragments.CalendarFragment;
 import com.goldemo.beachpartner.fragments.ConnectionFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
 import com.goldemo.beachpartner.fragments.ProfileFragment;
@@ -58,6 +59,18 @@ public class TabActivity extends AppCompatActivity {
                     trans.replace(R.id.container,connectionFragment,YOUR_FRAGMENT_STRING_TAG);
                     trans.commit();
                     return true;
+
+                case R.id.navigation_calendar:
+
+                    CalendarFragment calendarFragment   =   new CalendarFragment();
+                    getSupportActionBar().setTitle("Calendar");
+                    FragmentManager cmngr   =   getSupportFragmentManager();
+                    FragmentTransaction ctrans = cmngr.beginTransaction();
+                    ctrans.replace(R.id.container,calendarFragment,YOUR_FRAGMENT_STRING_TAG);
+                    ctrans.commit();
+                    return true;
+
+
 
 
 
