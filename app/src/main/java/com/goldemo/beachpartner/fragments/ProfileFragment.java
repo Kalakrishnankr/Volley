@@ -1,6 +1,9 @@
 package com.goldemo.beachpartner.fragments;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.media.MediaPlayer;
@@ -16,23 +19,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.OnClickListener;
 import com.goldemo.beachpartner.R;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 
-public class ProfileFragment extends Fragment implements View.OnClickListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private static final int REQUEST_TAKE_GALLERY_VIDEO=1;
     private static final int REQUEST_TAKE_GALLERY_IMAGE=2;
@@ -40,20 +54,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
     private ViewPager viewPager;
     private FrameLayout videoFrame;
-    private ImageView imgEdit, imgVideo ,imgPlay,profile_img_editIcon;
+    private ImageView imgEdit, imgVideo ,imgPlay,profile_img_editIcon,imageView1,imageView2,imageView3;
     private CircularImageView imgProfile;
-    private TextView profileName,profileDesig,edit_tag;
+    private TextView profileName,profileDesig,edit_tag,basic_info_tab,more_info_tab;
     private OnClickListener mOnClickListener;
     private VideoView videoView;
     private  Uri selectedImageUri,selectedVideoUri;
+    Calendar myCalendar = Calendar.getInstance();
+
 
     private LinearLayout llMenuBasic,llMenuMore,llBasicDetails,llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic,viewMore;
 
-    private EditText editFname,editLname,editGender,editDob,editCity,editPhone,editPassword;
-    private EditText editExp,editPref,editPos,editHeight,editIntrest,editPlayed,editHighest,editCBVANo,editCBVAFName,editCBVALName,editWtoTravel,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,editYouLinks,editBioLinks,editRank;
+    private EditText editFname,editLname,editGender,editDob,editCity,editPhone;
+    private EditText editExp,editPref,editPos,editHeight,editIntrest,editPlayed,editHighest,editCBVANo,editCBVAFName,editCBVALName,editWtoTravel,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,editRank,topfinishes_txt_2,topfinishes_txt_1,topfinishes_txt_3;
     private Button moreBtnSave,moreBtnCancel,basicBtnSave,basicBtnCancel;
     private LinearLayout btnsBottom,more_info_btns_bottom;
+    LinearLayout topFinishes1_lt,topFinishes2_lt,topFinishes3_lt;
+    RelativeLayout containingLt;
+    private int finishCount=0;
+    boolean editStatus=false;
+    private Spinner spinnerExp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +94,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private void initActivity(View view) {
+    private void initActivity(final View view) {
 
         profile_img_editIcon    =       (ImageView) view.findViewById(R.id.edit_profile_img_vid);
         btnsBottom              =       (LinearLayout) view.findViewById(R.id.btns_at_bottom);
@@ -99,6 +120,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         llMenuBasic             =    (LinearLayout)view.findViewById(R.id.llMenuBasic);
         llMenuMore              =    (LinearLayout)view.findViewById(R.id.llMenuMore);
 
+        basic_info_tab          =     (TextView) view.findViewById(R.id.basic_info_tab);
+        more_info_tab          =     (TextView) view.findViewById(R.id.more_info_tab);
+
         llBasicDetails          =    (LinearLayout)view.findViewById(R.id.llBasicDetails);
         llMoreDetails           =    (LinearLayout)view.findViewById(R.id.llMoreInfoDetails);
 
@@ -113,7 +137,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editDob                 =   (EditText)view.findViewById(R.id.txtv_dob);
         editCity                =   (EditText)view.findViewById(R.id.txtv_city);
         editPhone               =   (EditText)view.findViewById(R.id.txtv_mobileno);
-        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
+//        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
         basicBtnSave    =   (Button)view.findViewById(R.id.btnsave);
         basicBtnCancel  =   (Button)view.findViewById(R.id.btncancel);
@@ -121,7 +145,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         //Fore More Deatsils
 
-        editExp         =   (EditText)view.findViewById(R.id.txtvExp);
+        spinnerExp         =(Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerExp.setEnabled(false);
         editPref        =   (EditText)view.findViewById(R.id.txtvPref);
         editPos         =   (EditText)view.findViewById(R.id.txtvPos);
         editHeight      =   (EditText)view.findViewById(R.id.txtvHeight);
@@ -138,9 +163,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editColgBeach   =   (EditText)view.findViewById(R.id.txtvColgBeach);
         editColgIndoor  =   (EditText)view.findViewById(R.id.txtvColgIndoor);
         editPoints      =   (EditText)view.findViewById(R.id.txtvPoints);
-        editYouLinks    =   (EditText)view.findViewById(R.id.txtvYouLinks);
-        editBioLinks    =   (EditText)view.findViewById(R.id.txtvBioLinks);
         editRank        =   (EditText)view.findViewById(R.id.txtvRank);
+        topfinishes_txt_1 = (EditText)view.findViewById(R.id.topfinishes_txt_1);
+        topfinishes_txt_2 = (EditText)view.findViewById(R.id.topfinishes_txt_2);
+        topfinishes_txt_3 = (EditText)view.findViewById(R.id.topfinishes_txt_3);
 
         moreBtnSave     =   (Button)view.findViewById(R.id.btn_save);
         moreBtnCancel   =   (Button)view.findViewById(R.id.btn_cancel);
@@ -148,6 +174,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         llMenuBasic.setOnClickListener(this);
         llMenuMore.setOnClickListener(this);
+        imageView1 = (ImageView) view.findViewById(R.id.imageView1);
+        imageView2 = (ImageView) view.findViewById(R.id.imageView2);
+        imageView3 = (ImageView) view.findViewById(R.id.imageView3);
+
+        containingLt= (RelativeLayout) view.findViewById(R.id.scroll_more);
+        topFinishes1_lt= (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
+        topFinishes2_lt=(LinearLayout) view.findViewById(R.id.topFinishes2_lt) ;
+        topFinishes3_lt=(LinearLayout) view.findViewById(R.id.topFinishes3_lt) ;
 
          /*This for demo only end*/
 
@@ -156,10 +190,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // setupViewPager(viewPager);
         // tabs.setupWithViewPager(viewPager);
 
-        imgEdit.setOnClickListener(this);
+//        imgEdit.setOnClickListener(this);
         imgVideo.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
+
+        spinnerExp.setOnItemSelectedListener(this);
+
+        List<String> experience = new ArrayList<>();
+        experience.add("“Newbie” New to the Game");
+        experience.add("1-2 years Some Indoor/Beach Experience Services");
+        experience.add("2-3 years Beach Club/Tournament Experience");
+        experience.add("3-4 years Experienced Tournament Player");
+        experience.add("5+ years Multiple Top Finishes/Ranked player");
+
+        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, experience);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Drop down layout style - list view with radio button
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // attaching data adapter to spinner
+        spinnerExp.setAdapter(dataAdapter);
+
 
 
 
@@ -168,15 +221,126 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View v) {
                 InfoSave();
+                editStatus=!editStatus;
             }
         });
         moreBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoSave();
+                editStatus=!editStatus;
             }
         });
 
+        basicBtnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoCancelChange();
+                editStatus=!editStatus;
+            }
+        });
+        moreBtnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InfoCancelChange();
+                editStatus=!editStatus;
+            }
+        });
+
+        //edit profile button(ImageView)
+        imgEdit.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                editStatus=!editStatus;
+
+
+                if(editStatus){
+                    editCustomView();
+                    editBasicInfo();
+                    editMoreInfo();
+
+
+                    imgVideo.setVisibility(View.VISIBLE);
+                    profile_img_editIcon.setVisibility(View.VISIBLE);
+                    imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
+                    edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                }
+                else {
+
+                    InfoCancelChange();
+
+                }
+            }
+        });
+
+
+
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+
+        };
+        //dob date
+        editDob.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH));
+                dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dialog.show();
+
+            }
+        });
+
+        editGender.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LayoutInflater inflater = getLayoutInflater();
+                View alertLayout = inflater.inflate(R.layout.gender_popup_layout, null);
+
+                final RadioGroup radioGroup_gender = (RadioGroup) alertLayout.findViewById(R.id.gender_radio_group);
+                final RadioButton radioButton_male       = (RadioButton)  alertLayout.findViewById(R.id.rd_1);
+                final RadioButton female                 = (RadioButton)  alertLayout.findViewById(R.id.rd_2);
+
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
+                alert.setTitle("Select Gender");
+                alert.setView(alertLayout);
+                alert.setCancelable(false);
+                alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                    @Override public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if(radioGroup_gender.getCheckedRadioButtonId()==radioButton_male.getId())
+                            editGender.setText("Male");
+                        else{
+                            editGender.setText("Female");
+                        }
+                    }
+
+                });
+
+                AlertDialog dialog = alert.create();
+                dialog.show();
+
+            }
+
+        });
 
 
         //Browse video from gallery
@@ -212,14 +376,64 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         });
         */
 
+        imageView1.setOnClickListener(new View.OnClickListener() {
+            @Override
+
+            public void onClick(View v) {
+                finishCount+=1;
+                if(finishCount==1){
+                    imageView2.setVisibility(View.VISIBLE);
+                    topFinishes2_lt.setVisibility(View.VISIBLE);
+
+                }
+                else if(finishCount==2){
+                    imageView1.setVisibility(View.GONE);
+                    imageView2.setVisibility(View.VISIBLE);
+                    imageView3.setVisibility(View.VISIBLE);
+
+                    topFinishes2_lt.setVisibility(View.VISIBLE);
+                    topFinishes3_lt.setVisibility(View.VISIBLE);
+
+                }
+                else{
+                    topFinishes2_lt.setVisibility(View.GONE);
+                    topFinishes3_lt.setVisibility(View.GONE);
+                }
+
+            }
+        });
+
+        imageView2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishCount-=1;
+                topFinishes2_lt.setVisibility(View.GONE);
+                if(finishCount<1){
+                    imageView1.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finishCount-=1;
+                topFinishes3_lt.setVisibility(View.GONE);
+                if(finishCount<2){
+                    imageView1.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+
+
 
     }
 
     private void setupViewPager(ViewPager viewPager) {
 
         Adapter adapter = new Adapter(getChildFragmentManager());
-        adapter.addFragment(new BasicInfoFragment(),"Basic Information");
-        adapter.addFragment(new MoreInfoFragment(),"More Information");
+       // adapter.addFragment(new BasicInfoFragment(),"Basic Information");
+        //adapter.addFragment(new MoreInfoFragment(),"More Information");
         viewPager.setAdapter(adapter);
 
     }
@@ -227,12 +441,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         switch (view.getId()){
-            case R.id.edit:
-                editCustomView();
-                editBasicInfo();
-                editMoreInfo();
-
-                break;
 
             case R.id.imgVideo:
                 Intent intent= new Intent();
@@ -249,7 +457,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.imgPlay:
                 videoView.setVisibility(View.VISIBLE);
                 playVideo();
-               // videoView.start();
+                // videoView.start();
                 break;
 
             //Demo Only
@@ -260,6 +468,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 llBasicDetails.setVisibility(View.VISIBLE);
                 viewBasic.setBackgroundColor(getResources().getColor(R.color.blueDark));
                 viewMore.setBackgroundColor(getResources().getColor(R.color.white));
+                basic_info_tab.setTextColor(getResources().getColor(R.color.blueDark));
+                more_info_tab.setTextColor(getResources().getColor(R.color.darkGrey));
+
 
                 break;
 
@@ -269,8 +480,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 llMoreDetails.setVisibility(View.VISIBLE);
                 viewMore.setBackgroundColor(getResources().getColor(R.color.blueDark));
                 viewBasic.setBackgroundColor(getResources().getColor(R.color.white));
+                more_info_tab.setTextColor(getResources().getColor(R.color.blueDark));
+                basic_info_tab.setTextColor(getResources().getColor(R.color.darkGrey));
 
                 break;
+
+
 
            /* case R.id.btnsave:
                 InfoSave();
@@ -307,6 +522,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    public void updateLabel() {
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+        editDob.setText(sdf.format(myCalendar.getTime()));
+    }
 
 
 
@@ -337,15 +557,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editPhone.setEnabled(true);
         editPhone.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editPassword.setEnabled(true);
-        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+//        editPassword.setEnabled(true);
+//        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
     }
 
     private void editMoreInfo() {
 
-        editExp.setEnabled(true);
-        editExp.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
+        spinnerExp.setEnabled(true);
+        spinnerExp.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
 
         editPref.setEnabled(true);
         editPref.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -396,14 +618,26 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editPoints.setEnabled(true);
         editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editYouLinks.setEnabled(true);
-        editYouLinks.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-
-        editBioLinks.setEnabled(true);
-        editBioLinks.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         editRank.setEnabled(true);
         editRank.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+
+
+
+        topfinishes_txt_1.setEnabled(true);
+        topfinishes_txt_1.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        imageView1.setVisibility(View.VISIBLE);
+
+        topfinishes_txt_2.setEnabled(true);
+        topfinishes_txt_2.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        imageView2.setVisibility(View.VISIBLE);
+
+        topfinishes_txt_3.setEnabled(true);
+        topfinishes_txt_3.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        imageView3.setVisibility(View.VISIBLE);
+
+
+
 
     }
 
@@ -436,13 +670,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editPhone.setEnabled(false);
         editPhone.setBackground(null);
 
-        editPassword.setEnabled(false);
-        editPassword.setBackground(null);
+//        editPassword.setEnabled(false);
+//        editPassword.setBackground(null);
 
 
         //MoreInfo
-        editExp.setEnabled(false);
-        editExp.setBackground(null);
+        spinnerExp.setEnabled(false);
+        spinnerExp.setBackground(null);
 
         editPref.setEnabled(false);
         editPref.setBackground(null);
@@ -493,18 +727,137 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         editPoints.setEnabled(false);
         editPoints.setBackground(null);
 
-        editYouLinks.setEnabled(false);
-        editYouLinks.setBackground(null);
-
-        editBioLinks.setEnabled(false);
-        editBioLinks.setBackground(null);
 
         editRank.setEnabled(false);
         editRank.setBackground(null);
 
+        imageView1.setVisibility(View.GONE);
+        topfinishes_txt_1.setEnabled(false);
+        topfinishes_txt_1.setBackground(null);
+
+
+        topfinishes_txt_2.setEnabled(false);
+        topfinishes_txt_2.setBackground(null);
+        imageView2.setVisibility(View.GONE);
+
+        topfinishes_txt_3.setEnabled(false);
+        topfinishes_txt_3.setBackground(null);
+        imageView3.setVisibility(View.GONE);
+
+
     }
 
 
+    public void InfoCancelChange(){
+
+        profile_img_editIcon.setVisibility(View.GONE);
+        imgVideo.setVisibility(View.GONE);
+        btnsBottom.setVisibility(View.GONE);
+        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+        edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+        more_info_btns_bottom.setVisibility(View.GONE);
+        //BasicInfo
+
+        editFname.setEnabled(false);
+        editFname.setBackground(null);
+
+        editLname.setEnabled(false);
+        editLname.setBackground(null);
+
+        editGender.setEnabled(false);
+        editGender.setBackground(null);
+
+        editDob.setEnabled(false);
+        editDob.setBackground(null);
+
+        editCity.setEnabled(false);
+        editCity.setBackground(null);
+
+        editPhone.setEnabled(false);
+        editPhone.setBackground(null);
+
+//        editPassword.setEnabled(false);
+//        editPassword.setBackground(null);
+
+
+        //MoreInfo
+        spinnerExp.setEnabled(false);
+        spinnerExp.setBackground(null);
+
+        editPref.setEnabled(false);
+        editPref.setBackground(null);
+
+        editPos.setEnabled(false);
+        editPos.setBackground(null);
+
+        editHeight.setEnabled(false);
+        editHeight.setBackground(null);
+
+
+        editIntrest.setEnabled(false);
+        editIntrest.setBackground(null);
+
+        editPlayed.setEnabled(false);
+        editPlayed.setBackground(null);
+
+        editHighest.setEnabled(false);
+        editHighest.setBackground(null);
+
+        editCBVANo.setEnabled(false);
+        editCBVANo.setBackground(null);
+
+        editCBVAFName.setEnabled(false);
+        editCBVAFName.setBackground(null);
+
+        editCBVALName.setEnabled(false);
+        editCBVALName.setBackground(null);
+
+        editWtoTravel.setEnabled(false);
+        editWtoTravel.setBackground(null);
+
+        editHighschool.setEnabled(false);
+        editHighschool.setBackground(null);
+
+        editIndoorClub.setEnabled(false);
+        editIndoorClub.setBackground(null);
+
+        editColgClub.setEnabled(false);
+        editColgClub.setBackground(null);
+
+        editColgBeach.setEnabled(false);
+        editColgBeach.setBackground(null);
+
+        editColgIndoor.setEnabled(false);
+        editColgIndoor.setBackground(null);
+
+        editPoints.setEnabled(false);
+        editPoints.setBackground(null);
+
+
+        editRank.setEnabled(false);
+        editRank.setBackground(null);
+
+        topfinishes_txt_1.setEnabled(false);
+        imageView1.setVisibility(View.GONE);
+
+        topfinishes_txt_2.setEnabled(false);
+        imageView2.setVisibility(View.GONE);
+
+        topfinishes_txt_3.setEnabled(false);
+        imageView3.setVisibility(View.GONE);
+
+
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String item = parent.getItemAtPosition(position).toString();
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
+    }
 
 
     //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());

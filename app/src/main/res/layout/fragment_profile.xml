@@ -64,7 +64,7 @@
                 app:civ_border_width="10dp"
                 android:elevation="10dp"
                 android:scaleType="fitCenter"
-                android:src="@drawable/mario" />
+                android:src="@drawable/ic_person" />
             <ImageView
                 android:id="@+id/edit_profile_img_vid"
                 android:visibility="gone"
@@ -127,6 +127,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/profile_name"
                 android:layout_centerHorizontal="true"
+                android:gravity="center"
                 android:drawableLeft="@drawable/ic_athlete_indicator"
                 android:text="Athlete"
                 android:textColor="#696969" />
@@ -151,7 +152,6 @@
         android:layout_height="0dp"
         android:layout_weight="0.5"
         android:weightSum="1"
-        android:background="#e6e6e6"
         android:orientation="vertical">
 
         <LinearLayout
@@ -159,6 +159,7 @@
             android:layout_height="0dp"
             android:layout_weight="0.2"
             android:orientation="horizontal"
+            android:background="#e6e6e6"
             android:weightSum="1">
 
             <!--BAsic Info-->
@@ -172,13 +173,18 @@
                 android:orientation="vertical">
 
                 <com.goldemo.beachpartner.CustomTextView
+                    android:id="@+id/basic_info_tab"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="BASIC INFORMATION"
+                    android:text="Basic Information"
+                    android:textColor="@color/darkGrey"
+                    android:textStyle="bold"
                     android:layout_weight="0.95"/>
                 <View
                     android:id="@+id/viewBasic"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="0.05"
@@ -198,15 +204,20 @@
                 android:orientation="vertical">
 
                 <com.goldemo.beachpartner.CustomTextView
+                    android:id="@+id/more_info_tab"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
-                    android:text="MORE INFORMATION"
+                    android:text="More Information"
+                    android:textStyle="bold"
+                    android:textColor="@color/darkGrey"
                     android:layout_weight="0.95"/>
                 <View
                     android:id="@+id/viewMore"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:layout_weight="0.05"
                     android:background="@color/white"/>
 
@@ -222,6 +233,9 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
+            android:background="#e6e6e6"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
             tools:ignore="Orientation">
 
             <!--<include-->
@@ -242,7 +256,7 @@
                     android:isScrollContainer="false"
                     tools:ignore="UnknownId">
 
-                    <LinearLayout
+                    <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
@@ -251,9 +265,11 @@
                         <!-- First Name-->
 
                         <LinearLayout
+                            android:id="@+id/firstname"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
                             android:weightSum="2">
 
@@ -268,24 +284,34 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtvFname"
                                 android:enabled="false"
-                                android:maxLines="1"
                                 android:layout_width="0dp"
-                                android:text=""
-                                android:gravity="center_vertical"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1" />
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:inputType="text"
+                                android:nextFocusDown="@+id/txtvLname"
+                                android:background="@android:color/transparent"/>
 
 
                         </LinearLayout>
 
                         <!--Last Name-->
-
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/firstname"/>
                         <LinearLayout
+                            android:id="@+id/lastname"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            android:layout_below="@+id/firstname">
 
                             <com.goldemo.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -298,22 +324,36 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtvLname"
                                 android:layout_width="0dp"
-                                android:maxLines="1"
                                 android:layout_height="match_parent"
                                 android:enabled="false"
-                                android:layout_weight="1" />
+                                android:layout_weight="1"
+                                android:maxLines="1"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:inputType="text"
+                                android:nextFocusDown="@+id/gender_lt"
+                                android:background="@android:color/transparent"/>
 
 
                         </LinearLayout>
 
 
                         <!--GEnder-->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/lastname"/>
+
                         <LinearLayout
+                            android:id="@+id/gender_lt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            android:layout_below="@+id/lastname">
 
                             <com.goldemo.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -326,22 +366,34 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtv_gender"
                                 android:layout_width="0dp"
-                                android:gravity="center_vertical"
                                 android:layout_height="match_parent"
-                                android:maxLines="1"
                                 android:enabled="false"
-                                android:layout_weight="1" />
+                                android:layout_weight="1"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:clickable="true"
+                                android:focusable="false"
+                                android:nextFocusDown="@+id/txtv_dob"
+                                android:background="@android:color/transparent"/>
 
 
                         </LinearLayout>
 
                         <!--Birth Date-->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/gender_lt"/>
                         <LinearLayout
+                            android:id="@+id/birth_date_lt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:orientation="horizontal"
                             android:layout_marginBottom="10dp"
-                            android:weightSum="2">
+                            android:layout_marginTop="10dp"
+                            android:weightSum="2"
+                            android:layout_below="@+id/gender_lt">
 
                             <com.goldemo.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -354,22 +406,33 @@
                             <com.goldemo.beachpartner.CustomEditText
                                 android:id="@+id/txtv_dob"
                                 android:layout_width="0dp"
-                                android:gravity="center_vertical"
                                 android:layout_height="match_parent"
-                                android:maxLines="1"
                                 android:enabled="false"
-                                android:layout_weight="1" />
+                                android:focusable="false"
+                                android:layout_weight="1"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:nextFocusDown="@+id/txtv_city"
+                                android:background="@android:color/transparent"/>
 
 
                         </LinearLayout>
 
                         <!--city-->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/birth_date_lt"/>
                         <LinearLayout
+                            android:id="@+id/city_lt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            android:layout_below="@+id/birth_date_lt">
 
                             <com.goldemo.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -384,20 +447,32 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:enabled="false"
-                                android:gravity="center_vertical"
                                 android:maxLines="1"
+                                android:paddingStart="10dp"
+                                android:paddingLeft="10dp"
+                                android:inputType="text"
+                                android:nextFocusDown="@+id/txtv_mobileno"
+                                android:background="@android:color/transparent"
                                 android:layout_weight="1" />
 
 
                         </LinearLayout>
 
                         <!--phone Number-->
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/city_lt"/>
                         <LinearLayout
+                            android:id="@+id/phone_lt"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginBottom="10dp"
+                            android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            android:layout_below="@+id/city_lt">
 
                             <com.goldemo.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -413,39 +488,43 @@
                                 android:enabled="false"
                                 android:layout_height="match_parent"
                                 android:maxLines="1"
+                                android:singleLine="true"
                                 android:gravity="center_vertical"
-                                android:layout_weight="1" />
-
-
-                        </LinearLayout>
-
-                        <!--password-->
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:orientation="horizontal"
-                            android:layout_marginBottom="10dp"
-                            android:weightSum="2">
-
-                            <com.goldemo.beachpartner.CustomTextView
-                                android:layout_width="0dp"
-                                android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="Password"
-                                android:gravity="center_vertical"
-                                android:textStyle="bold" />
-
-                            <com.goldemo.beachpartner.CustomEditText
-                                android:id="@+id/txtv_password"
-                                android:layout_width="0dp"
-                                android:enabled="false"
-                                android:layout_height="match_parent"
-                                android:maxLines="1"
-                                android:gravity="center_vertical"
-                                android:layout_weight="1" />
+                                android:background="@android:color/transparent"/>
 
 
                         </LinearLayout>
+
+                        <!--&lt;!&ndash;password&ndash;&gt;-->
+                        <!--<LinearLayout-->
+                        <!--android:id="@+id/password_lt"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:orientation="horizontal"-->
+                        <!--android:layout_marginBottom="10dp"-->
+                        <!--android:weightSum="2"-->
+                        <!--android:layout_below="@+id/phone_lt">-->
+
+                        <!--<com.goldemo.beachpartner.CustomTextView-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:layout_weight="1"-->
+                        <!--android:text="Password"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:textStyle="bold" />-->
+
+                        <!--<com.goldemo.beachpartner.CustomEditText-->
+                        <!--android:id="@+id/txtv_password"-->
+                        <!--android:layout_width="0dp"-->
+                        <!--android:enabled="false"-->
+                        <!--android:layout_height="match_parent"-->
+                        <!--android:maxLines="1"-->
+                        <!--android:gravity="center_vertical"-->
+                        <!--android:layout_weight="1" />-->
+
+
+                        <!--</LinearLayout>-->
 
 
                         <!--button-->
@@ -457,7 +536,8 @@
                             android:visibility="gone"
                             android:layout_margin="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2">
+                            android:weightSum="2"
+                            android:layout_below="@+id/phone_lt">
 
                             <com.goldemo.beachpartner.CustomButton
                                 android:id="@+id/btncancel"
@@ -490,7 +570,7 @@
                         </LinearLayout>
 
 
-                    </LinearLayout>
+                    </RelativeLayout>
 
                 </ScrollView>
 

@@ -10,4 +10,5 @@
     <color name="imgBacgnd">#c6c0c0</color>
     <color name="menubar">#283873</color>
     <color name="black">#FF000000</color>
+    <color name="darkGrey">#A9A9A9</color>
 </resources>
