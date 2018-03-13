@@ -1,6 +1,8 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.app.Dialog;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -371,6 +373,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         switch (item.getItemId()){
             case R.id.search_filter:
                 Toast.makeText(getActivity(), "Filter Clicked", Toast.LENGTH_SHORT).show();
+               /* if(!((Activity)getContext()).isFinishing()){
+                    View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null);
+                    final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
+                    popupWindow.showAsDropDown(popupView, 50, -30);
+                }*/
+                final Dialog fbDialogue = new Dialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
+                fbDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                fbDialogue.setContentView(R.layout.popup_filter);
+                fbDialogue.setCancelable(true);
+                fbDialogue.show();
+
+
                 break;
 
                 default:

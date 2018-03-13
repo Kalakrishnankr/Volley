@@ -4,5 +4,5 @@
     <item android:id="@+id/search_filter"
         android:icon="@drawable/ic_down"
         android:title=""
-        app:showAsAction="collapseActionView"/>
+        app:showAsAction="always"/>
 </menu>
