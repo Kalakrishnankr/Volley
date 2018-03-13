@@ -198,10 +198,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     txtv_gender.setText("Men");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
+                    btnMale.setChecked(true);
                 }else if(Sgender.equals("Women")){
                     txtv_gender.setText("Women");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
+                    btnFemale.setChecked(true);
 
                 }else {
                     txtv_gender.setText("Both");
@@ -209,6 +211,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
+                    btnFemale.setChecked(true);
+                    btnMale.setChecked(true);
                 }
                // int position = dataAdapter.getPosition(location);
                 //spinner_location.setSelection(position);

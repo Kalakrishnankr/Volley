@@ -521,7 +521,7 @@
             app:swipeThreshold="0.75"
             app:topOverlay="@layout/overlay_top"
             app:translationDiff="8"
-            app:visibleCount="4" >
+            app:visibleCount="4">
 
         </com.goldemo.beachpartner.cardstackview.CardStackView>
 
@@ -532,7 +532,6 @@
             android:layout_centerInParent="true"
             android:layout_gravity="center_vertical"
             android:indeterminate="true" />
-
 
     </RelativeLayout>
 
