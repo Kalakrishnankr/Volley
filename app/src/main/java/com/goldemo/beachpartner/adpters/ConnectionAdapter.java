@@ -1,6 +1,8 @@
 package com.goldemo.beachpartner.adpters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -12,6 +14,7 @@ import android.widget.TextView;
 
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.fragments.NoteFragment;
 import com.goldemo.beachpartner.models.DataModel;
 
 import java.util.ArrayList;
@@ -91,6 +94,18 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                     }
                     //toggleCardViewnHeight(height,holder);
                     notifyDataSetChanged();
+                }
+            });
+
+            holder.txtv_notes.setOnClickListener(new View.OnClickListener() {
+                @SuppressLint("ResourceType")
+                @Override
+                public void onClick(View v) {
+
+                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                    NoteFragment noteFragment =new NoteFragment();
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
+
                 }
             });
 

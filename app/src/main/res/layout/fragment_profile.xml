@@ -233,34 +233,30 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.8"
-            android:background="#e6e6e6"
-            android:layout_marginRight="15dp"
-            android:layout_marginLeft="15dp"
             tools:ignore="Orientation">
 
-            <!--<include-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--layout="@layout/fragment_basic_info"/>-->
-            <!--Base Info-->
+
             <LinearLayout
                 android:id="@+id/llBasicDetails"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
 
                 <ScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:layout_below="@+id/tab"
-                    android:isScrollContainer="false"
-                    tools:ignore="UnknownId">
+                    android:isScrollContainer="false">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:padding="5dp">
+                        android:padding="5dp"
+                        android:background="#e6e6e6"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp">
 
                         <!-- First Name-->
 

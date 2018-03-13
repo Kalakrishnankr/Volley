@@ -21,6 +21,8 @@ import com.goldemo.beachpartner.models.SingleItemModel;
 import java.util.ArrayList;
 
 
+
+
 public class ConnectionFragment extends Fragment implements View.OnClickListener {
 
     private RecyclerView rcv_conn;
@@ -69,6 +71,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
         rcv_conn.setAdapter(adapter);
+
 
         activeAthletTab();
 

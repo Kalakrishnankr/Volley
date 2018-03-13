@@ -1,0 +1,56 @@
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+android:orientation="vertical"
+    tools:context="com.goldemo.beachpartner.fragments.NoteFragment">
+
+<!-- TODO: Update blank fragment layout -->
+
+
+
+<RelativeLayout
+    android:id="@+id/llvTop"
+    android:layout_width="match_parent"
+    android:layout_height="160dp"
+    android:orientation="horizontal"
+    android:background="@drawable/connection_bgnd">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    <com.goldemo.beachpartner.CustomTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notes"
+        android:textSize="@dimen/text_size"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+
+        />
+</LinearLayout>
+
+</RelativeLayout>
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginTop="60dp"
+    android:layout_marginLeft="15dp"
+    android:layout_marginRight="15dp"
+    android:background="@drawable/bgndbox_connections">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcv_notes"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </android.support.v7.widget.RecyclerView>
+
+
+</LinearLayout>
+
+
+</FrameLayout>

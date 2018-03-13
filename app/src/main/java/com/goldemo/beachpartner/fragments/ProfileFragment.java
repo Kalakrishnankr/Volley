@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +50,9 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import static android.view.Gravity.LEFT;
+import static android.view.Gravity.RIGHT;
+
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
@@ -67,14 +75,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private View viewBasic,viewMore;
 
     private EditText editFname,editLname,editGender,editDob,editCity,editPhone;
-    private EditText editExp,editPref,editPos,editHeight,editIntrest,editPlayed,editHighest,editCBVANo,editCBVAFName,editCBVALName,editWtoTravel,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,editRank,topfinishes_txt_2,topfinishes_txt_1,topfinishes_txt_3;
+    private EditText editHeight,editPlayed,editCBVANo,editCBVAFName,editCBVALName,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,topfinishes_txt_2,topfinishes_txt_1,topfinishes_txt_3;
     private Button moreBtnSave,moreBtnCancel,basicBtnSave,basicBtnCancel;
     private LinearLayout btnsBottom,more_info_btns_bottom;
     LinearLayout topFinishes1_lt,topFinishes2_lt,topFinishes3_lt;
     RelativeLayout containingLt;
     private int finishCount=0;
     boolean editStatus=false;
-    private Spinner spinnerExp;
+    private Spinner spinnerExp,spinnerPref,spinnerPositon,spinnerTLInterest,spinnerTourRating,spinnerWtoTravel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -145,25 +153,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         //Fore More Deatsils
 
-        spinnerExp         =(Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerExp      =(Spinner) view.findViewById(R.id.spinner_exp);
         spinnerExp.setEnabled(false);
-        editPref        =   (EditText)view.findViewById(R.id.txtvPref);
-        editPos         =   (EditText)view.findViewById(R.id.txtvPos);
+        spinnerPref     = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPref.setEnabled(false);
+        spinnerPositon  =   (Spinner)view.findViewById(R.id.spinner_positon);
+        spinnerPositon.setEnabled(false);
+
         editHeight      =   (EditText)view.findViewById(R.id.txtvHeight);
-        editIntrest     =   (EditText)view.findViewById(R.id.txtvIntrest);
+        spinnerTLInterest=(Spinner)view.findViewById(R.id.spinner_tl_interest);
+        spinnerTLInterest.setEnabled(false);
         editPlayed      =   (EditText)view.findViewById(R.id.txtvPlayed);
-        editHighest     =   (EditText)view.findViewById(R.id.txtvHighest);
+        spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
+        spinnerTourRating.setEnabled(false);
         editCBVANo      =   (EditText)view.findViewById(R.id.txtvCBVANo);
         editCBVAFName   =   (EditText)view.findViewById(R.id.txtvCBVAFName);
         editCBVALName   =   (EditText)view.findViewById(R.id.txtvCBVALName);
-        editWtoTravel   =   (EditText)view.findViewById(R.id.txtvWtoTravel);
+        spinnerWtoTravel   =(Spinner) view.findViewById(R.id.spinner_Wto_travel);
         editHighschool  =   (EditText)view.findViewById(R.id.txtvHighschool);
         editIndoorClub  =   (EditText)view.findViewById(R.id.txtvIndoorClub);
         editColgClub    =   (EditText)view.findViewById(R.id.txtvColgClub);
         editColgBeach   =   (EditText)view.findViewById(R.id.txtvColgBeach);
         editColgIndoor  =   (EditText)view.findViewById(R.id.txtvColgIndoor);
         editPoints      =   (EditText)view.findViewById(R.id.txtvPoints);
-        editRank        =   (EditText)view.findViewById(R.id.txtvRank);
         topfinishes_txt_1 = (EditText)view.findViewById(R.id.topfinishes_txt_1);
         topfinishes_txt_2 = (EditText)view.findViewById(R.id.topfinishes_txt_2);
         topfinishes_txt_3 = (EditText)view.findViewById(R.id.topfinishes_txt_3);
@@ -195,8 +207,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
 
-        spinnerExp.setOnItemSelectedListener(this);
+//        Experience Spinner
 
+        spinnerExp.setOnItemSelectedListener(this);
         List<String> experience = new ArrayList<>();
         experience.add("“Newbie” New to the Game");
         experience.add("1-2 years Some Indoor/Beach Experience Services");
@@ -204,15 +217,71 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         experience.add("3-4 years Experienced Tournament Player");
         experience.add("5+ years Multiple Top Finishes/Ranked player");
 
-        ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, experience);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, experience);
+        expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerExp.setAdapter(expAdapter);
 
-        // Drop down layout style - list view with radio button
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//      Court Preference spinner
+        spinnerPref.setOnItemSelectedListener(this);
+        List<String> courtPref = new ArrayList<>();
+        courtPref.add("Left side");
+        courtPref.add("Right Side");
+        courtPref.add("No Preference");
+        ArrayAdapter<String> prefAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, courtPref);
+        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPref.setAdapter(prefAdapter);
 
-        // attaching data adapter to spinner
-        spinnerExp.setAdapter(dataAdapter);
+//        position adapter
+        spinnerPositon.setOnItemSelectedListener(this);
+        List<String> position = new ArrayList<>();
+        position.add("Primary Blocker");
+        position.add("Primary Defender");
+        position.add("Split Block/Defense");
+        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, position);
+        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPositon.setAdapter(positionAdapter);
 
+//        Tournament Level interest spinner
+        spinnerTLInterest.setOnItemSelectedListener(this);
+        List<String> tournamentInterest = new ArrayList<>();
+        tournamentInterest.add("Novice/Social");
+        tournamentInterest.add("Unrated");
+        tournamentInterest.add("B");
+        tournamentInterest.add("A");
+        tournamentInterest.add("AA");
+        tournamentInterest.add("AAA");
+        tournamentInterest.add("Pro");
+        ArrayAdapter<String> tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, tournamentInterest);
+        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTLInterest.setAdapter(tournamentInterestAdapter);
+
+        spinnerTourRating.setOnItemSelectedListener(this);
+        List<String> rating = new ArrayList<>();
+        rating.add("PRO");
+        rating.add("Open Or AAA");
+        rating.add("AA");
+        rating.add("A");
+        rating.add("BB");
+        rating.add("B");
+        rating.add("C Or Novice");
+        rating.add("Unrated");
+        ArrayAdapter<String> highestRatingAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, rating);
+        highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTourRating.setAdapter(highestRatingAdapter);
+
+        spinnerWtoTravel.setOnItemSelectedListener(this);
+        List<String> distance = new ArrayList<>();
+        distance.add("Not Willing");
+        distance.add("Up to 25 miles");
+        distance.add("Up to 50 miles");
+        distance.add("Up to 100 miles");
+        distance.add("Up to 250 miles");
+        distance.add("Up to 500 miles");
+        distance.add("Nationwide");
+        distance.add("International");
+        ArrayAdapter<String> distanceAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, distance);
+        highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerWtoTravel.setAdapter(distanceAdapter);
 
 
 
@@ -312,18 +381,34 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 final RadioButton radioButton_male       = (RadioButton)  alertLayout.findViewById(R.id.rd_1);
                 final RadioButton female                 = (RadioButton)  alertLayout.findViewById(R.id.rd_2);
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext());
-                alert.setTitle("Select Gender");
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext(),AlertDialog.THEME_HOLO_LIGHT);
+                String titleText = "Select Gender!";
+
+                // Initialize a new foreground color span instance
+                ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+                // Initialize a new spannable string builder instance
+                SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
+
+                // Apply the text color span
+                ssBuilder.setSpan(
+                        foregroundColorSpan,
+                        0,
+                        titleText.length(),
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                );
+
+                alert.setTitle(ssBuilder);
                 alert.setView(alertLayout);
                 alert.setCancelable(false);
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                     @Override public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+
                     }
                 });
 
-                alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         if(radioGroup_gender.getCheckedRadioButtonId()==radioButton_male.getId())
@@ -335,11 +420,28 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 });
 
-                AlertDialog dialog = alert.create();
+                final AlertDialog dialog = alert.create();
+
+                dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                    @Override
+                    public void onShow(DialogInterface arg0) {
+
+                        dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blueDark));
+                        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blueDark));
+                    }
+                });
                 dialog.show();
+
 
             }
 
+        });
+
+        editPlayed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toursPlayed();
+            }
         });
 
 
@@ -432,7 +534,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private void setupViewPager(ViewPager viewPager) {
 
         Adapter adapter = new Adapter(getChildFragmentManager());
-       // adapter.addFragment(new BasicInfoFragment(),"Basic Information");
+        // adapter.addFragment(new BasicInfoFragment(),"Basic Information");
         //adapter.addFragment(new MoreInfoFragment(),"More Information");
         viewPager.setAdapter(adapter);
 
@@ -529,6 +631,56 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
+    public void toursPlayed(){
+        final CharSequence[] items = {" AVP "," AVP First "," AAU ","USAV Juniors","USAV Adults","VolleyAmerica National Rankings"};
+// arraylist to keep the selected items
+        final ArrayList seletedItems=new ArrayList();
+
+        final AlertDialog dialog = new AlertDialog.Builder(getContext(),AlertDialog.THEME_HOLO_LIGHT)
+                .setTitle("Select-Tours Played in")
+                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked) {
+                            // If the user checked the item, add it to the selected items
+                            seletedItems.add(indexSelected);
+                        } else if (seletedItems.contains(indexSelected)) {
+                            // Else, if the item is already in the array, remove it
+                            seletedItems.remove(Integer.valueOf(indexSelected));
+                        }
+                    }
+                }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        String selectedTours = null;
+                        for (int i = 0; i < seletedItems.size(); i++) {
+                            selectedTours = (String) (items[(int) seletedItems.get(i)]);
+                        }
+                        editPlayed.setText(selectedTours);
+
+                        //  Your code when user clicked on OK
+                        //  You can write the code  to save the selected item here
+                    }
+                }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int id) {
+                        //  Your code when user clicked on Cancel
+                    }
+                }).create();
+        dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blueDark));
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources().getColor(R.color.blueDark));
+            }
+        });
+
+        dialog.show();
+
+    }
+
+
+
 
     private void editBasicInfo() {
 
@@ -569,24 +721,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerExp.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
 
-        editPref.setEnabled(true);
-        editPref.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        spinnerPref.setEnabled(true);
+        spinnerPref.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editPos.setEnabled(true);
-        editPos.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        spinnerPositon.setEnabled(true);
+        spinnerPositon.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         editHeight.setEnabled(true);
         editHeight.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
 
-        editIntrest.setEnabled(true);
-        editIntrest.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        spinnerTLInterest.setEnabled(true);
+        spinnerTLInterest.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         editPlayed.setEnabled(true);
         editPlayed.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editHighest.setEnabled(true);
-        editHighest.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        spinnerTourRating.setEnabled(true);
+        spinnerTourRating.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         editCBVANo.setEnabled(true);
         editCBVANo.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -597,8 +749,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editCBVALName.setEnabled(true);
         editCBVALName.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editWtoTravel.setEnabled(true);
-        editWtoTravel.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        spinnerWtoTravel.setEnabled(true);
+        spinnerWtoTravel.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         editHighschool.setEnabled(true);
         editHighschool.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -617,10 +769,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         editPoints.setEnabled(true);
         editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-
-
-        editRank.setEnabled(true);
-        editRank.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
 
 
@@ -678,24 +826,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerExp.setEnabled(false);
         spinnerExp.setBackground(null);
 
-        editPref.setEnabled(false);
-        editPref.setBackground(null);
+        spinnerPref.setEnabled(false);
+        spinnerPref.setBackground(null);
 
-        editPos.setEnabled(false);
-        editPos.setBackground(null);
+        spinnerPositon.setEnabled(false);
+        spinnerPositon.setBackground(null);
 
         editHeight.setEnabled(false);
         editHeight.setBackground(null);
 
 
-        editIntrest.setEnabled(false);
-        editIntrest.setBackground(null);
+        spinnerTLInterest.setEnabled(false);
+        spinnerTLInterest.setBackground(null);
 
         editPlayed.setEnabled(false);
         editPlayed.setBackground(null);
 
-        editHighest.setEnabled(false);
-        editHighest.setBackground(null);
+        spinnerTourRating.setEnabled(false);
+        spinnerTourRating.setBackground(null);
 
         editCBVANo.setEnabled(false);
         editCBVANo.setBackground(null);
@@ -706,8 +854,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editCBVALName.setEnabled(false);
         editCBVALName.setBackground(null);
 
-        editWtoTravel.setEnabled(false);
-        editWtoTravel.setBackground(null);
+        spinnerWtoTravel.setEnabled(false);
+        spinnerWtoTravel.setBackground(null);
 
         editHighschool.setEnabled(false);
         editHighschool.setBackground(null);
@@ -728,8 +876,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setBackground(null);
 
 
-        editRank.setEnabled(false);
-        editRank.setBackground(null);
 
         imageView1.setVisibility(View.GONE);
         topfinishes_txt_1.setEnabled(false);
@@ -784,24 +930,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerExp.setEnabled(false);
         spinnerExp.setBackground(null);
 
-        editPref.setEnabled(false);
-        editPref.setBackground(null);
+        spinnerPref.setEnabled(false);
+        spinnerPref.setBackground(null);
 
-        editPos.setEnabled(false);
-        editPos.setBackground(null);
+        spinnerPositon.setEnabled(false);
+        spinnerPositon.setBackground(null);
 
         editHeight.setEnabled(false);
         editHeight.setBackground(null);
 
 
-        editIntrest.setEnabled(false);
-        editIntrest.setBackground(null);
+        spinnerTLInterest.setEnabled(false);
+        spinnerTLInterest.setBackground(null);
 
         editPlayed.setEnabled(false);
         editPlayed.setBackground(null);
 
-        editHighest.setEnabled(false);
-        editHighest.setBackground(null);
+        spinnerTourRating.setEnabled(false);
+        spinnerTourRating.setBackground(null);
 
         editCBVANo.setEnabled(false);
         editCBVANo.setBackground(null);
@@ -812,8 +958,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editCBVALName.setEnabled(false);
         editCBVALName.setBackground(null);
 
-        editWtoTravel.setEnabled(false);
-        editWtoTravel.setBackground(null);
+        spinnerWtoTravel.setEnabled(false);
+        spinnerWtoTravel.setBackground(null);
 
         editHighschool.setEnabled(false);
         editHighschool.setBackground(null);
@@ -834,17 +980,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setBackground(null);
 
 
-        editRank.setEnabled(false);
-        editRank.setBackground(null);
-
         topfinishes_txt_1.setEnabled(false);
         imageView1.setVisibility(View.GONE);
+        topfinishes_txt_1.setBackground(null);
 
         topfinishes_txt_2.setEnabled(false);
         imageView2.setVisibility(View.GONE);
+        topfinishes_txt_1.setBackground(null);
 
         topfinishes_txt_3.setEnabled(false);
         imageView3.setVisibility(View.GONE);
+        topfinishes_txt_1.setBackground(null);
 
 
     }
@@ -858,6 +1004,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
+
+
 
 
     //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
@@ -942,15 +1090,5 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             return null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
 }
