@@ -15,7 +15,8 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
 
     CharSequence titles[];
     int numberOfTabs;
-    public SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs) {
+    private static boolean isBPActive = false;
+    public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs) {
         super(fragmentManager);
 
         this.titles =titles;
@@ -34,7 +35,8 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
             return connectionsTabFragment;
 
         }else {
-            BPFinderFragment bpFinderFragment = new BPFinderFragment();
+            isBPActive =true;
+            BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
             return bpFinderFragment;
         }
 
@@ -45,4 +47,5 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
     public int getCount() {
         return numberOfTabs;
     }
+
 }

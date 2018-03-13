@@ -43,6 +43,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             holder = new ViewHolder(contentView);
 
             holder.progressBar.setVisibility(View.VISIBLE);
+            holder.progressBar.start();
             contentView.setTag(holder);
 
         } else {
@@ -133,8 +134,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
         public TextView city;
         public ImageView image;
         public VideoView videoView;
-        public ProgressBar progressBar;
-        public RotateLoading spinnerView;
+        public RotateLoading spinnerView,progressBar;
         public Button info;
         //public VideoPlayView videoPlayView;
         // public FullscreenVideoLayout videoLayout;
@@ -144,7 +144,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             city = (TextView) view.findViewById(R.id.item_tourist_spot_card_city);
             image = (ImageView) view.findViewById(R.id.img_view);
             videoView = (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
-            progressBar=(ProgressBar)view.findViewById(R.id.prsbar);
+            progressBar=(RotateLoading)view.findViewById(R.id.prsbar);
             info = (Button)view.findViewById(R.id.btnInfo);
 
             spinnerView  =   (RotateLoading)view.findViewById(R.id.my_spinner);

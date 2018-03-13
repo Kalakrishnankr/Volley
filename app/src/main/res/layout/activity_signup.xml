@@ -126,7 +126,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@color/imgBacgnd"
-                        android:drawableRight="@drawable/male"
+                        android:drawableLeft="@drawable/male"
+                        android:textAlignment="viewStart"
+                        android:layout_gravity="start"
                         android:text="@string/hint_male"
                         android:textSize="@dimen/text_size" />
 
@@ -140,9 +142,10 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:background="@color/imgBacgnd"
-                        android:drawableRight="@drawable/female"
+                        android:drawableLeft="@drawable/female"
                         android:text="@string/hint_female"
-
+                        android:textAlignment="viewStart"
+                        android:layout_gravity="start"
                         android:textSize="@dimen/text_size" />
 
                 </LinearLayout>
@@ -162,16 +165,14 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:text="Athlete"
-                        android:gravity="center"
-                        />
+                        android:gravity="left|center"/>
                     <RadioButton
                         android:id="@+id/coach_user"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:gravity="left|center"
                         android:layout_weight="1"
-                        android:text="Coach"
-                        />
+                        android:text="Coach"/>
                 </RadioGroup>
 
                 <!--Contact Email-->

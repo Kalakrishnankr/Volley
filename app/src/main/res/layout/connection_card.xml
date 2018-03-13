@@ -18,11 +18,11 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
             <RelativeLayout
                 android:id="@+id/rlHeader1"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/top_icon"
                     android:layout_width="25dp"
@@ -80,6 +80,7 @@
                 android:layout_below="@+id/rlHeader1"
                 android:layout_width="match_parent"
                 android:visibility="gone"
+                android:animateLayoutChanges="true"
                 android:layout_height="wrap_content">
 
 

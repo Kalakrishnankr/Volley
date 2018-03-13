@@ -95,4 +95,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
 
     }
+
+
+
 }

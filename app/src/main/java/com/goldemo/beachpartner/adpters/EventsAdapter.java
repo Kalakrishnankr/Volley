@@ -2,9 +2,9 @@ package com.goldemo.beachpartner.adpters;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -27,7 +27,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     Context mContext;
     List<Event>list;
 
-    private String YOUR_FRAGMENT_STRING_TAG;
     public EventsAdapter(Context context, List<Event> eventList){
         this.mContext   =context;
         this.list       =eventList;
@@ -61,9 +60,9 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                 Bundle bundle = new Bundle();
                 bundle.putSerializable("event_clicked",model);
                 eventDescriptionFragment.setArguments(bundle);
-
-                FragmentManager manager = ((AppCompatActivity)mContext).getSupportFragmentManager();
+                FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();
+                //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                 ctrans.replace(R.id.container,eventDescriptionFragment);
                 ctrans.addToBackStack(null);
                 ctrans.commit();

@@ -33,6 +33,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     MyInterface mclickListener;
     public ExpandOrCollapse mAnimationManager;
 
+
+
     public ConnectionAdapter(Context context, ArrayList<DataModel> allSampleData) {
         this.mContext=context;
         this.dataList=allSampleData;
@@ -51,49 +53,29 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
-        /*WindowManager windowmanager = (WindowManager)mContext.getSystemService(Context.WINDOW_SERVICE);
-        DisplayMetrics dimension = new DisplayMetrics();
-        windowmanager.getDefaultDisplay().getMetrics(dimension);
-         height = (int) ((dimension.heightPixels)/2.5);
-
-        holder.cardView.getViewTreeObserver().addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
-
-            @Override
-            public boolean onPreDraw() {
-                holder.cardView.getViewTreeObserver().removeOnPreDrawListener(this);
-                minHeight = holder.cardView.getHeight();
-                ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
-                layoutParams.height = minHeight;
-                holder.cardView.setLayoutParams(layoutParams);
-
-                return true;
-            }
-        });*/
-
         if (dataList != null && !dataList.isEmpty()) {
             if (dataList.get(position).isExpanded) {
                 holder.rrHeaderTwo.setVisibility(View.VISIBLE);
             } else {
                 holder.rrHeaderTwo.setVisibility(View.GONE);
             }
-//        }
             holder.topIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
                     if (dataList.get(position).isExpanded) {
+                        mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -200);
                         holder.rrHeaderTwo.setVisibility(View.GONE);
-                        //mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -200);
-                        ExpandOrCollapse.collapse(holder.rrHeaderTwo, 1000, -200);
-//                    isExpanded = false;
                         dataList.get(position).isExpanded = false;
                     } else {
+                        mAnimationManager.expand(holder.rrHeaderTwo, 1000, 200);
                         holder.rrHeaderTwo.setVisibility(View.VISIBLE);
-                        ExpandOrCollapse.expand(holder.rrHeaderTwo, 1000, 200);
                         dataList.get(position).isExpanded = true;
                     }
-                    //toggleCardViewnHeight(height,holder);
+
                     notifyDataSetChanged();
+
+
                 }
             });
 
@@ -116,75 +98,6 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         }
 
     }
-
-    /*private void toggleCardViewnHeight(int height, ViewHolder holder) {
-        if (holder.cardView.getHeight() == minHeight) {
-            // expand
-
-            expandView(height,holder);
-            holder.txtv_block.setVisibility(View.VISIBLE);
-            holder.txtv_notes.setVisibility(View.VISIBLE);
-            holder.txtv_message.setVisibility(View.VISIBLE);
-            holder.txtv_block.setText("BLOCK");
-            holder.txtv_message.setText("MESSAGE");
-            holder.txtv_notes.setText("NOTES");
-            //'height' is the height of screen which we have measured already.
-
-        } else {
-            // collapse
-            collapseView(holder);
-            //mclickListener.clickview();
-
-        }
-    }*/
-
-    /*private void collapseView(final ViewHolder holder) {
-
-
-        ValueAnimator anim = ValueAnimator.ofInt(holder.cardView.getMeasuredHeightAndState(),
-                minHeight);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
-                layoutParams.height = val;
-                holder.cardView.setLayoutParams(layoutParams);
-
-            }
-        });
-        anim.start();
-
-    }
-
-    private void expandView(int height, final ViewHolder holder) {
-        ValueAnimator anim = ValueAnimator.ofInt(holder.cardView.getMeasuredHeightAndState(),
-                height);
-        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                int val = (Integer) valueAnimator.getAnimatedValue();
-                ViewGroup.LayoutParams layoutParams = holder.cardView.getLayoutParams();
-                layoutParams.height = val;
-                holder.cardView.setLayoutParams(layoutParams);
-            }
-        });
-        anim.start();
-
-    }*/
-
-  /*  private void showItems(ViewHolder holder) {
-        isExpanded=true;
-        holder.topIcon.setBackground(mContext.getResources().getDrawable(R.drawable.ic_info));
-        holder.txtv_block.setVisibility(View.VISIBLE);
-        holder.txtv_notes.setVisibility(View.VISIBLE);
-        holder.txtv_message.setVisibility(View.VISIBLE);
-
-        //
-        holder.txtv_block.setText("BLOCK");
-        holder.txtv_message.setText("MESSAGE");
-        holder.txtv_notes.setText("NOTES");
-    }*/
 
 
 

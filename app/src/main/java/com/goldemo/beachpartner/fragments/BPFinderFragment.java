@@ -4,6 +4,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -72,20 +72,26 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     ArrayAdapter<String> dataAdapter;
     private ImageButton showPreviousMonthButton,showNextMonthButton;
     private Switch sCoach;
-    private FrameLayout topFrameLayout;
+    private LinearLayout topFrameLayout;
 
     public static final String MY_PREFS_FILTER = "MyPrefsFile";
     ArrayList<String>Location = new ArrayList<>();
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     public boolean reverseCount=false;
+    private boolean isbpActive =false;
 
 
     public BPFinderFragment() {
-        // Required empty public constructor
+
     }
 
 
+
+    @SuppressLint("ValidFragment")
+    public BPFinderFragment(boolean isBPActive) {
+        isbpActive=isBPActive;
+    }
 
 
     @Override
@@ -131,7 +137,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFemale           =   (ToggleButton) view.findViewById(R.id.btnWomen);
         btnPlay             =   (ImageView)view.findViewById(R.id.imgPlay);
         fc                  =   (FoldingCell)view. findViewById(R.id.folding_cell);
-        topFrameLayout      =   (FrameLayout)view.findViewById(R.id.frmeOne);
+        topFrameLayout      =   (LinearLayout)view.findViewById(R.id.frmeOne);
 
 
 
@@ -206,6 +212,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnFemale.setChecked(true);
 
                 }else {
+                    btnMale.setChecked(true);
+                    btnFemale.setChecked(true);
                     txtv_gender.setText("Both");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
@@ -257,7 +265,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else if(btnFemale.isChecked()&&!!isChecked){
+                else if((btnFemale.isChecked()&&!!isChecked )|| btnFemale.isChecked()){
                     txtv_gender.setText("Women");
                     btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnMale.setTextColor(getResources().getColor(R.color.black));
@@ -289,7 +297,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else if(btnMale.isChecked()&&!!isChecked){
+                else if((btnMale.isChecked()&&!!isChecked )|| btnMale.isChecked()){
                     txtv_gender.setText("Men");
                     btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnFemale.setTextColor(getResources().getColor(R.color.black));
@@ -329,7 +337,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 llvFilter.setVisibility(View.GONE);
                 rr.setVisibility(View.VISIBLE);
                 rrvBottom.setVisibility(View.VISIBLE);
-                topFrameLayout.setVisibility(View.VISIBLE);
+
+               //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
+                if(isbpActive){
+                    topFrameLayout.setVisibility(View.GONE);
+
+                }else {
+                    topFrameLayout.setVisibility(View.VISIBLE);
+
+                }
             }
         });
 
@@ -499,16 +515,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Amanda Dowdy", "Toronto", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
-        spots.add(new TouristSpot("Brittany Tiegs", "Ottawa", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
-        spots.add(new TouristSpot("Caitlin Ledoux", "Victoria", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
-        spots.add(new TouristSpot("Emily Day", "Thunder Bay", "http://seqato.com/bp/videos/4.mp4","http://seqato.com/bp/images/4.jpg"));
-        spots.add(new TouristSpot("Geena Urango", "Barrie", "http://seqato.com/bp/videos/5.mp4","http://seqato.com/bp/images/5.jpg"));
-        spots.add(new TouristSpot("Irene Pollock", "Kingston", "http://seqato.com/bp/videos/6.mp4","http://seqato.com/bp/images/6.jpg"));
-        spots.add(new TouristSpot("Jessica Stubinski", "Austin", "http://seqato.com/bp/videos/7.mp4","http://seqato.com/bp/images/7.jpg"));
-        spots.add(new TouristSpot("Kelly Claes", "Los Angeles", "http://seqato.com/bp/videos/8.mp4","http://seqato.com/bp/images/8.jpg"));
-        spots.add(new TouristSpot("Jace Pardon", "North West", "http://seqato.com/bp/videos/9.mp4","http://seqato.com/bp/images/9.jpg"));
-        spots.add(new TouristSpot("Jessica Stubinski", "Nasville", "http://seqato.com/bp/videos/10.mp4","http://seqato.com/bp/images/10.jpg"));
+        spots.add(new TouristSpot("Renny", "Toronto", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
+        spots.add(new TouristSpot("Mariyam Fenn", "Ottawa", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
+        spots.add(new TouristSpot("Nancy", "Victoria", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
+        spots.add(new TouristSpot("Nellie", "Thunder Bay", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
+        spots.add(new TouristSpot("Elaine", "Barrie", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
+        spots.add(new TouristSpot("Jane", "Kingston", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
+        spots.add(new TouristSpot("Lisa", "Austin", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
+        spots.add(new TouristSpot("Rachel", "Los Angeles", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
+        spots.add(new TouristSpot("Sandra", "North West", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
+        spots.add(new TouristSpot("Zora", "Nasville", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/10.jpg"));
         return spots;
     }
 
