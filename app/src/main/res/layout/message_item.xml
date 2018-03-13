@@ -29,7 +29,7 @@
                     android:id="@+id/imgUserpic"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:src="@drawable/ic_person"/>
+                    android:src="@drawable/person2"/>
 
                 <com.goldemo.beachpartner.CustomTextView
                     android:id="@+id/txtMsgUser"

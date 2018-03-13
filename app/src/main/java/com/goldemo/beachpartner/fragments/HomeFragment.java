@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
@@ -22,17 +23,18 @@ import com.goldemo.beachpartner.models.SingleItemModel;
 import java.util.ArrayList;
 
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
-    private ImageView img_bpprofile;
+    private ImageView img_bpprofile,img_send,img_received;
     private RecyclerView mRecyclerview,pRecyclerview,msgRecyclerview,parRecyclerview;
     CardAdapter adapter;
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
     ArrayList<DataModel> allSampleData;
+    private TextView txt_head;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -64,8 +66,14 @@ public class HomeFragment extends Fragment {
         allSampleData = new ArrayList<DataModel>();
         createDummyData();
 
-        img_bpprofile = (ImageView) view.findViewById(R.id.img_bpfinder);
+        img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
+        txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
 
+        img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
+        img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
+
+        img_send.setOnClickListener(this);
+        img_received.setOnClickListener(this);
 
         SnapHelper snapHelper = new PagerSnapHelper();
 
@@ -125,5 +133,20 @@ public class HomeFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View view) {
+        switch(view.getId()){
+            case R.id.imgview_send:
+                txt_head.setText("Tournament Requests Sent");
+                break;
+
+            case R.id.imgview_received:
+                txt_head.setText("Tournament Requests Received");
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 

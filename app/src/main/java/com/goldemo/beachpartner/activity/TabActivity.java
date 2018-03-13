@@ -25,6 +25,7 @@ public class TabActivity extends AppCompatActivity {
     private TextView mTextMessage;
     HomeFragment homeFragment;
     private String YOUR_FRAGMENT_STRING_TAG;
+    private static boolean isBPActive = false;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -42,7 +43,7 @@ public class TabActivity extends AppCompatActivity {
                     return true;
                 case R.id.navigation_bp:
 
-                    BPFinderFragment bpFinderFragment = new BPFinderFragment();
+                    BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
                     getSupportActionBar().setTitle("Beach Partner Finder");
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();
@@ -150,6 +151,15 @@ public class TabActivity extends AppCompatActivity {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (getFragmentManager().getBackStackEntryCount() > 0) {
+            //getFragmentManager().popBackStack();
+        } else {
+            super.onBackPressed();
+        }
     }
 
 }
