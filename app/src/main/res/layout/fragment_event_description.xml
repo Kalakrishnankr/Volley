@@ -16,6 +16,8 @@
             android:gravity="center_vertical"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:textColor="@android:color/black"
             android:text="General Event Details" />
 
         <LinearLayout

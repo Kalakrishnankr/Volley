@@ -2,21 +2,25 @@ package com.goldemo.beachpartner.fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.EventsAdapter;
@@ -372,17 +376,21 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()){
             case R.id.search_filter:
-                Toast.makeText(getActivity(), "Filter Clicked", Toast.LENGTH_SHORT).show();
-               /* if(!((Activity)getContext()).isFinishing()){
-                    View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null);
-                    final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                    popupWindow.showAsDropDown(popupView, 50, -30);
-                }*/
-                final Dialog fbDialogue = new Dialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
-                fbDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                fbDialogue.setContentView(R.layout.popup_filter);
-                fbDialogue.setCancelable(true);
-                fbDialogue.show();
+
+                Dialog filterDialogue = new Dialog(getContext());
+                //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                filterDialogue.setContentView(R.layout.popup_filter);
+                filterDialogue.setCanceledOnTouchOutside(true);
+                Window window = filterDialogue.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+                wlp.gravity = Gravity.TOP;
+                wlp.y = 120;
+                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                window.setAttributes(wlp);
+                filterDialogue.show();
+
+                initView(filterDialogue);
 
 
                 break;
@@ -392,4 +400,47 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         }
         return false;
     }
+
+    private void initView(Dialog filterDialogue) {
+        Spinner spinner_events      =   (Spinner)filterDialogue.findViewById(R.id.event_spinner);
+        Spinner spinner_subEvents   =   (Spinner)filterDialogue.findViewById(R.id.subtypes_spinner);
+        Spinner spinner_year        =   (Spinner)filterDialogue.findViewById(R.id.year_spinner);
+        Spinner spinner_month       =   (Spinner)filterDialogue.findViewById(R.id.month_spinner);
+        Spinner spinner_state       =   (Spinner)filterDialogue.findViewById(R.id.state_spinner);
+        Spinner spinner_region      =   (Spinner)filterDialogue.findViewById(R.id.region_spinner);
+        Button btn_search           =   (Button)filterDialogue.findViewById(R.id.btn_invite_partner);
+
+        /*Year*/
+
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = 1900; i <= thisYear; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
+        spinner_year.setAdapter(adapter);
+
+        /*Month*/
+        String[] Months = new String[] { "January", "February",
+                "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December" };
+
+        ArrayAdapter<String> adapterMonths = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Months);
+        spinner_month.setAdapter(adapterMonths);
+
+
+
+        /*State*/
+
+        String[] States = new String[] { "New York", "Connecticut",
+                "Louisiana", "Pennsylvania", "Virginia", "Massachusetts", "Georgia", "Georgia", "Mississippi",
+                "Illinois", "Tennessee", "New Jersey","Alabama","New Mexico","North Carolina","Kentucky","Rhode Island","Arkansas","South Carolina","Arizona","Oklahoma","Michigan" };
+
+        ArrayAdapter<String> adapterStates  =   new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,States);
+        spinner_state.setAdapter(adapterStates);
+
+
+    }
+
+
 }

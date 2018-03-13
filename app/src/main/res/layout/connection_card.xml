@@ -25,10 +25,9 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/top_icon"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_person"/>
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:layout_alignParentRight="true"/>
 
                 <com.goldemo.beachpartner.CircularImageView
                     android:id="@+id/thumbnail"

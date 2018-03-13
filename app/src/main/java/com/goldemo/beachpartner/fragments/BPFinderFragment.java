@@ -28,8 +28,9 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.appyvet.materialrangebar.RangeBar;
 import com.bumptech.glide.Glide;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.TouristSpot;
@@ -65,7 +66,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private Spinner spinner_location;
-    private RangeBar age_bar;
+    private CrystalRangeSeekbar age_bar;
     public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
@@ -129,7 +130,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         llvFilter           =   (LinearLayout) view.findViewById(R.id.llFilter);
         txtv_age            =   (TextView) view.findViewById(R.id.txtv_age);
-        age_bar             =   (RangeBar)  view.findViewById(R.id.rangebar);
+        age_bar             =   (CrystalRangeSeekbar)  view.findViewById(R.id.rangebar);
         spinner_location    =   (Spinner) view.findViewById(R.id.spinner_location);
         txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
 
@@ -196,9 +197,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     minValue    = data.get(0);
                     maxValue    = data.get(1);
                 }
-                age_bar.setRangePinsByValue(Float.parseFloat(minValue),Float.parseFloat(maxValue));
+
                 spinner_location.setSelection(location);
-                txtv_age.setText(""+minValue+"-"+""+maxValue);
+                txtv_age.setText(" "+minValue.toString()+"-"+" "+maxValue.toString());
                 sCoach.setChecked(isCoach);
                 if(Sgender.equals("Men")){
                     txtv_gender.setText("Men");
@@ -229,12 +230,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
 
         //age range bar
-        age_bar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+
+        age_bar.setOnRangeSeekbarChangeListener(new OnRangeSeekbarChangeListener() {
             @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+            public void valueChanged(Number minValue, Number maxValue) {
 
-                txtv_age.setText(""+leftPinValue+"-"+""+rightPinValue);
-
+                txtv_age.setText(""+minValue+"-"+""+maxValue);
             }
         });
 
@@ -323,8 +324,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onClick(View view) {
                 Set<String> range = new HashSet<>();
-                range.add(age_bar.getLeftPinValue());
-                range.add(age_bar.getRightPinValue());
+                range.add(String.valueOf(age_bar.getSelectedMinValue()));
+                range.add(String.valueOf(age_bar.getSelectedMaxValue()));
 
 
                 SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
@@ -515,16 +516,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Renny", "Toronto", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
-        spots.add(new TouristSpot("Mariyam Fenn", "Ottawa", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
-        spots.add(new TouristSpot("Nancy", "Victoria", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
-        spots.add(new TouristSpot("Nellie", "Thunder Bay", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
-        spots.add(new TouristSpot("Elaine", "Barrie", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
-        spots.add(new TouristSpot("Jane", "Kingston", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
-        spots.add(new TouristSpot("Lisa", "Austin", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
-        spots.add(new TouristSpot("Rachel", "Los Angeles", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
-        spots.add(new TouristSpot("Sandra", "North West", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
-        spots.add(new TouristSpot("Zora", "Nasville", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/10.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
         return spots;
     }
 

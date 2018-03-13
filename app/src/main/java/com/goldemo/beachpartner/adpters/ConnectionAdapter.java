@@ -45,6 +45,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.connection_card,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
+
         return viewHolder;
     }
 
@@ -52,6 +53,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
+
+        holder.topIcon.setImageResource(R.drawable.ic_cndown);
 
         if (dataList != null && !dataList.isEmpty()) {
             if (dataList.get(position).isExpanded) {
@@ -64,11 +67,15 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 public void onClick(View view) {
 
                     if (dataList.get(position).isExpanded) {
+                        //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
+                        holder.topIcon.setBackgroundResource(R.drawable.ic_cndown);
                         mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -200);
                         holder.rrHeaderTwo.setVisibility(View.GONE);
                         dataList.get(position).isExpanded = false;
                     } else {
+                       // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
                         mAnimationManager.expand(holder.rrHeaderTwo, 1000, 200);
+                        holder.topIcon.setBackgroundResource(R.drawable.ic_cnup);
                         holder.rrHeaderTwo.setVisibility(View.VISIBLE);
                         dataList.get(position).isExpanded = true;
                     }
@@ -91,7 +98,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 }
             });
 
-            holder.txtv_name.setText("RAMU");
+            holder.txtv_name.setText("NICK");
             holder.txtv_age.setText("29");
 
 
@@ -116,20 +123,20 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         public ViewHolder(View view) {
             super(view);
 
-            topIcon     = view.findViewById(R.id.top_icon);
-            txtv_name   = view.findViewById(R.id.name);
-            txtv_age    = view.findViewById(R.id.age);
-            txtv_block  = view.findViewById(R.id.block);
-            txtv_message= view.findViewById(R.id.message);
-            txtv_notes  = view.findViewById(R.id.notes);
-            cardView    = view.findViewById(R.id.card_view);
+            topIcon     = (ImageView)view.findViewById(R.id.top_icon);
+            txtv_name   = (TextView)view.findViewById(R.id.name);
+            txtv_age    = (TextView)view.findViewById(R.id.age);
+            txtv_block  = (TextView)view.findViewById(R.id.block);
+            txtv_message= (TextView)view.findViewById(R.id.message);
+            txtv_notes  = (TextView)view.findViewById(R.id.notes);
+            cardView    = (CardView)view.findViewById(R.id.card_view);
 
 
 
-            rrHeaderOne = view.findViewById(R.id.rlHeader1);
+            rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
 
 
-            rrHeaderTwo = view.findViewById(R.id.rlHeader2);
+            rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
         }
     }
 
