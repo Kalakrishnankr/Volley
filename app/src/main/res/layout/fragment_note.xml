@@ -1,3 +1,4 @@
+
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,28 +9,40 @@
     <!-- TODO: Update blank fragment layout -->
 
 
+
     <RelativeLayout
         android:id="@+id/llvTop"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:background="@drawable/connection_bgnd"
-        android:orientation="horizontal">
-
+        android:orientation="horizontal"
+        android:background="@drawable/connection_bgnd">
         <LinearLayout
+            android:id="@+id/notesTxt"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
-
             <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Notes"
-                android:textColor="@color/white"
-                android:textSize="@dimen/header_text_size"
+                android:gravity="center"
+                android:textSize="@dimen/textsize_header"
                 android:textStyle="bold"
-
-                />
+                android:textColor="@color/white" />
         </LinearLayout>
+
+        <Button
+            android:id="@+id/addNew"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginRight="5dp"
+            android:layout_alignBottom="@+id/notesTxt"
+            android:layout_centerInParent="true"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/edit_test_bg"
+            android:text="Add New"
+            android:textSize="12sp" />
+
 
     </RelativeLayout>
 
@@ -37,9 +50,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginTop="60dp"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="60dp"
         android:background="@drawable/bgndbox_connections">
 
         <android.support.v7.widget.RecyclerView

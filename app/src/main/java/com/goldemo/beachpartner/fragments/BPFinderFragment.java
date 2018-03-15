@@ -30,8 +30,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
-import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
+
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.TouristSpot;

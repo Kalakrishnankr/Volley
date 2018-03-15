@@ -8,14 +8,16 @@ public class NoteDataModel {
 
     private String notes;
     private String headerTitle;
+    private long timestamp;
 
     public NoteDataModel(){
 
     }
 
-    public NoteDataModel(String headerTitle, String notes) {
+    public NoteDataModel(String headerTitle, String notes,long timestamp) {
         this.headerTitle = headerTitle;
         this.notes = notes;
+        this.timestamp= timestamp;
     }
     public void setHeaderTitle(String headerTitle) {
         this.headerTitle = headerTitle;
@@ -31,5 +33,14 @@ public class NoteDataModel {
 
     public String getNotes(){
         return notes;
+    }
+
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 }
