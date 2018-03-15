@@ -16,7 +16,7 @@
             android:gravity="center_vertical"
             android:textSize="18sp"
             android:textStyle="bold"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="20dp"
             android:textColor="@android:color/black"
             android:text="General Event Details" />
 
@@ -314,12 +314,12 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="1.5">
+                    android:layout_weight="1.5"
+                    android:layout_marginLeft="20dp">
 
                     <com.goldemo.beachpartner.CustomTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_marginLeft="10dp"
                         android:gravity="center_vertical"
                         android:text="Registration Starts/Deadline"
                         android:textStyle="bold"

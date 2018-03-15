@@ -39,7 +39,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
         holder.txtv_date.setText("11/10/2018");
         holder.txtv_place.setText("America");
-        holder.txtv_players.setText("Martin,David.john,Hari");
+        holder.txtv_players.setText("Martin, David, John, Hari");
 
     }
 
