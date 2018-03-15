@@ -53,6 +53,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
 
+
         if (dataList != null && !dataList.isEmpty()) {
             if (dataList.get(position).isExpanded) {
                 mAnimationManager.expand(holder.rrHeaderTwo, 1000, 250);
@@ -70,6 +71,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                     if (dataList.get(position).isExpanded) {
                         //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
                         mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
+
                         holder.rrHeaderTwo.setVisibility(View.GONE);
                         dataList.get(position).isExpanded = false;
                     } else {
@@ -100,6 +102,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
             holder.txtv_name.setText(dataList.get(position).getUname());
             holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
             holder.profilePic.setImageResource(dataList.get(position).getImage());
+
 
 
         }

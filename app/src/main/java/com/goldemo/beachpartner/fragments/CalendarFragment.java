@@ -2,7 +2,10 @@ package com.goldemo.beachpartner.fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
+<<<<<<< HEAD
 import android.graphics.Typeface;
+=======
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,9 +20,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+<<<<<<< HEAD
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+=======
+import android.widget.ArrayAdapter;
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -391,6 +398,25 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()){
             case R.id.search_filter:
+<<<<<<< HEAD
+=======
+
+                Dialog filterDialogue = new Dialog(getContext());
+                //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                filterDialogue.setContentView(R.layout.popup_filter);
+                filterDialogue.setCanceledOnTouchOutside(true);
+                Window window = filterDialogue.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+                wlp.gravity = Gravity.TOP;
+                wlp.y = 120;
+                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                //wlp.flags &= ~WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+                window.setAttributes(wlp);
+                filterDialogue.show();
+
+                initView(filterDialogue);
+
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 
                 Dialog filterDialogue = new Dialog(getContext());
                 //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
@@ -412,6 +438,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     }
 
     private void initView(Dialog filterDialogue) {
+<<<<<<< HEAD
 
         final Spinner spinner_events        =   (Spinner)filterDialogue.findViewById(R.id.event_spinner);
         final Spinner spinner_subEvents     =   (Spinner)filterDialogue.findViewById(R.id.subtypes_spinner);
@@ -498,12 +525,25 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         });
 
 
+=======
+        Spinner spinner_events      =   (Spinner)filterDialogue.findViewById(R.id.event_spinner);
+        Spinner spinner_subEvents   =   (Spinner)filterDialogue.findViewById(R.id.subtypes_spinner);
+        Spinner spinner_year        =   (Spinner)filterDialogue.findViewById(R.id.year_spinner);
+        Spinner spinner_month       =   (Spinner)filterDialogue.findViewById(R.id.month_spinner);
+        Spinner spinner_state       =   (Spinner)filterDialogue.findViewById(R.id.state_spinner);
+        Spinner spinner_region      =   (Spinner)filterDialogue.findViewById(R.id.region_spinner);
+        Button btn_search           =   (Button)filterDialogue.findViewById(R.id.btn_invite_partner);
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 
         /*Year*/
 
         ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+<<<<<<< HEAD
         for (int i = thisYear; i <= 2030; i++) {
+=======
+        for (int i = 1900; i <= thisYear; i++) {
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
             years.add(Integer.toString(i));
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
@@ -517,6 +557,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         ArrayAdapter<String> adapterMonths = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Months);
         spinner_month.setAdapter(adapterMonths);
 
+<<<<<<< HEAD
         Typeface font = Typeface.createFromAsset(getContext().getAssets(),
                 "fonts/SanFranciscoTextRegular.ttf");
 
@@ -647,6 +688,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         tv_region.setTypeface(font);
         tv_region.setAdapter(adapterRegion);
 
+=======
+
+
+        /*State*/
+
+        String[] States = new String[] { "New York", "Connecticut",
+                "Louisiana", "Pennsylvania", "Virginia", "Massachusetts", "Georgia", "Georgia", "Mississippi",
+                "Illinois", "Tennessee", "New Jersey","Alabama","New Mexico","North Carolina","Kentucky","Rhode Island","Arkansas","South Carolina","Arizona","Oklahoma","Michigan" };
+
+        ArrayAdapter<String> adapterStates  =   new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,States);
+        spinner_state.setAdapter(adapterStates);
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 
 
     }

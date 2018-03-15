@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="300dp"
+
     android:background="#E6E6E6"
     android:orientation="vertical">
 
@@ -174,6 +175,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginRight="15dp"
                 android:background="@color/white"
+<<<<<<< HEAD
                 android:layout_weight="1.2"/>-->
 
             <AutoCompleteTextView
@@ -191,6 +193,9 @@
                 android:maxLines="1"
                 android:layout_weight="1.2" />
 
+=======
+                android:layout_weight="1.2"/>
+>>>>>>> f1b1c37bb6cf3d1f26ef40a2d6ecebd8eb6bf008
 
 
 
@@ -246,6 +251,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2"
+
             android:orientation="horizontal"
             android:gravity="center">
 

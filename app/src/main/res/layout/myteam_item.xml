@@ -17,6 +17,7 @@
             android:layout_marginLeft="20dp"
             android:background="@drawable/person3"/>
 
+
         <com.goldemo.beachpartner.CustomTextView
             android:id="@+id/tview_name"
             android:layout_width="0dp"

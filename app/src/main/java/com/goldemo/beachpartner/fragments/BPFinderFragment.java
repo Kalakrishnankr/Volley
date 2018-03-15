@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.crystal.crystalrangeseekbar.interfaces.OnRangeSeekbarChangeListener;
+import com.crystal.crystalrangeseekbar.widgets.CrystalRangeSeekbar;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.TouristSpot;
@@ -66,6 +68,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private AutoCompleteTextView spinner_location;
     private MultiSlider age_bar;
+
     public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
@@ -131,6 +134,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         tvMax               =   (TextView) view.findViewById(R.id.txtv_maxAge);
         age_bar             =   (MultiSlider)  view.findViewById(R.id.rangebar);
         spinner_location    =   (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
+
         txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
 
         btnMale             =   (ToggleButton) view.findViewById(R.id.btnMen);
@@ -233,6 +237,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 } else {
                     tvMax.setText(String.valueOf(value));
                 }
+
             }
         });
 
@@ -313,6 +318,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
 
                 SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
                 preferences.putString("location",spinner_location.getText().toString().trim());
