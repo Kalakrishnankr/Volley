@@ -15,7 +15,7 @@
             android:fillViewport="true">
 
             <RelativeLayout
-                android:background="#e6e6e6"
+                android:background="#efeff1"
                 android:id="@+id/scroll_more"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -48,6 +48,8 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:enabled="false" />
 
 
@@ -82,6 +84,8 @@
                         android:id="@+id/spinner_pref"
                         android:layout_weight="1"
                         android:layout_width="0dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:layout_height="match_parent"
                         android:enabled="false"/>
 
@@ -118,6 +122,8 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:enabled="false"/>
 
 
@@ -156,8 +162,8 @@
                         android:layout_weight="1"
                         android:inputType="text"
                         android:nextFocusDown="@+id/spinner_tl_interest"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:background="@android:color/transparent"/>
 
 
@@ -172,7 +178,7 @@
                 <LinearLayout
                     android:id="@+id/interest_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -191,7 +197,10 @@
                         android:id="@+id/spinner_tl_interest"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:enabled="false"/>
 
 
@@ -235,8 +244,8 @@
                         android:singleLine="true"
                         android:layout_weight="1"
                         android:nextFocusDown="@+id/txtvHighest"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:background="@android:color/transparent"/>
 
 
@@ -272,7 +281,10 @@
                         android:id="@+id/spinner_tour_rating"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_marginTop="15dp"
+                        android:layout_height="wrap_content"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:enabled="false"/>
 
 
@@ -313,8 +325,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvCBVAFName"
                         android:background="@android:color/transparent"/>
@@ -355,8 +367,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvCBVALName"
                         android:background="@android:color/transparent"/>
@@ -397,8 +409,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/spinner_Wto_travel"
                         android:background="@android:color/transparent"/>
@@ -438,6 +450,8 @@
                         android:layout_weight="1"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:enabled="false"/>
 
 
@@ -475,8 +489,8 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvIndoorClub"
                         android:background="@android:color/transparent"/>
@@ -518,8 +532,8 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvColgClub"
                         android:background="@android:color/transparent"/>
@@ -560,8 +574,8 @@
                         android:layout_height="wrap_content"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvColgBeach"
                         android:background="@android:color/transparent"/>
@@ -602,8 +616,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvColgIndoor"
                         android:background="@android:color/transparent"/>
@@ -645,8 +659,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvPoints"
                         android:background="@android:color/transparent"/>
@@ -687,8 +701,8 @@
                         android:layout_height="match_parent"
                         android:maxLines="1"
                         android:layout_weight="1"
-                        android:paddingStart="10dp"
-                        android:paddingLeft="10dp"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
                         android:inputType="text"
                         android:nextFocusDown="@+id/txtvYouLinks"
                         android:background="@android:color/transparent"/>
@@ -783,41 +797,41 @@
                 <!--&lt;!&ndash;Ranking&ndash;&gt;-->
 
                 <!--<View-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="1dp"-->
-                    <!--android:background="#A9A9A9"-->
-                    <!--android:layout_below="@+id/points_lt"/>-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="1dp"-->
+                <!--android:background="#A9A9A9"-->
+                <!--android:layout_below="@+id/points_lt"/>-->
 
                 <!--<LinearLayout-->
-                    <!--android:id="@+id/ranking_lt"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_marginBottom="10dp"-->
-                    <!--android:layout_marginTop="10dp"-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:weightSum="2"-->
-                    <!--android:layout_below="@+id/points_lt">-->
+                <!--android:id="@+id/ranking_lt"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_marginBottom="10dp"-->
+                <!--android:layout_marginTop="10dp"-->
+                <!--android:orientation="horizontal"-->
+                <!--android:weightSum="2"-->
+                <!--android:layout_below="@+id/points_lt">-->
 
-                    <!--<com.goldemo.beachpartner.CustomTextView-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:text="@string/hint_rank"-->
-                        <!--android:textStyle="bold" />-->
+                <!--<com.goldemo.beachpartner.CustomTextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_weight="1"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:text="@string/hint_rank"-->
+                <!--android:textStyle="bold" />-->
 
-                    <!--<com.goldemo.beachpartner.CustomEditText-->
-                        <!--android:id="@+id/txtvRank"-->
-                        <!--android:enabled="false"-->
-                        <!--android:layout_width="0dp"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:maxLines="1"-->
-                        <!--android:layout_weight="1"-->
-                        <!--android:paddingStart="10dp"-->
-                        <!--android:paddingLeft="10dp"-->
-                        <!--android:inputType="text"-->
-                        <!--android:nextFocusDown="@+id/topfinishes_txt_1"-->
-                        <!--android:background="@android:color/transparent"/>-->
+                <!--<com.goldemo.beachpartner.CustomEditText-->
+                <!--android:id="@+id/txtvRank"-->
+                <!--android:enabled="false"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:maxLines="1"-->
+                <!--android:layout_weight="1"-->
+                <!--android:paddingStart="10dp"-->
+                <!--android:paddingLeft="10dp"-->
+                <!--android:inputType="text"-->
+                <!--android:nextFocusDown="@+id/topfinishes_txt_1"-->
+                <!--android:background="@android:color/transparent"/>-->
 
 
                 <!--</LinearLayout>-->
@@ -871,8 +885,8 @@
                                 android:enabled="false"
                                 android:textColor="#000000"
                                 android:layout_marginTop="5dp"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:paddingRight="25dp"
                                 android:paddingEnd="25dp"
@@ -929,8 +943,8 @@
                                 android:enabled="false"
                                 android:singleLine="true"
                                 android:textColor="#000000"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:paddingRight="25dp"
                                 android:paddingEnd="25dp"
@@ -986,8 +1000,8 @@
                                 android:singleLine="true"
                                 android:enabled="false"
                                 android:textColor="#000000"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:paddingRight="25dp"
                                 android:paddingEnd="25dp"

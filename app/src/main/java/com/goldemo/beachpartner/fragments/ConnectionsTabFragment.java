@@ -15,10 +15,10 @@ import android.widget.RelativeLayout;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.MyConnectionAdapter;
 import com.goldemo.beachpartner.adpters.MyTeamAdapter;
-import com.goldemo.beachpartner.models.DataModel;
-import com.goldemo.beachpartner.models.SingleItemModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class ConnectionsTabFragment extends Fragment implements View.OnClickListener {
@@ -29,7 +29,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private MyTeamAdapter myTeamAdapter;
     private ImageView upDownToggle;
 
-    ArrayList<DataModel> allSampleData;
+    ArrayList<PersonModel> dummyData;
 
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -55,17 +55,12 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         View view =inflater.inflate(R.layout.fragment_connections_tab, container, false);
         initActivity(view);
 
-        allSampleData   =   new ArrayList<DataModel>();
-        createDummyData();
+        dummyData   = (ArrayList<PersonModel>) createDummyData();
+
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
 
-
-
-
-
-
         //adapter for connections
-        mConnectionAdapter  =   new MyConnectionAdapter(getContext(),allSampleData);
+        mConnectionAdapter  =   new MyConnectionAdapter(getContext(),dummyData);
         rcviewConn.setAdapter(mConnectionAdapter);
         rcviewConn.setLayoutManager(layoutmnger);
        // rcviewConn.setHasFixedSize(true);
@@ -73,7 +68,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
         //adapter for creating my team
         LinearLayoutManager mnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        myTeamAdapter       =   new MyTeamAdapter(getContext(),allSampleData);
+        myTeamAdapter       =   new MyTeamAdapter(getContext(),dummyData);
         rcviewTeam.setAdapter(myTeamAdapter);
         rcviewTeam.setLayoutManager(mnger);
         rcviewTeam.setHasFixedSize(true);
@@ -148,23 +143,24 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
 
 
-    public void createDummyData() {
-        for (int i = 1; i <= 10; i++) {
+    public List<PersonModel> createDummyData() {
 
-            DataModel dm = new DataModel();
+        List<PersonModel> personlList = new ArrayList<>();
+        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
 
-            dm.setHeaderTitle("Section " + i);
+        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
 
-            ArrayList<SingleItemModel> singleItem = new ArrayList<SingleItemModel>();
-            for (int j = 0; j <= 10; j++) {
-                singleItem.add(new SingleItemModel("Item " + j, "URL " + j));
-            }
+        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
+        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
 
-            dm.setAllItemsInSection(singleItem);
 
-            allSampleData.add(dm);
-
-        }
+        return personlList;
     }
 
 

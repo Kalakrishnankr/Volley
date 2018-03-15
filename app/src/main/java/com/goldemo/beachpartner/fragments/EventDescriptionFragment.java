@@ -79,7 +79,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         switch (view.getId()){
             case R.id.btn_invite_partner:
                 //call partner Invite Page
-                PartnerInviteFragmentTab fragment      =   new PartnerInviteFragmentTab();
+                PartnerInviteFragmentTab fragment   =   new PartnerInviteFragmentTab();
                 FragmentTransaction transaction     =   getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.container,fragment);
                 transaction.addToBackStack(null);
@@ -88,6 +88,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             case R.id.btn_register:
                 break;
             case R.id.btn_back:
+                //Back button
+                getActivity().onBackPressed();
+
                 break;
 
                 default:
@@ -95,7 +98,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
 
     }
-
 
 
 }

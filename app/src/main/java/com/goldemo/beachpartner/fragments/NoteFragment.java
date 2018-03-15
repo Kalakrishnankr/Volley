@@ -79,7 +79,7 @@ public class NoteFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-       View view=inflater.inflate(R.layout.fragment_note, container, false);
+        View view=inflater.inflate(R.layout.fragment_note, container, false);
         rcVNotes =view.findViewById(R.id.rcv_notes);
         allSampleData = new ArrayList<NoteDataModel>();
         createDummyData();

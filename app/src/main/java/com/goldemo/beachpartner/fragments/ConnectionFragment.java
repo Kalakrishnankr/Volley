@@ -9,18 +9,19 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.ConnectionAdapter;
-import com.goldemo.beachpartner.models.DataModel;
-import com.goldemo.beachpartner.models.SingleItemModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
-
-
+import java.util.List;
 
 
 public class ConnectionFragment extends Fragment implements View.OnClickListener {
@@ -28,7 +29,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
     private TextView txtv_coach,txtv_athlete;
-    ArrayList<DataModel> allSampleData;
+    ArrayList<PersonModel> allSampleData;
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -40,6 +41,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -58,20 +60,21 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private void initActivity(View view) {
 
-        allSampleData = new ArrayList<DataModel>();
-        createDummyData();
+
+        allSampleData = (ArrayList<PersonModel>) createDummyData();
 
 
         rcv_conn    =   (RecyclerView)view.findViewById(R.id.rcv_connection);
         txtv_athlete=   (TextView)view.findViewById(R.id.txtAthlete);
         txtv_coach  =   (TextView)view.findViewById(R.id.txtCoach);
         adapter     =   new ConnectionAdapter(getContext(),allSampleData);
+        adapter.notifyDataSetChanged();
+
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
         rcv_conn.setLayoutManager(layoutManager);
         rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
         rcv_conn.setAdapter(adapter);
-
 
         activeAthletTab();
 
@@ -99,23 +102,24 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private void createDummyData() {
-        for (int i = 1; i <= 20; i++) {
+    private List<PersonModel> createDummyData() {
 
-            DataModel dm = new DataModel();
+        List<PersonModel>personModelList = new ArrayList<>();
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
 
-            dm.setHeaderTitle("Section " + i);
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
 
-            ArrayList<SingleItemModel> singleItem = new ArrayList<SingleItemModel>();
-            for (int j = 0; j <= 20; j++) {
-                singleItem.add(new SingleItemModel("Item " + j, "URL " + j));
-            }
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
 
-            dm.setAllItemsInSection(singleItem);
+        return personModelList;
 
-            allSampleData.add(dm);
-
-        }
     }
 
     @Override
@@ -181,5 +185,29 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        inflater.inflate(R.menu.menu_search,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+
+        /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
+        inflater.inflate(R.menu.sample_menu, menu);*/
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.action_search:
+
+                break;
+            default:
+                break;
+        }
+        return false;
     }
 }

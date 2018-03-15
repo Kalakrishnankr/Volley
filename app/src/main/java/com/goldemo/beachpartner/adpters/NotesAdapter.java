@@ -1,14 +1,15 @@
 package com.goldemo.beachpartner.adpters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.models.NoteDataModel;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
  * Created by Owner on 3/12/2018.
  */
 
-public class NotesAdapter extends RecyclerView.Adapter {
+public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> {
     private ArrayList<NoteDataModel> dataList;
     Context mContext;
     public NotesAdapter(Context context, ArrayList<NoteDataModel> allSampleData) {
@@ -38,8 +39,17 @@ public class NotesAdapter extends RecyclerView.Adapter {
 
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
+        holder.deleteNotes.setOnClickListener(new View.OnClickListener() {
+            @SuppressLint("ResourceType")
+            @Override
+            public void onClick(View v) {
+                holder.removeAt(position);
+                Toast.makeText(mContext, "Hi"+position , Toast.LENGTH_SHORT).show();
 
+
+            }
+        });
     }
 
     @Override
@@ -48,29 +58,30 @@ public class NotesAdapter extends RecyclerView.Adapter {
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtv_name,txtv_age,txtv_block,txtv_message,txtv_notes;
-        public ImageView topIcon;
+    public class ViewHolder extends RecyclerView.ViewHolder  {
+        public EditText edit_notes;
+        public ImageView topIcon,noteDisabled,deleteNotes;
         public CardView cardView;
-        public RelativeLayout rrHeaderTwo,rrHeaderOne;
+
 
         public ViewHolder(View view) {
             super(view);
 
-            topIcon     = view.findViewById(R.id.top_icon);
-            txtv_name   = view.findViewById(R.id.name);
-            txtv_age    = view.findViewById(R.id.age);
-            txtv_block  = view.findViewById(R.id.block);
-            txtv_message= view.findViewById(R.id.message);
-            txtv_notes  = view.findViewById(R.id.notes);
+
+            noteDisabled= view.findViewById(R.id.note_disabled);
+            edit_notes  = view.findViewById(R.id.name);
             cardView    = view.findViewById(R.id.card_view);
+            deleteNotes = view.findViewById(R.id.delete_note);
+            edit_notes.setVerticalScrollBarEnabled(true);
 
 
 
-            rrHeaderOne = view.findViewById(R.id.rlHeader1);
+        }
 
-
-            rrHeaderTwo = view.findViewById(R.id.rlHeader2);
+        public void removeAt(int position) {
+            dataList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, dataList.size());
         }
     }
 

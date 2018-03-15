@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="6.1">
+        android:weightSum="5.8">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -134,35 +134,43 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/menubar"
-            android:layout_weight="0.5"
-            android:orientation="horizontal"
-            android:weightSum="2">
+            android:layout_weight="0.4">
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="0dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.7"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/white"
-                android:text="@string/upcoming_tournaments" />
+                android:orientation="horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:weightSum="2">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.7"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:text="@string/upcoming_tournaments" />
 
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="end"
-                android:padding="5dp"
-                android:text="@string/next"
-                android:textColor="@color/white"
-                android:textAlignment="textEnd" />
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:gravity="right"
+                        android:padding="5dp"
+                        android:text="@string/next"
+                        android:textColor="@color/white"
+                        android:textAlignment="center" />
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_next"/>
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_next"/>
+
+
+            </LinearLayout>
 
         </LinearLayout>
 
@@ -190,21 +198,6 @@
 
                 </LinearLayout>
 
-           <!-- <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.2">
-
-                &lt;!&ndash;<me.relex.circleindicator.CircleIndicator
-                    android:id="@+id/indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>&ndash;&gt;
-            </LinearLayout>-->
-
-
-
-
-
 
         </LinearLayout>
 
@@ -214,40 +207,47 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/menubar"
-            android:orientation="horizontal"
-            android:layout_weight="0.5"
-            android:weightSum="2">
+            android:layout_weight="0.4">
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:text="@string/messages"
-                android:textColor="@color/white"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2" />
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.5"
+                        android:gravity="center_vertical"
+                        android:text="@string/messages"
+                        android:textColor="@color/white"/>
+
+                    <ImageView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.2" />
 
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="end"
-                android:text="@string/next"
-                android:padding="5dp"
-                android:textColor="@color/white"
-                android:textAlignment="textEnd" />
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.3"
+                        android:gravity="end"
+                        android:text="@string/next"
+                        android:padding="5dp"
+                        android:textColor="@color/white"
+                        android:textAlignment="textEnd" />
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_next"/>
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_next"/>
+
+                </LinearLayout>
 
         </LinearLayout>
 
@@ -288,56 +288,60 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/menubar"
-            android:orientation="horizontal"
-            android:layout_weight="0.5"
-            android:weightSum="2">
+            android:layout_weight="0.4">
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/txtview_head"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.6"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="10dp"
-                android:textColor="@color/white"
-                android:text="@string/partnerintrest" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp">
 
-            <ImageView
-                android:id="@+id/imgview_send"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="1dp"
-                android:background="@drawable/ic_msg_send"/>
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:id="@+id/txtview_head"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.6"
+                        android:gravity="center_vertical"
+                        android:textColor="@color/white"
+                        android:text="@string/partnerintrest" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.1"/>
+                    <ImageView
+                        android:id="@+id/imgview_send"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/ic_msg_send"/>
 
-            <ImageView
-                android:id="@+id/imgview_received"
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="1dp"
-                android:background="@drawable/ic_msg_recv"/>
+                    <ImageView
+                        android:id="@+id/imgview_received"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/ic_msg_receive"/>
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.3"
-                android:gravity="end"
-                android:padding="5dp"
-                android:textColor="@color/white"
-                android:text="@string/next"
-                android:textAlignment="textEnd" />
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.4"
+                        android:gravity="end"
+                        android:padding="5dp"
+                        android:textColor="@color/white"
+                        android:text="@string/next"
+                        android:textAlignment="textEnd" />
 
-            <ImageView
-                android:layout_width="25dp"
-                android:layout_height="25dp"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_next"/>
+                    <ImageView
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_next"/>
+
+
+
+                </LinearLayout>
 
         </LinearLayout>
 

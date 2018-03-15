@@ -7,6 +7,7 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -17,18 +18,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.appyvet.materialrangebar.RangeBar;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
@@ -43,11 +43,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
+
+import io.apptik.widget.MultiSlider;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -61,11 +61,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private RelativeLayout rr;
     private CoordinatorLayout llv;
     private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi,btnPlay;
-    private TextView tvmonth,txtv_age,txtv_gender;
+    private TextView tvmonth,tvMin,tvMax,txtv_gender;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
-    private Spinner spinner_location;
-    private RangeBar age_bar;
+    private AutoCompleteTextView spinner_location;
+    private MultiSlider age_bar;
     public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
@@ -75,18 +75,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private LinearLayout topFrameLayout;
 
     public static final String MY_PREFS_FILTER = "MyPrefsFile";
-    ArrayList<String>Location = new ArrayList<>();
+    ArrayList<String>stateList = new ArrayList<>();
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     public boolean reverseCount=false;
     private boolean isbpActive =false;
 
+    private SharedPreferences prefs;
+
 
     public BPFinderFragment() {
-
     }
-
-
 
     @SuppressLint("ValidFragment")
     public BPFinderFragment(boolean isBPActive) {
@@ -119,7 +118,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         rr                  =   (RelativeLayout) view.findViewById(R.id.rr);
         llv                 =   (CoordinatorLayout)view.findViewById(R.id.llMoreinfo);
         imgv_profilepic     =   (ImageView)view.findViewById(R.id.img_profile);
-        //tvname          = (TextView)view.findViewById(R.id.txt_name);
+
         cardStackView       =   (CardStackView) view.findViewById(R.id.activity_main_card_stack_view);
         tvmonth             =   (TextView) view.findViewById(R.id.month_name);
         ImageView toggle    =   (ImageView) view.findViewById(R.id.toggle);
@@ -128,9 +127,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         //Layout for filters
 
         llvFilter           =   (LinearLayout) view.findViewById(R.id.llFilter);
-        txtv_age            =   (TextView) view.findViewById(R.id.txtv_age);
-        age_bar             =   (RangeBar)  view.findViewById(R.id.rangebar);
-        spinner_location    =   (Spinner) view.findViewById(R.id.spinner_location);
+        tvMin               =   (TextView) view.findViewById(R.id.txtv_minAge);
+        tvMax               =   (TextView) view.findViewById(R.id.txtv_maxAge);
+        age_bar             =   (MultiSlider)  view.findViewById(R.id.rangebar);
+        spinner_location    =   (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
         txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
 
         btnMale             =   (ToggleButton) view.findViewById(R.id.btnMen);
@@ -174,43 +174,42 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         //choose Location
 
-        dataAdapter = new ArrayAdapter<String>(getActivity(),
-                android.R.layout.simple_spinner_item, Location);
-        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        dataAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, stateList);
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+        spinner_location.setTypeface(font);
         spinner_location.setAdapter(dataAdapter);
 
-        String minValue= null;
-        String maxValue=null;
-        Set<String>fetch;
         //check shared prefvalue
-        SharedPreferences prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
+        prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
+
         if(prefs!=null){
 
-            int location     =   prefs.getInt("location",0);
-            String Sgender   =   prefs.getString("gender",null);
+            String location  =   prefs.getString("location",null);
+            String sgender   =   prefs.getString("gender",null);
             Boolean isCoach  =   prefs.getBoolean("isCoachActive",false);
-            fetch    =   prefs.getStringSet("agerange",null);
-            if(fetch!=null){
-                ArrayList<String>data = new ArrayList<>(fetch);
-                for(int i=0;i<data.size();i++){
-                    minValue    = data.get(0);
-                    maxValue    = data.get(1);
-                }
-                age_bar.setRangePinsByValue(Float.parseFloat(minValue),Float.parseFloat(maxValue));
-                spinner_location.setSelection(location);
-                txtv_age.setText(""+minValue+"-"+""+maxValue);
-                sCoach.setChecked(isCoach);
-                if(Sgender.equals("Men")){
+            int minAge       =   prefs.getInt("minAge",0);
+            int maxAge       =   prefs.getInt("maxAge",0);
+
+
+            tvMin.setText(String.valueOf(minAge));
+            tvMax.setText(String.valueOf(maxAge));
+            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+            age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
+            spinner_location.setText(location);
+            sCoach.setChecked(isCoach);
+
+            if(sgender!=null){
+                if(sgender.equals("Men")){
                     txtv_gender.setText("Men");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setChecked(true);
-                }else if(Sgender.equals("Women")){
+                }else if(sgender.equals("Women")){
                     txtv_gender.setText("Women");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setChecked(true);
-
                 }else {
                     btnMale.setChecked(true);
                     btnFemale.setChecked(true);
@@ -219,22 +218,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
-                    btnFemale.setChecked(true);
-                    btnMale.setChecked(true);
                 }
-               // int position = dataAdapter.getPosition(location);
-                //spinner_location.setSelection(position);
             }
 
         }
 
         //age range bar
-        age_bar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
+        age_bar.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
-            public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
+            public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
 
-                txtv_age.setText(""+leftPinValue+"-"+""+rightPinValue);
-
+                if (thumbIndex == 0) {
+                    tvMin.setText(String.valueOf(value));
+                } else {
+                    tvMax.setText(String.valueOf(value));
+                }
             }
         });
 
@@ -247,9 +245,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
+
         //button Men
-
-
         btnMale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -265,23 +262,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else if((btnFemale.isChecked()&&!!isChecked )|| btnFemale.isChecked()){
+                else if(!isChecked ){
                     txtv_gender.setText("Women");
                     btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnMale.setTextColor(getResources().getColor(R.color.black));
+                    btnFemale.setChecked(true);
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else{
-                    txtv_gender.setText("  ");
-                    btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
-                    btnMale.setTextColor(getResources().getColor(R.color.black));
-                }
+
 
 
             }
         });
 
         //button Women
-
         btnFemale.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -297,17 +292,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else if((btnMale.isChecked()&&!!isChecked )|| btnMale.isChecked()){
+                else if(!isChecked ){
                     txtv_gender.setText("Men");
                     btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnFemale.setTextColor(getResources().getColor(R.color.black));
+                    btnMale.setChecked(true);
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
-                else{
-                    txtv_gender.setText("  ");
-                    btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
-                    btnFemale.setTextColor(getResources().getColor(R.color.black));
-                }
-
 
 
             }
@@ -317,19 +309,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
         //add data to shared preference
-
         //play button
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Set<String> range = new HashSet<>();
-                range.add(age_bar.getLeftPinValue());
-                range.add(age_bar.getRightPinValue());
-
 
                 SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                preferences.putInt("location",spinner_location.getSelectedItemPosition());
-                preferences.putStringSet("agerange",range);
+                preferences.putString("location",spinner_location.getText().toString().trim());
+                preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
+                preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
                 preferences.putString("gender",txtv_gender.getText().toString());
                 preferences.putBoolean("isCoachActive",sCoach.isChecked());
                 preferences.apply();
@@ -338,7 +326,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 rr.setVisibility(View.VISIBLE);
                 rrvBottom.setVisibility(View.VISIBLE);
 
-               //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
+                //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
                 if(isbpActive){
                     topFrameLayout.setVisibility(View.GONE);
 
@@ -407,7 +395,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
 
-               // long dateInMilli = DatetoMilli(dateClicked);
+                // long dateInMilli = DatetoMilli(dateClicked);
                 //ListView simpleListView=(ListView) view.findViewById(R.id.List1);
 
                /* for(int i=0;i<eventLists.size();i++){
@@ -450,7 +438,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         });
 
 
-       // String newFormat= "dd MMMM";
+        // String newFormat= "dd MMMM";
         tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
 
 
@@ -482,26 +470,78 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
 
-    private void addLocation() {
-        Location.add("India");
-        Location.add("China");
-        Location.add("Bahamas");
-        Location.add("Cambodia");
-        Location.add("American Samoa");
-        Location.add("Anguilla");
-        Location.add("Benin");
-        Location.add("Bangladesh");
-        Location.add("Brazil");
-        Location.add("Canada");
-        Location.add("Denmark");
-        Location.add("Dominica");
-        Location.add("Egypt");
-        Location.add("Greenland");
-        Location.add("Iceland");
-        Location.add("Indonesia");
-        Location.add("Japan");
-        Location.add("Malaysia");
-        Location.add("Morocco");
+    public void addLocation() {
+        stateList.add("Alabama (AL)");
+        stateList.add("Alaska (AK)");
+        stateList.add("Alberta (AB)");
+        stateList.add("American Samoa (AS)");
+        stateList.add("Arizona (AZ)");
+        stateList.add("Arkansas (AR)");
+        stateList.add("Armed Forces (AE)");
+        stateList.add("Armed Forces Americas (AA)");
+        stateList.add("Armed Forces Pacific (AP)");
+        stateList.add("British Columbia (BC)");
+        stateList.add("California (CA)");
+        stateList.add("Colorado (CO)");
+        stateList.add("Connecticut (CT)");
+        stateList.add("Delaware (DE)");
+        stateList.add("District Of Columbia (DC)");
+        stateList.add("Florida (FL)");
+        stateList.add("Georgia (GA)");
+        stateList.add("Guam (GU)");
+        stateList.add("Hawaii (HI)");
+        stateList.add("Idaho (ID)");
+        stateList.add("Illinois (IL)");
+        stateList.add("Indiana (IN)");
+        stateList.add("Iowa (IA)");
+        stateList.add("Kansas (KS)");
+        stateList.add("Kentucky (KY)");
+        stateList.add("Louisiana (LA)");
+        stateList.add("Maine (ME)");
+        stateList.add("Manitoba (MB)");
+        stateList.add("Maryland (MD)");
+        stateList.add("Massachusetts (MA)");
+        stateList.add("Michigan (MI)");
+        stateList.add("Minnesota (MN)");
+        stateList.add("Mississippi (MS)");
+        stateList.add("Missouri (MO)");
+        stateList.add("Montana (MT)");
+        stateList.add("Nebraska (NE)");
+        stateList.add("Nevada (NV)");
+        stateList.add("New Brunswick (NB)");
+        stateList.add("New Hampshire (NH)");
+        stateList.add("New Jersey (NJ)");
+        stateList.add("New Mexico (NM)");
+        stateList.add("New York (NY)");
+        stateList.add("Newfoundland (NF)");
+        stateList.add("North Carolina (NC)");
+        stateList.add("North Dakota (ND)");
+        stateList.add("Northwest Territories (NT)");
+        stateList.add("Nova Scotia (NS)");
+        stateList.add("Nunavut (NU)");
+        stateList.add("Ohio (OH)");
+        stateList.add("Oklahoma (OK)");
+        stateList.add("Ontario (ON)");
+        stateList.add("Oregon (OR)");
+        stateList.add("Pennsylvania (PA)");
+        stateList.add("Prince Edward Island (PE)");
+        stateList.add("Puerto Rico (PR)");
+        stateList.add("Quebec (QC)");
+        stateList.add("Rhode Island (RI)");
+        stateList.add("Saskatchewan (SK)");
+        stateList.add("South Carolina (SC)");
+        stateList.add("South Dakota (SD)");
+        stateList.add("Tennessee (TN)");
+        stateList.add("Texas (TX)");
+        stateList.add("Utah (UT)");
+        stateList.add("Vermont (VT)");
+        stateList.add("Virgin Islands (VI)");
+        stateList.add("Virginia (VA)");
+        stateList.add("Washington (WA)");
+        stateList.add("West Virginia (WV)");
+        stateList.add("Wisconsin (WI)");
+        stateList.add("Wyoming (WY)");
+        stateList.add("Yukon Territory (YT)");
 
     }
 
@@ -515,50 +555,49 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Renny", "Toronto", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
-        spots.add(new TouristSpot("Mariyam Fenn", "Ottawa", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
-        spots.add(new TouristSpot("Nancy", "Victoria", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
-        spots.add(new TouristSpot("Nellie", "Thunder Bay", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
-        spots.add(new TouristSpot("Elaine", "Barrie", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
-        spots.add(new TouristSpot("Jane", "Kingston", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
-        spots.add(new TouristSpot("Lisa", "Austin", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
-        spots.add(new TouristSpot("Rachel", "Los Angeles", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
-        spots.add(new TouristSpot("Sandra", "North West", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
-        spots.add(new TouristSpot("Zora", "Nasville", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/10.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
+        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
+        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
         return spots;
     }
 
-   /* private void reload() {
+    /* private void reload() {
+         cardStackView.setVisibility(View.GONE);
+         progressBar.setVisibility(View.VISIBLE);
+         new Handler().postDelayed(new Runnable() {
+             @Override
+             public void run() {
+                 adapter = createTouristSpotCardAdapter();
+                 cardStackView.setAdapter(adapter);
+                 cardStackView.setVisibility(View.VISIBLE);
+                 progressBar.setVisibility(View.GONE);
+             }
+         }, 1000);
+     }*/
+    private void reload() {
         cardStackView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                adapter = createTouristSpotCardAdapter();
-                cardStackView.setAdapter(adapter);
-                cardStackView.setVisibility(View.VISIBLE);
-                progressBar.setVisibility(View.GONE);
+                if (getActivity() != null && cardStackView != null) {
+                    if(adapter == null) {
+                        adapter = createTouristSpotCardAdapter();
+                    }
+                    cardStackView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                    cardStackView.setVisibility(View.VISIBLE);
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         }, 1000);
-    }*/
-   private void reload() {
-       cardStackView.setVisibility(View.GONE);
-       progressBar.setVisibility(View.VISIBLE);
-       new Handler().postDelayed(new Runnable() {
-           @Override
-           public void run() {
-               if (getActivity() != null && cardStackView != null) {
-                   if(adapter == null) {
-                       adapter = createTouristSpotCardAdapter();
-                   }
-                   cardStackView.setAdapter(adapter);
-                   adapter.notifyDataSetChanged();
-                   cardStackView.setVisibility(View.VISIBLE);
-                   progressBar.setVisibility(View.GONE);
-               }
-           }
-       }, 1000);
-   }
+    }
 
     private TouristSpotCardAdapter createTouristSpotCardAdapter() {
 

@@ -25,10 +25,10 @@
                 android:layout_height="wrap_content">
                 <ImageView
                     android:id="@+id/top_icon"
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:layout_alignParentRight="true"
-                    android:src="@drawable/ic_person"/>
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:background="@drawable/ic_cndown"
+                    android:layout_alignParentRight="true"/>
 
                 <com.goldemo.beachpartner.CircularImageView
                     android:id="@+id/thumbnail"
@@ -36,22 +36,9 @@
                     android:layout_height="75dp"
                     android:layout_alignParentTop="true"
                     android:layout_centerHorizontal="true"
-
                     android:contentDescription="@string/app_name"
-                    android:layout_margin="20dp"
-                    app:civ_border_width="2dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/mario" />
-
-                <!-- <ImageView
-                     android:id="@+id/thumbnail"
-                     android:layout_width="match_parent"
-                     android:layout_height="@dimen/album_cover_height"
-                     android:background="?attr/selectableItemBackgroundBorderless"
-                     android:clickable="true"
-                     android:elevation="5dp"
-                     android:scaleType="fitXY"
-                     android:src="@drawable/mario"/>-->
+                    android:layout_margin="16dp"
+                    android:scaleType="fitCenter"/>
 
                 <com.goldemo.beachpartner.CustomTextView
                     android:id="@+id/name"
@@ -79,9 +66,15 @@
                 android:id="@+id/rlHeader2"
                 android:layout_below="@+id/rlHeader1"
                 android:layout_width="match_parent"
-                android:visibility="gone"
-                android:animateLayoutChanges="true"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="gone">
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:background="@color/darkGrey"/>
 
 
                 <com.goldemo.beachpartner.CustomTextView
@@ -94,6 +87,14 @@
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"/>
 
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_below="@+id/block"
+                    android:background="@color/darkGrey"/>
+
                 <com.goldemo.beachpartner.CustomTextView
                     android:id="@+id/message"
                     android:layout_width="match_parent"
@@ -104,6 +105,14 @@
                     android:paddingBottom="@dimen/songs_count_padding_bottom"
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_below="@+id/message"
+                    android:background="@color/darkGrey"/>
 
                 <com.goldemo.beachpartner.CustomTextView
                     android:id="@+id/notes"

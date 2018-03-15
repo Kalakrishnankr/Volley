@@ -16,6 +16,8 @@
             android:gravity="center_vertical"
             android:textSize="18sp"
             android:textStyle="bold"
+            android:layout_marginLeft="10dp"
+            android:textColor="@android:color/black"
             android:text="General Event Details" />
 
         <LinearLayout
@@ -231,7 +233,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:gravity="center"
-                            android:text="asdasdasdas"
+                            android:text="Mar 15 2018"
                             android:layout_weight="0.5"/>
 
                     </LinearLayout>
@@ -271,7 +273,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:gravity="center"
-                            android:text="asdasdasdas"
+                            android:text="April 10 2018"
                             android:layout_weight="0.5"/>
 
 
@@ -451,12 +453,6 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.2" />
-
-
-
-
-
-
 
                     </LinearLayout>
 

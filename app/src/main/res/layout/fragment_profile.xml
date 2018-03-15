@@ -9,7 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.55"
         android:id="@+id/rrTop">
 
 
@@ -29,7 +29,7 @@
                 android:visibility="gone"
                 android:layout_gravity="bottom|right"
                 android:layout_margin="10dp"
-                android:background="@drawable/ic_edit_profile" />
+                android:background="@drawable/ic_edit_profile"/>
 
             <ImageView
                 android:id="@+id/imgPlay"
@@ -150,16 +150,20 @@
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.5"
+        android:layout_weight="0.45"
         android:weightSum="1"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingTop="5dp">
+        <!--<view-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="1dp"/>-->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2"
             android:orientation="horizontal"
-            android:background="#e6e6e6"
+            android:background="#eeeeee"
             android:weightSum="1">
 
             <!--BAsic Info-->
@@ -178,17 +182,26 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="Basic Information"
+                    android:textSize="16sp"
                     android:textColor="@color/darkGrey"
                     android:textStyle="bold"
-                    android:layout_weight="0.95"/>
-                <View
-                    android:id="@+id/viewBasic"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_weight="0.8" />
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="0.05"
-                    android:background="@color/blueDark"/>
+                    android:layout_weight="0.2"
+                    android:background="@drawable/shadow_profile_page">
+
+                    <View
+                        android:id="@+id/viewBasic"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/btnColor" />
+
+                </LinearLayout>
 
 
             </LinearLayout>
@@ -209,17 +222,25 @@
                     android:layout_height="0dp"
                     android:gravity="center"
                     android:text="More Information"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:textColor="@color/darkGrey"
-                    android:layout_weight="0.95"/>
-                <View
-                    android:id="@+id/viewMore"
+                    android:layout_weight="0.8"/>
+
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:layout_weight="0.05"
-                    android:background="@color/white"/>
+                    android:layout_weight="0.2"
+                    android:background="@drawable/shadow_profile_page">
+                    <View
+                        android:id="@+id/viewMore"
+                        android:layout_width="match_parent"
+                        android:layout_height="4dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@color/white"/>
+                </LinearLayout>
+
 
 
             </LinearLayout>
@@ -247,14 +268,15 @@
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_below="@+id/tab"
-                    android:isScrollContainer="false">
+                    android:isScrollContainer="false"
+                    android:fillViewport="true">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
                         android:padding="5dp"
-                        android:background="#e6e6e6"
+                        android:background="#efeff1"
                         android:layout_marginLeft="15dp"
                         android:layout_marginRight="15dp">
 
@@ -284,8 +306,8 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:maxLines="1"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:nextFocusDown="@+id/txtvLname"
                                 android:background="@android:color/transparent"/>
@@ -324,8 +346,8 @@
                                 android:enabled="false"
                                 android:layout_weight="1"
                                 android:maxLines="1"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:nextFocusDown="@+id/gender_lt"
                                 android:background="@android:color/transparent"/>
@@ -365,8 +387,8 @@
                                 android:layout_height="match_parent"
                                 android:enabled="false"
                                 android:layout_weight="1"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:clickable="true"
                                 android:focusable="false"
                                 android:nextFocusDown="@+id/txtv_dob"
@@ -406,8 +428,8 @@
                                 android:enabled="false"
                                 android:focusable="false"
                                 android:layout_weight="1"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:nextFocusDown="@+id/txtv_city"
                                 android:background="@android:color/transparent"/>
 
@@ -444,8 +466,8 @@
                                 android:layout_height="match_parent"
                                 android:enabled="false"
                                 android:maxLines="1"
-                                android:paddingStart="10dp"
-                                android:paddingLeft="10dp"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:nextFocusDown="@+id/txtv_mobileno"
                                 android:background="@android:color/transparent"
@@ -485,6 +507,8 @@
                                 android:layout_height="match_parent"
                                 android:maxLines="1"
                                 android:singleLine="true"
+                                android:paddingStart="5dp"
+                                android:paddingLeft="5dp"
                                 android:gravity="center_vertical"
                                 android:layout_weight="1"
                                 android:background="@android:color/transparent"/>

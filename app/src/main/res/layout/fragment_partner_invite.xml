@@ -4,22 +4,25 @@
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
-    tools:context="com.goldemo.beachpartner.fragments.PartnerInviteFragmentTab">
+    tools:context="com.goldemo.beachpartner.fragments.PartnerInviteFragmentTab"
+    android:weightSum="2">
 
 
     <com.goldemo.beachpartner.calendar.myowncalendar.SlidingTab
         android:id="@+id/tabs"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="0dp"
+        android:layout_weight="0.2"
         android:elevation="2dp"
-        android:background="#283873"/>
+        android:background="@color/menubar"/>
 
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"
-        android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:layout_weight="1">
+        android:layout_height="0dp"
+        android:layout_weight="1.8">
+
     </android.support.v4.view.ViewPager>
 
 

@@ -25,6 +25,7 @@ public class TabActivity extends AppCompatActivity {
     private TextView mTextMessage;
     HomeFragment homeFragment;
     private String YOUR_FRAGMENT_STRING_TAG;
+    private BottomNavigationView navigation;
     private static boolean isBPActive = false;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -90,7 +91,7 @@ public class TabActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         FrameLayout fg = (FrameLayout)findViewById(R.id.container);
-        BottomNavigationView navigation = (BottomNavigationView) findViewById(R.id.navigation);
+        navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
 
@@ -156,7 +157,7 @@ public class TabActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (getFragmentManager().getBackStackEntryCount() > 0) {
-            //getFragmentManager().popBackStack();
+            getFragmentManager().popBackStack();
         } else {
             super.onBackPressed();
         }

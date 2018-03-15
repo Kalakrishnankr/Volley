@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
-import com.goldemo.beachpartner.models.DataModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
 
@@ -19,9 +19,9 @@ import java.util.ArrayList;
 
 public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapter.MyViewHolder> {
     Context mContext;
-    ArrayList<DataModel>dataModelList;
+    ArrayList<PersonModel>dataModelList;
 
-    public MyConnectionAdapter(Context context, ArrayList<DataModel> allSampleData) {
+    public MyConnectionAdapter(Context context, ArrayList<PersonModel> allSampleData) {
 
         this.mContext       =   context;
         this.dataModelList  =   allSampleData;
@@ -38,6 +38,11 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
+        PersonModel model = dataModelList.get(position);
+
+        holder.tvname.setText(model.getUname());
+        holder.imgPic.setImageResource(model.getImage());
 
     }
 

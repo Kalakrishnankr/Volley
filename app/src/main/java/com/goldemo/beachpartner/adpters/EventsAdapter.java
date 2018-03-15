@@ -53,7 +53,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         holder.cardview.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
 
                 EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
                 //add bundle

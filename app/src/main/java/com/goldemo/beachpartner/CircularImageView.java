@@ -149,4 +149,5 @@ public class CircularImageView extends ImageView
 
         return (result + 2);
     }
+
 }

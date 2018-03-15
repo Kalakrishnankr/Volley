@@ -6,7 +6,6 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,7 +18,6 @@ import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,6 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.goldemo.beachpartner.CircularImageView;
@@ -49,9 +46,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
-
-import static android.view.Gravity.LEFT;
-import static android.view.Gravity.RIGHT;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -108,9 +102,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         btnsBottom              =       (LinearLayout) view.findViewById(R.id.btns_at_bottom);
 
         more_info_btns_bottom   =       (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
-        //tabs        =   (TabLayout)view.findViewById(R.id.tabs);
-        //viewPager   =   (ViewPager) view.findViewById(R.id.pager);
-        //videoFrame  =   (FrameLayout)view.findViewById(R.id.header_cover_video);
         imgEdit                 =       (ImageView)view.findViewById(R.id.edit);
 
         imgProfile              =       (CircularImageView)view.findViewById(R.id.row_icon);
@@ -129,7 +120,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         llMenuMore              =    (LinearLayout)view.findViewById(R.id.llMenuMore);
 
         basic_info_tab          =     (TextView) view.findViewById(R.id.basic_info_tab);
-        more_info_tab          =     (TextView) view.findViewById(R.id.more_info_tab);
+        more_info_tab           =     (TextView) view.findViewById(R.id.more_info_tab);
 
         llBasicDetails          =    (LinearLayout)view.findViewById(R.id.llBasicDetails);
         llMoreDetails           =    (LinearLayout)view.findViewById(R.id.llMoreInfoDetails);
@@ -147,8 +138,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPhone               =   (EditText)view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave    =   (Button)view.findViewById(R.id.btnsave);
-        basicBtnCancel  =   (Button)view.findViewById(R.id.btncancel);
+        basicBtnSave            =   (Button)view.findViewById(R.id.btnsave);
+        basicBtnCancel          =   (Button)view.findViewById(R.id.btncancel);
 
 
         //Fore More Deatsils
@@ -217,7 +208,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         experience.add("3-4 years Experienced Tournament Player");
         experience.add("5+ years Multiple Top Finishes/Ranked player");
 
-        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, experience);
+        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, experience);
         expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExp.setAdapter(expAdapter);
 
@@ -227,7 +218,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         courtPref.add("Left side");
         courtPref.add("Right Side");
         courtPref.add("No Preference");
-        ArrayAdapter<String> prefAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, courtPref);
+        ArrayAdapter<String> prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPref.setAdapter(prefAdapter);
 
@@ -237,7 +228,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         position.add("Primary Blocker");
         position.add("Primary Defender");
         position.add("Split Block/Defense");
-        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, position);
+        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, position);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPositon.setAdapter(positionAdapter);
 
@@ -251,7 +242,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         tournamentInterest.add("AA");
         tournamentInterest.add("AAA");
         tournamentInterest.add("Pro");
-        ArrayAdapter<String> tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, tournamentInterest);
+        ArrayAdapter<String> tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTLInterest.setAdapter(tournamentInterestAdapter);
 
@@ -265,7 +256,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         rating.add("B");
         rating.add("C Or Novice");
         rating.add("Unrated");
-        ArrayAdapter<String> highestRatingAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, rating);
+        ArrayAdapter<String> highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
         highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTourRating.setAdapter(highestRatingAdapter);
 
@@ -279,7 +270,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         distance.add("Up to 500 miles");
         distance.add("Nationwide");
         distance.add("International");
-        ArrayAdapter<String> distanceAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, distance);
+        ArrayAdapter<String> distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
         highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWtoTravel.setAdapter(distanceAdapter);
 

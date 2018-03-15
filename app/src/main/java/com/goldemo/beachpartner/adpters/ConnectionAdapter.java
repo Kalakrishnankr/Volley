@@ -12,10 +12,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.goldemo.beachpartner.MyInterface;
+import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.NoteFragment;
-import com.goldemo.beachpartner.models.DataModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
 
@@ -26,16 +26,14 @@ import java.util.ArrayList;
 public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.ViewHolder> {
 
     Context mContext;
-    private ArrayList<DataModel> dataList;
+    private ArrayList<PersonModel> dataList;
     //    public static boolean isExpanded =false;
-    int minHeight;
-    int height;
-    MyInterface mclickListener;
+
     public ExpandOrCollapse mAnimationManager;
 
 
 
-    public ConnectionAdapter(Context context, ArrayList<DataModel> allSampleData) {
+    public ConnectionAdapter(Context context, ArrayList<PersonModel> allSampleData) {
         this.mContext=context;
         this.dataList=allSampleData;
     }
@@ -45,6 +43,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.connection_card,parent,false);
         ViewHolder viewHolder = new ViewHolder(view);
+
         return viewHolder;
     }
 
@@ -53,10 +52,15 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
+
         if (dataList != null && !dataList.isEmpty()) {
             if (dataList.get(position).isExpanded) {
+                mAnimationManager.expand(holder.rrHeaderTwo, 1000, 250);
+
                 holder.rrHeaderTwo.setVisibility(View.VISIBLE);
             } else {
+                mAnimationManager.expand(holder.rrHeaderTwo, 1000, -250);
+
                 holder.rrHeaderTwo.setVisibility(View.GONE);
             }
             holder.topIcon.setOnClickListener(new View.OnClickListener() {
@@ -64,11 +68,13 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 public void onClick(View view) {
 
                     if (dataList.get(position).isExpanded) {
-                        mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -200);
+                        //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
+                        mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
                         holder.rrHeaderTwo.setVisibility(View.GONE);
                         dataList.get(position).isExpanded = false;
                     } else {
-                        mAnimationManager.expand(holder.rrHeaderTwo, 1000, 200);
+                       // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
+                        mAnimationManager.expand(holder.rrHeaderTwo, 1000, 300);
                         holder.rrHeaderTwo.setVisibility(View.VISIBLE);
                         dataList.get(position).isExpanded = true;
                     }
@@ -91,8 +97,9 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 }
             });
 
-            holder.txtv_name.setText("RAMU");
-            holder.txtv_age.setText("29");
+            holder.txtv_name.setText(dataList.get(position).getUname());
+            holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
+            holder.profilePic.setImageResource(dataList.get(position).getImage());
 
 
         }
@@ -112,24 +119,26 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
         public ImageView topIcon;
         public CardView cardView;
         public RelativeLayout rrHeaderTwo,rrHeaderOne;
+        public CircularImageView profilePic;
 
         public ViewHolder(View view) {
             super(view);
 
-            topIcon     = view.findViewById(R.id.top_icon);
-            txtv_name   = view.findViewById(R.id.name);
-            txtv_age    = view.findViewById(R.id.age);
-            txtv_block  = view.findViewById(R.id.block);
-            txtv_message= view.findViewById(R.id.message);
-            txtv_notes  = view.findViewById(R.id.notes);
-            cardView    = view.findViewById(R.id.card_view);
+            topIcon     = (ImageView)view.findViewById(R.id.top_icon);
+            txtv_name   = (TextView)view.findViewById(R.id.name);
+            txtv_age    = (TextView)view.findViewById(R.id.age);
+            txtv_block  = (TextView)view.findViewById(R.id.block);
+            txtv_message= (TextView)view.findViewById(R.id.message);
+            txtv_notes  = (TextView)view.findViewById(R.id.notes);
+            cardView    = (CardView)view.findViewById(R.id.card_view);
+
+            profilePic  = (CircularImageView)view.findViewById(R.id.thumbnail);
 
 
+            rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
 
-            rrHeaderOne = view.findViewById(R.id.rlHeader1);
 
-
-            rrHeaderTwo = view.findViewById(R.id.rlHeader2);
+            rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
         }
     }
 

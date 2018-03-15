@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
-import com.goldemo.beachpartner.models.DataModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
 
@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHolder> {
     Context mContext;
-    ArrayList<DataModel>mList;
-    public MyTeamAdapter(Context context, ArrayList<DataModel> allSampleData) {
+    ArrayList<PersonModel>mList;
+    public MyTeamAdapter(Context context, ArrayList<PersonModel> allSampleData) {
         this.mContext   = context;
         this.mList      = allSampleData;
     }
@@ -36,6 +36,11 @@ public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHold
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
+
+        PersonModel model = mList.get(position);
+
+        holder.imgPic.setImageResource(model.getImage());
+        holder.tv_name.setText(model.getUname());
 
 
     }

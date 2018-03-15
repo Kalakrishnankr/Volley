@@ -2,21 +2,28 @@ package com.goldemo.beachpartner.fragments;
 
 import android.app.Dialog;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.EventsAdapter;
@@ -77,10 +84,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
-        if (getArguments() != null) {
-           // mParam1 = getArguments().getString(ARG_PARAM1);
-           // mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -107,10 +110,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         rview               =   (RecyclerView)view.findViewById(R.id.rcv_events);
 
         compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar);
+        toDayDate           = DateFormat.getDateTimeInstance().format(new Date());
+
         compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
         compactCalendarView.setUseThreeLetterAbbreviation(true);
-        toDayDate        = DateFormat.getDateTimeInstance().format(new Date());
-
 
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         rview.setLayoutManager(manager);
@@ -155,7 +158,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onDayClick(Date dateClicked) {
 
-                tview_date.setText(dateFormat.format(dateClicked));
+                tview_date.setText("Events for "+dateFormat.format(dateClicked));
 
                 List<Event> bookingsFromMap = compactCalendarView.getEvents(dateClicked);
 
@@ -189,7 +192,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         });
         tview_month.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
-        tview_date.setText(dateFormat.format(new Date()));
+        tview_date.setText("Events for "+dateFormat.format(new Date()));
 
 
 
@@ -360,11 +363,27 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     }
 
 
+    /*@Override
+    public void onPause() {
+        Log.e("DEBUG", "OnPause of HomeFragment");
+        setHasOptionsMenu(false);
+        super.onPause();
+    }*/
+
+
+
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
+        menu.clear();
+        inflater.inflate(R.menu.menu_class_fragment,menu);
         inflater.inflate(R.menu.menu_search_filter,menu);
         super.onCreateOptionsMenu(menu, inflater);
+
+
+        /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
+        inflater.inflate(R.menu.sample_menu, menu);*/
     }
 
     @Override
@@ -372,24 +391,265 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()){
             case R.id.search_filter:
-                Toast.makeText(getActivity(), "Filter Clicked", Toast.LENGTH_SHORT).show();
-               /* if(!((Activity)getContext()).isFinishing()){
-                    View popupView = LayoutInflater.from(getActivity()).inflate(R.layout.popup_filter, null);
-                    final PopupWindow popupWindow = new PopupWindow(popupView, WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT);
-                    popupWindow.showAsDropDown(popupView, 50, -30);
-                }*/
-                final Dialog fbDialogue = new Dialog(getActivity(), android.R.style.Theme_Black_NoTitleBar);
-                fbDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-                fbDialogue.setContentView(R.layout.popup_filter);
-                fbDialogue.setCancelable(true);
-                fbDialogue.show();
 
-
+                Dialog filterDialogue = new Dialog(getContext());
+                //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+                filterDialogue.setContentView(R.layout.popup_filter);
+                filterDialogue.setCanceledOnTouchOutside(true);
+                Window window = filterDialogue.getWindow();
+                WindowManager.LayoutParams wlp = window.getAttributes();
+                wlp.gravity = Gravity.TOP;
+                wlp.y = 120;
+                wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+                window.setAttributes(wlp);
+                filterDialogue.show();
+                initView(filterDialogue);
                 break;
-
                 default:
-                    break;
+                break;
         }
         return false;
     }
+
+    private void initView(Dialog filterDialogue) {
+
+        final Spinner spinner_events        =   (Spinner)filterDialogue.findViewById(R.id.event_spinner);
+        final Spinner spinner_subEvents     =   (Spinner)filterDialogue.findViewById(R.id.subtypes_spinner);
+        Spinner spinner_year                =   (Spinner)filterDialogue.findViewById(R.id.year_spinner);
+        Spinner spinner_month               =   (Spinner)filterDialogue.findViewById(R.id.month_spinner);
+
+        AutoCompleteTextView tv_state       =   (AutoCompleteTextView)filterDialogue.findViewById(R.id.state_List);
+        AutoCompleteTextView tv_region      =   (AutoCompleteTextView)filterDialogue.findViewById(R.id.region_list);
+
+        Button btn_search                   =   (Button)filterDialogue.findViewById(R.id.btn_invite_partner);
+
+
+        /*Events*/
+
+        List<String>eventTypes = new ArrayList<>();
+        eventTypes.add("Junior");
+        eventTypes.add("College Showcase");
+        eventTypes.add("College Clinic");
+        eventTypes.add("National Tournament");
+        eventTypes.add("Adult");
+
+        //List for junior
+
+        final List<String>juniorSubEvent =new ArrayList<>();
+        juniorSubEvent.add("10U");
+        juniorSubEvent.add("12U");
+        juniorSubEvent.add("13U");
+        juniorSubEvent.add("14U");
+        juniorSubEvent.add("15U");
+        juniorSubEvent.add("16U");
+        juniorSubEvent.add("17U");
+        juniorSubEvent.add("18U");
+
+
+        //List For adult
+
+        final List<String>adultSubEvent   = new ArrayList<>();
+        adultSubEvent.add("Unrated");
+        adultSubEvent.add("B");
+        adultSubEvent.add("A");
+        adultSubEvent.add("AA");
+        adultSubEvent.add("AAA");
+        adultSubEvent.add("Open");
+        adultSubEvent.add("CoEd");
+        adultSubEvent.add("CoEd Unrated");
+        adultSubEvent.add("CoEd B");
+        adultSubEvent.add("CoEd A");
+        adultSubEvent.add("CoEd AA");
+        adultSubEvent.add("CoEd AAA");
+        adultSubEvent.add("CoEd Open");
+
+        final List<String>subEventsNil    = new ArrayList<>();
+        subEventsNil.add("Not Applicable");
+
+
+        ArrayAdapter<String> adapterEventTypes = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, eventTypes);
+        spinner_events.setAdapter(adapterEventTypes);
+
+        spinner_events.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+                if(spinner_events.getSelectedItem().equals("Junior")){
+
+                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, juniorSubEvent);
+                    spinner_subEvents.setAdapter(adapterSubEvents);
+                }
+                else if(spinner_events.getSelectedItem().equals("Adult")){
+
+                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, adultSubEvent);
+                    spinner_subEvents.setAdapter(adapterSubEvents);
+                }
+                else {
+                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subEventsNil);
+                    spinner_subEvents.setAdapter(adapterSubEvents);
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+        /*Year*/
+
+        ArrayList<String> years = new ArrayList<String>();
+        int thisYear = Calendar.getInstance().get(Calendar.YEAR);
+        for (int i = thisYear; i <= 2030; i++) {
+            years.add(Integer.toString(i));
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
+        spinner_year.setAdapter(adapter);
+
+        /*Month*/
+        String[] Months = new String[] { "January", "February",
+                "March", "April", "May", "June", "July", "August", "September",
+                "October", "November", "December" };
+
+        ArrayAdapter<String> adapterMonths = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, Months);
+        spinner_month.setAdapter(adapterMonths);
+
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+
+        /*State*/
+
+        List<String>stateList   =   new ArrayList<>();
+        stateList.add("Alabama (AL)");
+        stateList.add("Alaska (AK)");
+        stateList.add("Alberta (AB)");
+        stateList.add("American Samoa (AS)");
+        stateList.add("Arizona (AZ)");
+        stateList.add("Arkansas (AR)");
+        stateList.add("Armed Forces (AE)");
+        stateList.add("Armed Forces Americas (AA)");
+        stateList.add("Armed Forces Pacific (AP)");
+        stateList.add("British Columbia (BC)");
+        stateList.add("California (CA)");
+        stateList.add("Colorado (CO)");
+        stateList.add("Connecticut (CT)");
+        stateList.add("Delaware (DE)");
+        stateList.add("District Of Columbia (DC)");
+        stateList.add("Florida (FL)");
+        stateList.add("Georgia (GA)");
+        stateList.add("Guam (GU)");
+        stateList.add("Hawaii (HI)");
+        stateList.add("Idaho (ID)");
+        stateList.add("Illinois (IL)");
+        stateList.add("Indiana (IN)");
+        stateList.add("Iowa (IA)");
+        stateList.add("Kansas (KS)");
+        stateList.add("Kentucky (KY)");
+        stateList.add("Louisiana (LA)");
+        stateList.add("Maine (ME)");
+        stateList.add("Manitoba (MB)");
+        stateList.add("Maryland (MD)");
+        stateList.add("Massachusetts (MA)");
+        stateList.add("Michigan (MI)");
+        stateList.add("Minnesota (MN)");
+        stateList.add("Mississippi (MS)");
+        stateList.add("Missouri (MO)");
+        stateList.add("Montana (MT)");
+        stateList.add("Nebraska (NE)");
+        stateList.add("Nevada (NV)");
+        stateList.add("New Brunswick (NB)");
+        stateList.add("New Hampshire (NH)");
+        stateList.add("New Jersey (NJ)");
+        stateList.add("New Mexico (NM)");
+        stateList.add("New York (NY)");
+        stateList.add("Newfoundland (NF)");
+        stateList.add("North Carolina (NC)");
+        stateList.add("North Dakota (ND)");
+        stateList.add("Northwest Territories (NT)");
+        stateList.add("Nova Scotia (NS)");
+        stateList.add("Nunavut (NU)");
+        stateList.add("Ohio (OH)");
+        stateList.add("Oklahoma (OK)");
+        stateList.add("Ontario (ON)");
+        stateList.add("Oregon (OR)");
+        stateList.add("Pennsylvania (PA)");
+        stateList.add("Prince Edward Island (PE)");
+        stateList.add("Puerto Rico (PR)");
+        stateList.add("Quebec (QC)");
+        stateList.add("Rhode Island (RI)");
+        stateList.add("Saskatchewan (SK)");
+        stateList.add("South Carolina (SC)");
+        stateList.add("South Dakota (SD)");
+        stateList.add("Tennessee (TN)");
+        stateList.add("Texas (TX)");
+        stateList.add("Utah (UT)");
+        stateList.add("Vermont (VT)");
+        stateList.add("Virgin Islands (VI)");
+        stateList.add("Virginia (VA)");
+        stateList.add("Washington (WA)");
+        stateList.add("West Virginia (WV)");
+        stateList.add("Wisconsin (WI)");
+        stateList.add("Wyoming (WY)");
+        stateList.add("Yukon Territory (YT)");
+
+        ArrayAdapter<String> adapterStates  =   new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,stateList);
+        tv_state.setTypeface(font);
+        tv_state.setAdapter(adapterStates);
+
+        //Region
+        List<String>regionList  =   new ArrayList<>();
+        regionList.add("Alaska Region (AK)");
+        regionList.add("Aloha Region (AH)");
+        regionList.add("Arizona Region (AZ)");
+        regionList.add("Badger Region (BG)");
+        regionList.add("Bayou Region (BY)");
+        regionList.add("Carolina Region (CR)");
+        regionList.add("Chesapeake Region (CH)");
+        regionList.add("Columbia Empire Region (CE)");
+        regionList.add("Delta Region (DE)");
+        regionList.add("Evergreen Region (EV)");
+        regionList.add("Florida Region (FL)");
+        regionList.add("Garden Empire Region (GE)");
+        regionList.add("Gateway Region (GW)");
+        regionList.add("Great Lakes Region (GL)");
+        regionList.add("Great Plains Region (GP)");
+        regionList.add("Gulf Coast Region (GC)");
+        regionList.add("Heart of America Region (HA)");
+        regionList.add("Hoosier Region (HO)");
+        regionList.add("Intermountain Region (IM)");
+        regionList.add("Iowa Region (IA)");
+        regionList.add("Iroquois Empire Region (IE)");
+        regionList.add("Keystone Region (KE)");
+        regionList.add("Lakeshore Region (LK)");
+        regionList.add("Lone Star Region (LS)");
+        regionList.add("Moku O Keawe Region (MK)");
+        regionList.add("New England Region (NE)");
+        regionList.add("North Country Region (NO)");
+        regionList.add("North Texas Region (NT)");
+        regionList.add("Northern California Region (NC)");
+        regionList.add("Ohio Valley Region (OV)");
+        regionList.add("Oklahoma Region (OK)");
+        regionList.add("Old Dominion Region (OD)");
+        regionList.add("Palmetto Region (PM)");
+        regionList.add("Pioneer Region (PR)");
+        regionList.add("Puget Sound Region (PS)");
+        regionList.add("Rocky Mountain Region (RM)");
+        regionList.add("Southern Region (SO)");
+        regionList.add("Southern California Region (SC)");
+        regionList.add("Sun Country Region (SU)");
+        regionList.add("Western Empire Region (WE)");
+
+
+        ArrayAdapter<String> adapterRegion  =   new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item,regionList);
+        tv_region.setTypeface(font);
+        tv_region.setAdapter(adapterRegion);
+
+
+
+    }
+
+
 }

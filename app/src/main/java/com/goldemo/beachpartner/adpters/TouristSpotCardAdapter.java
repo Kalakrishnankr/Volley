@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -88,7 +87,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             @Override
             public void onClick(View view) {
 
-                myInterface.addView(spot.img_url,spot.city);
+                myInterface.addView(spot.img_url,spot.name);
                 //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             }
         });
