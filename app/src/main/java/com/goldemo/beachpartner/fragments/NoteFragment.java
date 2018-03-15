@@ -8,16 +8,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.DateUtils;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.NotesAdapter;
 import com.goldemo.beachpartner.models.NoteDataModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -40,6 +46,7 @@ public class NoteFragment extends Fragment {
     RecyclerView rcVNotes;
     private NotesAdapter adapter;
     ArrayList<NoteDataModel> allSampleData;
+    Button addNewBtn;
 //    private NotesAdapter adapter;
 
     private OnFragmentInteractionListener mListener;
@@ -81,8 +88,9 @@ public class NoteFragment extends Fragment {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_note, container, false);
         rcVNotes =view.findViewById(R.id.rcv_notes);
+        addNewBtn= view.findViewById(R.id.addNew);
         allSampleData = new ArrayList<NoteDataModel>();
-        createDummyData();
+
 
         adapter     =   new NotesAdapter(getContext(),allSampleData);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),1);
@@ -91,22 +99,31 @@ public class NoteFragment extends Fragment {
         rcVNotes.setItemAnimator(new DefaultItemAnimator());
         rcVNotes.setAdapter(adapter);
 
+        addNewBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                createDummyData();
+                rcVNotes.setAdapter(adapter);
+            }
+        });
+
 
         return view;
     }
 
 
     private void createDummyData() {
-        for (int i = 1; i <= 20; i++) {
+        long currentTime;
+        NoteDataModel dm = new NoteDataModel();
+        dm.setHeaderTitle("Section ");
+        dm.setNotes("What");
 
-            NoteDataModel dm = new NoteDataModel();
-            dm.setHeaderTitle("Section " + i);
-            dm.setNotes("What"+i);
+        currentTime  = System.currentTimeMillis();
+        dm.setTimestamp(new Date().getTime());
 
-            allSampleData.add(dm);
-
-        }
+        allSampleData.add(dm);
     }
+
 
 
     // TODO: Rename method, update argument and hook method into UI event

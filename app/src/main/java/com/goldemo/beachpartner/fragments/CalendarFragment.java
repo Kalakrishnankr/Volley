@@ -3,7 +3,6 @@ package com.goldemo.beachpartner.fragments;
 import android.app.Dialog;
 import android.graphics.Color;
 import android.graphics.Typeface;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -394,6 +393,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         switch (item.getItemId()){
             case R.id.search_filter:
 
+
                 Dialog filterDialogue = new Dialog(getContext());
                 //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
                 filterDialogue.setContentView(R.layout.popup_filter);
@@ -498,7 +498,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
             }
         });
-
 
 
         /*Year*/
