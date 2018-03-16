@@ -603,13 +603,17 @@
         android:layout_below="@+id/frmeOne"
         android:orientation="vertical">-->
 
+
+
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/llMoreinfo"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/frmeOne"
         android:visibility="gone"
-        app:expandedTitleMarginStart="70dp">
+        app:expandedTitleMarginStart="70dp"
+        android:layout_below="@+id/frmeOne">
+
+
 
 
         <!--Image and name-->
@@ -876,7 +880,6 @@
                             android:id="@+id/compactcalendar_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:compactCalendarTargetHeight="250dp"
                             app:compactCalendarTextSize="12sp"
                             app:compactCalendarBackgroundColor="#fff"
                             app:compactCalendarTextColor="#534c4c"
@@ -898,7 +901,6 @@
         <!--</LinearLayout>-->
         <!--</ScrollView>-->
     </android.support.design.widget.CoordinatorLayout>
-
 
     <!--</LinearLayout>-->
 

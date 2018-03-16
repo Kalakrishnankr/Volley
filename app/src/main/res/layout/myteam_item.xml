@@ -36,7 +36,7 @@
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center"
-            android:background="@drawable/ic_addbtn"/>
+            android:background="@drawable/ic_tick"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"

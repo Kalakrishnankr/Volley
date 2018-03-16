@@ -1,10 +1,12 @@
 package com.goldemo.beachpartner.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,6 +31,7 @@ public class PartnerInviteFragmentTab extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
 
     }
 
@@ -59,11 +62,28 @@ public class PartnerInviteFragmentTab extends Fragment {
 
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
 
+        inflater.inflate(R.menu.menu_search,menu);
+        super.onCreateOptionsMenu(menu, inflater);
+
+
+        /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
+        inflater.inflate(R.menu.sample_menu, menu);*/
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
 
+        switch (item.getItemId()){
+            case R.id.action_search:
+
+                break;
+            default:
+                break;
+        }
+        return false;
+    }
 
 }

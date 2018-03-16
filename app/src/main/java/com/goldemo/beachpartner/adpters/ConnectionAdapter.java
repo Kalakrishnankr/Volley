@@ -54,13 +54,15 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
 
 
+        PersonModel model =dataList.get(position);
+
         if (dataList != null && !dataList.isEmpty()) {
             if (dataList.get(position).isExpanded) {
-                mAnimationManager.expand(holder.rrHeaderTwo, 1000, 250);
+                //mAnimationManager.expand(holder.rrHeaderTwo, 1000, 250);
 
                 holder.rrHeaderTwo.setVisibility(View.VISIBLE);
             } else {
-                mAnimationManager.expand(holder.rrHeaderTwo, 1000, -250);
+                //mAnimationManager.expand(holder.rrHeaderTwo, 1000, -250);
 
                 holder.rrHeaderTwo.setVisibility(View.GONE);
             }
@@ -70,13 +72,13 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
                     if (dataList.get(position).isExpanded) {
                         //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
-                        mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
+                        ///mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
 
                         holder.rrHeaderTwo.setVisibility(View.GONE);
                         dataList.get(position).isExpanded = false;
                     } else {
                        // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
-                        mAnimationManager.expand(holder.rrHeaderTwo, 1000, 300);
+                        //mAnimationManager.expand(holder.rrHeaderTwo, 1000, 300);
                         holder.rrHeaderTwo.setVisibility(View.VISIBLE);
                         dataList.get(position).isExpanded = true;
                     }

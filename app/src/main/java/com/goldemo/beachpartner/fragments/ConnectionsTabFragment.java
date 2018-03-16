@@ -113,14 +113,12 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                             switch (newState) {
                                 case BottomSheetBehavior.STATE_COLLAPSED:
                                     Log.e("Bottom Sheet Behaviour", "STATE_COLLAPSED");
-                                    upDownToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_up));
                                     break;
                                 case BottomSheetBehavior.STATE_DRAGGING:
                                     Log.e("Bottom Sheet Behaviour", "STATE_DRAGGING");
                                     break;
                                 case BottomSheetBehavior.STATE_EXPANDED:
                                     Log.e("Bottom Sheet Behaviour", "STATE_EXPANDED");
-                                    upDownToggle.setImageDrawable(getResources().getDrawable(R.drawable.ic_down));
                                     break;
                                 case BottomSheetBehavior.STATE_HIDDEN:
                                     Log.e("Bottom Sheet Behaviour", "STATE_HIDDEN");

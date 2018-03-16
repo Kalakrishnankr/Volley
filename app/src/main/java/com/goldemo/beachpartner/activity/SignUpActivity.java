@@ -264,17 +264,36 @@ public class SignUpActivity extends AppCompatActivity{
 
         JSONObject object = new JSONObject();
         try {
-            object.put("firstname",userName);
-            object.put("lastname",lastName);
+
+
+            object.put("activated",true);
+            object.put("authToken","");
+            object.put("authorities","");
+
+            object.put("firstName",userName);
+            object.put("lastName",lastName);
             object.put("dob",dob);
             object.put("gender",sex);
             object.put("email",email);
             object.put("password",pass);
-            object.put("location",location);
             object.put("phoneNumber",mobileno);
             object.put("loginType",1);
             object.put("deviceId",android_id);
-            object.put("authToken","");
+
+            object.put("createdBy","");
+            object.put("createdDate","");
+            //object.put("id",id);
+            object.put("imageUrl","");
+            object.put("langKey","");
+            object.put("lastModifiedDate","");
+            object.put("city","");
+            object.put("location",location);
+
+
+
+
+
+
 
         } catch (JSONException e) {
             e.printStackTrace();

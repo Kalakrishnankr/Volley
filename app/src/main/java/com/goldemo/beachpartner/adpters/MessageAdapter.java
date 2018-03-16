@@ -11,8 +11,10 @@ import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.models.DataModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by user on 25/2/18.
@@ -20,9 +22,9 @@ import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<DataModel> dataList;
+    private ArrayList<PersonModel> dataList;
 
-    public MessageAdapter(Context context, ArrayList<DataModel> allSampleData) {
+    public MessageAdapter(Context context, ArrayList<PersonModel> allSampleData) {
         this.dataList = allSampleData;
         this.mContext = context;
     }
@@ -38,8 +40,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MessageAdapter.MyViewHolder holder, int position) {
 
-        holder.txtvUname.setText("James Cameron");
-        holder.txtvMsg.setText("Text Messages here");
+        PersonModel model = dataList.get(position);
+
+        holder.txtvUname.setText(model.getUname());
+        holder.imgUserPic.setBackgroundResource(model.getImage());
 
     }
 
@@ -62,8 +66,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
             super(vi);
 
             imgUserPic      =   (ImageView)vi.findViewById(R.id.imgUserpic);
-            txtvUname       =   (TextView) vi.findViewById(R.id.txtMsgUser);
-            txtvMsg         =   (TextView) vi.findViewById(R.id.txtMsg);
+            txtvUname       =   (TextView) vi.findViewById(R.id.txtv_uname);
 
 
         }

@@ -75,7 +75,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     LinearLayout topFinishes1_lt,topFinishes2_lt,topFinishes3_lt;
     RelativeLayout containingLt;
     private int finishCount=0;
-    boolean editStatus=false;
+    private boolean editStatus=false;
     private Spinner spinnerExp,spinnerPref,spinnerPositon,spinnerTLInterest,spinnerTourRating,spinnerWtoTravel;
 
     @Override
@@ -542,10 +542,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_TAKE_GALLERY_VIDEO);
                 break;
             case R.id.row_icon:
-                Intent intent1 = new Intent();
-                intent1.setType("image/*");
-                intent1.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent1,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
+                if(editStatus){
+                    Intent intent1 = new Intent();
+                    intent1.setType("image/*");
+                    intent1.setAction(Intent.ACTION_GET_CONTENT);
+                    startActivityForResult(Intent.createChooser(intent1,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
+                }
+
                 break;
             case R.id.imgPlay:
                 videoView.setVisibility(View.VISIBLE);

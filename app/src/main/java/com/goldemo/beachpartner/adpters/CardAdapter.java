@@ -10,8 +10,10 @@ import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.models.DataModel;
+import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 20/2/18.
@@ -19,9 +21,9 @@ import java.util.ArrayList;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<DataModel> dataList;
+    private ArrayList<PersonModel> dataList;
 
-    public CardAdapter(Context context,ArrayList<DataModel> dataList) {
+    public CardAdapter(Context context, ArrayList<PersonModel> dataList) {
         this.dataList = dataList;
         this.mContext = context;
     }
@@ -37,6 +39,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
+
         holder.txtv_date.setText("11/10/2018");
         holder.txtv_place.setText("America");
         holder.txtv_players.setText("Martin, David, John, Hari");
