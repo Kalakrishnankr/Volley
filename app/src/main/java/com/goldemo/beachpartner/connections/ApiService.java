@@ -21,7 +21,8 @@ public class ApiService {
     public static String LOGIN      =    BASE_URL+"authenticate";
     public static String REQUEST_PASSWORD_RESET=BASE_URL+"account/reset-password/init";
 
-    public static String GET_ACCOUNT_DETAILS =  BASE_URL+"account";
+    public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
+    public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
 
 
 }

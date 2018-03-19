@@ -43,13 +43,13 @@
     <string name="next">Next</string>
     <string name="messages">Messages</string>
     <string name="partnerintrest">Tournament Requests Sent</string>
-    <string name="nameerror">Enter Your Name</string>
-    <string name="lnameerror">Enter Your Last Name</string>
-    <string name="doberror">Choose Your Birth Date</string>
-    <string name="emailerror">Enter Valid Email</string>
-    <string name="mobilerror">Enter Your Mob Number</string>
-    <string name="cityerror">Enter Your Location</string>
-    <string name="invalid_password">Enter Password</string>
+    <string name="nameerror">Please enter your name</string>
+    <string name="lnameerror">Please enter your last name</string>
+    <string name="doberror">Please choose your birth date</string>
+    <string name="emailerror">Please enter a valid email</string>
+    <string name="mobilerror">Please enter a valid mobile number</string>
+    <string name="cityerror">Please enter your location</string>
+    <string name="invalid_password">Please enter password</string>
     <string name="invalid_confirmpassword">Password does not match</string>
 
 

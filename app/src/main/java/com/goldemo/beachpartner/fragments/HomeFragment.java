@@ -120,7 +120,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         /*Tournament Requests*/
 
-        parRecyclerview =  (RecyclerView)view.findViewById(R.id.rcv_partners);
         LinearLayoutManager layoutmngerTwo = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
         SnapHelper snap = new PagerSnapHelper();

@@ -166,47 +166,47 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         //Fore More Deatsils
 
-        spinnerExp = (Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerExp          = (Spinner) view.findViewById(R.id.spinner_exp);
         spinnerExp.setEnabled(false);
-        spinnerPref = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPref         = (Spinner) view.findViewById(R.id.spinner_pref);
         spinnerPref.setEnabled(false);
-        spinnerPositon = (Spinner) view.findViewById(R.id.spinner_positon);
+        spinnerPositon      = (Spinner) view.findViewById(R.id.spinner_positon);
         spinnerPositon.setEnabled(false);
 
-        editHeight = (EditText) view.findViewById(R.id.txtvHeight);
-        spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
+        editHeight          = (EditText) view.findViewById(R.id.txtvHeight);
+        spinnerTLInterest   = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTLInterest.setEnabled(false);
-        editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
-        spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
+        editPlayed          = (EditText) view.findViewById(R.id.txtvPlayed);
+        spinnerTourRating   = (Spinner) view.findViewById(R.id.spinner_tour_rating);
         spinnerTourRating.setEnabled(false);
-        editCBVANo = (EditText) view.findViewById(R.id.txtvCBVANo);
-        editCBVAFName = (EditText) view.findViewById(R.id.txtvCBVAFName);
-        editCBVALName = (EditText) view.findViewById(R.id.txtvCBVALName);
-        spinnerWtoTravel = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
-        editHighschool = (EditText) view.findViewById(R.id.txtvHighschool);
-        editIndoorClub = (EditText) view.findViewById(R.id.txtvIndoorClub);
-        editColgClub = (EditText) view.findViewById(R.id.txtvColgClub);
-        editColgBeach = (EditText) view.findViewById(R.id.txtvColgBeach);
-        editColgIndoor = (EditText) view.findViewById(R.id.txtvColgIndoor);
-        editPoints = (EditText) view.findViewById(R.id.txtvPoints);
-        topfinishes_txt_1 = (EditText) view.findViewById(R.id.topfinishes_txt_1);
-        topfinishes_txt_2 = (EditText) view.findViewById(R.id.topfinishes_txt_2);
-        topfinishes_txt_3 = (EditText) view.findViewById(R.id.topfinishes_txt_3);
+        editCBVANo          = (EditText) view.findViewById(R.id.txtvCBVANo);
+        editCBVAFName       = (EditText) view.findViewById(R.id.txtvCBVAFName);
+        editCBVALName       = (EditText) view.findViewById(R.id.txtvCBVALName);
+        spinnerWtoTravel    = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        editHighschool      = (EditText) view.findViewById(R.id.txtvHighschool);
+        editIndoorClub      = (EditText) view.findViewById(R.id.txtvIndoorClub);
+        editColgClub        = (EditText) view.findViewById(R.id.txtvColgClub);
+        editColgBeach       = (EditText) view.findViewById(R.id.txtvColgBeach);
+        editColgIndoor      = (EditText) view.findViewById(R.id.txtvColgIndoor);
+        editPoints          = (EditText) view.findViewById(R.id.txtvPoints);
+        topfinishes_txt_1   = (EditText) view.findViewById(R.id.topfinishes_txt_1);
+        topfinishes_txt_2   = (EditText) view.findViewById(R.id.topfinishes_txt_2);
+        topfinishes_txt_3   = (EditText) view.findViewById(R.id.topfinishes_txt_3);
 
-        moreBtnSave = (Button) view.findViewById(R.id.btn_save);
-        moreBtnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        moreBtnSave         = (Button) view.findViewById(R.id.btn_save);
+        moreBtnCancel       = (Button) view.findViewById(R.id.btn_cancel);
 
 
         llMenuBasic.setOnClickListener(this);
         llMenuMore.setOnClickListener(this);
-        imageView1 = (ImageView) view.findViewById(R.id.imageView1);
-        imageView2 = (ImageView) view.findViewById(R.id.imageView2);
-        imageView3 = (ImageView) view.findViewById(R.id.imageView3);
+        imageView1          = (ImageView) view.findViewById(R.id.imageView1);
+        imageView2          = (ImageView) view.findViewById(R.id.imageView2);
+        imageView3          = (ImageView) view.findViewById(R.id.imageView3);
 
-        containingLt = (RelativeLayout) view.findViewById(R.id.scroll_more);
-        topFinishes1_lt = (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
-        topFinishes2_lt = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
-        topFinishes3_lt = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
+        containingLt        = (RelativeLayout) view.findViewById(R.id.scroll_more);
+        topFinishes1_lt     = (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
+        topFinishes2_lt     = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
+        topFinishes3_lt     = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
          /*This for demo only end*/
 
@@ -824,6 +824,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPhone.setEnabled(false);
         editPhone.setBackground(null);
 
+        /*JSONObject object = new JSONObject();
+        try{
+            object.put("firstName",editFname.getText().toString().trim());
+            object.put("lastName",editLname.getText().toString().trim());
+            object.put("gender",editGender.getText().toString().trim());
+            object.put("city",editCity.getText().toString().trim());
+            object.put("phoneNumber",editPhone.getText().toString().trim());
+            object.put("dob",editDob.getText().toString().trim());
+
+
+        }catch (JSONException e){
+
+        }*/
+
+
+
 //        editPassword.setEnabled(false);
 //        editPassword.setBackground(null);
 
@@ -894,6 +910,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         topfinishes_txt_3.setEnabled(false);
         topfinishes_txt_3.setBackground(null);
         imageView3.setVisibility(View.GONE);
+
+
+
 
 
     }
@@ -1165,6 +1184,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void setView() {
         if(userDataModel!=null){
+            profileName.setText(userDataModel.getFirstName());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
             editGender.setText(userDataModel.getGender());

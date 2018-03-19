@@ -486,7 +486,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = thisYear; i <= 2030; i++) {
+        for (int i = thisYear; i <= 2020; i++) {
             years.add(Integer.toString(i));
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
