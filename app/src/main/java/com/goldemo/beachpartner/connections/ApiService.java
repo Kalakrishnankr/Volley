@@ -12,9 +12,9 @@ public class ApiService {
 
     //For instagram
 
-    public static final String CLIENT_ID="7ef2349d030a43a799b913483158b83b";
+    public static final String CLIENT_ID    ="7ef2349d030a43a799b913483158b83b";
     public static final String CLIENT_SECRET="b5ee7c0a6cf64a77a32ebcadde5c428c";
-    public static final String REDIRECT_URI="http://35.167.128.181/";
+    public static final String REDIRECT_URI ="http://35.167.128.181/";
 
     public static String BASE_URL   =   "http://34.215.18.181:8080/api/";
     public static String SIGNUP     =    BASE_URL+"register";

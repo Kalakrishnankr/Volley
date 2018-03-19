@@ -288,6 +288,9 @@ public class LoginActivity extends AppCompatActivity {
                                         toast.setGravity(Gravity.BOTTOM, 0, 0);
                                         toast.show();
                                     }
+                                    break;
+                                    default:
+                                        break;
                             }
                         }
 
@@ -355,6 +358,9 @@ public class LoginActivity extends AppCompatActivity {
                                         Toast.makeText(LoginActivity.this, " "+jsonValue, Toast.LENGTH_LONG).show();
 
                                     }
+                                    break;
+                                    default:
+                                        break;
                             }
                         }
 

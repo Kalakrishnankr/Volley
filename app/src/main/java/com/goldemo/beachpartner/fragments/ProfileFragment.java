@@ -1139,6 +1139,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     if (json != null) {
                                          Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
                                     }
+                                break;
+
+                                default:
+                                    break;
                             }
                         }
                     }

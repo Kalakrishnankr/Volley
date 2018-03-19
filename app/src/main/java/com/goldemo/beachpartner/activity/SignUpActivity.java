@@ -362,7 +362,7 @@ public class SignUpActivity extends AppCompatActivity{
                         NetworkResponse response = error.networkResponse;
                         if (response != null && response.data != null){
                             switch (response.statusCode){
-                                case 401:
+                                case 400 :
                                     json = new String (response.data);
                                     json = trimMessage(json,"title");
                                     if(json!=null){
@@ -371,6 +371,10 @@ public class SignUpActivity extends AppCompatActivity{
                                         toast.setGravity(Gravity.BOTTOM, 0, 0);
                                         toast.show();
                                     }
+                                    break;
+
+                                    default:
+                                        break;
                             }
                         }
                     }

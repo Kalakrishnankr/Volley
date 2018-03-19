@@ -881,6 +881,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:compactCalendarTextSize="12sp"
+                            app:compactCalendarTargetHeight="@dimen/calendarTargetHt"
                             app:compactCalendarBackgroundColor="#fff"
                             app:compactCalendarTextColor="#534c4c"
                             app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
