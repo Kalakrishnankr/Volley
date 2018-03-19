@@ -18,6 +18,7 @@ import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,48 +36,65 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.OnClickListener;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.UserDataModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private static final int REQUEST_TAKE_GALLERY_VIDEO=1;
-    private static final int REQUEST_TAKE_GALLERY_IMAGE=2;
+    private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
+    private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
     private TabLayout tabs;
 
     private ViewPager viewPager;
     private FrameLayout videoFrame;
-    private ImageView imgEdit, imgVideo ,imgPlay,profile_img_editIcon,imageView1,imageView2,imageView3;
+    private ImageView imgEdit, imgVideo, imgPlay, profile_img_editIcon, imageView1, imageView2, imageView3;
     private CircularImageView imgProfile;
-    private TextView profileName,profileDesig,edit_tag,basic_info_tab,more_info_tab;
+    private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     private OnClickListener mOnClickListener;
     private VideoView videoView;
-    private  Uri selectedImageUri,selectedVideoUri;
+    private Uri selectedImageUri, selectedVideoUri;
     Calendar myCalendar = Calendar.getInstance();
 
 
-    private LinearLayout llMenuBasic,llMenuMore,llBasicDetails,llMoreDetails;//This menu bar only for demo purpose
-    private View viewBasic,viewMore;
+    private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
+    private View viewBasic, viewMore;
 
-    private EditText editFname,editLname,editGender,editDob,editCity,editPhone;
-    private EditText editHeight,editPlayed,editCBVANo,editCBVAFName,editCBVALName,editHighschool,editIndoorClub,editColgClub,editColgBeach,editColgIndoor,editPoints,topfinishes_txt_2,topfinishes_txt_1,topfinishes_txt_3;
-    private Button moreBtnSave,moreBtnCancel,basicBtnSave,basicBtnCancel;
-    private LinearLayout btnsBottom,more_info_btns_bottom;
-    LinearLayout topFinishes1_lt,topFinishes2_lt,topFinishes3_lt;
+    private EditText editFname, editLname, editGender, editDob, editCity, editPhone;
+    private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3;
+    private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
+    private LinearLayout btnsBottom, more_info_btns_bottom;
+    LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
     RelativeLayout containingLt;
-    private int finishCount=0;
-    private boolean editStatus=false;
-    private Spinner spinnerExp,spinnerPref,spinnerPositon,spinnerTLInterest,spinnerTourRating,spinnerWtoTravel;
+    private int finishCount = 0;
+    private boolean editStatus = false;
+    private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
+    public UserDataModel userDataModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -90,89 +108,93 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         initActivity(view);
+        setUp();
         return view;
     }
 
+
+
+
     private void initActivity(final View view) {
 
-        profile_img_editIcon    =       (ImageView) view.findViewById(R.id.edit_profile_img_vid);
-        btnsBottom              =       (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+        profile_img_editIcon    = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
+        btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
 
-        more_info_btns_bottom   =       (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
-        imgEdit                 =       (ImageView)view.findViewById(R.id.edit);
+        more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
+        imgEdit                 = (ImageView) view.findViewById(R.id.edit);
 
-        imgProfile              =       (CircularImageView)view.findViewById(R.id.row_icon);
-        profileName             =       (TextView)view.findViewById(R.id.profile_name);
-        profileDesig            =       (TextView)view.findViewById(R.id.profile_designation);
-        edit_tag                =       (TextView)view.findViewById(R.id.edit_text);
+        imgProfile              = (CircularImageView) view.findViewById(R.id.row_icon);
+        profileName             = (TextView) view.findViewById(R.id.profile_name);
+        profileDesig            = (TextView) view.findViewById(R.id.profile_designation);
+        edit_tag                = (TextView) view.findViewById(R.id.edit_text);
 
 
-        imgVideo                =       (ImageView)view. findViewById(R.id.imgVideo);
-        videoView               =       (VideoView)view. findViewById(R.id.videoView);
-        imgPlay                 =       (ImageView)view. findViewById(R.id.imgPlay);
+        imgVideo                = (ImageView) view.findViewById(R.id.imgVideo);
+        videoView               = (VideoView) view.findViewById(R.id.videoView);
+        imgPlay                 = (ImageView) view.findViewById(R.id.imgPlay);
 
         /*This for demo only start*/
 
-        llMenuBasic             =    (LinearLayout)view.findViewById(R.id.llMenuBasic);
-        llMenuMore              =    (LinearLayout)view.findViewById(R.id.llMenuMore);
+        llMenuBasic             = (LinearLayout) view.findViewById(R.id.llMenuBasic);
+        llMenuMore              = (LinearLayout) view.findViewById(R.id.llMenuMore);
 
-        basic_info_tab          =     (TextView) view.findViewById(R.id.basic_info_tab);
-        more_info_tab           =     (TextView) view.findViewById(R.id.more_info_tab);
+        basic_info_tab          = (TextView) view.findViewById(R.id.basic_info_tab);
+        more_info_tab           = (TextView) view.findViewById(R.id.more_info_tab);
 
-        llBasicDetails          =    (LinearLayout)view.findViewById(R.id.llBasicDetails);
-        llMoreDetails           =    (LinearLayout)view.findViewById(R.id.llMoreInfoDetails);
+        llBasicDetails          = (LinearLayout) view.findViewById(R.id.llBasicDetails);
+        llMoreDetails           = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
 
-        viewBasic               =    (View)view.findViewById(R.id.viewBasic);
-        viewMore                =    (View)view.findViewById(R.id.viewMore);
+        viewBasic               = (View) view.findViewById(R.id.viewBasic);
+        viewMore                = (View) view.findViewById(R.id.viewMore);
 
         //For Basic Details
 
-        editFname               =   (EditText)view.findViewById(R.id.txtvFname);
-        editLname               =   (EditText)view.findViewById(R.id.txtvLname);
-        editGender              =   (EditText)view.findViewById(R.id.txtv_gender);
-        editDob                 =   (EditText)view.findViewById(R.id.txtv_dob);
-        editCity                =   (EditText)view.findViewById(R.id.txtv_city);
-        editPhone               =   (EditText)view.findViewById(R.id.txtv_mobileno);
+        editFname               = (EditText) view.findViewById(R.id.txtvFname);
+        editLname               = (EditText) view.findViewById(R.id.txtvLname);
+        editGender              = (EditText) view.findViewById(R.id.txtv_gender);
+        editDob                 = (EditText) view.findViewById(R.id.txtv_dob);
+        editCity                = (EditText) view.findViewById(R.id.txtv_city);
+        editPhone               = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave            =   (Button)view.findViewById(R.id.btnsave);
-        basicBtnCancel          =   (Button)view.findViewById(R.id.btncancel);
+        basicBtnSave            = (Button) view.findViewById(R.id.btnsave);
+        basicBtnCancel          = (Button) view.findViewById(R.id.btncancel);
 
 
         //Fore More Deatsils
 
-        spinnerExp      =(Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerExp = (Spinner) view.findViewById(R.id.spinner_exp);
         spinnerExp.setEnabled(false);
-        spinnerPref     = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPref = (Spinner) view.findViewById(R.id.spinner_pref);
         spinnerPref.setEnabled(false);
-        spinnerPositon  =   (Spinner)view.findViewById(R.id.spinner_positon);
+        spinnerPositon = (Spinner) view.findViewById(R.id.spinner_positon);
         spinnerPositon.setEnabled(false);
 
-        editHeight      =   (EditText)view.findViewById(R.id.txtvHeight);
-        spinnerTLInterest=(Spinner)view.findViewById(R.id.spinner_tl_interest);
+        editHeight = (EditText) view.findViewById(R.id.txtvHeight);
+        spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTLInterest.setEnabled(false);
-        editPlayed      =   (EditText)view.findViewById(R.id.txtvPlayed);
+        editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
         spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
         spinnerTourRating.setEnabled(false);
-        editCBVANo      =   (EditText)view.findViewById(R.id.txtvCBVANo);
-        editCBVAFName   =   (EditText)view.findViewById(R.id.txtvCBVAFName);
-        editCBVALName   =   (EditText)view.findViewById(R.id.txtvCBVALName);
-        spinnerWtoTravel   =(Spinner) view.findViewById(R.id.spinner_Wto_travel);
-        editHighschool  =   (EditText)view.findViewById(R.id.txtvHighschool);
-        editIndoorClub  =   (EditText)view.findViewById(R.id.txtvIndoorClub);
-        editColgClub    =   (EditText)view.findViewById(R.id.txtvColgClub);
-        editColgBeach   =   (EditText)view.findViewById(R.id.txtvColgBeach);
-        editColgIndoor  =   (EditText)view.findViewById(R.id.txtvColgIndoor);
-        editPoints      =   (EditText)view.findViewById(R.id.txtvPoints);
-        topfinishes_txt_1 = (EditText)view.findViewById(R.id.topfinishes_txt_1);
-        topfinishes_txt_2 = (EditText)view.findViewById(R.id.topfinishes_txt_2);
-        topfinishes_txt_3 = (EditText)view.findViewById(R.id.topfinishes_txt_3);
+        editCBVANo = (EditText) view.findViewById(R.id.txtvCBVANo);
+        editCBVAFName = (EditText) view.findViewById(R.id.txtvCBVAFName);
+        editCBVALName = (EditText) view.findViewById(R.id.txtvCBVALName);
+        spinnerWtoTravel = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        editHighschool = (EditText) view.findViewById(R.id.txtvHighschool);
+        editIndoorClub = (EditText) view.findViewById(R.id.txtvIndoorClub);
+        editColgClub = (EditText) view.findViewById(R.id.txtvColgClub);
+        editColgBeach = (EditText) view.findViewById(R.id.txtvColgBeach);
+        editColgIndoor = (EditText) view.findViewById(R.id.txtvColgIndoor);
+        editPoints = (EditText) view.findViewById(R.id.txtvPoints);
+        topfinishes_txt_1 = (EditText) view.findViewById(R.id.topfinishes_txt_1);
+        topfinishes_txt_2 = (EditText) view.findViewById(R.id.topfinishes_txt_2);
+        topfinishes_txt_3 = (EditText) view.findViewById(R.id.topfinishes_txt_3);
 
-        moreBtnSave     =   (Button)view.findViewById(R.id.btn_save);
-        moreBtnCancel   =   (Button)view.findViewById(R.id.btn_cancel);
+        moreBtnSave = (Button) view.findViewById(R.id.btn_save);
+        moreBtnCancel = (Button) view.findViewById(R.id.btn_cancel);
 
 
         llMenuBasic.setOnClickListener(this);
@@ -181,13 +203,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imageView2 = (ImageView) view.findViewById(R.id.imageView2);
         imageView3 = (ImageView) view.findViewById(R.id.imageView3);
 
-        containingLt= (RelativeLayout) view.findViewById(R.id.scroll_more);
-        topFinishes1_lt= (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
-        topFinishes2_lt=(LinearLayout) view.findViewById(R.id.topFinishes2_lt) ;
-        topFinishes3_lt=(LinearLayout) view.findViewById(R.id.topFinishes3_lt) ;
+        containingLt = (RelativeLayout) view.findViewById(R.id.scroll_more);
+        topFinishes1_lt = (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
+        topFinishes2_lt = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
+        topFinishes3_lt = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
          /*This for demo only end*/
-
 
 
         // setupViewPager(viewPager);
@@ -208,7 +229,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         experience.add("3-4 years Experienced Tournament Player");
         experience.add("5+ years Multiple Top Finishes/Ranked player");
 
-        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, experience);
+        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
         expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExp.setAdapter(expAdapter);
 
@@ -228,7 +249,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         position.add("Primary Blocker");
         position.add("Primary Defender");
         position.add("Split Block/Defense");
-        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, position);
+        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPositon.setAdapter(positionAdapter);
 
@@ -275,20 +296,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerWtoTravel.setAdapter(distanceAdapter);
 
 
-
 //        Buttons click action for saving
         basicBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoSave();
-                editStatus=!editStatus;
+                editStatus = !editStatus;
             }
         });
         moreBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoSave();
-                editStatus=!editStatus;
+                editStatus = !editStatus;
             }
         });
 
@@ -296,26 +316,26 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus=!editStatus;
+                editStatus = !editStatus;
             }
         });
         moreBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus=!editStatus;
+                editStatus = !editStatus;
             }
         });
 
         //edit profile button(ImageView)
-        imgEdit.setOnClickListener(new View.OnClickListener(){
+        imgEdit.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                editStatus=!editStatus;
+                editStatus = !editStatus;
 
 
-                if(editStatus){
+                if (editStatus) {
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
@@ -325,15 +345,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     profile_img_editIcon.setVisibility(View.VISIBLE);
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
-                }
-                else {
+                } else {
 
                     InfoCancelChange();
 
                 }
             }
         });
-
 
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
@@ -369,10 +387,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 View alertLayout = inflater.inflate(R.layout.gender_popup_layout, null);
 
                 final RadioGroup radioGroup_gender = (RadioGroup) alertLayout.findViewById(R.id.gender_radio_group);
-                final RadioButton radioButton_male       = (RadioButton)  alertLayout.findViewById(R.id.rd_1);
-                final RadioButton female                 = (RadioButton)  alertLayout.findViewById(R.id.rd_2);
+                final RadioButton radioButton_male = (RadioButton) alertLayout.findViewById(R.id.rd_1);
+                final RadioButton female = (RadioButton) alertLayout.findViewById(R.id.rd_2);
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(getContext(),AlertDialog.THEME_HOLO_LIGHT);
+                AlertDialog.Builder alert = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT);
                 String titleText = "Select Gender!";
 
                 // Initialize a new foreground color span instance
@@ -394,7 +412,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 alert.setCancelable(false);
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
-                    @Override public void onClick(DialogInterface dialog, int which) {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });
@@ -402,9 +421,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        if(radioGroup_gender.getCheckedRadioButtonId()==radioButton_male.getId())
+                        if (radioGroup_gender.getCheckedRadioButtonId() == radioButton_male.getId())
                             editGender.setText("Male");
-                        else{
+                        else {
                             editGender.setText("Female");
                         }
                     }
@@ -413,7 +432,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 final AlertDialog dialog = alert.create();
 
-                dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+                dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                     @Override
                     public void onShow(DialogInterface arg0) {
 
@@ -473,13 +492,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
 
             public void onClick(View v) {
-                finishCount+=1;
-                if(finishCount==1){
+                finishCount += 1;
+                if (finishCount == 1) {
                     imageView2.setVisibility(View.VISIBLE);
                     topFinishes2_lt.setVisibility(View.VISIBLE);
 
-                }
-                else if(finishCount==2){
+                } else if (finishCount == 2) {
                     imageView1.setVisibility(View.GONE);
                     imageView2.setVisibility(View.VISIBLE);
                     imageView3.setVisibility(View.VISIBLE);
@@ -487,8 +505,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     topFinishes2_lt.setVisibility(View.VISIBLE);
                     topFinishes3_lt.setVisibility(View.VISIBLE);
 
-                }
-                else{
+                } else {
                     topFinishes2_lt.setVisibility(View.GONE);
                     topFinishes3_lt.setVisibility(View.GONE);
                 }
@@ -499,9 +516,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishCount-=1;
+                finishCount -= 1;
                 topFinishes2_lt.setVisibility(View.GONE);
-                if(finishCount<1){
+                if (finishCount < 1) {
                     imageView1.setVisibility(View.VISIBLE);
                 }
             }
@@ -510,17 +527,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishCount-=1;
+                finishCount -= 1;
                 topFinishes3_lt.setVisibility(View.GONE);
-                if(finishCount<2){
+                if (finishCount < 2) {
                     imageView1.setVisibility(View.VISIBLE);
                 }
             }
         });
 
 
-
     }
+
 
     private void setupViewPager(ViewPager viewPager) {
 
@@ -533,20 +550,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
 
             case R.id.imgVideo:
-                Intent intent= new Intent();
+                Intent intent = new Intent();
                 intent.setType("video/*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_TAKE_GALLERY_VIDEO);
+                startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
                 break;
             case R.id.row_icon:
-                if(editStatus){
+                if (editStatus) {
                     Intent intent1 = new Intent();
                     intent1.setType("image/*");
                     intent1.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent1,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
+                    startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
                 }
 
                 break;
@@ -625,12 +642,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-    public void toursPlayed(){
-        final CharSequence[] items = {" AVP "," AVP First "," AAU ","USAV Juniors","USAV Adults","VolleyAmerica National Rankings"};
+    public void toursPlayed() {
+        final CharSequence[] items = {" AVP ", " AVP First ", " AAU ", "USAV Juniors", "USAV Adults", "VolleyAmerica National Rankings"};
 // arraylist to keep the selected items
-        final ArrayList seletedItems=new ArrayList();
+        final ArrayList seletedItems = new ArrayList();
 
-        final AlertDialog dialog = new AlertDialog.Builder(getContext(),AlertDialog.THEME_HOLO_LIGHT)
+        final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
                 .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
@@ -661,7 +678,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         //  Your code when user clicked on Cancel
                     }
                 }).create();
-        dialog.setOnShowListener( new DialogInterface.OnShowListener() {
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
                 dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources().getColor(R.color.blueDark));
@@ -672,8 +689,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         dialog.show();
 
     }
-
-
 
 
     private void editBasicInfo() {
@@ -765,7 +780,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
 
-
         topfinishes_txt_1.setEnabled(true);
         topfinishes_txt_1.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
         imageView1.setVisibility(View.VISIBLE);
@@ -779,12 +793,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imageView3.setVisibility(View.VISIBLE);
 
 
-
-
     }
 
     //Saving information after edit
-    public void InfoSave(){
+    public void InfoSave() {
 
         profile_img_editIcon.setVisibility(View.GONE);
         imgVideo.setVisibility(View.GONE);
@@ -870,7 +882,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setBackground(null);
 
 
-
         imageView1.setVisibility(View.GONE);
         topfinishes_txt_1.setEnabled(false);
         topfinishes_txt_1.setBackground(null);
@@ -888,7 +899,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-    public void InfoCancelChange(){
+    public void InfoCancelChange() {
 
         profile_img_editIcon.setVisibility(View.GONE);
         imgVideo.setVisibility(View.GONE);
@@ -1000,15 +1011,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-
-
     //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
     //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
 
 
     // TODO: Rename method, update argument and hook method into UI event
-
-
 
 
     private class Adapter extends FragmentPagerAdapter {
@@ -1057,7 +1064,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 }
             }
-            if(requestCode == REQUEST_TAKE_GALLERY_IMAGE){
+            if (requestCode == REQUEST_TAKE_GALLERY_IMAGE) {
                 selectedImageUri = data.getData();
                 //String selectedImagePath = getPath(selectedImageUriImg);
                 if (selectedImageUri != null) {
@@ -1071,7 +1078,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     // UPDATED!
     public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
+        String[] projection = {MediaStore.Video.Media.DATA};
         Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
         if (cursor != null) {
             // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
@@ -1085,5 +1092,96 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-}
+    //Get User Details Api
 
+    private void setUp() {
+
+        final String token = new PrefManager(getActivity()).getToken();
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response get account--", response.toString());
+                        try {
+                            userDataModel = new UserDataModel();
+                            userDataModel.setFirstName(response.getString("firstName"));
+                            userDataModel.setLastName(response.getString("lastName"));
+                            userDataModel.setGender(response.getString("gender"));
+                            userDataModel.setDob(response.getString("dob"));
+                            userDataModel.setCity(response.getString("city"));
+                            userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+
+                            setView();
+
+                            //editFname.setText(userDataModel.getFirstName());
+                            //editLname.setText(userDataModel.getLastName());
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String json = null;
+                        Log.d("error--", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null) {
+                            switch (response.statusCode) {
+                                case 401:
+                                    json = new String(response.data);
+                                    json = trimMessage(json, "detail");
+                                    if (json != null) {
+                                         Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
+                                    }
+                            }
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization","Bearer "+token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", objectRequest.toString());
+        requestQueue.add(objectRequest);
+
+    }
+
+    private void setView() {
+        if(userDataModel!=null){
+            editLname.setText(userDataModel.getLastName());
+            editFname.setText(userDataModel.getFirstName());
+            editGender.setText(userDataModel.getGender());
+            editCity.setText(userDataModel.getCity());
+            editDob.setText(userDataModel.getDob());
+            editPhone.setText(userDataModel.getPhoneNumber());
+        }
+    }
+
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try{
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch(JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+}

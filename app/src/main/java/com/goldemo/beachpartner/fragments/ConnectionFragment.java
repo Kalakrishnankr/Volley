@@ -64,10 +64,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         allSampleData = (ArrayList<PersonModel>) createDummyData();
 
 
-        rcv_conn    =   (RecyclerView)view.findViewById(R.id.rcv_connection);
-        txtv_athlete=   (TextView)view.findViewById(R.id.txtAthlete);
-        txtv_coach  =   (TextView)view.findViewById(R.id.txtCoach);
-        adapter     =   new ConnectionAdapter(getContext(),allSampleData);
+        rcv_conn        =   (RecyclerView)view.findViewById(R.id.rcv_connection);
+        txtv_athlete    =   (TextView)view.findViewById(R.id.txtAthlete);
+        txtv_coach      =   (TextView)view.findViewById(R.id.txtCoach);
+        adapter         =   new ConnectionAdapter(getContext(),allSampleData);
         adapter.notifyDataSetChanged();
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
@@ -83,7 +83,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-    // Method for Active Coach Tab
+    /*Method for Active Coach Tab*/
+
     private void activeCoachTab() {
         txtv_coach.setTextColor(getResources().getColor(R.color.blueDark));
         txtv_coach.setBackgroundColor(getResources().getColor(R.color.white));
@@ -92,7 +93,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-    // Method Active Athlete TAb
+    /*Method Active Athlete TAb*/
+
     private void activeAthletTab() {
 
         txtv_athlete.setTextColor(getResources().getColor(R.color.blueDark));

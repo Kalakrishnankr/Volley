@@ -76,18 +76,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
         img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
 
+        mRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv);          //Recycler view for upcoming events
+        msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
+        parRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_partners); //Recycler view for tournament requests
+
+
         img_send.setOnClickListener(this);
         img_received.setOnClickListener(this);
 
 
 
-        LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+
 //        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
 //        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
 //        pRecyclerview.setAdapter(profileAdapter);
 //        pRecyclerview.setHasFixedSize(true);
 
-        mRecyclerview = (RecyclerView)view.findViewById(R.id.rcv);//This recycler view for upcoming events
+
+        /*My upcoming tournaments*/
+
+        LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         adapter = new CardAdapter(getContext(),allSampleData);
         mRecyclerview.setAdapter(adapter);
         SnapHelper snapHelper = new PagerSnapHelper();
@@ -96,9 +104,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         mRecyclerview.setHasFixedSize(true);
 
 
-        //Message
+        /*Message*/
 
-        msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
         SnapHelper snaper = new PagerSnapHelper();
@@ -111,7 +118,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
 
-        //Tournament Requests
+        /*Tournament Requests*/
 
         parRecyclerview =  (RecyclerView)view.findViewById(R.id.rcv_partners);
         LinearLayoutManager layoutmngerTwo = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
@@ -163,6 +170,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
     }
 
+
+   /* Grid item spacing and padding */
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 

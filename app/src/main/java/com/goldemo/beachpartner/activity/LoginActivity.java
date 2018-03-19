@@ -1,6 +1,7 @@
 package com.goldemo.beachpartner.activity;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +18,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.facebook.CallbackManager;
@@ -28,13 +38,17 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.instagram.Instagram;
 import com.goldemo.beachpartner.instagram.InstagramSession;
 import com.goldemo.beachpartner.instagram.InstagramUser;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -48,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     private InstagramSession mInstagramSession;
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
+    private ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,40 +115,27 @@ public class LoginActivity extends AppCompatActivity {
         txt_forgotPass  =   (TextView) findViewById(R.id.forgotPass);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
-
+        progress = new ProgressDialog(LoginActivity.this);
+        progress.setMessage("Loading...");
 
         //Login button click
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
+            
             public void onClick(View view) {
 
                 uname = userName.getText().toString().trim();
                 passwd= password.getText().toString().trim();
+                addValidationToViews();
 
+                if(awesomeValidation.validate()){
 
-                //addValidationToViews();
-                startLoginProcess();
-
-                /*if(awesomeValidation.validate()){
-
-                    if(uname.equals("admin@gmail.com") && (passwd.equals("admin"))){
-
-                        startLoginProcess();
+                        progress.show();
+                        startLoginProcess(uname,passwd);//Method for start login
                         userName.setText("");
                         password.setText("");
                         userName.requestFocus();
-
-                    }else {
-
-                        Toast.makeText(LoginActivity.this, "Please try again", Toast.LENGTH_SHORT).show();
-                    }
-
-
-                }*/
-
-
-
-
+                }
 
             }
         });
@@ -196,6 +198,8 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String user_email = result.getText().toString().trim();
                     if(isValidateUserName(user_email)){
+                        //Method to call reset password
+                        resetPassword(user_email);
                         Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
                     }else {
                         Toast.makeText(getBaseContext(), "Please check your email" , Toast.LENGTH_SHORT).show();
@@ -212,6 +216,7 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+
     private void addValidationToViews() {
         awesomeValidation.addValidation(LoginActivity.this, R.id.input_username, Patterns.EMAIL_ADDRESS, R.string.error_username);
         String regx=".{5,}";
@@ -220,11 +225,159 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //Method for login
-    private void startLoginProcess() {
-        //Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show();
-        Intent intent= new Intent(getApplicationContext(),TabActivity.class);
-        startActivity(intent);
+    private void startLoginProcess(final String uname, final String passwd) {
+
+            JSONObject object = new JSONObject();
+            try {
+                object.put("password",passwd);
+                object.put("username",uname);
+                object.put("rememberMe",true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LOGIN, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response--", response.toString());
+
+                        if (response!=null ) {
+
+                            try {
+                                String token  = response.getString("id_token").toString().trim();
+                                if(token!=null && !token.isEmpty()) {
+                                    progress.dismiss();
+                                    //save username password and token in shared preference
+                                    new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
+                                    Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }else {
+                                    Toast.makeText(LoginActivity.this, "Please try later", Toast.LENGTH_SHORT).show();
+                                }
+
+
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }else {
+
+                            Log.d("Bad response--", response.toString());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String json = null;
+                        Log.d("error--", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null){
+                            switch (response.statusCode){
+                                case 401:
+                                    json = new String (response.data);
+                                    json = trimMessage(json,"detail");
+                                    if(json!=null){
+                                        progress.dismiss();
+                                        Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
+                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
+                                        toast.show();
+                                    }
+                            }
+                        }
+
+                        //progressDialog.dismiss();
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("Request", objectRequest.toString());
+        requestQueue.add(objectRequest);
+
     }
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try{
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch(JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+
+
+    //Method for reset password
+    private void resetPassword(final String user_email) {
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        StringRequest postRequest = new StringRequest(ApiService.REQUEST_METHOD_POST, ApiService.REQUEST_PASSWORD_RESET,
+                new Response.Listener<String>()
+                {
+                    @Override
+                    public void onResponse(String response) {
+                        Log.d("Response", response);
+                        //Toast.makeText(LoginActivity.this, "Succes Response" + response, Toast.LENGTH_SHORT).show();
+
+                    }
+                },
+                new Response.ErrorListener()
+                {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String jsonValue = null;
+                        Log.d("ERROR","error => "+error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null){
+                            switch (response.statusCode){
+                                case 400:
+                                    jsonValue = new String (response.data);
+                                    jsonValue = trimMessage(jsonValue,"title");
+                                    if(jsonValue!=null){
+                                        progress.dismiss();
+                                        Toast.makeText(LoginActivity.this, " "+jsonValue, Toast.LENGTH_LONG).show();
+
+                                    }
+                            }
+                        }
+
+                    }
+                }
+        ) {
+            // this is the relevant method
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                String httpPostBody=user_email;
+
+                return httpPostBody.getBytes();
+            }
+
+            public String getBodyContentType()
+            {
+                return "application/json; charset=utf-8";
+            }
+        };
+        queue.add(postRequest);
+}
+
+
 
 
     private Instagram.InstagramAuthListener mAuthListener = new Instagram.InstagramAuthListener() {

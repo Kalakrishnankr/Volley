@@ -3,6 +3,7 @@ package com.goldemo.beachpartner.activity;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,11 +36,13 @@ import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -64,9 +68,10 @@ public class SignUpActivity extends AppCompatActivity{
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
     private LinearLayout llogin;
-    RadioGroup userTypeRadio;
-    RadioButton rb;
-    String userType;
+    private RadioGroup userTypeRadio;
+    private RadioButton rb;
+    private String userType;
+    private ProgressDialog progress;
 
 
     @Override
@@ -78,6 +83,8 @@ public class SignUpActivity extends AppCompatActivity{
         initActivity();
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
+        progress = new ProgressDialog(SignUpActivity.this);
+        progress.setMessage("Loading...");
         //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
 
     }
@@ -103,8 +110,12 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rb =(RadioButton) findViewById(checkedId);
-                userType    = rb.getText().toString();
-                //Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
+                if(rb.getText().toString().trim().equals("Coach")){
+                    userType="CollegeCoach";
+                }else {
+                    userType="Athlete";
+                }
+               // Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -114,10 +125,11 @@ public class SignUpActivity extends AppCompatActivity{
         user_male.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                sex="male";
+                sex="Male";
                 user_male.setTextColor(getResources().getColor(R.color.white));
-                user_female.setTextColor(getResources().getColor(R.color.btnColor));
                 user_male.setBackgroundColor(getResources().getColor(R.color.btnColor));
+                user_female.setTextColor(getResources().getColor(R.color.btnColor));
+                user_female.setBackgroundColor(getResources().getColor(R.color.imgBacgnd));
             }
         });
 
@@ -125,10 +137,11 @@ public class SignUpActivity extends AppCompatActivity{
             @SuppressLint("ResourceAsColor")
             @Override
             public void onClick(View view) {
-                sex="female";
+                sex="Female";
                 user_female.setTextColor(getResources().getColor(R.color.white));
-                user_male.setTextColor(getResources().getColor(R.color.btnColor));
                 user_female.setBackgroundColor(getResources().getColor(R.color.btnColor));
+                user_male.setTextColor(getResources().getColor(R.color.btnColor));
+                user_male.setBackgroundColor(getResources().getColor(R.color.imgBacgnd));
             }
         });
 
@@ -215,6 +228,7 @@ public class SignUpActivity extends AppCompatActivity{
                 mobileno     = user_mobileno.getText().toString().trim();
 
 
+
                 addValidationToViews();//Method for validate feilds
                 if(awesomeValidation.validate()){
                     //if(sex!=null){
@@ -248,7 +262,7 @@ public class SignUpActivity extends AppCompatActivity{
         //adding validation to edittexts
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_dob, "^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$", R.string.doberror);
+        //awesomeValidation.addValidation(SignUpActivity.this, R.id.input_dob, "(0?[1-9]|1[012]) [/.-] (0?[1-9]|[12][0-9]|3[01]) [/.-] ((19|20)\\\\d\\\\d)", R.string.doberror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[2-9]{2}[0-9]{8}$", R.string.mobilerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
@@ -262,36 +276,41 @@ public class SignUpActivity extends AppCompatActivity{
     private void submitForm() {
 
 
+        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+        JSONArray array = new JSONArray();
+        array.put("basic");
+
         JSONObject object = new JSONObject();
         try {
 
-
             object.put("activated",true);
-            object.put("authToken","");
-            object.put("authorities","");
+            object.put("authToken","null");
+            object.put("authorities",array);
 
-            object.put("firstName",userName);
-            object.put("lastName",lastName);
+            object.put("city",location);
+            object.put("createdBy",dob);
+            object.put("createdDate",sim.format(new Date()));
+            object.put("lastModifiedDate",sim.format(new Date()));
+
+            object.put("deviceId",android_id);
             object.put("dob",dob);
-            object.put("gender",sex);
             object.put("email",email);
+            object.put("firstName",userName);
+            object.put("gender",sex);
+            object.put("id",100);
+
+            object.put("imageUrl","null");
+            object.put("langKey","null");
+            object.put("lastModifiedBy","null");
+
+            object.put("lastName",lastName);
+            object.put("location",location);
+            object.put("login",email);
+            object.put("loginType","BP");
             object.put("password",pass);
             object.put("phoneNumber",mobileno);
-            object.put("loginType",1);
-            object.put("deviceId",android_id);
-
-            object.put("createdBy","");
-            object.put("createdDate","");
-            //object.put("id",id);
-            object.put("imageUrl","");
-            object.put("langKey","");
-            object.put("lastModifiedDate","");
-            object.put("city","");
-            object.put("location",location);
-
-
-
-
+            object.put("userType",userType);
 
 
 
@@ -299,7 +318,7 @@ public class SignUpActivity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-        JSONObject jo= new JSONObject();
+        /*JSONObject jo= new JSONObject();
         try {
             jo.put("usertype",1);
             jo.put("userDetails",object);
@@ -307,19 +326,26 @@ public class SignUpActivity extends AppCompatActivity{
 
         } catch (JSONException e) {
             e.printStackTrace();
-        }
+        }*/
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SIGNUP, jo,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SIGNUP, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response--", response.toString());
 
                         try {
-                            String statusCode = response.getString("statusCode").toString().trim();
-                            if(response!=null && statusCode.equals("000")){
+                            String statusCode = response.getString("message").toString().trim();
+                            if(response!=null && statusCode.equals("success")){
 
-                                Toast.makeText(SignUpActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
+                                clearFeilds();
+                                Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
+                                startActivity(intent);
+                                finish();
+
+                            }else{
+                                Toast.makeText(SignUpActivity.this, "Failed", Toast.LENGTH_LONG).show();
 
                             }
 
@@ -331,11 +357,22 @@ public class SignUpActivity extends AppCompatActivity{
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        String json = null;
                         Log.d("error--", error.toString());
-                        Toast toast = Toast.makeText(SignUpActivity.this, "Couldn't connect to Server", Toast.LENGTH_LONG);
-                        toast.setGravity(Gravity.TOP, 0, 0);
-                        toast.show();
-                        //progressDialog.dismiss();
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null){
+                            switch (response.statusCode){
+                                case 401:
+                                    json = new String (response.data);
+                                    json = trimMessage(json,"title");
+                                    if(json!=null){
+                                        progress.dismiss();
+                                        Toast toast = Toast.makeText(SignUpActivity.this, " "+json, Toast.LENGTH_LONG);
+                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
+                                        toast.show();
+                                    }
+                            }
+                        }
                     }
                 }) {
             @Override
@@ -352,15 +389,38 @@ public class SignUpActivity extends AppCompatActivity{
         requestQueue.add(objectRequest);
 
     }
+        //Method for clear the feilds
 
-
+    private void clearFeilds() {
+        user_fname.setText("");
+        user_lname.setText("");
+        user_dob.setText("");
+        user_email.setText("");
+        user_password.setText("");
+        user_confPasswd.setText("");
+        user_location.setText("");
+        user_mobileno.setText("");
+        //userTypeRadio.clearCheck();
+    }
 
     public void updateLabel() {
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         user_dob.setText(sdf.format(myCalendar.getTime()));
     }
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
 
+        try{
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch(JSONException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
 
     /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {

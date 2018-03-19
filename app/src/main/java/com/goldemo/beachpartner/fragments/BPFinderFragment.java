@@ -99,7 +99,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_bpfinder, container, false);
-//       actionBar.setTitle("Beach Partner Finder");
+
         setUp(view);
         btnFemale.setText("Women");
         btnMale.setText("Men");
@@ -176,8 +176,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         //choose Location
 
-        dataAdapter = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, stateList);
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+        dataAdapter     = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_spinner_item, stateList);
+        Typeface font   = Typeface.createFromAsset(getContext().getAssets(),
                 "fonts/SanFranciscoTextRegular.ttf");
         spinner_location.setTypeface(font);
         spinner_location.setAdapter(dataAdapter);
@@ -336,12 +336,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 }else {
                     topFrameLayout.setVisibility(View.VISIBLE);
-
                 }
             }
         });
 
 
+        //Methods for card swipe
 
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
             @Override
@@ -454,7 +454,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
-        //High fi
+        //Button Click for hifi
         imgv_highfi.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
