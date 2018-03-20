@@ -46,6 +46,7 @@
     <string name="nameerror">Please enter your name</string>
     <string name="lnameerror">Please enter your last name</string>
     <string name="doberror">Please choose your birth date</string>
+    <string name="gendererror">Please choose your gender</string>
     <string name="emailerror">Please enter a valid email</string>
     <string name="mobilerror">Please enter a valid mobile number</string>
     <string name="cityerror">Please enter your location</string>
@@ -99,4 +100,19 @@
     <string name="hint_youlink">YouTube Link</string>
     <string name="hint_biolink">Bio Link</string>
     <string name="hint_rank">Ranking</string>
+
+
+    <!--password reset-->
+    <string name="hint_password_reset">Password Reset</string>
+    <string name="hint_key">Key</string>
+    <string name="hint_newpassword">New Password</string>
+    <string name="hint_confirm_pwd">Confirm Password</string>
+    <string name="hint_ok">OK</string>
+    <string name="hint_cancel">CANCEL</string>
+    <string name="invalid_key">Invalid Key</string>
+    <string name="hint_passord_size">Please enter password</string>
+    <string name="hint_didnotmatch">Password does not match</string>
+
+
+    <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile)will also be notified</string>
 </resources>

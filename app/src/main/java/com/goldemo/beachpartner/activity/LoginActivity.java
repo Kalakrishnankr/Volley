@@ -23,6 +23,7 @@ import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -200,7 +201,7 @@ public class LoginActivity extends AppCompatActivity {
                     if(isValidateUserName(user_email)){
                         //Method to call reset password
                         resetPassword(user_email);
-                        Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
+                        //Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
                     }else {
                         Toast.makeText(getBaseContext(), "Please check your email" , Toast.LENGTH_SHORT).show();
 
@@ -336,7 +337,11 @@ public class LoginActivity extends AppCompatActivity {
                 {
                     @Override
                     public void onResponse(String response) {
-                        Log.d("Response", response);
+                        Log.d("Response email", response);
+                        Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
+
+                         //Method for reset password from
+                         resetPasswordCall();
                         //Toast.makeText(LoginActivity.this, "Succes Response" + response, Toast.LENGTH_SHORT).show();
 
                     }
@@ -439,6 +444,133 @@ public class LoginActivity extends AppCompatActivity {
         data_request.setParameters(permission_param);
         data_request.executeAsync();
 
+    }
+
+    private void resetPasswordCall() {
+
+        final AlertDialog.Builder alerts = new AlertDialog.Builder(this);
+        LayoutInflater inflater   = LoginActivity.this.getLayoutInflater();
+        View view     = inflater.inflate(R.layout.alert_dialog_box,null);
+        alerts.setView(view);
+        alerts.setCancelable(true);
+        final AlertDialog alertDialog  = alerts.create();
+        final  EditText editText_key =  (EditText) view.findViewById(R.id.edittxt_key);
+        final  EditText editText_pass=  (EditText) view.findViewById(R.id.edittxt_newPassword);
+        final  EditText editText_confm_pass = (EditText) view.findViewById(R.id.edittxt_confirmPassword);
+
+        Button   btn_confirm =   (Button) view.findViewById(R.id.btn_resetOk);
+        Button   btn_cancel  =   (Button) view.findViewById(R.id.btn_resetCancel);
+
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                validateResetForm();
+                if(awesomeValidation.validate()){
+
+                    String keyValue = editText_key.getText().toString().trim();
+                    String passWord = editText_confm_pass.getText().toString().trim();
+                    alertDialog.cancel();
+                    //Api for reset password
+                    changePassword(keyValue,passWord);
+                }
+
+            }
+        });
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.cancel();
+            }
+        });
+
+        alertDialog.show();
+    }
+
+    private void changePassword(String keyValue, String passWord) {
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("key",keyValue);
+            jsonObject.put("newPassword",passWord);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest objRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.CHANGE_PASSWORD, jsonObject,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        //Log.d("Success Response", response.toString());
+                        Toast.makeText(LoginActivity.this, "Successfully reset your password", Toast.LENGTH_SHORT).show();
+
+                    }
+
+
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String jsonErrorMsg = null;
+                        //Log.d("error--", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null){
+                            switch (response.statusCode){
+                                case 500:
+                                    jsonErrorMsg = new String (response.data);
+                                    jsonErrorMsg = trimMessage(jsonErrorMsg,"title");
+                                    if(jsonErrorMsg!=null){
+                                        progress.dismiss();
+                                        Toast.makeText(LoginActivity.this, " "+jsonErrorMsg, Toast.LENGTH_LONG).show();
+                                    }
+                                    break;
+
+                                case 401:
+                                    jsonErrorMsg = new String (response.data);
+                                    jsonErrorMsg = trimMessage(jsonErrorMsg,"title");
+                                    if(jsonErrorMsg!=null){
+                                        progress.dismiss();
+                                        Toast.makeText(LoginActivity.this, " "+jsonErrorMsg, Toast.LENGTH_LONG).show();
+                                    }
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        //progressDialog.dismiss();
+                    }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json");
+                return headers;
+            }
+
+            @Override
+            protected Response<JSONObject> parseNetworkResponse(NetworkResponse response) {
+
+                if (response.data == null || response.data.length == 0) {
+                    return Response.success(null, HttpHeaderParser.parseCacheHeaders(response));
+                } else {
+                    return super.parseNetworkResponse(response);
+                }
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("Request", objRequest.toString());
+        requestQueue.add(objRequest);
+
+    }
+
+    private void validateResetForm() {
+        String regx_key = ".{4,}";
+        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_key,regx_key,R.string.invalid_key);
+        String regx_pass= ".{8,}";
+        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_newPassword,regx_pass,R.string.hint_passord_size);
+        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_confirmPassword,R.id.edittxt_newPassword,R.string.hint_didnotmatch);
     }
 
 }

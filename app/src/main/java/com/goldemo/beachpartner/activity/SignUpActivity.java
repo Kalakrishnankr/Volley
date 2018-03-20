@@ -42,7 +42,6 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -231,16 +230,6 @@ public class SignUpActivity extends AppCompatActivity{
 
                 addValidationToViews();//Method for validate feilds
                 if(awesomeValidation.validate()){
-                    //if(sex!=null){
-                        submitForm();
-
-                    /*}else {
-                        Toast.makeText(SignUpActivity.this, "Please select Gender", Toast.LENGTH_SHORT).show();
-                    }*/
-
-                }
-
-                if(awesomeValidation.validate()){
                     if(userType!=null){
                         submitForm();
 
@@ -284,25 +273,25 @@ public class SignUpActivity extends AppCompatActivity{
         JSONObject object = new JSONObject();
         try {
 
-            object.put("activated",true);
+        //  object.put("activated",true);
             object.put("authToken","null");
-            object.put("authorities",array);
+        //  object.put("authorities",array);
 
             object.put("city",location);
-            object.put("createdBy",dob);
-            object.put("createdDate",sim.format(new Date()));
-            object.put("lastModifiedDate",sim.format(new Date()));
+        //  object.put("createdBy",dob);
+        //  object.put("createdDate",sim.format(new Date()));
+        //  object.put("lastModifiedDate",sim.format(new Date()));
 
             object.put("deviceId",android_id);
             object.put("dob",dob);
             object.put("email",email);
             object.put("firstName",userName);
             object.put("gender",sex);
-            object.put("id",100);
+        //  object.put("id",100);
 
             object.put("imageUrl","null");
             object.put("langKey","null");
-            object.put("lastModifiedBy","null");
+        //  object.put("lastModifiedBy","null");
 
             object.put("lastName",lastName);
             object.put("location",location);

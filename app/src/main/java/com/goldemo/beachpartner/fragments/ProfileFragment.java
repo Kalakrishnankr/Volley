@@ -46,6 +46,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.OnClickListener;
 import com.goldemo.beachpartner.R;
@@ -95,6 +96,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private boolean editStatus = false;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     public UserDataModel userDataModel;
+    private AwesomeValidation awesomeValidation;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -798,6 +800,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     //Saving information after edit
     public void InfoSave() {
 
+
         profile_img_editIcon.setVisibility(View.GONE);
         imgVideo.setVisibility(View.GONE);
         btnsBottom.setVisibility(View.GONE);
@@ -823,22 +826,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         editPhone.setEnabled(false);
         editPhone.setBackground(null);
-
-        /*JSONObject object = new JSONObject();
-        try{
-            object.put("firstName",editFname.getText().toString().trim());
-            object.put("lastName",editLname.getText().toString().trim());
-            object.put("gender",editGender.getText().toString().trim());
-            object.put("city",editCity.getText().toString().trim());
-            object.put("phoneNumber",editPhone.getText().toString().trim());
-            object.put("dob",editDob.getText().toString().trim());
-
-
-        }catch (JSONException e){
-
-        }*/
-
-
 
 //        editPassword.setEnabled(false);
 //        editPassword.setBackground(null);
@@ -911,10 +898,40 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         topfinishes_txt_3.setBackground(null);
         imageView3.setVisibility(View.GONE);
 
+        /*validating feilds*/
+        validateFeilds();
+
+        if(awesomeValidation.validate()){
+
+            JSONObject object = new JSONObject();
+            try{
+                object.put("firstName",editFname.getText().toString().trim());
+                object.put("lastName",editLname.getText().toString().trim());
+                object.put("gender",editGender.getText().toString().trim());
+                object.put("city",editCity.getText().toString().trim());
+                object.put("phoneNumber",editPhone.getText().toString().trim());
+                object.put("dob",editDob.getText().toString().trim());
+
+
+            }catch (JSONException e){
+
+            }
+
+            //updateUserDetails(object);
+
+        }
+
+
+    }
 
 
 
-
+    private void validateFeilds() {
+        awesomeValidation.addValidation(getActivity(),R.id.txtvFname,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+        awesomeValidation.addValidation(getActivity(),R.id.txtvLname,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.lnameerror);
+        awesomeValidation.addValidation(getActivity(),R.id.txtv_gender,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.gendererror);
+        awesomeValidation.addValidation(getActivity(),R.id.txtv_city,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.cityerror);
+        awesomeValidation.addValidation(getActivity(),R.id.txtv_mobileno,"^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
     }
 
 
@@ -1179,6 +1196,39 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         Log.d("Request", objectRequest.toString());
         requestQueue.add(objectRequest);
+
+    }
+
+    //Update User Details
+
+    private void updateUserDetails(JSONObject object) {
+
+        JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SAVE_ACCOUNT_DETAILS, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+            HashMap<String, String> headers = new HashMap<String, String>();
+            //headers.put("Authorization","Bearer "+token);
+            //headers.put("Content-Type", "application/json; charset=utf-8");
+            return headers;
+        }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
 
     }
 

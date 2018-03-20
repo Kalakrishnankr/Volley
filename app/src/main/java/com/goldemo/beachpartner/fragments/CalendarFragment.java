@@ -50,7 +50,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private ImageButton btn_previous,btn_next;
     CompactCalendarView compactCalendarView;
     private RecyclerView rview;
-    EventsAdapter eventsAdapter;
+    private EventsAdapter eventsAdapter;
     public Calendar currentCalender = Calendar.getInstance(Locale.getDefault());
     SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.getDefault());
     SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());

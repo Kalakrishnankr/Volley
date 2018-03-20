@@ -19,7 +19,8 @@ public class ApiService {
     public static String BASE_URL   =   "http://34.215.18.181:8080/api/";
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
-    public static String REQUEST_PASSWORD_RESET=BASE_URL+"account/reset-password/init";
+    public static String REQUEST_PASSWORD_RESET= BASE_URL+"account/reset-password/init";
+    public static String CHANGE_PASSWORD= BASE_URL+"account/reset-password/finish";
 
     public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
     public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
