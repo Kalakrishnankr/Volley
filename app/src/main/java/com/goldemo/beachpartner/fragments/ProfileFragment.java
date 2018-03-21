@@ -1,5 +1,6 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.animation.AnimatorSet;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
@@ -9,7 +10,9 @@ import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -53,6 +56,8 @@ import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.UserDataModel;
+import com.goldemo.beachpartner.utils.FloatingActionButton;
+import com.goldemo.beachpartner.utils.FloatingActionMenu;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +80,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private ViewPager viewPager;
     private FrameLayout videoFrame;
     private ImageView imgEdit, imgVideo, imgPlay, profile_img_editIcon, imageView1, imageView2, imageView3;
+    private FloatingActionMenu imgShare;
+    private FloatingActionButton fabImage,fabVideo;
     private CircularImageView imgProfile;
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     private OnClickListener mOnClickListener;
@@ -90,13 +97,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
-    LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
-    RelativeLayout containingLt;
+    private LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
+    private RelativeLayout containingLt;
     private int finishCount = 0;
     private boolean editStatus = false;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     public UserDataModel userDataModel;
     private AwesomeValidation awesomeValidation;
+
+    private List<FloatingActionMenu> menus = new ArrayList<>();
+    private Handler mUiHandler = new Handler();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -137,6 +148,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imgVideo                = (ImageView) view.findViewById(R.id.imgVideo);
         videoView               = (VideoView) view.findViewById(R.id.videoView);
         imgPlay                 = (ImageView) view.findViewById(R.id.imgPlay);
+
+        imgShare                = (FloatingActionMenu)   view.findViewById(R.id.menu_blue);
+        fabImage                = (FloatingActionButton) view.findViewById(R.id.fab_image);
+        fabVideo                = (FloatingActionButton) view.findViewById(R.id.fab_video);
 
         /*This for demo only start*/
 
@@ -210,6 +225,64 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         topFinishes2_lt     = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
         topFinishes3_lt     = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
+
+       // imgShare.setIconAnimated(false);
+       // imgShare.hideMenuButton(false);
+
+        imgShare.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imgShare.isOpened()) {
+                    //Toast.makeText(getActivity(), imgShare.getMenuButtonLabelText(), Toast.LENGTH_SHORT).show();
+                }
+
+                imgShare.toggle(true);
+            }
+        });
+
+        //share image
+        fabImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
+                if(selectedImageUri!=null){
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
+                    Uri screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
+                    intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                    intent.setType("image/*");
+                    startActivity(Intent.createChooser(intent, "Share image via..."));
+
+                }else {
+                    Toast.makeText(getActivity(), "Please upload Image and share it", Toast.LENGTH_SHORT).show();
+                    imgShare.close(true);
+                }
+            }
+        });
+
+        //Share video
+        fabVideo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //Toast.makeText(getActivity(), "Video", Toast.LENGTH_SHORT).show();
+                if(selectedVideoUri!=null){
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
+                    Uri screenshotUri = Uri.parse(String.valueOf(selectedVideoUri));
+                    intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                    intent.setType("video/*");
+                    startActivity(Intent.createChooser(intent, "Share video via..."));
+
+                }else {
+                    Toast.makeText(getActivity(), "Please upload Video and share it", Toast.LENGTH_SHORT).show();
+                    imgShare.close(true);
+
+                }
+
+            }
+        });
+
+
          /*This for demo only end*/
 
 
@@ -220,6 +293,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imgVideo.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
+
+       // imgShare.setOnClickListener(this);
 
 //        Experience Spinner
 
@@ -551,6 +626,92 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        menus.add(imgShare);
+
+
+
+       /* menuYellow.setOnMenuToggleListener(new FloatingActionMenu.OnMenuToggleListener() {
+            @Override
+            public void onMenuToggle(boolean opened) {
+                String text;
+                if (opened) {
+                    text = "Menu opened";
+                } else {
+                    text = "Menu closed";
+                }
+                Toast.makeText(getActivity(), text, Toast.LENGTH_SHORT).show();
+            }
+        });*/
+
+        /*fab1.setOnClickListener(clickListener);
+        fab2.setOnClickListener(clickListener);
+        fab3.setOnClickListener(clickListener);*/
+
+        int delay = 400;
+        for (final FloatingActionMenu menu : menus) {
+            mUiHandler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    menu.showMenuButton(true);
+                }
+            }, delay);
+            delay += 150;
+        }
+
+       /* new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                fabEdit.show(true);
+            }
+        }, delay + 150);
+
+        menuRed.setOnMenuButtonClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (menuRed.isOpened()) {
+                    Toast.makeText(getActivity(), menuRed.getMenuButtonLabelText(), Toast.LENGTH_SHORT).show();
+                }
+
+                menuRed.toggle(true);
+            }
+        });*/
+
+        createCustomAnimation();
+    }
+
+    private void createCustomAnimation() {
+        AnimatorSet set = new AnimatorSet();
+
+        /*ObjectAnimator scaleOutX = ObjectAnimator.ofFloat(menuGreen.getMenuIconView(), "scaleX", 1.0f, 0.2f);
+        ObjectAnimator scaleOutY = ObjectAnimator.ofFloat(menuGreen.getMenuIconView(), "scaleY", 1.0f, 0.2f);
+
+        ObjectAnimator scaleInX = ObjectAnimator.ofFloat(menuGreen.getMenuIconView(), "scaleX", 0.2f, 1.0f);
+        ObjectAnimator scaleInY = ObjectAnimator.ofFloat(menuGreen.getMenuIconView(), "scaleY", 0.2f, 1.0f);
+
+        scaleOutX.setDuration(50);
+        scaleOutY.setDuration(50);
+
+        scaleInX.setDuration(150);
+        scaleInY.setDuration(150);
+
+        scaleInX.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+                menuGreen.getMenuIconView().setImageResource(menuGreen.isOpened()
+                        ? R.drawable.ic_close : R.drawable.ic_star);
+            }
+        });
+
+        set.play(scaleOutX).with(scaleOutY);
+        set.play(scaleInX).with(scaleInY).after(scaleOutX);
+        set.setInterpolator(new OvershootInterpolator(2));
+
+        menuGreen.setIconToggleAnimatorSet(set);*/
+    }
+
+    @Override
     public void onClick(View view) {
         switch (view.getId()) {
 
@@ -599,6 +760,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 basic_info_tab.setTextColor(getResources().getColor(R.color.darkGrey));
 
                 break;
+
+            /*case R.id.menu_blue:
+
+                break;*/
 
 
 

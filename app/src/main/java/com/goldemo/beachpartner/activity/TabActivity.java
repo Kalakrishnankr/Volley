@@ -1,10 +1,12 @@
 package com.goldemo.beachpartner.activity;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -146,12 +148,37 @@ public class TabActivity extends AppCompatActivity {
                 break;
             case R.id.logout:
                 Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();
+                alertLogout();
                 break;
             default:
                 break;
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void alertLogout() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle("Logout")
+                        .setMessage("Would you like to logout ?")
+                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                //logout
+                                finish();
+                                //System.exit(0);
+                            }
+                        })
+                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+
+                                dialogInterface.cancel();
+                            }
+                        });
+                AlertDialog dialog =  builder.create();
+                dialog.show();
+
     }
 
     @Override
