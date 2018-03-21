@@ -1,5 +1,7 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
@@ -8,9 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+
+import java.util.Calendar;
+
 
 
 public class EventDescriptionFragment extends Fragment implements View.OnClickListener {
@@ -86,6 +92,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 transaction.commit();
                 break;
             case R.id.btn_register:
+                AddToPersonalCalendar();
                 break;
             case R.id.btn_back:
                 //Back button
@@ -98,6 +105,36 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
 
     }
+    private void AddToPersonalCalendar(){
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra("beginTime", cal.getTimeInMillis());
+        intent.putExtra("allDay", false);
+//        intent.putExtra("rrule", "FREQ=DAILY");
+        intent.putExtra("endTime",  cal.getTimeInMillis());
+        intent.putExtra("title", "DAS");
+        startActivityForResult(intent,1);
+
+
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+        if (requestCode == 1) {
+            if(resultCode == Activity.RESULT_OK){
+                String result=data.getStringExtra("result");
+                Toast.makeText(getContext(), ""+requestCode, Toast.LENGTH_SHORT).show();
+
+
+            }
+            if (resultCode == Activity.RESULT_CANCELED) {
+                //Write your code if there's no result
+            }
+        }
+    }
+
+
 
 
 }

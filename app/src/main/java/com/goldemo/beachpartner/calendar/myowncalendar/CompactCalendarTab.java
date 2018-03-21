@@ -330,9 +330,12 @@ public class CompactCalendarTab extends Fragment {
 
             List<Event> events = getEvents(timeInMillis, i);
 
+
             compactCalendarView.addEvents(events);
+
         }
     }
+
 
 
     //adding Events

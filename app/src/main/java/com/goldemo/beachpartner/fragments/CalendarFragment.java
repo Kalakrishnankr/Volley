@@ -1,6 +1,7 @@
 package com.goldemo.beachpartner.fragments;
 
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -302,8 +303,11 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             List<Event> events = getEvents(timeInMillis, i);
 
             compactCalendarView.addEvents(events);
+
         }
     }
+
+
 
 
     //adding Events
