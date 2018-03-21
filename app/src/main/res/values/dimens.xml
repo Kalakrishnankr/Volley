@@ -45,6 +45,9 @@
     <!--marginTop of text under circular image view-->
     <dimen name="margin_top_text_under_circularImage">60dp</dimen>
 
+    <dimen name="fab_size_normal">30dp</dimen>
+    <dimen name="fab_size_mini">30dp</dimen>
+    <dimen name="labels_text_size">18sp</dimen>
 
 
 

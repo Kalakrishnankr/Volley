@@ -129,14 +129,21 @@ public class LoginActivity extends AppCompatActivity {
                 passwd= password.getText().toString().trim();
                 addValidationToViews();
 
-                if(awesomeValidation.validate()){
+                //new code direct login 21/03/2018
+
+                Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                startActivity(intent);
+                finish();
+
+                //disabled direct login 21/03/2018
+                /*if(awesomeValidation.validate()){
 
                         progress.show();
                         startLoginProcess(uname,passwd);//Method for start login
                         userName.setText("");
                         password.setText("");
                         userName.requestFocus();
-                }
+                }*/
 
             }
         });

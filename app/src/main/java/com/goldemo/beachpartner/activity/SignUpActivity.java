@@ -194,7 +194,21 @@ public class SignUpActivity extends AppCompatActivity{
                 myCalendar.set(Calendar.YEAR, year);
                 myCalendar.set(Calendar.MONTH, monthOfYear);
                 myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                updateLabel();
+                SimpleDateFormat dateBirth = updateLabel();
+                if (dateBirth!=null){
+                    Calendar today = Calendar.getInstance();
+                    int age = today.get(Calendar.YEAR) - dateBirth.getCalendar().get(Calendar.YEAR);
+                    if(today.get(Calendar.DAY_OF_YEAR) < dateBirth.getCalendar().get(Calendar.DAY_OF_YEAR)){
+                        age--;
+                    }
+                    Integer ageInt = new Integer(age);
+                    if(ageInt<18){
+                        Toast.makeText(SignUpActivity.this, "Your are minor", Toast.LENGTH_SHORT).show();
+
+                    }else {
+                        Toast.makeText(SignUpActivity.this, "Your are senior", Toast.LENGTH_SHORT).show();
+                    }
+                }
             }
 
         };
@@ -396,10 +410,11 @@ public class SignUpActivity extends AppCompatActivity{
         //userTypeRadio.clearCheck();
     }
 
-    public void updateLabel() {
+    public SimpleDateFormat updateLabel() {
         String myFormat = "yyyy-MM-dd"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         user_dob.setText(sdf.format(myCalendar.getTime()));
+        return sdf;
     }
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
