@@ -1,10 +1,12 @@
 package com.goldemo.beachpartner.fragments;
 
 import android.app.Activity;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -92,7 +94,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 transaction.commit();
                 break;
             case R.id.btn_register:
-                AddToPersonalCalendar();
+                alertAddToSystemCalendar();
                 break;
             case R.id.btn_back:
                 //Back button
@@ -105,7 +107,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
 
     }
-    private void AddToPersonalCalendar(){
+    private void addToSystemCalendar(){
         Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.item/event");
@@ -116,6 +118,28 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         intent.putExtra("title", "DAS");
         startActivityForResult(intent,1);
 
+
+    }
+
+    private void alertAddToSystemCalendar() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add to Your Calendar")
+                .setMessage("Would you like to add it to your calendar?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        addToSystemCalendar();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog =  builder.create();
+        dialog.show();
 
     }
     @Override

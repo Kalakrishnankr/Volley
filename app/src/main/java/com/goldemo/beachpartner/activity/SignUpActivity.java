@@ -4,15 +4,21 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
@@ -70,6 +76,7 @@ public class SignUpActivity extends AppCompatActivity{
     private RadioGroup userTypeRadio;
     private RadioButton rb;
     private String userType;
+    private int paymentStatus;
     private ProgressDialog progress;
 
 
@@ -203,10 +210,7 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                     Integer ageInt = new Integer(age);
                     if(ageInt<18){
-                        Toast.makeText(SignUpActivity.this, "Your are minor", Toast.LENGTH_SHORT).show();
-
-                    }else {
-                        Toast.makeText(SignUpActivity.this, "Your are senior", Toast.LENGTH_SHORT).show();
+                        alertMinor();
                     }
                 }
             }
@@ -416,6 +420,109 @@ public class SignUpActivity extends AppCompatActivity{
         user_dob.setText(sdf.format(myCalendar.getTime()));
         return sdf;
     }
+
+    private void alertMinor() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Will you be able to manage your payments?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                            paymentStatus=0;
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        alertPayments();
+                        paymentStatus=1;
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog =  builder.create();
+        dialog.show();
+
+    }
+
+    private void alertPayments() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Do you want to link your account with your parent?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        paymentStatus=2;
+                        alertEnterParentDetails();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog =  builder.create();
+        dialog.show();
+
+    }
+
+    private void alertEnterParentDetails() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.popup_parent_payment_layout, null);
+
+        final EditText parent_firstname  = (EditText) alertLayout.findViewById(R.id.input_parent_firstname);
+        final EditText parent_lastname   = (EditText) alertLayout.findViewById(R.id.input_parent_lastname);
+        final EditText parent_email      = (EditText) alertLayout.findViewById(R.id.input_parent_email);
+        final EditText parent_mobile     = (EditText) alertLayout.findViewById(R.id.input_parent_phone);
+        final Button   save_btn          = (Button)   alertLayout.findViewById(R.id.parent_details_submit_btn);
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
+
+
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+        alert.setView(alertLayout);
+        alert.setCancelable(true);
+//        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+//
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//        });
+//        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//
+//            }
+//
+//        });
+
+
+
+        final android.app.AlertDialog dialog = alert.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+            }
+        });
+        dialog.show();
+
+        save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 

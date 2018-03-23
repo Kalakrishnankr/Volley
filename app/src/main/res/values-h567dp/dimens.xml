@@ -22,4 +22,5 @@
     <dimen name="filter_criteria_gender_margin">10dp</dimen>
 
     <dimen name="calendarTargetHt">150dp</dimen>
+    <dimen name="floatingMenuMarginTop">90dp</dimen>
 </resources>
