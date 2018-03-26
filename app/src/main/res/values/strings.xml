@@ -23,6 +23,7 @@
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
 
+
     <!--Tab Icons-->
     <string name="title_activity_tab">TabActivity</string>
     <string name="title_home">Home</string>
@@ -56,6 +57,7 @@
 
     <string name="settings">Settings</string>
     <string name="editProfile">Edit Profile</string>
+    <string name="share">Share</string>
     <string name="error_username">Enter valid username</string>
 
     <!--Top menus-->

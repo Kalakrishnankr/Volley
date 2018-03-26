@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:weightSum="6"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+            <com.goldemo.beachpartner.CustomTextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="@dimen/textsize_header"
+                android:gravity="center"
+                android:textStyle="bold"
+                android:text="Enter your parent details"
+                android:textColor="@color/btnColor"/>
+    </LinearLayout>
+    <android.support.design.widget.TextInputLayout
+        android:paddingLeft="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+        <com.goldemo.beachpartner.CustomEditText
+            android:id="@+id/input_parent_firstname"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_fname"
+            android:inputType="textCapWords"
+            android:textColor="@color/colorPrimary" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="5dp"
+        android:layout_weight="1"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+        <com.goldemo.beachpartner.CustomEditText
+            android:id="@+id/input_parent_lastname"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_lname"
+            android:inputType="textCapWords"
+            android:textColor="@color/colorPrimary" />
+    </android.support.design.widget.TextInputLayout>
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="5dp"
+        android:layout_weight="1"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+        <com.goldemo.beachpartner.CustomEditText
+            android:id="@+id/input_parent_email"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_email"
+            android:inputType="textCapWords"
+            android:textColor="@color/colorPrimary" />
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:paddingLeft="5dp"
+        android:layout_weight="1"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+        <com.goldemo.beachpartner.CustomEditText
+            android:id="@+id/input_parent_phone"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:hint="@string/hint_mobile"
+            android:inputType="number"
+            android:textColor="@color/colorPrimary" />
+    </android.support.design.widget.TextInputLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:layout_marginLeft="30pt"
+        android:layout_marginRight="30pt">
+        <Button
+            android:id="@+id/parent_details_submit_btn"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="5pt"
+            android:background="@color/btnColor"
+            android:text="Save"
+            android:textAllCaps="false"
+            android:textColor="@color/white"/>
+    </LinearLayout>
+
+
+</LinearLayout>

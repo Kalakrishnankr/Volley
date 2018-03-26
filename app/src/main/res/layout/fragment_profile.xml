@@ -83,11 +83,12 @@
         <!--Layout for Share Button-->
 
         <RelativeLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
             android:layout_marginLeft="25dp"
-            android:layout_marginBottom="58dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="@dimen/floatingMenuMarginTop"
             android:elevation="10dp">
 
             <com.goldemo.beachpartner.utils.FloatingActionMenu
@@ -96,8 +97,9 @@
                 android:layout_height="wrap_content"
                 fab:menu_fab_size="normal"
                 fab:menu_labels_style="@dimen/text_size"
-                fab:menu_colorNormal="#1565C0"
+                fab:menu_colorNormal="@color/white"
                 fab:menu_colorPressed="#2272CD"
+                fab:menu_showShadow="false"
                 fab:menu_colorRipple="#62B2FF"
                 fab:menu_labels_ellipsize="middle"
                 fab:menu_labels_singleLine="true"
@@ -182,6 +184,7 @@
                 android:capitalize="words"
                 android:inputType="textCapWords"
                 android:textColor="@color/black"
+                android:text="Alivia Orvieto"
                 android:textStyle="bold" />
 
 
@@ -195,6 +198,18 @@
                 android:drawableLeft="@drawable/ic_athlete_indicator"
                 android:text="Athlete"
                 android:textColor="#696969" />
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/profile_name"
+                android:layout_marginLeft="28dp"
+                android:layout_marginStart="28dp"
+                android:text="@string/share"
+                android:textAlignment="center"
+                android:textColor="@color/imgBacgnd"
+                android:textSize="12sp" />
 
         </RelativeLayout>
 

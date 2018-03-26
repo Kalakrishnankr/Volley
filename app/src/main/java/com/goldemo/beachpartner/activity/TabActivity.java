@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -11,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,7 +21,9 @@ import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.BPFinderFragment;
 import com.goldemo.beachpartner.fragments.CalendarFragment;
 import com.goldemo.beachpartner.fragments.ConnectionFragment;
+import com.goldemo.beachpartner.fragments.HiFiveFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
+import com.goldemo.beachpartner.fragments.MessageFragment;
 import com.goldemo.beachpartner.fragments.ProfileFragment;
 
 public class TabActivity extends AppCompatActivity {
@@ -27,6 +31,14 @@ public class TabActivity extends AppCompatActivity {
     private TextView mTextMessage;
     HomeFragment homeFragment;
     private String YOUR_FRAGMENT_STRING_TAG;
+    private Boolean activeMoreStatus=false;
+    private Boolean moreClickedOnce=true;
+    private Boolean floatMenu1Active=true;
+    private Boolean floatMenu2Active=false;
+
+    FloatingActionButton menu1;
+    FloatingActionButton menu2;
+
     private BottomNavigationView navigation;
     private static boolean isBPActive = false;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
@@ -43,6 +55,7 @@ public class TabActivity extends AppCompatActivity {
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
                     transaction.commit();
+                    disableFloatButtons();
                     return true;
                 case R.id.navigation_bp:
 
@@ -52,6 +65,7 @@ public class TabActivity extends AppCompatActivity {
                     FragmentTransaction tran = mng.beginTransaction();
                     tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
                     tran.commit();
+                    disableFloatButtons();
                     return true;
 
                 case R.id.navigation_connection:
@@ -62,6 +76,7 @@ public class TabActivity extends AppCompatActivity {
                     FragmentTransaction trans = mngr.beginTransaction();
                     trans.replace(R.id.container,connectionFragment,YOUR_FRAGMENT_STRING_TAG);
                     trans.commit();
+                    disableFloatButtons();
                     return true;
 
                 case R.id.navigation_calendar:
@@ -72,11 +87,55 @@ public class TabActivity extends AppCompatActivity {
                     FragmentTransaction ctrans = cmngr.beginTransaction();
                     ctrans.replace(R.id.container,calendarFragment,YOUR_FRAGMENT_STRING_TAG);
                     ctrans.commit();
+                    disableFloatButtons();
                     return true;
 
 
+                case R.id.navigation_more:
+                    activeMoreStatus=!activeMoreStatus;
+
+                    if(activeMoreStatus){
+                        menu1.setVisibility(View.VISIBLE);
+                        menu2.setVisibility(View.VISIBLE);
+                        if(moreClickedOnce||floatMenu1Active){
+                            activateMessageFragment();
+                            moreClickedOnce=false;
+                        }
+                        else if(floatMenu2Active){
+                            activateHiFiveFragment();
+                        }
 
 
+                        menu1.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                activateMessageFragment();
+                                menu1.setImageResource(R.drawable.ic_chat_bubble_active);
+                                menu2.setImageResource(R.drawable.ic_highfive);
+
+                                disableFloatButtons();
+                            }
+                        });
+
+                        menu2.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+
+                                activateHiFiveFragment();
+                                menu1.setImageResource(R.drawable.ic_chat_bubble);
+                                menu2.setImageResource(R.drawable.ic_highfive_seen);
+
+                                disableFloatButtons();
+                            }
+                        });
+
+                    }
+                    else{
+                        disableFloatButtons();
+                    }
+
+                    return true;
 
                 /*case R.id.navigation_notifications:
                     return true;*/
@@ -85,6 +144,35 @@ public class TabActivity extends AppCompatActivity {
         }
     };
 
+    //to disable float buttons
+    public void disableFloatButtons(){
+        menu1.setVisibility(View.GONE);
+        menu2.setVisibility(View.GONE);
+        activeMoreStatus=false;
+    }
+
+    //to show messages fragment
+    public void activateMessageFragment(){
+        floatMenu1Active=true;
+        floatMenu2Active=false;
+        MessageFragment messageFragment   =   new MessageFragment();
+        getSupportActionBar().setTitle("Messages");
+        FragmentManager messageFManager   =   getSupportFragmentManager();
+        FragmentTransaction messageTrans = messageFManager.beginTransaction();
+        messageTrans.replace(R.id.container,messageFragment,YOUR_FRAGMENT_STRING_TAG);
+        messageTrans.commit();
+    }
+
+    public void activateHiFiveFragment(){
+        floatMenu1Active=false;
+        floatMenu2Active=true;
+        HiFiveFragment hiFiveFragment   =   new HiFiveFragment();
+        getSupportActionBar().setTitle("High Fives");
+        FragmentManager hiFiveFManager   =   getSupportFragmentManager();
+        FragmentTransaction hiFiveTrans = hiFiveFManager.beginTransaction();
+        hiFiveTrans.replace(R.id.container,hiFiveFragment,YOUR_FRAGMENT_STRING_TAG);
+        hiFiveTrans.commit();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +184,10 @@ public class TabActivity extends AppCompatActivity {
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        menu1 = findViewById(R.id.submenu1);
+        menu2 = findViewById(R.id.submenu2);
+
+
 
         /*Load default HomeFragment*/
 
