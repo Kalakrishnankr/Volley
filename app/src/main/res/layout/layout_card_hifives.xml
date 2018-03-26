@@ -8,32 +8,47 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true">
-        <com.goldemo.beachpartner.CustomTextView
-            android:id="@+id/tvContact"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_margin="5dp"
-            android:layout_marginRight="50dp"
-            android:layout_height="wrap_content"
-            android:textSize="@dimen/text_size"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:text="Jordan Sent you a high five"/>
-        <com.github.curioustechizen.ago.RelativeTimeTextView
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:id="@+id/time_stamp"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:gravity="left|center" />
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/hifiveImg"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="5dp" />
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/tvContact"
+                android:layout_width="match_parent"
+                android:layout_margin="5dp"
+                android:paddingRight="50dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size"
+                android:textColor="@color/black"
+                android:textStyle="bold"
+                android:layout_toRightOf="@+id/hifiveImg"
+                android:text="Sent you a high five"/>
+            <com.github.curioustechizen.ago.RelativeTimeTextView
+                android:layout_marginTop="10dp"
+                android:layout_marginLeft="5dp"
+                android:id="@+id/time_stamp"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:layout_below="@+id/tvContact"
+                android:layout_toRightOf="@+id/hifiveImg"
+                android:gravity="left|center" />
 
-        <ImageView
-            android:id="@+id/btn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="right"
-            android:text="Call"
-            android:src="@drawable/ic_highfive"/>
+            <ImageView
+                android:id="@+id/btn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="right"
+                android:src="@drawable/ic_highfive"
+                android:layout_alignParentRight="true"
+                />
+        </RelativeLayout>
+
     </android.support.v7.widget.CardView>
 
 

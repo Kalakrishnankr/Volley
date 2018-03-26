@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.HiFiveAdapter;
+import com.goldemo.beachpartner.models.HighFiveModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class HiFiveFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
-    private ArrayList<String> hiFiveList = new ArrayList<String>();
+    private ArrayList<HighFiveModel> hiFiveList = new ArrayList<HighFiveModel>();
     ListView listView;
 
     public HiFiveFragment() {
@@ -83,13 +84,14 @@ public class HiFiveFragment extends Fragment {
     private void initList() {
         // We populate the planets
 
-        hiFiveList.add("Alivia Orvieto");
-        hiFiveList.add("Marti McLaurin");
-        hiFiveList.add("Liz Held");
-        hiFiveList.add("Alivia Orvieto");
-        hiFiveList.add("Marti McLaurin");
-        hiFiveList.add("Liz Held");
-        hiFiveList.add("Alivia Orvieto");
+
+
+        hiFiveList.add(new HighFiveModel("Alivia Orvieto","http://seqato.com/bp/images/1.jpg"));
+        hiFiveList.add(new HighFiveModel("Marti McLaurin","http://seqato.com/bp/images/2.jpg"));
+        hiFiveList.add(new HighFiveModel("Liz Held","http://seqato.com/bp/images/3.jpg"));
+        hiFiveList.add(new HighFiveModel("Alivia Orvieto","http://seqato.com/bp/images/4.jpg"));
+        hiFiveList.add(new HighFiveModel("Marti McLaurin","http://seqato.com/bp/images/5.jpg"));
+        hiFiveList.add(new HighFiveModel("Liz Held","http://seqato.com/bp/images/6.jpg"));
     }
 
     // TODO: Rename method, update argument and hook method into UI event

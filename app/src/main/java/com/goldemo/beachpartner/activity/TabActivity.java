@@ -25,6 +25,7 @@ import com.goldemo.beachpartner.fragments.HiFiveFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
 import com.goldemo.beachpartner.fragments.MessageFragment;
 import com.goldemo.beachpartner.fragments.ProfileFragment;
+import com.goldemo.beachpartner.fragments.SettingsFragment;
 
 public class TabActivity extends AppCompatActivity {
 
@@ -233,7 +234,12 @@ public class TabActivity extends AppCompatActivity {
                 Toast.makeText(this, "Clicked Feedback", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.settings:
-                Toast.makeText(this, "Clicked Settings", Toast.LENGTH_SHORT).show();
+                SettingsFragment sf = new SettingsFragment();
+                getSupportActionBar().setTitle("Settings");
+                FragmentManager settingsMang = getSupportFragmentManager();
+                FragmentTransaction settingsTrans = settingsMang.beginTransaction().addToBackStack(null);
+                settingsTrans.replace(R.id.container, sf,YOUR_FRAGMENT_STRING_TAG);
+                settingsTrans.commit();
                 break;
             case R.id.help:
                 Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();

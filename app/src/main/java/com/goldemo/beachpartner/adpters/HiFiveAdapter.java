@@ -11,8 +11,10 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.models.HighFiveModel;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,11 +25,12 @@ import java.util.List;
  */
 
 public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
-    private ArrayList<String> hiFiveList = new ArrayList<String>();
+    private ArrayList<HighFiveModel> hiFiveList = new ArrayList<HighFiveModel>();
     private Context context;
     RelativeTimeTextView timeStamp;
+    ImageView usersImg;
     CardView cardView;
-    public HiFiveAdapter(ArrayList<String> hiFiveList, Context context) {
+    public HiFiveAdapter(ArrayList<HighFiveModel> hiFiveList, Context context) {
         this.hiFiveList=hiFiveList;
         this.context=context;
     }
@@ -84,8 +87,10 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
         final ImageView hifiveSeen  = (ImageView)convertView.findViewById(R.id.btn);
         timeStamp           =  convertView.findViewById(R.id.time_stamp);
         cardView            =  convertView.findViewById(R.id.highfiveCard);
+        usersImg            =  convertView.findViewById(R.id.hifiveImg);
 
-        tvContact.setText(hiFiveList.get(position)+"Sent you a high five");
+        tvContact.setText(hiFiveList.get(position).getName()+" Sent you a high five");
+        Glide.with(getContext()).load(hiFiveList.get(position).getImage()).into(usersImg);
         timeStamp.setReferenceTime(new Date().getTime());
 
 
@@ -112,5 +117,9 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
     @Override
     public boolean isEmpty() {
         return false;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }
