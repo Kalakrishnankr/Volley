@@ -16,6 +16,17 @@ public class ConnectionModel {
     public String Connected_authToken;
     public String Connected_location;
 
+    public String getConnected_imageUrl() {
+        return Connected_imageUrl;
+    }
+
+    public void setConnected_imageUrl(String connected_imageUrl) {
+        Connected_imageUrl = connected_imageUrl;
+    }
+
+    public String Connected_imageUrl;
+    public boolean isExpanded = false;
+
 
     public String getConnected_uId() {
         return Connected_uId;

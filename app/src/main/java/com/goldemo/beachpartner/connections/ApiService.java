@@ -9,6 +9,7 @@ import com.android.volley.Request;
 public class ApiService {
     public static int REQUEST_METHOD_POST   =   Request.Method.POST;
     public static int REQUEST_METHOD_GET    =   Request.Method.GET;
+    public static int REQUEST_METHOD_PUT    =   Request.Method.PUT;
 
     //For instagram
 
@@ -19,6 +20,7 @@ public class ApiService {
     public static String BASE_URL   =   "http://34.215.18.181:8080/api/";
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
+
     public static String REQUEST_PASSWORD_RESET= BASE_URL+"account/reset-password/init";
     public static String CHANGE_PASSWORD= BASE_URL+"account/reset-password/finish";
 
@@ -29,6 +31,9 @@ public class ApiService {
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
 
     public static String GET_ALL_CONNECTIONS    =  BASE_URL+"users/connected/";
+    public static String ADD_PROFILE_VIDEO_IMAGE=  BASE_URL+"storage/uploadProfileData";
+
+    public static String  UPDATE_USER_DETAILS    =  BASE_URL+"users";
 
 
 

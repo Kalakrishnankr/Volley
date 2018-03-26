@@ -104,6 +104,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     public UserDataModel userDataModel;
     private AwesomeValidation awesomeValidation;
+    private String token,user_id;
 
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private Handler mUiHandler = new Handler();
@@ -122,6 +123,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
+        token   =   new PrefManager(getContext()).getToken();
+        user_id =   new PrefManager(getContext()).getUserId();
 
         initActivity(view);
         setUp();
@@ -803,7 +807,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
     public void updateLabel() {
-        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         editDob.setText(sdf.format(myCalendar.getTime()));
     }
@@ -965,130 +969,223 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     //Saving information after edit
     public void InfoSave() {
 
+    /*validating feilds*/
 
-        profile_img_editIcon.setVisibility(View.GONE);
-        imgVideo.setVisibility(View.GONE);
-        btnsBottom.setVisibility(View.GONE);
-        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-        edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
-        more_info_btns_bottom.setVisibility(View.GONE);
-        //BasicInfo
+        if(validate()) {
 
-        editFname.setEnabled(false);
-        editFname.setBackground(null);
+            //put user fields to json object
+            JSONObject object = new JSONObject();
+            try {
+                object.put("firstName", editFname.getText().toString().trim());
+                object.put("lastName", editLname.getText().toString().trim());
+                object.put("gender", editGender.getText().toString().trim());
+                object.put("city", editCity.getText().toString().trim());
+                object.put("phoneNumber", editPhone.getText().toString().trim());
+                object.put("dob", editDob.getText().toString().trim());
 
-        editLname.setEnabled(false);
-        editLname.setBackground(null);
 
-        editGender.setEnabled(false);
-        editGender.setBackground(null);
+            } catch (JSONException e) {
 
-        editDob.setEnabled(false);
-        editDob.setBackground(null);
+            }
 
-        editCity.setEnabled(false);
-        editCity.setBackground(null);
+            //update user fields
+            updateUserDetails(object);
 
-        editPhone.setEnabled(false);
-        editPhone.setBackground(null);
+
+            profile_img_editIcon.setVisibility(View.GONE);
+            imgVideo.setVisibility(View.GONE);
+            btnsBottom.setVisibility(View.GONE);
+            imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+            edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+            more_info_btns_bottom.setVisibility(View.GONE);
+            //BasicInfo
+
+            editFname.setEnabled(false);
+            editFname.setBackground(null);
+
+            editLname.setEnabled(false);
+            editLname.setBackground(null);
+
+            editGender.setEnabled(false);
+            editGender.setBackground(null);
+
+            editDob.setEnabled(false);
+            editDob.setBackground(null);
+
+            editCity.setEnabled(false);
+            editCity.setBackground(null);
+
+            editPhone.setEnabled(false);
+            editPhone.setBackground(null);
 
 //        editPassword.setEnabled(false);
 //        editPassword.setBackground(null);
 
 
-        //MoreInfo
-        spinnerExp.setEnabled(false);
-        spinnerExp.setBackground(null);
+            //MoreInfo
+            spinnerExp.setEnabled(false);
+            spinnerExp.setBackground(null);
 
-        spinnerPref.setEnabled(false);
-        spinnerPref.setBackground(null);
+            spinnerPref.setEnabled(false);
+            spinnerPref.setBackground(null);
 
-        spinnerPositon.setEnabled(false);
-        spinnerPositon.setBackground(null);
+            spinnerPositon.setEnabled(false);
+            spinnerPositon.setBackground(null);
 
-        editHeight.setEnabled(false);
-        editHeight.setBackground(null);
-
-
-        spinnerTLInterest.setEnabled(false);
-        spinnerTLInterest.setBackground(null);
-
-        editPlayed.setEnabled(false);
-        editPlayed.setBackground(null);
-
-        spinnerTourRating.setEnabled(false);
-        spinnerTourRating.setBackground(null);
-
-        editCBVANo.setEnabled(false);
-        editCBVANo.setBackground(null);
-
-        editCBVAFName.setEnabled(false);
-        editCBVAFName.setBackground(null);
-
-        editCBVALName.setEnabled(false);
-        editCBVALName.setBackground(null);
-
-        spinnerWtoTravel.setEnabled(false);
-        spinnerWtoTravel.setBackground(null);
-
-        editHighschool.setEnabled(false);
-        editHighschool.setBackground(null);
-
-        editIndoorClub.setEnabled(false);
-        editIndoorClub.setBackground(null);
-
-        editColgClub.setEnabled(false);
-        editColgClub.setBackground(null);
-
-        editColgBeach.setEnabled(false);
-        editColgBeach.setBackground(null);
-
-        editColgIndoor.setEnabled(false);
-        editColgIndoor.setBackground(null);
-
-        editPoints.setEnabled(false);
-        editPoints.setBackground(null);
+            editHeight.setEnabled(false);
+            editHeight.setBackground(null);
 
 
-        imageView1.setVisibility(View.GONE);
-        topfinishes_txt_1.setEnabled(false);
-        topfinishes_txt_1.setBackground(null);
+            spinnerTLInterest.setEnabled(false);
+            spinnerTLInterest.setBackground(null);
+
+            editPlayed.setEnabled(false);
+            editPlayed.setBackground(null);
+
+            spinnerTourRating.setEnabled(false);
+            spinnerTourRating.setBackground(null);
+
+            editCBVANo.setEnabled(false);
+            editCBVANo.setBackground(null);
+
+            editCBVAFName.setEnabled(false);
+            editCBVAFName.setBackground(null);
+
+            editCBVALName.setEnabled(false);
+            editCBVALName.setBackground(null);
+
+            spinnerWtoTravel.setEnabled(false);
+            spinnerWtoTravel.setBackground(null);
+
+            editHighschool.setEnabled(false);
+            editHighschool.setBackground(null);
+
+            editIndoorClub.setEnabled(false);
+            editIndoorClub.setBackground(null);
+
+            editColgClub.setEnabled(false);
+            editColgClub.setBackground(null);
+
+            editColgBeach.setEnabled(false);
+            editColgBeach.setBackground(null);
+
+            editColgIndoor.setEnabled(false);
+            editColgIndoor.setBackground(null);
+
+            editPoints.setEnabled(false);
+            editPoints.setBackground(null);
 
 
-        topfinishes_txt_2.setEnabled(false);
-        topfinishes_txt_2.setBackground(null);
-        imageView2.setVisibility(View.GONE);
-
-        topfinishes_txt_3.setEnabled(false);
-        topfinishes_txt_3.setBackground(null);
-        imageView3.setVisibility(View.GONE);
-
-        /*validating feilds*/
-        validateFeilds();
-
-        if(awesomeValidation.validate()){
-
-            JSONObject object = new JSONObject();
-            try{
-                object.put("firstName",editFname.getText().toString().trim());
-                object.put("lastName",editLname.getText().toString().trim());
-                object.put("gender",editGender.getText().toString().trim());
-                object.put("city",editCity.getText().toString().trim());
-                object.put("phoneNumber",editPhone.getText().toString().trim());
-                object.put("dob",editDob.getText().toString().trim());
+            imageView1.setVisibility(View.GONE);
+            topfinishes_txt_1.setEnabled(false);
+            topfinishes_txt_1.setBackground(null);
 
 
-            }catch (JSONException e){
+            topfinishes_txt_2.setEnabled(false);
+            topfinishes_txt_2.setBackground(null);
+            imageView2.setVisibility(View.GONE);
 
+            topfinishes_txt_3.setEnabled(false);
+            topfinishes_txt_3.setBackground(null);
+            imageView3.setVisibility(View.GONE);
+
+            //put video,image and user_id to json
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("profileImg",selectedImageUri);
+                jsonObject.put("profileVideo",selectedVideoUri);
+                jsonObject.put("userId",user_id);
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
 
-            //updateUserDetails(object);
-
+            //Method for uploading profilePic & profile video
+            uploadFiles(jsonObject);
         }
-
 
     }
 
+    //Api for upload image and video
+    private void uploadFiles(JSONObject jsonObject) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.ADD_PROFILE_VIDEO_IMAGE, jsonObject, new
+                Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(response!=null){
+                            Toast.makeText(getActivity(), "Image and Video Upload Successfuly", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                // headers.put("Authorization","Bearer "+token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", request.toString());
+        requestQueue.add(request);
+
+    }
+
+    private boolean validate(){
+        if(editFname.getText().toString().trim().matches("")) {
+            editFname.setError("Please enter your First name");
+            return false;
+        }else if(editLname.getText().toString().trim().matches("")){
+            editLname.setError("Please enter your Last name");
+            return false;
+        }else if(editGender.getText().toString().trim().matches("")){
+            editGender.setError("Please Choose Gender");
+            return false;
+        }else if(editCity.getText().toString().trim().matches("")){
+            editCity.setError("Please enter your city");
+            return false;
+        }else if (editPhone.getText().toString().trim().matches("")){
+            editPhone.setError("Please enter your Mobile no");
+            return false;
+        }else if(editDob.getText().toString().trim().matches("")){
+            editDob.setError("Please enter your dob");
+            return false;
+        }else if(selectedImageUri!=null){
+            Toast.makeText(getActivity(), "Please upload a picture", Toast.LENGTH_SHORT).show();
+            return false;
+
+        }else if (selectedVideoUri!=null){
+            Toast.makeText(getActivity(), "Please upload a Video", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+
+
+    }
 
 
     private void validateFeilds() {
@@ -1296,9 +1393,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     //Get User Details Api
 
     private void setUp() {
-
-        final String token = new PrefManager(getActivity()).getToken();
-
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -1369,15 +1463,35 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void updateUserDetails(JSONObject object) {
 
-        JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.SAVE_ACCOUNT_DETAILS, object,
+        JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                    if(response!=null){
+                        Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
+                    }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
 
             }
         }){
@@ -1385,7 +1499,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
             HashMap<String, String> headers = new HashMap<String, String>();
-            //headers.put("Authorization","Bearer "+token);
+            headers.put("Authorization","Bearer "+token);
             //headers.put("Content-Type", "application/json; charset=utf-8");
             return headers;
         }
