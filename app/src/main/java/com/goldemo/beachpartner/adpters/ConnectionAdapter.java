@@ -15,7 +15,7 @@ import android.widget.TextView;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.NoteFragment;
-import com.goldemo.beachpartner.models.PersonModel;
+import com.goldemo.beachpartner.models.ConnectionModel;
 
 import java.util.ArrayList;
 
@@ -23,41 +23,39 @@ import java.util.ArrayList;
  * Created by seq-kala on 23/2/18.
  */
 
-public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.ViewHolder> {
+public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.MyViewHolder> {
 
-    Context mContext;
-    private ArrayList<PersonModel> dataList;
+    public Context mContext;
+    private ArrayList<ConnectionModel> dataLists;
     //    public static boolean isExpanded =false;
 
     public ExpandOrCollapse mAnimationManager;
 
 
 
-    public ConnectionAdapter(Context context, ArrayList<PersonModel> allSampleData) {
+    public ConnectionAdapter(Context context, ArrayList<ConnectionModel> allSampleData) {
+        this.dataLists=allSampleData;
         this.mContext=context;
-        this.dataList=allSampleData;
     }
 
     @Override
-    public ConnectionAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ConnectionAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.connection_card,parent,false);
-        ViewHolder viewHolder = new ViewHolder(view);
-
-        return viewHolder;
+        MyViewHolder myViewHolder = new MyViewHolder(view);
+        return myViewHolder;
     }
 
 
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder,int position) {
 
 
+        final ConnectionModel model =dataLists.get(position);
 
-        PersonModel model =dataList.get(position);
-
-        if (dataList != null && !dataList.isEmpty()) {
-            if (dataList.get(position).isExpanded) {
+        if (dataLists != null && !dataLists.isEmpty()) {
+            if (dataLists.get(position).isExpanded) {
                 //mAnimationManager.expand(holder.rrHeaderTwo, 1000, 250);
 
                 holder.rrHeaderTwo.setVisibility(View.VISIBLE);
@@ -70,17 +68,17 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 @Override
                 public void onClick(View view) {
 
-                    if (dataList.get(position).isExpanded) {
+                    if (model.isExpanded) {
                         //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
                         ///mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
 
                         holder.rrHeaderTwo.setVisibility(View.GONE);
-                        dataList.get(position).isExpanded = false;
+                        model.isExpanded = false;
                     } else {
-                       // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
+                        // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
                         //mAnimationManager.expand(holder.rrHeaderTwo, 1000, 300);
                         holder.rrHeaderTwo.setVisibility(View.VISIBLE);
-                        dataList.get(position).isExpanded = true;
+                        model.isExpanded = true;
                     }
 
                     notifyDataSetChanged();
@@ -101,9 +99,9 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
                 }
             });
 
-            holder.txtv_name.setText(dataList.get(position).getUname());
-            holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
-            holder.profilePic.setImageResource(dataList.get(position).getImage());
+            holder.txtv_name.setText(dataLists.get(position).getConnected_firstName());
+            //holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
+//            holder.profilePic.setImageResource(Integer.parseInt(dataLists.get(position).getConnected_imageUrl()));
 
 
 
@@ -115,18 +113,18 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return dataList.size();
+        return dataLists.size();
     }
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView txtv_name,txtv_age,txtv_block,txtv_message,txtv_notes;
         public ImageView topIcon;
         public CardView cardView;
         public RelativeLayout rrHeaderTwo,rrHeaderOne;
         public CircularImageView profilePic;
 
-        public ViewHolder(View view) {
+        public MyViewHolder(View view) {
             super(view);
 
             topIcon     = (ImageView)view.findViewById(R.id.top_icon);
