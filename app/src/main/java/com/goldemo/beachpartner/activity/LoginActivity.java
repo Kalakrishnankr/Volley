@@ -40,9 +40,11 @@ import com.facebook.login.LoginResult;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.fragments.ProfileFragment;
 import com.goldemo.beachpartner.instagram.Instagram;
 import com.goldemo.beachpartner.instagram.InstagramSession;
 import com.goldemo.beachpartner.instagram.InstagramUser;
+import com.goldemo.beachpartner.models.UserDataModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -64,6 +66,8 @@ public class LoginActivity extends AppCompatActivity {
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
+    private String token;
+    private UserDataModel userDataModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -131,19 +135,19 @@ public class LoginActivity extends AppCompatActivity {
 
                 //new code direct login 21/03/2018
 
-                Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                /*Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                 startActivity(intent);
-                finish();
+                finish();*/
 
                 //disabled direct login 21/03/2018
-                /*if(awesomeValidation.validate()){
+                if(awesomeValidation.validate()){
 
                         progress.show();
                         startLoginProcess(uname,passwd);//Method for start login
                         userName.setText("");
                         password.setText("");
                         userName.requestFocus();
-                }*/
+                }
 
             }
         });
@@ -254,11 +258,14 @@ public class LoginActivity extends AppCompatActivity {
                         if (response!=null ) {
 
                             try {
-                                String token  = response.getString("id_token").toString().trim();
+                                token  = response.getString("id_token").toString().trim();
                                 if(token!=null && !token.isEmpty()) {
                                     progress.dismiss();
+
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
+                                    //get Login user info
+                                    getUserInfo();
                                     Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                     startActivity(intent);
                                     finish();
@@ -309,6 +316,70 @@ public class LoginActivity extends AppCompatActivity {
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("Request", objectRequest.toString());
+        requestQueue.add(objectRequest);
+
+    }
+
+    //Method for get Login user info
+    private void getUserInfo() {
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response get account--", response.toString());
+                        try {
+                            userDataModel = new UserDataModel();
+                            userDataModel.setId(response.getString("id"));
+                            userDataModel.setFirstName(response.getString("firstName"));
+                            userDataModel.setLastName(response.getString("lastName"));
+                            userDataModel.setGender(response.getString("gender"));
+                            userDataModel.setDob(response.getString("dob"));
+                            userDataModel.setCity(response.getString("city"));
+                            userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+                            new PrefManager(getApplicationContext()).saveUserDetails(response.getString("id"));
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String json = null;
+                        Log.d("error--", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null) {
+                            switch (response.statusCode) {
+                                case 401:
+                                    json = new String(response.data);
+                                    json = trimMessage(json, "detail");
+                                    if (json != null) {
+                                        Toast.makeText(LoginActivity.this, ""+json, Toast.LENGTH_LONG).show();
+                                    }
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization","Bearer "+token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
 

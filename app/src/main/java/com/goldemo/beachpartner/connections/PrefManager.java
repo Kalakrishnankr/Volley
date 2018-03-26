@@ -23,10 +23,23 @@ public class PrefManager {
         editor.commit();
     }
 
+    //Save logged userid
+    public void saveUserDetails(String user_id){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userId",user_id);
+        editor.commit();
+    }
+
 
     public String getEmail() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         return sharedPreferences.getString("Email", "");
+    }
+
+    public String getUserId(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("userId", "");
     }
 
     public String getToken(){

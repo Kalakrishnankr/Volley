@@ -55,7 +55,6 @@
                             android:gravity="center"
                             android:textStyle="bold"
                             android:singleLine="false"
-                            android:text="hashadakdakdaksadjakdjakd"
                             android:textColor="@color/white" />
 
                         <ImageView
@@ -118,7 +117,6 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
-                                android:text="Illnois"
                                 android:textColor="#fff" />
                         </LinearLayout>
                     </LinearLayout>
@@ -154,7 +152,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
-                            android:text="Wheaton Community Center"
                             android:textColor="#fff" />
                     </LinearLayout>
                 </LinearLayout>
@@ -189,7 +186,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
-                            android:text="Adam Joan"
                             android:textColor="#fff" />
                     </LinearLayout>
                 </LinearLayout>
@@ -233,7 +229,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:gravity="center"
-                            android:text="Mar 15 2018"
                             android:layout_weight="0.5"/>
 
                     </LinearLayout>
@@ -273,7 +268,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:gravity="center"
-                            android:text="April 10 2018"
                             android:layout_weight="0.5"/>
 
 
@@ -346,8 +340,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="Feb 10 2018"/>
+                        android:gravity="center"/>
                 </LinearLayout>
 
                 <View
@@ -374,8 +367,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="2"
-                        android:gravity="center"
-                        android:text="Feb 10 2018"/>
+                        android:gravity="center"/>
                 </LinearLayout>
 
                 <View

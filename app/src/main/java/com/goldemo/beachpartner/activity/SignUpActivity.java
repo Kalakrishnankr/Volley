@@ -338,8 +338,8 @@ public class SignUpActivity extends AppCompatActivity{
                         Log.d("response--", response.toString());
 
                         try {
-                            String statusCode = response.getString("message").toString().trim();
-                            if(response!=null && statusCode.equals("success")){
+                            String statusMessage = response.getString("message").toString().trim();
+                            if(response!=null && statusMessage.equals("success")){
 
                                 Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
                                 clearFeilds();

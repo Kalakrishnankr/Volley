@@ -49,6 +49,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if(bundle!=null){
             Event event = (Event)bundle.getSerializable("event_clicked");
             tview_eventname.setText(event.getData().toString());
+            tview_location.setText(event.getEventLocation());
+            tview_startDate.setText(event.getEventStartDate());
+            tview_endDate.setText(event.getEventEndDate());
+            tview_venue.setText(event.getEventVenue());
+//            tview_eventadmin.setText(event.getEventAdmin().toString());
         }
 
         return view;

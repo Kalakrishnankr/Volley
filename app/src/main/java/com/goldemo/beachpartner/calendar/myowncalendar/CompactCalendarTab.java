@@ -1,3 +1,4 @@
+/*
 package com.goldemo.beachpartner.calendar.myowncalendar;
 
 import android.graphics.Color;
@@ -33,9 +34,11 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 
+*/
 /**
  * Created by Owner on 2/19/2018.
- */
+ *//*
+
 
 public class CompactCalendarTab extends Fragment {
 
@@ -149,11 +152,13 @@ public class CompactCalendarTab extends Fragment {
                             bundle.putSerializable("event_clicked", eventObject);
                             //eventDescriptionFragment.setArguments(bundle);
 
-                           /* FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
+                           */
+/* FragmentTransaction fragmentTransaction = getFragmentManager().beginTransaction();
                             fragmentTransaction.setCustomAnimations(android.R.anim.slide_in_left,android.R.anim.slide_out_right);
                             fragmentTransaction.replace(R.id.container, eventDescriptionFragment);
                             fragmentTransaction.addToBackStack(null);
-                            fragmentTransaction.commit();*/
+                            fragmentTransaction.commit();*//*
+
 
 
 
@@ -382,3 +387,4 @@ public class CompactCalendarTab extends Fragment {
 
 }
 
+*/

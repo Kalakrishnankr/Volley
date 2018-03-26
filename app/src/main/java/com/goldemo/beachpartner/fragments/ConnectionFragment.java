@@ -16,12 +16,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.ConnectionAdapter;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.PersonModel;
 
+import org.json.JSONArray;
+
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ConnectionFragment extends Fragment implements View.OnClickListener {
@@ -30,6 +36,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private ConnectionAdapter adapter;
     private TextView txtv_coach,txtv_athlete;
     ArrayList<PersonModel> allSampleData;
+
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -52,16 +59,18 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_connection, container, false);
 
         initActivity(view);
+        getConnections();
 
         return view;
 
 
     }
 
+
+
     private void initActivity(View view) {
 
 
-        allSampleData = (ArrayList<PersonModel>) createDummyData();
 
 
         rcv_conn        =   (RecyclerView)view.findViewById(R.id.rcv_connection);
@@ -104,25 +113,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private List<PersonModel> createDummyData() {
 
-        List<PersonModel>personModelList = new ArrayList<>();
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-
-        return personModelList;
-
-    }
 
     @Override
     public void onClick(View view) {
@@ -145,6 +136,30 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
+
+    private void getConnections() {
+
+        String user_id = new PrefManager(getContext()).getUserId();
+
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+
+        };
+
+
+
+    }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
 

@@ -1306,13 +1306,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         Log.d("response get account--", response.toString());
                         try {
                             userDataModel = new UserDataModel();
+                            userDataModel.setId(response.getString("id"));
                             userDataModel.setFirstName(response.getString("firstName"));
                             userDataModel.setLastName(response.getString("lastName"));
                             userDataModel.setGender(response.getString("gender"));
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-
+                            new PrefManager(getContext()).saveUserDetails(response.getString("id"));
                             setView();
 
                             //editFname.setText(userDataModel.getFirstName());
