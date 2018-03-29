@@ -2,6 +2,7 @@ package com.goldemo.beachpartner.adpters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.fragments.ChatFragmentPage;
 import com.goldemo.beachpartner.fragments.NoteFragment;
 import com.goldemo.beachpartner.models.ConnectionModel;
 
@@ -49,7 +51,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder,int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
 
         final ConnectionModel model =dataLists.get(position);
@@ -102,6 +104,20 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             holder.txtv_name.setText(dataLists.get(position).getConnected_firstName());
             //holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
 //            holder.profilePic.setImageResource(Integer.parseInt(dataLists.get(position).getConnected_imageUrl()));
+
+            //Set OnclickListener message
+
+            holder.txtv_message.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                    ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("personId", model.getConnected_uId());
+                    chatFragmentPage.setArguments(bundle);
+                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, chatFragmentPage).addToBackStack(null).commit();
+                }
+            });
 
 
 

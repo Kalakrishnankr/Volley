@@ -100,14 +100,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
     private RelativeLayout containingLt;
     private int finishCount = 0;
-    private boolean editStatus = false;
+    private static boolean editStatus = false;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     public UserDataModel userDataModel;
     private AwesomeValidation awesomeValidation;
     private String token,user_id;
 
     private List<FloatingActionMenu> menus = new ArrayList<>();
+
     private Handler mUiHandler = new Handler();
+    public static boolean isValidate = false;
 
 
     @Override
@@ -203,7 +205,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editCBVANo          = (EditText) view.findViewById(R.id.txtvCBVANo);
         editCBVAFName       = (EditText) view.findViewById(R.id.txtvCBVAFName);
         editCBVALName       = (EditText) view.findViewById(R.id.txtvCBVALName);
-        spinnerWtoTravel    = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        spinnerWtoTravel    = (Spinner)  view.findViewById(R.id.spinner_Wto_travel);
         editHighschool      = (EditText) view.findViewById(R.id.txtvHighschool);
         editIndoorClub      = (EditText) view.findViewById(R.id.txtvIndoorClub);
         editColgClub        = (EditText) view.findViewById(R.id.txtvColgClub);
@@ -866,9 +868,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         //Profile image edit icon active
 
+        imgProfile.setClickable(true);
         btnsBottom.setVisibility(View.VISIBLE);
         more_info_btns_bottom.setVisibility(View.VISIBLE);
-
         profile_img_editIcon.setVisibility(View.VISIBLE);
 
         editFname.setEnabled(true);
@@ -971,7 +973,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     /*validating feilds*/
 
-        if(validate()) {
+        if(!validate()) {
 
             //put user fields to json object
             JSONObject object = new JSONObject();
@@ -991,7 +993,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             //update user fields
             updateUserDetails(object);
 
-
+            imgProfile.setClickable(false);
             profile_img_editIcon.setVisibility(View.GONE);
             imgVideo.setVisibility(View.GONE);
             btnsBottom.setVisibility(View.GONE);
@@ -1156,35 +1158,33 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
     private boolean validate(){
+            isValidate = false;
         if(editFname.getText().toString().trim().matches("")) {
             editFname.setError("Please enter your First name");
-            return false;
+            isValidate = true;
         }else if(editLname.getText().toString().trim().matches("")){
             editLname.setError("Please enter your Last name");
-            return false;
+            isValidate = true;
         }else if(editGender.getText().toString().trim().matches("")){
             editGender.setError("Please Choose Gender");
-            return false;
+            isValidate = true;
         }else if(editCity.getText().toString().trim().matches("")){
             editCity.setError("Please enter your city");
-            return false;
+            isValidate = true;
         }else if (editPhone.getText().toString().trim().matches("")){
             editPhone.setError("Please enter your Mobile no");
-            return false;
+            isValidate = true;
         }else if(editDob.getText().toString().trim().matches("")){
             editDob.setError("Please enter your dob");
-            return false;
-        }else if(selectedImageUri!=null){
+            isValidate = true;
+        }else if(selectedImageUri == null){
             Toast.makeText(getActivity(), "Please upload a picture", Toast.LENGTH_SHORT).show();
-            return false;
-
-        }else if (selectedVideoUri!=null){
+            isValidate = true;
+        }else if(selectedVideoUri == null){
             Toast.makeText(getActivity(), "Please upload a Video", Toast.LENGTH_SHORT).show();
-            return false;
+            isValidate = true;
         }
-        return true;
-
-
+        return isValidate;
     }
 
 

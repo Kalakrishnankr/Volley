@@ -348,6 +348,8 @@ public class SignUpActivity extends AppCompatActivity{
                                 Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
                                 startActivity(intent);
                                 finish();
+                                //chatregister firebase
+
 
                             }else{
                                 Toast.makeText(SignUpActivity.this, "Failed", Toast.LENGTH_LONG).show();

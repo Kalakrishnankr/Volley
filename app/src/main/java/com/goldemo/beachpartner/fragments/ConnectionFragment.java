@@ -139,8 +139,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
 
-    private void getConnections() {
-
+    public void getConnections() {
+        connectionList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
         final String token    = new PrefManager(getContext()).getToken();
 

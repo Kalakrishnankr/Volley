@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="5dp"
+        android:weightSum="3">
+
+        <!--Profile PIcture-->
+        <ImageView
+            android:id="@+id/chatPic"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:src="@drawable/ic_person"/>
+        
+        <!--Name & Message and Active Status-->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:layout_marginLeft="5dp"
+            android:orientation="vertical"
+            android:weightSum="2">
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/pname"
+                android:text="Name"
+                android:layout_width="match_parent"
+                android:gravity="left|center"
+                android:textStyle="bold"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/pmessage"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:text="Message"
+                android:layout_weight="0.5"/>
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/pactive_status"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="0.5"
+                android:text="Active Now"/>
+
+        </LinearLayout>
+
+       <!-- Time-->
+
+        <com.goldemo.beachpartner.CustomTextView
+            android:id="@+id/txtv_time"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:text="12.00"
+            android:gravity="center"
+            android:layout_weight="0.5"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/lightGrey"/>
+
+
+</LinearLayout>

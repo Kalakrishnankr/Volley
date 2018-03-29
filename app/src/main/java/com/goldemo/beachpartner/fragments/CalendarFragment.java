@@ -590,6 +590,9 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     try {
                                         String mDate = object.getString("eventStartDate");
                                         Date date = sdf.parse(mDate);
+                                        date.setHours(0);
+                                        date.setMinutes(0);
+                                        date.setSeconds(0);
                                         long timeInMilliseconds = date.getTime();
                                         System.out.println("Date in milli :: " + timeInMilliseconds);
                                         model.setTimeInMillis(timeInMilliseconds);
