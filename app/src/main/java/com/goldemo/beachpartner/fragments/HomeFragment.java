@@ -1,5 +1,6 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -9,12 +10,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.text.style.ForegroundColorSpan;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
@@ -32,6 +39,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private ImageView img_bpprofile,img_send,img_received;
+    private FrameLayout likesCard;
     private RecyclerView mRecyclerview,pRecyclerview,msgRecyclerview,parRecyclerview;
     CardAdapter adapter;
     MessageAdapter messageAdapter;
@@ -75,6 +83,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
         img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
+        likesCard       =       view.findViewById(R.id.no_of_likes_card);
 
         mRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv);          //Recycler view for upcoming events
         msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
@@ -83,6 +92,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         img_send.setOnClickListener(this);
         img_received.setOnClickListener(this);
+        likesCard.setOnClickListener(this);
 
 
 
@@ -163,10 +173,53 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
                 break;
+            case R.id.no_of_likes_card:
+                likesDisplay();
+                break;
 
             default:
                 break;
         }
+    }
+
+    private void likesDisplay() {
+
+        LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
+
+
+        final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+
+
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+        alert.setView(alertLayout);
+        alert.setCancelable(true);
+
+
+
+        final android.app.AlertDialog dialog = alert.create();
+
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+            }
+        });
+        dialog.show();
+
+        save_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
 
