@@ -184,7 +184,6 @@
                 android:capitalize="words"
                 android:inputType="textCapWords"
                 android:textColor="@color/black"
-                android:text="Alivia Orvieto"
                 android:textStyle="bold" />
 
 

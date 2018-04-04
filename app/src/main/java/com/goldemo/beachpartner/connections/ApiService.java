@@ -35,6 +35,8 @@ public class ApiService {
 
     public static String  UPDATE_USER_DETAILS    =  BASE_URL+"users";
 
+    public static String  UPDATE_USER_MORE_INFO  =  BASE_URL+"users/profile";
+
 
 
 
