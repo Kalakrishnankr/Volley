@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.ChatFragmentPage;
@@ -43,10 +42,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
+        PersonModel model = list.get(position);
+        holder.person_pic.setImageResource(model.getImage());
+        holder.txv_name.setText(model.getUname());
+        holder.txtv_time.setText("5:00 pm");
+
         holder.single_item.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
                 ChatFragmentPage chatFramentPage  = new ChatFragmentPage();
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();

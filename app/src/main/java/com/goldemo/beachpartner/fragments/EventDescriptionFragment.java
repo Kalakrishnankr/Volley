@@ -17,8 +17,9 @@ import android.widget.Toast;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
+import java.util.Date;
 
 
 public class EventDescriptionFragment extends Fragment implements View.OnClickListener {
@@ -52,8 +53,20 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             Event event = (Event)bundle.getSerializable("event_clicked");
             tview_eventname.setText(event.getData().toString());
             tview_location.setText(event.getEventLocation());
-            tview_startDate.setText(event.getEventStartDate());
-            tview_endDate.setText(event.getEventEndDate());
+
+            SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+            long event_start    = event.getEventStartDate();
+            long event_enddate  = event.getEventEndDate();
+            long event_regStart = event.getEventRegStartdate();
+            long event_regEnd   = event.getEventRegEnddate();
+            Date date   = new Date(event_start);
+            Date e_end  = new Date(event_enddate);
+            Date reg_startDate = new Date(event_regStart);
+            Date reg_endDate   = new Date(event_regEnd);
+            tview_startDate.setText(dft.format(date));
+            tview_endDate.setText(dft.format(e_end));
+            tview_regStart.setText(dft.format(reg_startDate));
+            tview_regClose.setText(dft.format(reg_endDate));
             tview_venue.setText(event.getEventVenue());
 //            tview_eventadmin.setText(event.getEventAdmin().toString());
         }

@@ -39,6 +39,7 @@ public class MessageFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view =  inflater.inflate(R.layout.fragment_message, container, false);
+        list.clear();
         list = getChatList();
         initView(view);
         return view;
@@ -58,24 +59,9 @@ public class MessageFragment extends Fragment {
 
     private ArrayList<PersonModel> getChatList() {
 
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-        chatList.add(new PersonModel("AAAA","23",123));
-
-
+        chatList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        chatList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        chatList.add(new PersonModel("Liz Held","30",R.drawable.person3));
 
         return chatList;
 

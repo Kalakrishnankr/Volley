@@ -35,7 +35,7 @@
             android:textStyle="bold"
             android:textSize="30sp"
             android:textColor="@color/cyan"
-            android:text="$90.00/Month"
+            android:text="$50.00/Month"
             android:gravity="center"/>
         <com.goldemo.beachpartner.CustomTextView
             android:layout_width="wrap_content"
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
-            android:text="Get unlimited Swiped"
+            android:text="Get unlimited Swipes"
             android:layout_gravity="center"/>
         <com.goldemo.beachpartner.CustomTextView
             android:layout_width="wrap_content"
@@ -66,7 +66,7 @@
             android:layout_height="0dp"
             android:layout_weight="0.6"
             android:background="@drawable/bg_button_save_settings"
-            android:text="Get It"
+            android:text="Continue"
             android:textAllCaps="false"
             android:layout_gravity="center"
             android:textColor="@color/white"/>

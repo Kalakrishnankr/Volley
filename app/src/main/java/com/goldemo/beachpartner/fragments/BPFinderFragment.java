@@ -27,8 +27,16 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
@@ -37,15 +45,25 @@ import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
 import com.goldemo.beachpartner.cardstackview.SwipeDirection;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.BpFinderModel;
+import com.goldemo.beachpartner.models.PersonModel;
 import com.ramotion.foldingcell.FoldingCell;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import io.apptik.widget.MultiSlider;
 
@@ -81,9 +99,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     public boolean reverseCount=false;
     private boolean isbpActive =false;
-
+    private View view;
     private SharedPreferences prefs;
-
+    private String location,sgender;
+    private Boolean isCoach;
+    private int minAge,maxAge;
+    private String token,user_id;
+    private List<BpFinderModel>allCardList = new ArrayList<>();
+    private List<PersonModel>bluebpList = new ArrayList<>();
 
     public BPFinderFragment() {
     }
@@ -98,7 +121,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view=inflater.inflate(R.layout.fragment_bpfinder, container, false);
+        if(isbpActive){
+            view =inflater.inflate(R.layout.fragment_bpfinder, container, false);
+
+        }else {
+            view =inflater.inflate(R.layout.fragment_bpfinder1, container, false);
+
+        }
+        token   =   new PrefManager(getContext()).getToken();
+        user_id =   new PrefManager(getContext()).getUserId();
 
         setUp(view);
         btnFemale.setText("Women");
@@ -109,6 +140,18 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMale.setTextOn("Men");
         reload();
 
+        Bundle data = getArguments();
+        if(data!=null){
+            bluebpList = data.getParcelableArrayList("bluebplist");
+            int cPosition = data.getInt("cPosition");
+            for(int i=0;i<bluebpList.size();i++){
+                if(bluebpList.get(i)==bluebpList.get(cPosition)){
+                    //set bluebp to card
+                    //Toast.makeText(getActivity(), "Set value to cards", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        }
 
         return view;
     }
@@ -187,11 +230,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         if(prefs!=null){
 
-            String location  =   prefs.getString("location",null);
-            String sgender   =   prefs.getString("gender",null);
-            Boolean isCoach  =   prefs.getBoolean("isCoachActive",false);
-            int minAge       =   prefs.getInt("minAge",0);
-            int maxAge       =   prefs.getInt("maxAge",0);
+            location  =   prefs.getString("location",null);
+            sgender   =   prefs.getString("gender",null);
+            isCoach   =   prefs.getBoolean("isCoachActive",false);
+            minAge    =   prefs.getInt("minAge",0);
+            maxAge    =   prefs.getInt("maxAge",0);
 
 
             tvMin.setText(String.valueOf(minAge));
@@ -318,11 +361,19 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onClick(View view) {
 
 
+                location    =   spinner_location.getText().toString().trim();
+                sgender     =   txtv_gender.getText().toString();
+                isCoach     =   sCoach.isChecked();
+                minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
+                maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
+                if(sgender.equals("Both")){
+                    sgender="";
+                }
                 SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
                 preferences.putString("location",spinner_location.getText().toString().trim());
                 preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
                 preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
-                preferences.putString("gender",txtv_gender.getText().toString());
+                preferences.putString("gender",sgender);
                 preferences.putBoolean("isCoachActive",sCoach.isChecked());
                 preferences.apply();
                 preferences.commit();
@@ -337,6 +388,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 }else {
                     topFrameLayout.setVisibility(View.VISIBLE);
                 }
+
+                getAllCards(location,sgender,isCoach,minAge,maxAge);
             }
         });
 
@@ -473,6 +526,91 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    //GEt all cards
+    private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD+"?includeCoach="+isCoach+"&minAge="+minAge+"&maxAge="+maxAge+"&gender="+sgender, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if(response!=null){
+                            for (int i=0;i<response.length();i++){
+                                try {
+
+                                    JSONObject jsonObject = response.getJSONObject(i);
+
+                                    BpFinderModel finderModel = new BpFinderModel();
+                                    finderModel.setBpf_id(jsonObject.getString("id"));
+                                    finderModel.setBpf_login(jsonObject.getString("login"));
+                                    finderModel.setBpf_userProfile(jsonObject.getString("userProfile"));
+                                    finderModel.setBpf_subscriptions(jsonObject.getString("subscriptions"));
+                                    finderModel.setBpf_firstName(jsonObject.getString("firstName"));
+                                    finderModel.setBpf_lastName(jsonObject.getString("lastName"));
+                                    finderModel.setBpf_email(jsonObject.getString("email"));
+                                    finderModel.setBpf_activated(jsonObject.getString("activated"));
+                                    finderModel.setBpf_langKey(jsonObject.getString("langKey"));
+                                    finderModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
+                                    finderModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
+                                    finderModel.setBpf_resetDate(jsonObject.getString("resetDate"));
+                                    finderModel.setBpf_dob(jsonObject.getString("dob"));
+                                    finderModel.setBpf_gender(jsonObject.getString("gender"));
+                                    finderModel.setBpf_loginType(jsonObject.getString("loginType"));
+                                    finderModel.setBpf_city(jsonObject.getString("city"));
+                                    finderModel.setBpf_phoneNumber(jsonObject.getString("phoneNumber"));
+                                    finderModel.setBpf_deviceId(jsonObject.getString("deviceId"));
+                                    finderModel.setBpf_authToken(jsonObject.getString("authToken"));
+                                    finderModel.setBpf_location(jsonObject.getString("location"));
+                                    finderModel.setBpf_userType(jsonObject.getString("userType"));
+                                    finderModel.setBpf_age(jsonObject.getString("age"));
+
+                                    allCardList.add(finderModel);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+
+                            }
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization","Bearer "+token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonArrayRequest.toString());
+        requestQueue.add(jsonArrayRequest);
+
+    }
+
 
     public void addLocation() {
         stateList.add("Alabama (AL)");
@@ -559,14 +697,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
         spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
         spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
         spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
         spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
         spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
+        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
         spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
         return spots;
     }
@@ -673,6 +811,19 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         cardStackView.swipe(SwipeDirection.Top, set);
     }
 
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
     //Method for getting current location
 
     private void getLocation() {

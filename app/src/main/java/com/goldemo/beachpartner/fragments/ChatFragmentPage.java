@@ -1,6 +1,8 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -56,6 +58,8 @@ public class ChatFragmentPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        getActivity().setTitle("Message");
+
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_chat_page, container, false);
         getConnections();
@@ -66,6 +70,7 @@ public class ChatFragmentPage extends Fragment {
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView(View view) {
         submitButton    =   (ImageView) view.findViewById(R.id.sendButton);
         emoji_btn       =   (ImageView) view.findViewById(R.id.emoji_btn);
@@ -73,10 +78,8 @@ public class ChatFragmentPage extends Fragment {
         rootview        =   (LinearLayout) view.findViewById(R.id.layout1) ;
         scrollview      =   (ScrollView) view.findViewById(R.id.scroll) ;
 
-
         emojIcon    = new EmojIconActions(getActivity(),rootview,emojicon_editText,emoji_btn);
         emojIcon.ShowEmojIcon();
-
         emojIcon.setIconsIds(R.drawable.ic_action_keyboard, R.drawable.smiley);
         emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
             @Override
@@ -90,8 +93,6 @@ public class ChatFragmentPage extends Fragment {
                 Log.e(TAG, "Keyboard closed");
             }
         });
-
-
 
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -109,10 +110,12 @@ public class ChatFragmentPage extends Fragment {
                     reference1.push().setValue(map);
                     reference2.push().setValue(map);
                     emojicon_editText.setText("");
+                    scrollview.fullScroll(View.FOCUS_DOWN);
                 }
 
             }
         });
+
 
         reference1.addChildEventListener(new ChildEventListener() {
             @Override
@@ -149,7 +152,10 @@ public class ChatFragmentPage extends Fragment {
 
             }
         });
+
+
     }
+
 
     private void getConnections() {
 
@@ -159,9 +165,11 @@ public class ChatFragmentPage extends Fragment {
         reference2 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + ChatWith_id + "_" + myId);
     }
 
+
     public void addMessageBox(String message, int type){
         TextView textView = new TextView(this.getActivity());
         textView.setText(message);
+        textView.setFocusable(true);
         LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         lp2.weight = 1.0f;
 

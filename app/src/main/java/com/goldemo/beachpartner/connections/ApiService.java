@@ -33,7 +33,8 @@ public class ApiService {
     public static String GET_ALL_CONNECTIONS    =  BASE_URL+"users/connected/";
     public static String ADD_PROFILE_VIDEO_IMAGE=  BASE_URL+"storage/uploadProfileData";
 
-    public static String  UPDATE_USER_DETAILS    =  BASE_URL+"users";
+    public static String  UPDATE_USER_DETAILS    = BASE_URL+"users";
+    public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
 
     public static String  UPDATE_USER_MORE_INFO  =  BASE_URL+"users/profile";
 
