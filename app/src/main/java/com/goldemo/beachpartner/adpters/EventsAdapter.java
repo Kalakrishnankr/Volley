@@ -54,6 +54,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
             @Override
             public void onClick(View view) {
 
+
                 EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
                 //add bundle
                 Bundle bundle = new Bundle();

@@ -31,9 +31,29 @@ public class Event implements Serializable {
     private String eventDescription;
     private String eventLocation;
     private String eventVenue;
-    private String eventStartDate;
-    private String eventEndDate;
+    private long eventStartDate;
+    private long eventEndDate;
     private String status;
+    private long eventRegStartdate;
+    private long eventRegEnddate;
+
+    public long getEventRegStartdate() {
+        return eventRegStartdate;
+    }
+
+    public void setEventRegStartdate(long eventRegStartdate) {
+        this.eventRegStartdate = eventRegStartdate;
+    }
+
+    public long getEventRegEnddate() {
+        return eventRegEnddate;
+    }
+
+    public void setEventRegEnddate(long eventRegEnddate) {
+        this.eventRegEnddate = eventRegEnddate;
+    }
+
+
 
     public String getEventId() {
         return eventId;
@@ -75,19 +95,19 @@ public class Event implements Serializable {
         this.eventVenue = eventVenue;
     }
 
-    public String getEventStartDate() {
+    public long getEventStartDate() {
         return eventStartDate;
     }
 
-    public void setEventStartDate(String eventStartDate) {
+    public void setEventStartDate(long eventStartDate) {
         this.eventStartDate = eventStartDate;
     }
 
-    public String getEventEndDate() {
+    public long getEventEndDate() {
         return eventEndDate;
     }
 
-    public void setEventEndDate(String eventEndDate) {
+    public void setEventEndDate(long eventEndDate) {
         this.eventEndDate = eventEndDate;
     }
 

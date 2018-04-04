@@ -17,17 +17,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
 import com.goldemo.beachpartner.adpters.MessageAdapter;
 import com.goldemo.beachpartner.adpters.PartnerAdapter;
 import com.goldemo.beachpartner.adpters.ProfileAdapter;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.PersonModel;
 
 import java.util.ArrayList;
@@ -47,6 +46,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ProfileAdapter profileAdapter;
     ArrayList<PersonModel> allSampleData;
     private TextView txt_head;
+    private String user_id,user_token;
+    private PrefManager prefManager;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -68,10 +69,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         // Inflate the layout for this fragment
         View  view= inflater.inflate(R.layout.fragment_home, container, false);
-
         initView(view);
+        prefManager = new PrefManager(getContext());
+        user_id     =  prefManager.getUserId();
+        user_token  =  prefManager.getToken();
+        //getBlueBP profes
+        getBluebpProfiles();
         return view;
     }
+
 
     private void initView(View view) {
 
@@ -97,10 +103,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
 
-//        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
-//        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
-//        pRecyclerview.setAdapter(profileAdapter);
-//        pRecyclerview.setHasFixedSize(true);
+        LinearLayoutManager lmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
+        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
+        pRecyclerview.setAdapter(profileAdapter);
+        pRecyclerview.setLayoutManager(lmnger);
+        pRecyclerview.setHasFixedSize(true);
 
 
         /*My upcoming tournaments*/
@@ -266,6 +274,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    //Api for get all blue bp profiles
+    private void getBluebpProfiles() {
+
+
     }
 }
 

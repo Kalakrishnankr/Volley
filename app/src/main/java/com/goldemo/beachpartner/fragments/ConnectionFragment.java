@@ -200,7 +200,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter         =   new ConnectionAdapter(getContext(),connectionList);
             RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
             rcv_conn.setLayoutManager(layoutManager);
-            rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+            //rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
             rcv_conn.setItemAnimator(new DefaultItemAnimator());
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();

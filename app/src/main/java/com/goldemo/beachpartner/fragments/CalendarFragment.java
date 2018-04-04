@@ -149,7 +149,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
                     for (int i = 0; i < bookingsFromMap.size(); i++) {
 
-                        if ((DatetoMilli(dateClicked)) == (bookingsFromMap.get(i).getTimeInMillis())) {
+                       // Date date=new Date(bookingsFromMap.get(i).getTimeInMillis());
+                        if ((DatetoMilli(dateClicked)) == (DatetoMilli(new Date(bookingsFromMap.get(i).getTimeInMillis())))) {
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
@@ -265,9 +266,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     public long DatetoMilli(Date dateClicked) {
         Date givenDateString = dateClicked;
         long timeInMilliseconds = 0;
-        SimpleDateFormat sdf = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
         try {
             Date mDate = sdf.parse(String.valueOf(givenDateString));
+            mDate.setHours(0);
+            mDate.setMinutes(0);
+            mDate.setSeconds(0);
             timeInMilliseconds = mDate.getTime();
             System.out.println("Date in milli :: " + timeInMilliseconds);
 
@@ -583,10 +587,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setData(object.getString("eventDescription"));
                                     model.setEventLocation(object.getString("eventLocation"));
                                     model.setEventVenue(object.getString("eventVenue"));
-                                    model.setEventStartDate(object.getString("eventStartDate"));
-                                    model.setEventEndDate(object.getString("eventEndDate"));
-
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+                                    model.setEventStartDate(object.getLong("eventStartDate"));
+                                    model.setEventEndDate(object.getLong("eventEndDate"));
+                                    model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
+                                    model.setEventRegStartdate(object.getLong("eventRegStartDate"));
+                                    model.setEventRegEnddate(object.getLong("eventRegEndDate"));
+                                    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {
                                         String mDate = object.getString("eventStartDate");
                                         Date date = sdf.parse(mDate);
@@ -598,7 +604,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                         model.setTimeInMillis(timeInMilliseconds);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
-                                    }
+                                    }*/
                                     eventModelList.add(model);
 
                                     JSONObject adminObject = object.getJSONObject("eventAdmin");
@@ -664,7 +670,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         compactCalendarView.invalidate();
         if (eventModelList != null) {
             for (int i = 0; i < eventModelList.size(); i++) {
-                eventStartDate.add(eventModelList.get(i).getEventStartDate());
+                eventStartDate.add(String.valueOf(eventModelList.get(i).getEventStartDate()));
                 compactCalendarView.addEvent(eventModelList.get(i));
             }
         }
@@ -691,8 +697,9 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModel.setData(jsonObject.getString("eventDescription"));
                                     eventModel.setEventLocation(jsonObject.getString("eventLocation"));
                                     eventModel.setEventVenue(jsonObject.getString("eventVenue"));
-                                    eventModel.setEventStartDate(jsonObject.getString("eventStartDate"));
-                                    eventModel.setEventEndDate(jsonObject.getString("eventEndDate"));
+                                    eventModel.setEventStartDate(jsonObject.getLong("eventStartDate"));
+                                    eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
+                                    eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
 
                                     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {

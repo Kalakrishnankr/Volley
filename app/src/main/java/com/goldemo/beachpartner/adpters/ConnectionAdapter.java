@@ -3,6 +3,9 @@ package com.goldemo.beachpartner.adpters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -110,12 +113,16 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             holder.txtv_message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AppCompatActivity activity = (AppCompatActivity) view.getContext();
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
                     bundle.putString("personId", model.getConnected_uId());
                     chatFragmentPage.setArguments(bundle);
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, chatFragmentPage).addToBackStack(null).commit();
+                    FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                    FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    ctrans.replace(R.id.container,chatFragmentPage);
+                    ctrans.addToBackStack(null);
+                    ctrans.commit();
                 }
             });
 

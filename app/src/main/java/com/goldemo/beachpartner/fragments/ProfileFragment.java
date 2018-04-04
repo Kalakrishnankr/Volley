@@ -1407,7 +1407,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-                            new PrefManager(getContext()).saveUserDetails(response.getString("id"));
+                            //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
                             setView();
 
                             //editFname.setText(userDataModel.getFirstName());
