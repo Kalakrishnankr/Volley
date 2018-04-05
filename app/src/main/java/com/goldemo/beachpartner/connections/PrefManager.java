@@ -24,10 +24,12 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id){
+    public void saveUserDetails(String user_id,String userType,String subscriptions){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
+        editor.putString("userType",userType);
+        editor.putString("subscriptions",subscriptions);
         editor.commit();
     }
 

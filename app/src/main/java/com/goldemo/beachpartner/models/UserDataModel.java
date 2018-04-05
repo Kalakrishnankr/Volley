@@ -173,6 +173,16 @@ public class UserDataModel {
     private String lastName;
     private String email;
     private String imageUrl;
+
+    public String getVideoUrl() {
+        return videoUrl;
+    }
+
+    public void setVideoUrl(String videoUrl) {
+        this.videoUrl = videoUrl;
+    }
+
+    private String videoUrl;
     private String activated;
     private String langKey;
     private String createdBy;
@@ -188,6 +198,35 @@ public class UserDataModel {
     private String loginType;
     private String deviceId;
     private String authToken;
+
+    public String getUserType() {
+        return userType;
+    }
+
+    public void setUserType(String userType) {
+        this.userType = userType;
+    }
+
+    public String getAge() {
+        return age;
+    }
+
+    public void setAge(String age) {
+        this.age = age;
+    }
+
+    private String userType;
+    private String age;
+
+    public String getSubscriptions() {
+        return subscriptions;
+    }
+
+    public void setSubscriptions(String subscriptions) {
+        this.subscriptions = subscriptions;
+    }
+
+    private String subscriptions;
 
 
 

@@ -77,6 +77,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private EventsAdapter eventsAdapter;
     private String token;
     private List<Event> toDayEvents = new ArrayList<>();
+    private static boolean isMycal = false;
     public CalendarFragment() {
         // Required empty public constructor
     }
@@ -154,7 +155,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
-                    eventsAdapter = new EventsAdapter(getContext(), toDayEvents);
+                    eventsAdapter = new EventsAdapter(getContext(), toDayEvents,isMycal);
                     rview.setAdapter(eventsAdapter);
                     rview.invalidate();
                     eventsAdapter.notifyDataSetChanged();
@@ -192,6 +193,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 activeMasterTab();
                 toDayEvents.clear();
                 getAllEvents();
+                isMycal  = false;
                 break;
 
             case R.id.txtMycalendar:
@@ -203,6 +205,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 activeMycalendarTab();
                 toDayEvents.clear();
                 getMycalendarEvents();
+                isMycal = true;
 
                 break;
 
@@ -569,7 +572,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     //Get all Master Calendar events Api
 
     private void getAllEvents() {
-
+        isMycal  = false;
         eventModelList.clear();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_EVENTS, null,
                 new Response.Listener<JSONArray>() {
@@ -592,6 +595,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
                                     model.setEventRegStartdate(object.getLong("eventRegStartDate"));
                                     model.setEventRegEnddate(object.getLong("eventRegEndDate"));
+
+                                    JSONObject adminObject = object.getJSONObject("eventAdmin");
+
+                                    EventAdminModel eventAdminModel = new EventAdminModel();
+                                    eventAdminModel.setFirstName(adminObject.getString("firstName"));
+
                                     /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {
                                         String mDate = object.getString("eventStartDate");
@@ -605,11 +614,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }*/
+                                    model.setEventAdmin(eventAdminModel);
                                     eventModelList.add(model);
-
-                                    JSONObject adminObject = object.getJSONObject("eventAdmin");
-                                    EventAdminModel eventAdminModel = new EventAdminModel();
-                                    eventAdminModel.setFirstName(adminObject.getString("firstName"));
 
 
                                 } catch (JSONException e) {
@@ -689,7 +695,9 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                             for (int i =0;i<response.length();i++){
 
                                 try {
+
                                     JSONObject obj= response.getJSONObject(i);
+
                                     JSONObject jsonObject= obj.getJSONObject("event");
                                     Event eventModel = new Event();
                                     eventModel.setEventId(jsonObject.getString("id"));
@@ -701,7 +709,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
                                     eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
 
-                                    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+                                    JSONObject object = jsonObject.getJSONObject("eventAdmin");
+
+                                    EventAdminModel adminModel = new EventAdminModel();
+                                    adminModel.setFirstName(object.getString("firstName"));
+                                    eventModel.setEventAdmin(adminModel);
+                                    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {
                                         String mDate = jsonObject.getString("eventStartDate");
                                         Date date = sdf.parse(mDate);
@@ -710,7 +723,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                         eventModel.setTimeInMillis(timeInMilliseconds);
                                     } catch (ParseException e) {
                                         e.printStackTrace();
-                                    }
+                                    }*/
                                     myeventModelList.add(eventModel);
                                 } catch (JSONException e) {
                                     e.printStackTrace();

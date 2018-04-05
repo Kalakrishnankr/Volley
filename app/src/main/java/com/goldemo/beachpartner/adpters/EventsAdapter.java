@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.fragments.EventDescriptionFragment;
+import com.goldemo.beachpartner.fragments.MyCalendarEvents;
 
 import java.util.List;
 
@@ -26,10 +27,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
     Context mContext;
     List<Event>list;
+    boolean isMycalActive;
 
-    public EventsAdapter(Context context, List<Event> eventList){
+    public EventsAdapter(Context context, List<Event> eventList, boolean isMycal){
         this.mContext   =context;
         this.list       =eventList;
+        this.isMycalActive= isMycal;
     }
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -54,18 +57,37 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
             @Override
             public void onClick(View view) {
 
+                //Activate My calendar
+                if(isMycalActive){
 
-                EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
-                //add bundle
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("event_clicked",model);
-                eventDescriptionFragment.setArguments(bundle);
-                FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
-                FragmentTransaction ctrans = manager.beginTransaction();
-                //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                ctrans.replace(R.id.container,eventDescriptionFragment);
-                ctrans.addToBackStack(null);
-                ctrans.commit();
+                    MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("mycal_event_clicked",model);
+                    myCalendarEvents.setArguments(bundle);
+                    FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
+                    FragmentTransaction ctrans = fragmentManager.beginTransaction();
+                    ctrans.replace(R.id.container,myCalendarEvents);
+                    ctrans.addToBackStack(null);
+                    ctrans.commit();
+
+                }else {
+                    //Activate Master Calendar
+
+                    EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+                    //add bundle
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("event_clicked",model);
+                    eventDescriptionFragment.setArguments(bundle);
+                    FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                    FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    ctrans.replace(R.id.container,eventDescriptionFragment);
+                    ctrans.addToBackStack(null);
+                    ctrans.commit();
+
+                }
+
+
             }
         });
 

@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,7 +21,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
-import android.text.TextWatcher;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -60,12 +60,26 @@ import com.goldemo.beachpartner.models.UserDataModel;
 import com.goldemo.beachpartner.utils.FloatingActionButton;
 import com.goldemo.beachpartner.utils.FloatingActionMenu;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -76,44 +90,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
+    public static boolean isValidate = false;
+    private static boolean moreUploadStatus = false;
+    private static boolean editStatus = false;
+    public UserDataModel userDataModel;
+    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue;
+    Calendar myCalendar = Calendar.getInstance();
     private TabLayout tabs;
-
     private ViewPager viewPager;
     private FrameLayout videoFrame;
     private ImageView imgEdit, imgVideo, imgPlay, profile_img_editIcon, imageView1, imageView2, imageView3;
     private FloatingActionMenu imgShare;
-    private FloatingActionButton fabImage,fabVideo;
+    private FloatingActionButton fabImage, fabVideo;
     private CircularImageView imgProfile;
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     private OnClickListener mOnClickListener;
     private VideoView videoView;
-    private Uri selectedImageUri, selectedVideoUri;
-    Calendar myCalendar = Calendar.getInstance();
-
-
+    private Uri selectedImageUri, selectedVideoUri, videoUri, imageUri;
+    private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
-
     private EditText editFname, editLname, editGender, editDob, editCity, editPhone;
-    private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3,edit_volleyRanking;
+    private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
     private LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
     private RelativeLayout containingLt;
     private int finishCount = 0;
-    private static boolean moreUploadStatus = false;
-    private static boolean editStatus = false;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
-    public  UserDataModel userDataModel;
     private AwesomeValidation awesomeValidation;
-    private String token,user_id;
-
     private List<FloatingActionMenu> menus = new ArrayList<>();
-
     private Handler mUiHandler = new Handler();
-    public static boolean isValidate = false;
-
-
+    Bitmap img_bitmap;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,8 +136,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        token   =   new PrefManager(getContext()).getToken();
-        user_id =   new PrefManager(getContext()).getUserId();
+        token = new PrefManager(getContext()).getToken();
+        user_id = new PrefManager(getContext()).getUserId();
         setUp();
         initActivity(view);
 
@@ -137,106 +145,104 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-
-
     private void initActivity(final View view) {
 
-        profile_img_editIcon    = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
-        btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+        profile_img_editIcon = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
+        btnsBottom = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
 
-        more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
-        imgEdit                 = (ImageView) view.findViewById(R.id.edit);
+        more_info_btns_bottom = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
+        imgEdit = (ImageView) view.findViewById(R.id.edit);
 
-        imgProfile              = (CircularImageView) view.findViewById(R.id.row_icon);
-        profileName             = (TextView) view.findViewById(R.id.profile_name);
-        profileDesig            = (TextView) view.findViewById(R.id.profile_designation);
-        edit_tag                = (TextView) view.findViewById(R.id.edit_text);
+        imgProfile = (CircularImageView) view.findViewById(R.id.row_icon);
+        profileName = (TextView) view.findViewById(R.id.profile_name);
+        profileDesig = (TextView) view.findViewById(R.id.profile_designation);
+        edit_tag = (TextView) view.findViewById(R.id.edit_text);
 
 
-        imgVideo                = (ImageView) view.findViewById(R.id.imgVideo);
-        videoView               = (VideoView) view.findViewById(R.id.videoView);
-        imgPlay                 = (ImageView) view.findViewById(R.id.imgPlay);
+        imgVideo = (ImageView) view.findViewById(R.id.imgVideo);
+        videoView = (VideoView) view.findViewById(R.id.videoView);
+        imgPlay = (ImageView) view.findViewById(R.id.imgPlay);
 
-        imgShare                = (FloatingActionMenu)   view.findViewById(R.id.menu_blue);
-        fabImage                = (FloatingActionButton) view.findViewById(R.id.fab_image);
-        fabVideo                = (FloatingActionButton) view.findViewById(R.id.fab_video);
+        imgShare = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
+        fabImage = (FloatingActionButton) view.findViewById(R.id.fab_image);
+        fabVideo = (FloatingActionButton) view.findViewById(R.id.fab_video);
 
         /*This for demo only start*/
 
-        llMenuBasic             = (LinearLayout) view.findViewById(R.id.llMenuBasic);
-        llMenuMore              = (LinearLayout) view.findViewById(R.id.llMenuMore);
+        llMenuBasic = (LinearLayout) view.findViewById(R.id.llMenuBasic);
+        llMenuMore = (LinearLayout) view.findViewById(R.id.llMenuMore);
 
-        basic_info_tab          = (TextView) view.findViewById(R.id.basic_info_tab);
-        more_info_tab           = (TextView) view.findViewById(R.id.more_info_tab);
+        basic_info_tab = (TextView) view.findViewById(R.id.basic_info_tab);
+        more_info_tab = (TextView) view.findViewById(R.id.more_info_tab);
 
-        llBasicDetails          = (LinearLayout) view.findViewById(R.id.llBasicDetails);
-        llMoreDetails           = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
+        llBasicDetails = (LinearLayout) view.findViewById(R.id.llBasicDetails);
+        llMoreDetails = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
 
-        viewBasic               = (View) view.findViewById(R.id.viewBasic);
-        viewMore                = (View) view.findViewById(R.id.viewMore);
+        viewBasic = (View) view.findViewById(R.id.viewBasic);
+        viewMore = (View) view.findViewById(R.id.viewMore);
 
         //For Basic Details
 
-        editFname               = (EditText) view.findViewById(R.id.txtvFname);
-        editLname               = (EditText) view.findViewById(R.id.txtvLname);
-        editGender              = (EditText) view.findViewById(R.id.txtv_gender);
-        editDob                 = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity                = (EditText) view.findViewById(R.id.txtv_city);
-        editPhone               = (EditText) view.findViewById(R.id.txtv_mobileno);
+        editFname = (EditText) view.findViewById(R.id.txtvFname);
+        editLname = (EditText) view.findViewById(R.id.txtvLname);
+        editGender = (EditText) view.findViewById(R.id.txtv_gender);
+        editDob = (EditText) view.findViewById(R.id.txtv_dob);
+        editCity = (EditText) view.findViewById(R.id.txtv_city);
+        editPhone = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave            = (Button) view.findViewById(R.id.btnsave);
-        basicBtnCancel          = (Button) view.findViewById(R.id.btncancel);
+        basicBtnSave = (Button) view.findViewById(R.id.btnsave);
+        basicBtnCancel = (Button) view.findViewById(R.id.btncancel);
 
 
         //Fore More Deatsils
 
-        spinnerExp          = (Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerExp = (Spinner) view.findViewById(R.id.spinner_exp);
         spinnerExp.setEnabled(false);
-        spinnerPref         = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPref = (Spinner) view.findViewById(R.id.spinner_pref);
         spinnerPref.setEnabled(false);
-        spinnerPositon      = (Spinner) view.findViewById(R.id.spinner_positon);
+        spinnerPositon = (Spinner) view.findViewById(R.id.spinner_positon);
         spinnerPositon.setEnabled(false);
 
-        editHeight          = (EditText) view.findViewById(R.id.txtvHeight);
-        spinnerTLInterest   = (Spinner) view.findViewById(R.id.spinner_tl_interest);
+        editHeight = (EditText) view.findViewById(R.id.txtvHeight);
+        spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTLInterest.setEnabled(false);
-        editPlayed          = (EditText) view.findViewById(R.id.txtvPlayed);
-        spinnerTourRating   = (Spinner) view.findViewById(R.id.spinner_tour_rating);
+        editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
+        spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
         spinnerTourRating.setEnabled(false);
-        editCBVANo          = (EditText) view.findViewById(R.id.txtvCBVANo);
-        editCBVAFName       = (EditText) view.findViewById(R.id.txtvCBVAFName);
-        editCBVALName       = (EditText) view.findViewById(R.id.txtvCBVALName);
-        spinnerWtoTravel    = (Spinner)  view.findViewById(R.id.spinner_Wto_travel);
-        editHighschool      = (EditText) view.findViewById(R.id.txtvHighschool);
-        editIndoorClub      = (EditText) view.findViewById(R.id.txtvIndoorClub);
-        editColgClub        = (EditText) view.findViewById(R.id.txtvColgClub);
-        editColgBeach       = (EditText) view.findViewById(R.id.txtvColgBeach);
-        editColgIndoor      = (EditText) view.findViewById(R.id.txtvColgIndoor);
-        edit_volleyRanking  = (EditText) view.findViewById(R.id.txtvRank);
-        editPoints          = (EditText) view.findViewById(R.id.txtvPoints);
-        topfinishes_txt_1   = (EditText) view.findViewById(R.id.topfinishes_txt_1);
-        topfinishes_txt_2   = (EditText) view.findViewById(R.id.topfinishes_txt_2);
-        topfinishes_txt_3   = (EditText) view.findViewById(R.id.topfinishes_txt_3);
+        editCBVANo = (EditText) view.findViewById(R.id.txtvCBVANo);
+        editCBVAFName = (EditText) view.findViewById(R.id.txtvCBVAFName);
+        editCBVALName = (EditText) view.findViewById(R.id.txtvCBVALName);
+        spinnerWtoTravel = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        editHighschool = (EditText) view.findViewById(R.id.txtvHighschool);
+        editIndoorClub = (EditText) view.findViewById(R.id.txtvIndoorClub);
+        editColgClub = (EditText) view.findViewById(R.id.txtvColgClub);
+        editColgBeach = (EditText) view.findViewById(R.id.txtvColgBeach);
+        editColgIndoor = (EditText) view.findViewById(R.id.txtvColgIndoor);
+        edit_volleyRanking = (EditText) view.findViewById(R.id.txtvRank);
+        editPoints = (EditText) view.findViewById(R.id.txtvPoints);
+        topfinishes_txt_1 = (EditText) view.findViewById(R.id.topfinishes_txt_1);
+        topfinishes_txt_2 = (EditText) view.findViewById(R.id.topfinishes_txt_2);
+        topfinishes_txt_3 = (EditText) view.findViewById(R.id.topfinishes_txt_3);
 
-        moreBtnSave         = (Button) view.findViewById(R.id.btn_save);
-        moreBtnCancel       = (Button) view.findViewById(R.id.btn_cancel);
+        moreBtnSave = (Button) view.findViewById(R.id.btn_save);
+        moreBtnCancel = (Button) view.findViewById(R.id.btn_cancel);
 
 
         llMenuBasic.setOnClickListener(this);
         llMenuMore.setOnClickListener(this);
-        imageView1          = (ImageView) view.findViewById(R.id.imageView1);
-        imageView2          = (ImageView) view.findViewById(R.id.imageView2);
-        imageView3          = (ImageView) view.findViewById(R.id.imageView3);
+        imageView1 = (ImageView) view.findViewById(R.id.imageView1);
+        imageView2 = (ImageView) view.findViewById(R.id.imageView2);
+        imageView3 = (ImageView) view.findViewById(R.id.imageView3);
 
-        containingLt        = (RelativeLayout) view.findViewById(R.id.scroll_more);
-        topFinishes1_lt     = (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
-        topFinishes2_lt     = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
-        topFinishes3_lt     = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
+        containingLt = (RelativeLayout) view.findViewById(R.id.scroll_more);
+        topFinishes1_lt = (LinearLayout) view.findViewById(R.id.topFinishes1_lt);
+        topFinishes2_lt = (LinearLayout) view.findViewById(R.id.topFinishes2_lt);
+        topFinishes3_lt = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
 
-       // imgShare.setIconAnimated(false);
-       // imgShare.hideMenuButton(false);
+        // imgShare.setIconAnimated(false);
+        // imgShare.hideMenuButton(false);
 
         imgShare.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -254,7 +260,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
-                if(selectedImageUri!=null){
+                if (selectedImageUri != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
                     Uri screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
@@ -262,7 +268,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     intent.setType("image/*");
                     startActivity(Intent.createChooser(intent, "Share image via..."));
 
-                }else {
+                } else {
                     Toast.makeText(getActivity(), "Please upload Image and share it", Toast.LENGTH_SHORT).show();
                     imgShare.close(true);
                 }
@@ -274,7 +280,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Video", Toast.LENGTH_SHORT).show();
-                if(selectedVideoUri!=null){
+                if (selectedVideoUri != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
                     Uri screenshotUri = Uri.parse(String.valueOf(selectedVideoUri));
@@ -282,7 +288,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     intent.setType("video/*");
                     startActivity(Intent.createChooser(intent, "Share video via..."));
 
-                }else {
+                } else {
                     Toast.makeText(getActivity(), "Please upload Video and share it", Toast.LENGTH_SHORT).show();
                     imgShare.close(true);
 
@@ -303,7 +309,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
 
-       // imgShare.setOnClickListener(this);
+        // imgShare.setOnClickListener(this);
 
 //        Experience Spinner
 
@@ -320,16 +326,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerExp.setAdapter(expAdapter);
 
         spinnerExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-           public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-               moreUploadStatus=true;
-           }
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                spinnerExpValue = spinnerExp.getSelectedItem().toString();
+            }
 
-           @Override
-           public void onNothingSelected(AdapterView<?> arg0) {
-               // TODO Auto-generated method stub
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
 
-           }
-       });
+            }
+        });
 
 //      Court Preference spinner
         spinnerPref.setOnItemSelectedListener(this);
@@ -342,7 +349,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerPref.setAdapter(prefAdapter);
         spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus=true;
+                moreUploadStatus = true;
+                spinnerPrefValue = spinnerPref.getSelectedItem().toString();
             }
 
             @Override
@@ -363,7 +371,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerPositon.setAdapter(positionAdapter);
         spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus=true;
+                moreUploadStatus = true;
+                spinnerPosValue = spinnerPositon.getSelectedItem().toString();
             }
 
             @Override
@@ -389,7 +398,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         spinnerTLInterest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus=true;
+                moreUploadStatus = true;
+                spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
             }
 
             @Override
@@ -416,7 +426,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus=true;
+                moreUploadStatus = true;
+                spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
             }
 
             @Override
@@ -442,7 +453,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus=true;
+                moreUploadStatus = true;
+                spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
             }
 
             @Override
@@ -1050,7 +1062,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     /*validating feilds*/
 
-        if(!validate()) {
+        if (!validate()) {
 
             //put user fields to json object
             JSONObject object = new JSONObject();
@@ -1169,7 +1181,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             imageView3.setVisibility(View.GONE);
 
             //put video,image and user_id to json
-            JSONObject jsonObject = new JSONObject();
+            /*JSONObject jsonObject = new JSONObject();
             try {
                 jsonObject.put("profileImg",selectedImageUri);
                 jsonObject.put("profileVideo",selectedVideoUri);
@@ -1179,39 +1191,45 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
 
             //Method for uploading profilePic & profile video
-            uploadFiles(jsonObject);
+            uploadFiles(jsonObject);*/
 
 
-            JSONObject jsonObjectMore   =   new JSONObject();
-            try{
-                jsonObjectMore.put("cbvaFirstName",editCBVAFName.getText().toString().trim());
-                jsonObjectMore.put("cbvaLastName",editCBVALName.getText().toString().trim());
-                jsonObjectMore.put("cbvaPlayerNumber",editCBVANo.getText().toString().trim());
-                jsonObjectMore.put("collageClub",editColgClub.getText().toString().trim());
-                jsonObjectMore.put("collegeBeach",editColgBeach.getText().toString().trim());
-                jsonObjectMore.put("collegeIndoor",editColgIndoor.getText().toString().trim());
-                jsonObjectMore.put("courtSidePreference",spinnerPref.toString().trim());
-                jsonObjectMore.put("experience",spinnerExp.toString().trim());
-                jsonObjectMore.put("height",editHeight.getText().toString().trim());
-                jsonObjectMore.put("highSchoolAttended",editHighschool.getText().toString().trim());
-                jsonObjectMore.put("highestTourRatingEarned",spinnerTourRating.toString().trim());
-                jsonObjectMore.put("indoorClubPlayed",editIndoorClub.getText().toString().trim());
-                jsonObjectMore.put("position",spinnerPositon.toString().trim());
-                jsonObjectMore.put("topFinishes",topfinishes_txt_1.getText().toString().trim());
-                jsonObjectMore.put("totalPoints",editPoints.getText().toString().trim());
-                jsonObjectMore.put("tournamentLevelInterest",spinnerTLInterest.toString().trim());
-                jsonObjectMore.put("toursPlayedIn",editPlayed.getText().toString().trim());
-                jsonObjectMore.put("usaVolleyballRanking",edit_volleyRanking.getText().toString().trim());
-                jsonObjectMore.put("userId",user_id);
-                jsonObjectMore.put("willingToTravel",spinnerWtoTravel.toString().trim());
+            JSONObject jsonObjectMore = new JSONObject();
+            try {
+                jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
+                jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
+                jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());
+                jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
+                jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
+                jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
+                jsonObjectMore.put("courtSidePreference", spinnerPrefValue.trim());
+                jsonObjectMore.put("description",null);
+                jsonObjectMore.put("division",null);
+                jsonObjectMore.put("experience", spinnerExpValue.trim());
+                jsonObjectMore.put("fundingStatus",null);
+                jsonObjectMore.put("height", editHeight.getText().toString().trim());
+                jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
+                jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue.trim());
+                jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
+                jsonObjectMore.put("numOfAthlets",null);
+                jsonObjectMore.put("position", spinnerPosValue.trim());
+                jsonObjectMore.put("programsOffered",null);
+                jsonObjectMore.put("shareAthlets",null);
+                jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim());
+                jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
+                jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue.trim());
+                jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
+                jsonObjectMore.put("usaVolleyballRanking", 0);
+                jsonObjectMore.put("userId", user_id);
+                jsonObjectMore.put("willingToTravel", spinnerWTValue.trim());
+                jsonObjectMore.put("yearsRunning",null);
 
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            updateUserMoreDetails(jsonObjectMore);
-
+            postUserMoreDetails(jsonObjectMore);
 
 
         }
@@ -1219,74 +1237,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-    //Api for upload image and video
-    private void uploadFiles(JSONObject jsonObject) {
 
-        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.ADD_PROFILE_VIDEO_IMAGE, jsonObject, new
-                Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if(response!=null){
-                            Toast.makeText(getActivity(), "Image and Video Upload Successfuly", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String json = null;
-                Log.d("error--", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    switch (response.statusCode) {
-                        case 401:
-                            json = new String(response.data);
-                            json = trimMessage(json, "detail");
-                            if (json != null) {
-                                Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                // headers.put("Authorization","Bearer "+token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", request.toString());
-        requestQueue.add(request);
-
-    }
-
-    private boolean validate(){
-            isValidate = false;
-        if(editFname.getText().toString().trim().matches("")) {
+    private boolean validate() {
+        isValidate = false;
+        if (editFname.getText().toString().trim().matches("")) {
             editFname.setError("Please enter your First name");
             isValidate = true;
-        }else if(editLname.getText().toString().trim().matches("")){
+        } else if (editLname.getText().toString().trim().matches("")) {
             editLname.setError("Please enter your Last name");
             isValidate = true;
-        }else if(editGender.getText().toString().trim().matches("")){
+        } else if (editGender.getText().toString().trim().matches("")) {
             editGender.setError("Please Choose Gender");
             isValidate = true;
-        }else if(editCity.getText().toString().trim().matches("")){
+        } else if (editCity.getText().toString().trim().matches("")) {
             editCity.setError("Please enter your city");
             isValidate = true;
-        }else if (editPhone.getText().toString().trim().matches("")){
+        } else if (editPhone.getText().toString().trim().matches("")) {
             editPhone.setError("Please enter your Mobile no");
             isValidate = true;
-        }else if(editDob.getText().toString().trim().matches("")){
+        } else if (editDob.getText().toString().trim().matches("")) {
             editDob.setError("Please enter your dob");
             isValidate = true;
         }
@@ -1302,11 +1271,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
     private void validateFeilds() {
-        awesomeValidation.addValidation(getActivity(),R.id.txtvFname,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
-        awesomeValidation.addValidation(getActivity(),R.id.txtvLname,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.lnameerror);
-        awesomeValidation.addValidation(getActivity(),R.id.txtv_gender,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.gendererror);
-        awesomeValidation.addValidation(getActivity(),R.id.txtv_city,"^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$",R.string.cityerror);
-        awesomeValidation.addValidation(getActivity(),R.id.txtv_mobileno,"^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
+        awesomeValidation.addValidation(getActivity(), R.id.txtvFname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+        awesomeValidation.addValidation(getActivity(), R.id.txtvLname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
+        awesomeValidation.addValidation(getActivity(), R.id.txtv_gender, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.gendererror);
+        awesomeValidation.addValidation(getActivity(), R.id.txtv_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
+        awesomeValidation.addValidation(getActivity(), R.id.txtv_mobileno, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
     }
 
 
@@ -1428,78 +1397,118 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     // TODO: Rename method, update argument and hook method into UI event
 
-
-    private class Adapter extends FragmentPagerAdapter {
-        private final List<Fragment> mFragmentList = new ArrayList<>();
-        private final List<String> mFragmentTitleList = new ArrayList<>();
-
-
-        public Adapter(FragmentManager manager) {
-            super(manager);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragmentList.get(position);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragmentList.size();
-        }
-
-        public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
-
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mFragmentTitleList.get(position);
-        }
-    }
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();
-                // String filemanagerstring = selectedVideoUri.getPath();
-                // String selectedVideoPath = getPath(selectedVideoUri);
+                 //String filemanagerstring = selectedVideoUri.getPath();
+                 //String selectedVideoPath = getPath(selectedVideoUri);
                 if (selectedVideoUri != null) {
 
-                    imgVideo.setVisibility(View.GONE);
-                    //videoView.setVisibility(View.VISIBLE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                    videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
-
-
+                    File file = new File(String.valueOf(selectedVideoUri));
+                    long length = file.length();
+                    length = length / 1024;
+                    if (length <= 30) {
+                        videoUri = selectedVideoUri;
+                        imgVideo.setVisibility(View.GONE);
+                        //videoView.setVisibility(View.VISIBLE);
+                        imgPlay.setVisibility(View.VISIBLE);
+                        videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
+                    } else {
+                        Toast.makeText(getActivity(), "Video size is too large..", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             if (requestCode == REQUEST_TAKE_GALLERY_IMAGE) {
                 selectedImageUri = data.getData();
-                //String selectedImagePath = getPath(selectedImageUriImg);
+                //String selectedImagePath = getPath(selectedImageUri);
                 if (selectedImageUri != null) {
-                    imgProfile.setImageURI(selectedImageUri);
+                    File imgfile = new File(String.valueOf(selectedImageUri));
+                    long imgLength = imgfile.length();
+                    imgLength = imgLength / 1024;
+                    if (imgLength <= 4) {
+                        imageUri = selectedImageUri;
+                        imgProfile.setImageURI(selectedImageUri);
+                    } else {
+                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
+                    }
 
                 }
 
             }
+        }
 
-            JSONObject jsonObject = new JSONObject();
-            try {
-                Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
-                jsonObject.put("profileImg",selectedImageUri);
-                jsonObject.put("profileVideo",selectedVideoUri);
-                jsonObject.put("userId",user_id);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (imageUri != null && videoUri != null) {
+                /*JSONObject jsonObject = new JSONObject();
+                try {
+                    Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
+                    jsonObject.put("profileImg", imageUri);
+                    jsonObject.put("profileVideo", videoUri);
+                    jsonObject.put("userId", user_id);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }*/
 
             //Method for uploading profilePic & profile video
-            uploadFiles(jsonObject);
+            uploadFiles(imageUri, videoUri, user_id);
         }
     }
+
+    //Api for upload image and video
+    private void uploadFiles(final Uri imageUri, final Uri videoUri, final String user_id) {
+
+        Thread thread = new Thread() {
+            @Override
+            public void run() {
+                try {
+                    sleep(3000);
+
+                    HttpClient httpClient = new DefaultHttpClient();
+                    HttpPost httpPost     = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
+                    FileBody fileBodyVideo = new FileBody(new File(String.valueOf(videoUri)));
+                    FileBody fileBodyImage = new FileBody(new File(String.valueOf(imageUri)));
+                    StringBody userID      = new StringBody("userId" + user_id);
+                    MultipartEntity entity = new MultipartEntity();
+                    entity.addPart("profileVideo",fileBodyVideo);
+                    entity.addPart("profileImg",fileBodyImage);
+                    entity.addPart("userId",userID);
+                    httpPost.setEntity(entity);
+                    System.out.println( "executing request " + httpPost.getRequestLine( ) );
+                    HttpResponse responses = null;
+                    System.out.println( "executing request " + httpPost.getRequestLine( ) );
+
+                    responses = httpClient.execute(httpPost);
+                    HttpEntity resEntity = responses.getEntity( );
+
+                    // DEBUG
+                    System.out.println( responses.getStatusLine( ) );
+                    if (resEntity != null) {
+                        System.out.println( EntityUtils.toString( resEntity ) );
+                    } // end if
+
+                    if (resEntity != null) {
+                        resEntity.consumeContent( );
+                    } // end if
+
+                    httpClient.getConnectionManager( ).shutdown( );
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                } catch (ClientProtocolException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        thread.start();
+
+    }
+
+
 
     // UPDATED!
     public String getPath(Uri uri) {
@@ -1515,9 +1524,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         } else
             return null;
     }
-
-
-    //Get User Details Api
 
     private void setUp() {
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
@@ -1562,9 +1568,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     json = new String(response.data);
                                     json = trimMessage(json, "detail");
                                     if (json != null) {
-                                         Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
+                                        Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                                     }
-                                break;
+                                    break;
 
                                 default:
                                     break;
@@ -1575,7 +1581,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization","Bearer "+token);
+                headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
@@ -1588,66 +1594,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-    //Update User Details
+
+    //Get User Details Api
 
     private void updateUserDetails(JSONObject object) {
 
-        JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                    if(response!=null){
-                        Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
-                    }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String json = null;
-                Log.d("error--", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    switch (response.statusCode) {
-                        case 401:
-                            json = new String(response.data);
-                            json = trimMessage(json, "detail");
-                            if (json != null) {
-                                Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-            }
-        }){
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-            HashMap<String, String> headers = new HashMap<String, String>();
-            headers.put("Authorization","Bearer "+token);
-            //headers.put("Content-Type", "application/json; charset=utf-8");
-            return headers;
-        }
-
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonObjectRequest.toString());
-        requestQueue.add(jsonObjectRequest);
-
-    }
-
-    private void updateUserMoreDetails(JSONObject object) {
-
-        JsonObjectRequest jsonObjectRequest  = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_MORE_INFO, object,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if(response!=null){
+                        if (response != null) {
                             Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
                         }
 
@@ -1664,7 +1620,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                                Toast.makeText(getActivity(), ""+json, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1674,12 +1630,65 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 }
 
             }
-        }){
+        }) {
 
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization","Bearer "+token);
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+    //Update User Details
+
+    private void postUserMoreDetails(JSONObject object) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.POST_USER_MORE_INFO, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
@@ -1693,29 +1702,63 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
     private void setView() {
-        if(userDataModel!=null){
+        if (userDataModel != null) {
             profileName.setText(userDataModel.getFirstName());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
             editGender.setText(userDataModel.getGender());
             editCity.setText(userDataModel.getCity());
-            editDob.setText(userDataModel.getDob());
+            //Long value to date conversion
+            SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+            long dob       = Long.parseLong(userDataModel.getDob());
+            Date date_dob  = new Date(dob);
+            editDob.setText(dft.format(date_dob));
             editPhone.setText(userDataModel.getPhoneNumber());
         }
     }
 
-
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 
-        try{
+        try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(detail);
-        } catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
             return null;
         }
 
         return trimmedString;
+    }
+
+    private class Adapter extends FragmentPagerAdapter {
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
+
+
+        public Adapter(FragmentManager manager) {
+            super(manager);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return mFragmentList.get(position);
+        }
+
+        @Override
+        public int getCount() {
+            return mFragmentList.size();
+        }
+
+        public void addFragment(Fragment fragment, String title) {
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
+
+        }
+
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return mFragmentTitleList.get(position);
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.goldemo.beachpartner.activity;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -189,15 +190,30 @@ public class TabActivity extends AppCompatActivity {
         menu2 = findViewById(R.id.submenu2);
 
 
+        Intent intent = getIntent();
+        Bundle bundle = intent.getExtras();
+        if(bundle!=null){
+            String value = bundle.getString("profile");
+            if(value.equals("home")){
+                /*Load default HomeFragment*/
 
-        /*Load default HomeFragment*/
+                HomeFragment homeFragment = new HomeFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                getSupportActionBar().setTitle("Beach Partner");
+                FragmentTransaction transaction = manager.beginTransaction();
+                transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                transaction.commit();
+            }else {
+                ProfileFragment pf = new ProfileFragment();
+                getSupportActionBar().setTitle("Profile");
+                FragmentManager mang = getSupportFragmentManager();
+                FragmentTransaction trans = mang.beginTransaction();
+                trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
+                trans.commit();
+            }
+        }
 
-        HomeFragment homeFragment = new HomeFragment();
-        FragmentManager manager = getSupportFragmentManager();
-        getSupportActionBar().setTitle("Beach Partner");
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
-        transaction.commit();
+
 
 
     }
