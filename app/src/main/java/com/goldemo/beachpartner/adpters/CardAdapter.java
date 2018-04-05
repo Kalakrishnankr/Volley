@@ -9,11 +9,10 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
-import com.goldemo.beachpartner.models.DataModel;
-import com.goldemo.beachpartner.models.PersonModel;
+import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by seq-kala on 20/2/18.
@@ -21,9 +20,9 @@ import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<PersonModel> dataList;
+    private ArrayList<Event> dataList;
 
-    public CardAdapter(Context context, ArrayList<PersonModel> dataList) {
+    public CardAdapter(Context context, ArrayList<Event> dataList) {
         this.dataList = dataList;
         this.mContext = context;
     }
@@ -40,8 +39,13 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
 
-        holder.txtv_date.setText("11/10/2018");
-        holder.txtv_place.setText("America");
+        Event model = dataList.get(position);
+
+        SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
+        long esDate  = model.getEventStartDate();
+        String date = dft.format(esDate);
+        holder.txtv_date.setText(date);
+        holder.txtv_place.setText(model.getEventVenue());
         holder.txtv_players.setText("Martin, David, John, Hari");
 
     }

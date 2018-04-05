@@ -11,6 +11,7 @@ import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,17 +21,36 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
 import com.goldemo.beachpartner.adpters.MessageAdapter;
 import com.goldemo.beachpartner.adpters.PartnerAdapter;
 import com.goldemo.beachpartner.adpters.ProfileAdapter;
+import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.PersonModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener {
@@ -48,6 +68,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TextView txt_head;
     private String user_id,user_token;
     private PrefManager prefManager;
+    private ArrayList<Event>myUpcomingTList = new ArrayList<>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -75,7 +96,101 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         user_token  =  prefManager.getToken();
         //getBlueBP profes
         getBluebpProfiles();
+        getMyTournaments();
+
         return view;
+    }
+
+    private void getMyTournaments() {
+        myUpcomingTList.clear();
+        SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
+        Date date       = Calendar.getInstance().getTime();
+        String fromDate = dft.format(date);
+        Calendar cal    = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 5);
+        Date date1      = cal.getTime();
+        String toDate   = dft.format(date1);
+
+        JsonArrayRequest jsonArrayRequest  = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_MYUPCOMING_TOURNAMENTS + "?fromDate=" + fromDate + "&toDate=" + toDate + "&userId=" + user_id, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("Success response", response.toString());
+                if(response != null){
+                    for(int i=0;i<response.length();i++){
+
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+
+                            JSONObject obj = object.getJSONObject("event");
+                            Event event = new Event();
+                            event.setEventId(obj.getString("id"));
+                            event.setEventName(obj.getString("eventName"));
+                            event.setEventDescription(obj.getString("eventDescription"));
+                            event.setEventLocation(obj.getString("eventLocation"));
+                            event.setEventVenue(obj.getString("eventVenue"));
+                            event.setEventStartDate(obj.getLong("eventStartDate"));
+                            event.setEventEndDate(obj.getLong("eventEndDate"));
+                            event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
+                            event.setEventEndDate(obj.getLong("eventRegEndDate"));
+                            myUpcomingTList.add(event);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setUpMyComingTournament();
+
+                }
+
+
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonArrayRequest.toString());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void setUpMyComingTournament() {
+        if(myUpcomingTList!=null){
+            adapter = new CardAdapter(getContext(),myUpcomingTList);
+            mRecyclerview.setAdapter(adapter);
+            SnapHelper snapHelper = new PagerSnapHelper();
+            snapHelper.attachToRecyclerView(mRecyclerview);
+        }
+
     }
 
 
@@ -114,10 +229,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         /*My upcoming tournaments*/
 
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        adapter = new CardAdapter(getContext(),allSampleData);
-        mRecyclerview.setAdapter(adapter);
-        SnapHelper snapHelper = new PagerSnapHelper();
-        snapHelper.attachToRecyclerView(mRecyclerview);
         mRecyclerview.setLayoutManager(layoutmnger);
         mRecyclerview.setHasFixedSize(true);
 
@@ -280,6 +391,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void getBluebpProfiles() {
 
 
+    }
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 }
 

@@ -37,6 +37,7 @@ public class ApiService {
     public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
 
     public static String  POST_USER_MORE_INFO  = BASE_URL+"users/profile";
+    public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
 
 

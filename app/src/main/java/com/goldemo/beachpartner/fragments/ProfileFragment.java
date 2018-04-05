@@ -65,6 +65,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -1401,59 +1402,43 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if (resultCode == Activity.RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();
-                 //String filemanagerstring = selectedVideoUri.getPath();
-                 //String selectedVideoPath = getPath(selectedVideoUri);
+                // String filemanagerstring = selectedVideoUri.getPath();
+                // String selectedVideoPath = getPath(selectedVideoUri);
                 if (selectedVideoUri != null) {
 
-                    File file = new File(String.valueOf(selectedVideoUri));
-                    long length = file.length();
-                    length = length / 1024;
-                    if (length <= 30) {
-                        videoUri = selectedVideoUri;
-                        imgVideo.setVisibility(View.GONE);
-                        //videoView.setVisibility(View.VISIBLE);
-                        imgPlay.setVisibility(View.VISIBLE);
-                        videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
-                    } else {
-                        Toast.makeText(getActivity(), "Video size is too large..", Toast.LENGTH_SHORT).show();
-                    }
+                    imgVideo.setVisibility(View.GONE);
+                    //videoView.setVisibility(View.VISIBLE);
+                    imgPlay.setVisibility(View.VISIBLE);
+                    videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
+
                 }
             }
             if (requestCode == REQUEST_TAKE_GALLERY_IMAGE) {
                 selectedImageUri = data.getData();
-                //String selectedImagePath = getPath(selectedImageUri);
+                String path = selectedImageUri.getPath().toString();
+                System.out. println("path"+path);
+                //String selectedImagePath = getPath(selectedImageUriImg);
                 if (selectedImageUri != null) {
-                    File imgfile = new File(String.valueOf(selectedImageUri));
-                    long imgLength = imgfile.length();
-                    imgLength = imgLength / 1024;
-                    if (imgLength <= 4) {
-                        imageUri = selectedImageUri;
-                        imgProfile.setImageURI(selectedImageUri);
-                    } else {
-                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
-                    }
+                    imgProfile.setImageURI(selectedImageUri);
 
                 }
 
             }
+
         }
 
-        if (imageUri != null && videoUri != null) {
-                /*JSONObject jsonObject = new JSONObject();
-                try {
-                    Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
-                    jsonObject.put("profileImg", imageUri);
-                    jsonObject.put("profileVideo", videoUri);
-                    jsonObject.put("userId", user_id);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }*/
-
+        if (selectedImageUri != null && selectedVideoUri != null) {
             //Method for uploading profilePic & profile video
-            uploadFiles(imageUri, videoUri, user_id);
+            uploadFiles(selectedImageUri, selectedVideoUri, user_id);
         }
     }
 
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
     //Api for upload image and video
     private void uploadFiles(final Uri imageUri, final Uri videoUri, final String user_id) {
 
@@ -1468,7 +1453,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     FileBody fileBodyVideo = new FileBody(new File(String.valueOf(videoUri)));
                     FileBody fileBodyImage = new FileBody(new File(String.valueOf(imageUri)));
                     StringBody userID      = new StringBody("userId" + user_id);
-                    MultipartEntity entity = new MultipartEntity();
+
+                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
                     entity.addPart("profileVideo",fileBodyVideo);
                     entity.addPart("profileImg",fileBodyImage);
                     entity.addPart("userId",userID);

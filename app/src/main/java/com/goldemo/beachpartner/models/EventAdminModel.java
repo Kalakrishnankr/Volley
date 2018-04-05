@@ -1,10 +1,12 @@
 package com.goldemo.beachpartner.models;
 
+import java.io.Serializable;
+
 /**
  * Created by seq-kala on 22/3/18.
  */
 
-public class EventAdminModel {
+public class EventAdminModel implements Serializable {
     private String id;
     private String login;
     private String firstName;
