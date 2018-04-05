@@ -115,7 +115,7 @@ public class SignUpActivity extends AppCompatActivity{
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rb =(RadioButton) findViewById(checkedId);
                 if(rb.getText().toString().trim().equals("Coach")){
-                    userType="CollegeCoach";
+                    userType="Coach";
                 }else {
                     userType="Athlete";
                 }

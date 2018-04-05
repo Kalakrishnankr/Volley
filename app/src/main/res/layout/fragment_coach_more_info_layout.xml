@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/llCoachMoreInfoDetails"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:fillViewport="true">
+
+            <RelativeLayout
+                android:background="#efeff1"
+                android:id="@+id/scroll_more"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="5dp"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp">
+
+                <!-- College/University-->
+
+                <LinearLayout
+                    android:id="@+id/college_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/hint_coach_college"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinner_college"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:enabled="false" />
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/college_lt"/>
+
+                <!-- Description-->
+
+                <LinearLayout
+                    android:id="@+id/description_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/college_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/description"
+                        android:textStyle="bold" />
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/txtv_description"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@+id/txtv_years_running"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:background="@android:color/transparent"/>
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/description_lt"/>
+                <!--Years Running-->
+
+                <LinearLayout
+                    android:id="@+id/years_running_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/description_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/years_running"
+                        android:textStyle="bold" />
+
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/txtv_years_running"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@+id/txtv_no_athletes"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:background="@android:color/transparent"/>
+
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/years_running_lt"/>
+
+                <!--no_of_athletes-->
+
+                <LinearLayout
+                    android:id="@+id/no_of_athletes_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/years_running_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/no_of_athletes"
+                        android:textStyle="bold" />
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/txtv_no_athletes"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:maxLines="1"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:nextFocusDown="@+id/txtv_prog_offered"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:background="@android:color/transparent"/>
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/no_of_athletes_lt"/>
+                <!--prog_offered-->
+
+                <LinearLayout
+                    android:id="@+id/prog_offered_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/no_of_athletes_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/prog_offered"
+                        android:textStyle="bold" />
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/txtv_prog_offered"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@+id/txtv_division"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:background="@android:color/transparent"/>
+
+
+
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/prog_offered_lt"/>
+                <!--Division-->
+
+
+                <LinearLayout
+                    android:id="@+id/division_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal"
+                    android:weightSum="2"
+                    android:layout_below="@+id/prog_offered_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/Division"
+                        android:textStyle="bold" />
+
+                    <com.goldemo.beachpartner.CustomEditText
+                        android:id="@+id/txtv_division"
+                        android:enabled="false"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:focusable="false"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:layout_weight="1"
+                        android:nextFocusDown="@+id/spinner_program_funding"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:background="@android:color/transparent"/>
+
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/division_lt"/>
+
+                <!--Program fully funded-->
+
+
+                <LinearLayout
+                    android:id="@+id/program_funding_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/division_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/funding"
+                        android:textStyle="bold" />
+
+                    <Spinner
+                        android:id="@+id/spinner_program_funding"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:enabled="false"/>
+
+
+
+
+                </LinearLayout>
+
+
+                <!--Share Athletes between indoor and beach-->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/program_funding_lt"/>
+
+                <LinearLayout
+                    android:id="@+id/share_athletes_bw_lt"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="15dp"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2"
+                    android:layout_below="@+id/program_funding_lt">
+
+                    <com.goldemo.beachpartner.CustomTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:text="@string/athletes_bw_indoor_beach"
+                        android:textStyle="bold" />
+
+
+                    <Spinner
+                        android:id="@+id/spinner_program_share_athletes"
+                        android:layout_weight="1"
+                        android:layout_width="0dp"
+                        android:layout_marginTop="15dp"
+                        android:layout_marginBottom="15dp"
+                        android:layout_height="match_parent"
+                        android:paddingStart="5dp"
+                        android:paddingLeft="5dp"
+                        android:enabled="false"/>
+
+                </LinearLayout>
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="#A9A9A9"
+                    android:layout_below="@+id/share_athletes_bw_lt"/>
+
+
+
+
+
+                <!--button-->
+
+                <LinearLayout
+                    android:id="@+id/coach_more_info_btns_bottom"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:orientation="horizontal"
+                    android:visibility="gone"
+                    android:layout_margin="10dp"
+                    android:layout_below="@+id/share_athletes_bw_lt"
+                    android:weightSum="2">
+
+                    <com.goldemo.beachpartner.CustomButton
+                        android:id="@+id/btn_cancel"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:textColor="@color/white"
+                        android:text="CANCEL"
+                        android:textAlignment="center"
+                        android:background="@color/btnColor"
+                        android:gravity="center_vertical"
+                        android:textStyle="bold" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="match_parent" />
+
+                    <com.goldemo.beachpartner.CustomButton
+                        android:id="@+id/btn_save"
+                        android:layout_width="0dp"
+                        android:textAlignment="center"
+                        android:text="Save"
+                        android:textColor="@color/white"
+                        android:background="@color/btnColor"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:layout_weight="1" />
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+
+    </LinearLayout>
+</LinearLayout>

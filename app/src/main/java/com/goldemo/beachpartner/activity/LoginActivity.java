@@ -257,6 +257,7 @@ public class LoginActivity extends AppCompatActivity {
 
                             try {
                                 token  = response.getString("idToken").toString().trim();
+
                                 if(token!=null && !token.isEmpty()) {
                                     progress.dismiss();
 
@@ -341,6 +342,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
 
 
+
                                 }else {
                                     Toast.makeText(LoginActivity.this, "Please try later", Toast.LENGTH_SHORT).show();
                                 }
@@ -417,6 +419,7 @@ public class LoginActivity extends AppCompatActivity {
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
                             new PrefManager(getApplicationContext()).saveUserDetails(response.getString("id"));
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

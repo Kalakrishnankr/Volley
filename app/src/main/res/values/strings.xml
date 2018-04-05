@@ -103,6 +103,16 @@
     <string name="hint_biolink">Bio Link</string>
     <string name="hint_rank">Ranking</string>
 
+    <!--More info coach-->
+    <string name="hint_coach_college">College/University</string>
+    <string name="description">Description</string>
+    <string name="years_running">Years Running</string>
+    <string name="no_of_athletes">Number of Athletes</string>
+    <string name="prog_offered">Programs Offered</string>
+    <string name="Division">Division</string>
+    <string name="funding">Is your Program fully funded?</string>
+    <string name="athletes_bw_indoor_beach">Does your program share athletes between Indoor and Beach?</string>
+
 
     <!--password reset-->
     <string name="hint_password_reset">Password Reset</string>
