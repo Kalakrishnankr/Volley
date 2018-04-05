@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import com.goldemo.beachpartner.models.EventAdminModel;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Event implements Serializable {
 
@@ -119,15 +118,15 @@ public class Event implements Serializable {
         this.status = status;
     }
 
-    public List<EventAdminModel> getEventAdmin() {
+    public EventAdminModel getEventAdmin() {
         return eventAdmin;
     }
 
-    public void setEventAdmin(List<EventAdminModel> eventAdmin) {
+    public void setEventAdmin(EventAdminModel eventAdmin) {
         this.eventAdmin = eventAdmin;
     }
 
-    public List<EventAdminModel> eventAdmin;
+    public EventAdminModel eventAdmin;
 
     /*public Event() {
         this.color = color;

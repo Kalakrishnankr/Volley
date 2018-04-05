@@ -14,6 +14,11 @@ import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.MyNoteAdapter;
+import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.goldemo.beachpartner.models.EventAdminModel;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
@@ -47,8 +52,26 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_mycalendar_events, container, false);
-
         initViews(view);
+        Bundle bundle = getArguments();
+        if(bundle!=null){
+            Event event = (Event)bundle.getSerializable("mycal_event_clicked");
+            EventAdminModel adminModel = event.getEventAdmin();
+            myCal_eventadmin.setText(adminModel.getFirstName());
+
+            myCal_eventname.setText(event.getEventName());
+            myCal_location.setText(event.getEventLocation());
+            myCal_venue.setText(event.getEventVenue());
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
+            long start_date = event.getEventStartDate();
+            long end_date   = event.getEventEndDate();
+            Date eventStart = new Date(start_date);
+            Date eventEnd   = new Date(end_date);
+
+            myCal_startDate.setText(dateFormat.format(eventStart));
+            myCal_endDate.setText(dateFormat.format(eventEnd));
+        }
         return view;
     }
 

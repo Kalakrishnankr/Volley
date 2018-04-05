@@ -40,7 +40,6 @@ import com.facebook.login.LoginResult;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
-import com.goldemo.beachpartner.fragments.ProfileFragment;
 import com.goldemo.beachpartner.instagram.Instagram;
 import com.goldemo.beachpartner.instagram.InstagramSession;
 import com.goldemo.beachpartner.instagram.InstagramUser;
@@ -67,7 +66,6 @@ public class LoginActivity extends AppCompatActivity {
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
     private String token;
-    private UserDataModel userDataModel;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -260,19 +258,91 @@ public class LoginActivity extends AppCompatActivity {
                             try {
                                 token  = response.getString("idToken").toString().trim();
 
-
                                 if(token!=null && !token.isEmpty()) {
                                     progress.dismiss();
-                                    JSONObject user = response.getJSONObject("user");
-                                    new PrefManager(getApplicationContext()).saveUserType(user.getString("userType"));
+
+                                    JSONObject userObj  = new JSONObject(response.getString("user"));
+                                    UserDataModel userDataModel = new UserDataModel();
+                                    userDataModel.setId(userObj.getString("id"));
+                                    userDataModel.setLogin(userObj.getString("login"));
+                                    userDataModel.setSubscriptions(userObj.getString("subscriptions"));
+                                    userDataModel.setFirstName(userObj.getString("firstName"));
+                                    userDataModel.setLastName(userObj.getString("lastName"));
+                                    userDataModel.setEmail(userObj.getString("email"));
+                                    userDataModel.setActivated(userObj.getString("activated"));
+                                    userDataModel.setImageUrl(userObj.getString("imageUrl"));
+                                    userDataModel.setVideoUrl(userObj.getString("videoUrl"));
+                                    userDataModel.setDob(userObj.getString("dob"));
+                                    userDataModel.setGender(userObj.getString("gender"));
+                                    userDataModel.setLoginType(userObj.getString("loginType"));
+                                    userDataModel.setCity(userObj.getString("city"));
+                                    userDataModel.setPhoneNumber(userObj.getString("phoneNumber"));
+                                    userDataModel.setLocation(userObj.getString("location"));
+                                    userDataModel.setAge(userObj.getString("age"));
+                                    userDataModel.setUserType(userObj.getString("userType"));
+
+                                    String userType =   userObj.getString("userType");
+                                    String userId   =   userObj.getString("id");
+                                    String subScription=userObj.getString("subscriptions");
+                                    //String uProfileStatus = userObj.getString("profileStatus");
+                                    Boolean uProfileStatus = false;
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription);
+                                    //getUserInfo();
 
-                                    //get Login user info
-                                    getUserInfo();
-                                    Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-                                    startActivity(intent);
-                                    finish();
+                                    //User Suggestion for profile updation
+                                    if(uProfileStatus){
+                                        //already user updated the profile
+                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                        intent.putExtra("profile","home");
+                                        startActivity(intent);
+                                        finish();
+                                    }else {
+                                        //Whether user want to update his/her profile o
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                        builder.setMessage("Please take a moment to complete your profile. Your profile will remain private and hidden from the world until you complete it.");
+                                        builder.setCancelable(true);
+
+                                        builder.setPositiveButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                        //Goto profile fragment
+                                                        /*ProfileFragment pfragment = new ProfileFragment();
+                                                        FragmentManager mang = getSupportFragmentManager();
+                                                        FragmentTransaction transaction = mang.beginTransaction();
+                                                        transaction.add(R.id.container,pfragment);
+                                                        transaction.commit();*/
+                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                                        intent.putExtra("profile","profile");
+                                                        startActivity(intent);
+                                                        finish();
+
+                                                    }
+                                                });
+
+                                        builder.setNegativeButton(
+                                                "Later",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                        //Goto home fragment
+                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                                        intent.putExtra("profile","home");
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                });
+
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
+
+                                    }
+
+
+
                                 }else {
                                     Toast.makeText(LoginActivity.this, "Please try later", Toast.LENGTH_SHORT).show();
                                 }
@@ -332,7 +402,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     //Method for get Login user info
-    private void getUserInfo() {
+    /*private void getUserInfo() {
 
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
                 new Response.Listener<JSONObject>() {
@@ -394,7 +464,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d("Request", objectRequest.toString());
         requestQueue.add(objectRequest);
 
-    }
+    }*/
 
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
