@@ -54,4 +54,16 @@ public class PrefManager {
         return isEmailEmpty || isPasswordEmpty;
     }
 
+    public void saveUserType(String userType) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userType",userType);
+        editor.commit();
+    }
+
+    public String getUserType(){
+        SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
+        return preferences.getString("userType","");
+    }
+
 }

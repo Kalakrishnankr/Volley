@@ -24,4 +24,9 @@
 
 	<dimen name="pop_up_card_ht">400dp</dimen>
 
+	<!--coach profile-->
+	<dimen name="circular_img_marginTop_coach_profile">30dp</dimen>
+    <dimen name="circular_img_marginLeft_coach_profile">10dp</dimen>
+    <dimen name="coach_name_marginTop_coach_profile">45dp</dimen>
+
 </resources>

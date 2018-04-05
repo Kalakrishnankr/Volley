@@ -46,7 +46,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ProfileAdapter profileAdapter;
     ArrayList<PersonModel> allSampleData;
     private TextView txt_head;
-    private String user_id,user_token;
+    private String user_id,user_token,userType;
     private PrefManager prefManager;
 
     public HomeFragment() {
@@ -73,6 +73,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         prefManager = new PrefManager(getContext());
         user_id     =  prefManager.getUserId();
         user_token  =  prefManager.getToken();
+        userType    = prefManager.getUserType();
         //getBlueBP profes
         getBluebpProfiles();
         return view;

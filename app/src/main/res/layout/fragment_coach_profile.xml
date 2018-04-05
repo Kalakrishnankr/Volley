@@ -1,233 +1,110 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/tools"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.goldemo.beachpartner.fragments.CoachProfileFragment"
     android:orientation="vertical"
-    android:weightSum="1">
+    android:weightSum="10"
+    android:background="@color/white">
 
-    <RelativeLayout
-        android:id="@+id/rrTop"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_weight="0.55">
-
-
-        <FrameLayout
-            android:id="@+id/header_cover_video"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/frame_layout_profileVide_height"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="#000">
-
-            <ImageView
-                android:id="@+id/imgVideo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_edit_profile"
-                android:visibility="gone" />
-
-            <ImageView
-                android:id="@+id/imgPlay"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@drawable/ic_play"
-                android:visibility="gone" />
-
-            <VideoView
-                android:id="@+id/videoView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
+<RelativeLayout
+    android:id="@+id/profile_img_layout"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="3.5"
+    android:background="@drawable/ic_person">
 
 
-        </FrameLayout>
 
-        <FrameLayout
-            android:id="@+id/profileMainPic"
+        <com.goldemo.beachpartner.CircularImageView
+            android:id="@+id/row_icon"
+            android:layout_width="@dimen/circular_img_width"
+            android:layout_height="@dimen/circular_img_height"
+            android:layout_marginTop="@dimen/circular_img_marginTop_coach_profile"
+            android:layout_marginLeft="@dimen/circular_img_marginLeft_coach_profile"
+            android:contentDescription="@string/app_name"
+            android:padding="10dp"
+            app:civ_border_width="10dp"
+            android:elevation="10dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_person" />
+
+        <com.goldemo.beachpartner.CustomTextView
+            android:id="@+id/coachName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:elevation="10dp">
-
-            <com.goldemo.beachpartner.CircularImageView
-                android:id="@+id/row_icon"
-                android:layout_width="@dimen/circular_img_width"
-                android:layout_height="@dimen/circular_img_height"
-                android:layout_below="@+id/header_cover_video"
-                android:layout_marginTop="@dimen/circular_img_marginTop"
-                android:contentDescription="@string/app_name"
-                android:elevation="10dp"
-                android:padding="10dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_person"
-                app:civ_border_width="10dp" />
-
-            <ImageView
-                android:id="@+id/edit_profile_img_vid"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="65dp"
-                android:elevation="10dp"
-                android:src="@drawable/ic_edit_profile"
-                android:visibility="gone" />
-
-        </FrameLayout>
-
-
-        <!--Layout for Share Button-->
-
-        <RelativeLayout
+            android:layout_toRightOf="@+id/row_icon"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+            android:textSize="@dimen/textsize_header"
+            android:textStyle="bold"
+            android:text="Username"/>
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="@dimen/floatingMenuMarginTop"
-            android:elevation="10dp">
-
-            <com.goldemo.beachpartner.utils.FloatingActionMenu
-                android:id="@+id/menu_blue"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                fab:menu_colorNormal="@color/white"
-                fab:menu_colorPressed="#2272CD"
-                fab:menu_colorRipple="#62B2FF"
-                fab:menu_fab_size="normal"
-                fab:menu_labels_ellipsize="middle"
-                fab:menu_labels_position="right"
-                fab:menu_labels_singleLine="true"
-                fab:menu_labels_style="@dimen/text_size"
-                fab:menu_showShadow="false">
-
-                <com.goldemo.beachpartner.utils.FloatingActionButton
-                    android:id="@+id/fab_image"
-                    style="@style/MenuButtonsSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_share_img"
-                    fab:fab_label="Image"
-                    fab:fab_size="normal" />
-
-                <com.goldemo.beachpartner.utils.FloatingActionButton
-                    android:id="@+id/fab_video"
-                    style="@style/MenuButtonsSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_share_video"
-                    fab:fab_label="Video"
-                    fab:fab_size="normal" />
-
-
-            </com.goldemo.beachpartner.utils.FloatingActionMenu>
-
-
-        </RelativeLayout>
-
-
-        <RelativeLayout
-            android:id="@+id/profile_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/header_cover_video"
-            android:background="@color/white">
-
-            <ImageView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="30dp"
-                android:clickable="true"
-                android:src="@drawable/ic_edit" />
-
-            <!--<ImageView
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="16dp"
-                android:layout_marginTop="30dp"
-                android:clickable="true"
-                android:src="@drawable/ic_edit" />-->
-
-
+            android:layout_marginLeft="5dp"
+            android:layout_below="@+id/coachName"
+            android:layout_toRightOf="@+id/row_icon">
             <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/edit_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/edit"
-                android:layout_marginRight="10dp"
-                android:text="@string/editProfile"
-                android:textColor="@color/imgBacgnd"
-                android:textSize="12sp" />
-
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/profile_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_top_text_under_circularImage"
-                android:capitalize="words"
-                android:inputType="textCapWords"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:text="College Coach"
+                android:textColor="@color/colorText"
+                android:background="@drawable/coach_bg"
+                />
+        </LinearLayout>
 
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/profile_designation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/profile_name"
-                android:layout_centerHorizontal="true"
-                android:drawableLeft="@drawable/ic_athlete_indicator"
-                android:gravity="center"
-                android:text="Athlete"
-                android:textColor="#696969" />
+        <ImageView
+            android:id="@+id/edit_profile_imgCoach"
+            android:visibility="gone"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+            android:layout_marginLeft="30dp"
+            android:elevation="10dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_edit_profile"/>
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/profile_name"
-                android:layout_marginLeft="28dp"
-                android:layout_marginStart="28dp"
-                android:text="@string/share"
-                android:textAlignment="center"
-                android:textColor="@color/imgBacgnd"
-                android:textSize="12sp" />
+    <View
+        android:layout_width="1dp"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:layout_toRightOf="@+id/coachName"
+        android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+        android:layout_marginLeft="5dp"
+        />
 
-        </RelativeLayout>
+        <ImageView
+            android:id="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+            android:clickable="true"
+            android:src="@drawable/ic_edit" />
+        <com.goldemo.beachpartner.CustomTextView
+            android:id="@+id/edit_text"
+            android:layout_below="@+id/edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:textColor="@color/imgBacgnd"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:text="@string/editProfile"/>
 
-    </RelativeLayout>
-
-    <!--kkr-->
-
-    <!--<View-->
-    <!--android:id="@+id/viewOne"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:background="@color/imgBacgnd"-->
-    <!--android:layout_below="@+id/rrTop"/>-->
 
 
+</RelativeLayout>
     <LinearLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="0.45"
+        android:layout_weight="6.5"
         android:weightSum="1"
         android:orientation="vertical"
         android:paddingTop="5dp">
@@ -238,7 +115,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.2"
+            android:layout_weight="0.1"
             android:orientation="horizontal"
             android:background="#eeeeee"
             android:weightSum="1">
@@ -246,7 +123,7 @@
             <!--BAsic Info-->
 
             <LinearLayout
-                android:id="@+id/llMenuBasic"
+                android:id="@+id/llCoachMenuBasic"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
@@ -254,7 +131,7 @@
                 android:orientation="vertical">
 
                 <com.goldemo.beachpartner.CustomTextView
-                    android:id="@+id/basic_info_tab"
+                    android:id="@+id/coach_basic_info_tab"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
@@ -271,7 +148,7 @@
                     android:background="@drawable/shadow_profile_page">
 
                     <View
-                        android:id="@+id/viewBasic"
+                        android:id="@+id/viewCoachBasic"
                         android:layout_width="match_parent"
                         android:layout_height="4dp"
                         android:layout_marginLeft="20dp"
@@ -286,7 +163,7 @@
             <!--More Info-->
 
             <LinearLayout
-                android:id="@+id/llMenuMore"
+                android:id="@+id/llCoachMenuMore"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
@@ -294,7 +171,7 @@
                 android:orientation="vertical">
 
                 <com.goldemo.beachpartner.CustomTextView
-                    android:id="@+id/more_info_tab"
+                    android:id="@+id/coach_more_info_tab"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center"
@@ -310,7 +187,7 @@
                     android:layout_weight="0.2"
                     android:background="@drawable/shadow_profile_page">
                     <View
-                        android:id="@+id/viewMore"
+                        android:id="@+id/viewCoachMore"
                         android:layout_width="match_parent"
                         android:layout_height="4dp"
                         android:layout_marginLeft="20dp"
@@ -330,27 +207,27 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.8"
-            android:orientation="vertical">
+            android:layout_weight="0.9"
+            android:orientation="vertical"
+            >
 
 
             <LinearLayout
-                android:id="@+id/llBasicDetails"
+                android:id="@+id/llCoachBasicDetails"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:layout_gravity="center">
 
                 <ScrollView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
                     android:layout_below="@+id/tab"
-                    android:isScrollContainer="false"
                     android:fillViewport="true">
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
                         android:padding="5dp"
                         android:background="#efeff1"
                         android:layout_marginLeft="15dp"
@@ -361,7 +238,7 @@
                         <LinearLayout
                             android:id="@+id/firstname"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -400,7 +277,7 @@
                         <LinearLayout
                             android:id="@+id/lastname"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -442,7 +319,7 @@
                         <LinearLayout
                             android:id="@+id/gender_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -482,7 +359,7 @@
                         <LinearLayout
                             android:id="@+id/birth_date_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="horizontal"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
@@ -521,7 +398,7 @@
                         <LinearLayout
                             android:id="@+id/city_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -561,7 +438,7 @@
                         <LinearLayout
                             android:id="@+id/phone_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -591,6 +468,11 @@
 
 
                         </LinearLayout>
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#A9A9A9"
+                            android:layout_below="@+id/phone_lt"/>
 
                         <!--&lt;!&ndash;password&ndash;&gt;-->
                         <!--<LinearLayout-->
@@ -626,7 +508,7 @@
                         <!--button-->
 
                         <LinearLayout
-                            android:id="@+id/btns_at_bottom"
+                            android:id="@+id/coach_btns_at_bottom"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
                             android:visibility="gone"
@@ -680,7 +562,7 @@
 
             <!--More info-->
 
-            <include layout="@layout/fragment_more_info"/>
+            <include layout="@layout/fragment_coach_more_info_layout"/>
 
 
 
@@ -695,10 +577,5 @@
 
 
     </LinearLayout>
-
-    <!--kkr ends-->
-
-
-
 
 </LinearLayout>

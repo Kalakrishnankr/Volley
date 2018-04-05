@@ -258,12 +258,16 @@ public class LoginActivity extends AppCompatActivity {
                         if (response!=null ) {
 
                             try {
-                                token  = response.getString("id_token").toString().trim();
+                                token  = response.getString("idToken").toString().trim();
+
+
                                 if(token!=null && !token.isEmpty()) {
                                     progress.dismiss();
-
+                                    JSONObject user = response.getJSONObject("user");
+                                    new PrefManager(getApplicationContext()).saveUserType(user.getString("userType"));
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
+
                                     //get Login user info
                                     getUserInfo();
                                     Intent intent = new Intent(LoginActivity.this,TabActivity.class);
@@ -345,6 +349,7 @@ public class LoginActivity extends AppCompatActivity {
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
                             new PrefManager(getApplicationContext()).saveUserDetails(response.getString("id"));
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

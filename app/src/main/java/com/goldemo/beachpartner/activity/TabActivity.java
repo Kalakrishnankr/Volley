@@ -18,8 +18,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.fragments.BPFinderFragment;
 import com.goldemo.beachpartner.fragments.CalendarFragment;
+import com.goldemo.beachpartner.fragments.CoachHomeFragment;
+import com.goldemo.beachpartner.fragments.CoachProfileFragment;
 import com.goldemo.beachpartner.fragments.ConnectionFragment;
 import com.goldemo.beachpartner.fragments.HiFiveFragment;
 import com.goldemo.beachpartner.fragments.HomeFragment;
@@ -36,6 +39,7 @@ public class TabActivity extends AppCompatActivity {
     private Boolean moreClickedOnce=true;
     private Boolean floatMenu1Active=true;
     private Boolean floatMenu2Active=false;
+    private String userType;
 
     FloatingActionButton menu1;
     FloatingActionButton menu2;
@@ -49,15 +53,28 @@ public class TabActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-
-                    HomeFragment homeFragment = new HomeFragment();
-                    getSupportActionBar().setTitle("Beach Partner");
-                    FragmentManager manager = getSupportFragmentManager();
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
-                    transaction.commit();
-                    disableFloatButtons();
+                    if(userType.equalsIgnoreCase("Athlete")){
+                        HomeFragment homeFragment = new HomeFragment();
+                        getSupportActionBar().setTitle("Beach Partner");
+                        FragmentManager manager = getSupportFragmentManager();
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                        transaction.commit();
+                        disableFloatButtons();
+                        return true;
+                    }
+                    if(userType.equalsIgnoreCase("Coach")){
+                        CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
+                        getSupportActionBar().setTitle("Beach Partner");
+                        FragmentManager coachHomeManager = getSupportFragmentManager();
+                        FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
+                        coachHomeTransaction.replace(R.id.container, coachHomeFragment,YOUR_FRAGMENT_STRING_TAG);
+                        coachHomeTransaction.commit();
+                        disableFloatButtons();
+                        return true;
+                    }
                     return true;
+
                 case R.id.navigation_bp:
 
                     BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
@@ -188,7 +205,7 @@ public class TabActivity extends AppCompatActivity {
         menu1 = findViewById(R.id.submenu1);
         menu2 = findViewById(R.id.submenu2);
 
-
+        userType   =   new PrefManager(getApplicationContext()).getUserType().trim();
 
         /*Load default HomeFragment*/
 
@@ -198,6 +215,8 @@ public class TabActivity extends AppCompatActivity {
         FragmentTransaction transaction = manager.beginTransaction();
         transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
         transaction.commit();
+
+
 
 
     }
@@ -219,13 +238,27 @@ public class TabActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.profile:
-                //Toast.makeText(this, "Clicked Profile", Toast.LENGTH_SHORT).show();
-                    ProfileFragment pf = new ProfileFragment();
-                    getSupportActionBar().setTitle("Profile");
-                    FragmentManager mang = getSupportFragmentManager();
-                    FragmentTransaction trans = mang.beginTransaction();
-                    trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
-                    trans.commit();
+//                    userType   =   new PrefManager(getApplicationContext()).getUserType().trim();
+                    if(userType.equalsIgnoreCase("Athlete")){
+                        ProfileFragment pf = new ProfileFragment();
+                        getSupportActionBar().setTitle("Profile");
+                        FragmentManager mang = getSupportFragmentManager();
+                        FragmentTransaction trans = mang.beginTransaction();
+                        trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
+                        trans.commit();
+                        break;
+                    }
+
+                    if(userType.equalsIgnoreCase("Coach")){
+                        CoachProfileFragment coachProfileFragment=new CoachProfileFragment();
+                        getSupportActionBar().setTitle("Profile");
+                        FragmentManager mang = getSupportFragmentManager();
+                        FragmentTransaction trans = mang.beginTransaction();
+                        trans.replace(R.id.container, coachProfileFragment,YOUR_FRAGMENT_STRING_TAG);
+                        trans.commit();
+                        break;
+                    }
+
                 break;
             case R.id.about_us:
                 Toast.makeText(this, "Clicked AboutUs", Toast.LENGTH_SHORT).show();
