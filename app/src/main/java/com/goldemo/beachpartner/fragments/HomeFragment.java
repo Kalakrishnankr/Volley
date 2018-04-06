@@ -38,6 +38,7 @@ import com.goldemo.beachpartner.adpters.ProfileAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.EventAdminModel;
 import com.goldemo.beachpartner.models.PersonModel;
 
 import org.json.JSONArray;
@@ -65,7 +66,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
     ArrayList<PersonModel> allSampleData;
-    private TextView txt_head;
+    private TextView txt_head,txtv_notour;
     private String user_id,user_token,userType;
     private PrefManager prefManager;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
@@ -102,97 +103,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    private void getMyTournaments() {
-        myUpcomingTList.clear();
-        SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
-        Date date       = Calendar.getInstance().getTime();
-        String fromDate = dft.format(date);
-        Calendar cal    = Calendar.getInstance();
-        cal.add(Calendar.MONTH, 5);
-        Date date1      = cal.getTime();
-        String toDate   = dft.format(date1);
 
-        JsonArrayRequest jsonArrayRequest  = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_MYUPCOMING_TOURNAMENTS + "?fromDate=" + fromDate + "&toDate=" + toDate + "&userId=" + user_id, null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                Log.d("Success response", response.toString());
-                if(response != null){
-                    for(int i=0;i<response.length();i++){
-
-                        try {
-                            JSONObject object = response.getJSONObject(i);
-
-                            JSONObject obj = object.getJSONObject("event");
-                            Event event = new Event();
-                            event.setEventId(obj.getString("id"));
-                            event.setEventName(obj.getString("eventName"));
-                            event.setEventDescription(obj.getString("eventDescription"));
-                            event.setEventLocation(obj.getString("eventLocation"));
-                            event.setEventVenue(obj.getString("eventVenue"));
-                            event.setEventStartDate(obj.getLong("eventStartDate"));
-                            event.setEventEndDate(obj.getLong("eventEndDate"));
-                            event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
-                            event.setEventEndDate(obj.getLong("eventRegEndDate"));
-                            myUpcomingTList.add(event);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                    setUpMyComingTournament();
-
-                }
-
-
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String json = null;
-                Log.d("error--", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    switch (response.statusCode) {
-                        case 401:
-                            json = new String(response.data);
-                            json = trimMessage(json, "detail");
-                            if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + user_token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonArrayRequest.toString());
-        requestQueue.add(jsonArrayRequest);
-    }
-
-    private void setUpMyComingTournament() {
-        if(myUpcomingTList!=null){
-            adapter = new CardAdapter(getContext(),myUpcomingTList);
-            mRecyclerview.setAdapter(adapter);
-            SnapHelper snapHelper = new PagerSnapHelper();
-            snapHelper.attachToRecyclerView(mRecyclerview);
-        }
-
-    }
 
 
     private void initView(View view) {
@@ -201,12 +112,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
         img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
-        txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
+        txt_head        =   (TextView)  view.findViewById(R.id.txtview_head);
+        txtv_notour     =   (TextView)  view.findViewById(R.id.txtv_notour);
+
 
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
         img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
-        likesCard       =       view.findViewById(R.id.no_of_likes_card);
+        likesCard       =   (FrameLayout)view.findViewById(R.id.no_of_likes_card);
 
+        pRecyclerview   =   (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
         mRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv);          //Recycler view for upcoming events
         msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
         parRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_partners); //Recycler view for tournament requests
@@ -220,7 +134,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
         LinearLayoutManager lmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        pRecyclerview = (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
         profileAdapter = new ProfileAdapter(getContext(),allSampleData);
         pRecyclerview.setAdapter(profileAdapter);
         pRecyclerview.setLayoutManager(lmnger);
@@ -391,6 +304,105 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //Api for get all blue bp profiles
     private void getBluebpProfiles() {
 
+
+    }
+    //Get all my tournaments
+    private void getMyTournaments() {
+        myUpcomingTList.clear();
+        SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
+        Date date       = Calendar.getInstance().getTime();
+        String fromDate = dft.format(date);
+        Calendar cal    = Calendar.getInstance();
+        cal.add(Calendar.MONTH, 5);
+        Date date1      = cal.getTime();
+        String toDate   = dft.format(date1);
+
+        JsonArrayRequest jsonArrayRequest  = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_MYUPCOMING_TOURNAMENTS + "?fromDate=" + fromDate + "&toDate=" + toDate + "&userId=" + user_id, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("Success response", response.toString());
+                if(response != null){
+                    for(int i=0;i<response.length();i++){
+
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+
+                            JSONObject obj = object.getJSONObject("event");
+                            Event event = new Event();
+                            event.setEventId(obj.getString("id"));
+                            event.setEventName(obj.getString("eventName"));
+                            event.setEventDescription(obj.getString("eventDescription"));
+                            event.setEventLocation(obj.getString("eventLocation"));
+                            event.setEventVenue(obj.getString("eventVenue"));
+                            event.setEventStartDate(obj.getLong("eventStartDate"));
+                            event.setEventEndDate(obj.getLong("eventEndDate"));
+                            event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
+                            event.setEventEndDate(obj.getLong("eventRegEndDate"));
+
+                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
+                            EventAdminModel adminModel = new EventAdminModel();
+                            adminModel.setFirstName(objectadmin.getString("firstName"));
+                            event.setEventAdmin(adminModel);
+                            myUpcomingTList.add(event);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setUpMyComingTournament();
+
+                }
+
+
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonArrayRequest.toString());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    private void setUpMyComingTournament() {
+        if(myUpcomingTList.size()>0){
+            adapter = new CardAdapter(getContext(),myUpcomingTList);
+            mRecyclerview.setAdapter(adapter);
+            SnapHelper snapHelper = new PagerSnapHelper();
+            snapHelper.attachToRecyclerView(mRecyclerview);
+        }else {
+            txtv_notour.setVisibility(View.VISIBLE);
+        }
 
     }
 

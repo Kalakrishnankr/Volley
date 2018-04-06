@@ -48,6 +48,10 @@ public class PrefManager {
         SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
         return preferences.getString("Token","");
     }
+    public String getSubscription(){
+        SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
+        return preferences.getString("subscriptions","");
+    }
 
     public boolean isUserLogedOut() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);

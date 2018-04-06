@@ -7,5 +7,5 @@ package com.goldemo.beachpartner;
 public interface MyInterface {
 
      void addView(String url, String name);
-
+     void onClick(String bpf_id, String bpf_deviceId);
 }
