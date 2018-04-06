@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.fragments.ChatFragmentPage;
@@ -105,8 +106,13 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             });
 
             holder.txtv_name.setText(dataLists.get(position).getConnected_firstName());
-            //holder.txtv_age.setText("Age :"+dataList.get(position).getAge());
-//            holder.profilePic.setImageResource(Integer.parseInt(dataLists.get(position).getConnected_imageUrl()));
+
+            if(!dataLists.get(position).getConnected_imageUrl().equals("null")){
+                Glide.with(mContext).load(dataLists.get(position).getConnected_imageUrl()).into(holder.profilePic);
+                //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
+            }else {
+                holder.profilePic.setImageResource(R.drawable.ic_person);
+            }
 
             //Set OnclickListener message
 

@@ -42,9 +42,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
-    private TextView txtv_coach,txtv_athlete;
+    private TextView txtv_coach,txtv_athlete,txtv_noconnection;
 
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
+    private ArrayList<ConnectionModel>coachList = new ArrayList<>();
+    private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -84,8 +86,12 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         rcv_conn        =   (RecyclerView)view.findViewById(R.id.rcv_connection);
         txtv_athlete    =   (TextView)view.findViewById(R.id.txtAthlete);
         txtv_coach      =   (TextView)view.findViewById(R.id.txtCoach);
+        txtv_noconnection=  (TextView)view.findViewById(R.id.txtv_conview);
 
-
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
+        rcv_conn.setLayoutManager(layoutManager);
+        //rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
+        rcv_conn.setItemAnimator(new DefaultItemAnimator());
 
         activeAthletTab();
 
@@ -94,25 +100,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-    /*Method for Active Coach Tab*/
 
-    private void activeCoachTab() {
-        txtv_coach.setTextColor(getResources().getColor(R.color.blueDark));
-        txtv_coach.setBackgroundColor(getResources().getColor(R.color.white));
-        txtv_athlete.setBackgroundColor(0);
-        txtv_athlete.setTextColor(getResources().getColor(R.color.white));
-
-    }
-
-    /*Method Active Athlete TAb*/
-
-    private void activeAthletTab() {
-
-        txtv_athlete.setTextColor(getResources().getColor(R.color.blueDark));
-        txtv_athlete.setBackgroundColor(getResources().getColor(R.color.white));
-        txtv_coach.setBackgroundColor(0);
-        txtv_coach.setTextColor(getResources().getColor(R.color.white));
-    }
 
 
 
@@ -138,8 +126,37 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
+     /*Method for Active Coach Tab*/
 
-    public void getConnections() {
+    private void activeCoachTab() {
+        txtv_coach.setTextColor(getResources().getColor(R.color.blueDark));
+        txtv_coach.setBackgroundColor(getResources().getColor(R.color.white));
+        txtv_athlete.setBackgroundColor(0);
+        txtv_athlete.setTextColor(getResources().getColor(R.color.white));
+        if(coachList!=null && coachList.size()>0){
+            adapter    =   new ConnectionAdapter(getContext(),coachList);
+            rcv_conn.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        }
+
+    }
+
+    /*Method Active Athlete TAb*/
+
+    private void activeAthletTab() {
+        txtv_athlete.setTextColor(getResources().getColor(R.color.blueDark));
+        txtv_athlete.setBackgroundColor(getResources().getColor(R.color.white));
+        txtv_coach.setBackgroundColor(0);
+        txtv_coach.setTextColor(getResources().getColor(R.color.white));
+       if(athleteList!=null && athleteList.size()>0){
+           adapter    =   new ConnectionAdapter(getContext(),athleteList);
+           rcv_conn.setAdapter(adapter);
+           adapter.notifyDataSetChanged();
+       }
+    }
+
+    //Get connection list api
+    private void getConnections() {
         connectionList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
         final String token    = new PrefManager(getContext()).getToken();
@@ -159,6 +176,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             model.setConnected_firstName(obj.getString("firstName"));
                             model.setConnected_lastName(obj.getString("lastName"));
                             model.setConnected_email(obj.getString("email"));
+                            model.setConnected_userType(obj.getString("userType"));
+                            model.setConnected_imageUrl(obj.getString("imageUrl"));
                             connectionList.add(model);
 
 
@@ -196,14 +215,23 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     private void setConnections() {
-        if(connectionList!=null){
-            adapter         =   new ConnectionAdapter(getContext(),connectionList);
-            RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
-            rcv_conn.setLayoutManager(layoutManager);
-            //rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
-            rcv_conn.setItemAnimator(new DefaultItemAnimator());
+        if(connectionList!=null && connectionList.size()>0){
+            for(int i=0;i<connectionList.size();i++){
+                if(connectionList.get(i).getConnected_userType().equals("Athlete")){
+                    athleteList.add(connectionList.get(i));
+                }else {
+                    coachList.add(connectionList.get(i));
+                }
+            }
+
+            adapter    =   new ConnectionAdapter(getContext(),athleteList);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
+
+
+
+        }else {
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 
