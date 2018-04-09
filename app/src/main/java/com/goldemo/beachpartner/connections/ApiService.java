@@ -37,6 +37,12 @@ public class ApiService {
     public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
 
     public static String  POST_USER_MORE_INFO  = BASE_URL+"users/profile";
+    public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
+
+    public static String RIGHT_SWIPE_REQUEST_SEND=   BASE_URL+"users/request-friendship/";
+    public static String RIGHT_SWIPE_LIKE       =   BASE_URL+"users/accept-friendship/";
+    public static String LEFT_SWIPE_DISLIKE     =   BASE_URL+"users/reject-friendship/";
+    public static String HIFI_SWIPE_UP          =   BASE_URL+"users/request-friendship/";
 
 
 

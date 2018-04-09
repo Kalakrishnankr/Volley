@@ -17,9 +17,10 @@ import android.widget.VideoView;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.models.BpFinderModel;
 import com.goldemo.beachpartner.utils.RotateLoading;
 
-public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
+public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
@@ -49,16 +50,16 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             holder = (ViewHolder) contentView.getTag();
         }
 
-        final TouristSpot spot = getItem(position);
+        final BpFinderModel spot = getItem(position);
 
         holder.videoView.stopPlayback();
         holder.videoView.setVisibility(View.GONE);
         holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
 
-        holder.name.setText(spot.name);
-        holder.city.setText(spot.city);
-        Glide.with(getContext()).load(spot.img_url).into(holder.image);
+        holder.name.setText(spot.getBpf_firstName()+","+spot.getBpf_age());
+        holder.userType.setText(spot.getBpf_userType());
+        Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
 
 
        /* Video Tag onclick listener start*/
@@ -72,9 +73,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 holder.videoView.setVisibility(View.VISIBLE);
-                holder.videoView.setVideoURI(Uri.parse(spot.url));
+                holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
                // dialog.setMessage("Please wait");
-
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
                 //holder.videoView.start();
                 playvideo(holder);
                 return false;
@@ -87,7 +88,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
             @Override
             public void onClick(View view) {
 
-                myInterface.addView(spot.img_url,spot.name);
+                myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
                 //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             }
         });
@@ -102,6 +103,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
         return contentView;
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     private void playvideo(final ViewHolder holder) {
 
@@ -130,27 +135,22 @@ public class TouristSpotCardAdapter extends ArrayAdapter<TouristSpot> {
 
     private static class ViewHolder {
         public TextView name;
-        public TextView city;
+        public TextView userType;
         public ImageView image;
         public VideoView videoView;
         public RotateLoading spinnerView,progressBar;
         public Button info;
-        //public VideoPlayView videoPlayView;
-        // public FullscreenVideoLayout videoLayout;
 
         public ViewHolder(View view) {
-            name = (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
-            city = (TextView) view.findViewById(R.id.item_tourist_spot_card_city);
-            image = (ImageView) view.findViewById(R.id.img_view);
-            videoView = (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
-            progressBar=(RotateLoading)view.findViewById(R.id.prsbar);
-            info = (Button)view.findViewById(R.id.btnInfo);
+            name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
+            userType    =   (TextView) view.findViewById(R.id.item_tourist_spot_card_city);
+            image       =   (ImageView) view.findViewById(R.id.img_view);
+            videoView   =   (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
+            progressBar =   (RotateLoading)view.findViewById(R.id.prsbar);
+            info        =   (Button)view.findViewById(R.id.btnInfo);
 
-            spinnerView  =   (RotateLoading)view.findViewById(R.id.my_spinner);
+            spinnerView =  (RotateLoading)view.findViewById(R.id.my_spinner);
 
-            //this.videoLayout = (FullscreenVideoLayout) view.findViewById(R.id.item_tourist_spot_card_image);
-            //this.image = (ImageView) view.findViewById(R.id.item_tourist_spot_card_image);
-            // this.videoPlayView = (VideoPlayView) view.findViewById(R.id.picassoVideoView);
         }
     }
 

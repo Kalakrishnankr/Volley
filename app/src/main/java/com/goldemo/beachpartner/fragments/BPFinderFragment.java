@@ -36,11 +36,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
-import com.goldemo.beachpartner.adpters.TouristSpot;
 import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
@@ -104,7 +104,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private String location,sgender;
     private Boolean isCoach;
     private int minAge,maxAge;
-    private String token,user_id;
+    private String token,user_id,user_subscription,reqPersonId,deviceId;
     private List<BpFinderModel>allCardList = new ArrayList<>();
     private List<PersonModel>bluebpList = new ArrayList<>();
 
@@ -130,6 +130,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
         token   =   new PrefManager(getContext()).getToken();
         user_id =   new PrefManager(getContext()).getUserId();
+        user_subscription = new PrefManager(getContext()).getSubscription();
+
+        //
 
         setUp(view);
         btnFemale.setText("Women");
@@ -407,9 +410,24 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //abraham 08-03-2018
                 reverseCount=true;
                 imgv_rvsecard.setBackground(getResources().getDrawable(R.drawable.ic_backcard));
-
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
+
+                //Methods for swipe card kalakrishnan 06/04/2018
+                if(direction.toString().equals("Right")){
+                    //Toast.makeText(getActivity(), "You right swiped :"+reqPersonId, Toast.LENGTH_SHORT).show();
+                    //Api for Right swipe/like
+                    cardRightSwiped(reqPersonId);
+
+                }else if(direction.toString().equals("Left")){
+                    //Toast.makeText(getActivity(), "You Left swiped", Toast.LENGTH_SHORT).show();
+                    cardLeftSwiped(reqPersonId);
+
+                }else {
+                    //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
+                    cardHifiSwiped(reqPersonId);
+                }
+
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
                     Log.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
                     paginate();
@@ -526,9 +544,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+
+
+
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
-
+        allCardList.clear();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD+"?includeCoach="+isCoach+"&minAge="+minAge+"&maxAge="+maxAge+"&gender="+sgender, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -570,6 +591,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 }
 
                             }
+                            paginate();
                         }
                     }
                 }, new Response.ErrorListener() {
@@ -691,11 +713,228 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private void paginate() {
 
         cardStackView.setPaginationReserved();
-        adapter.addAll(createTouristSpots());
+        //adapter.addAll(createTouristSpots());
+        adapter.addAll(allCardList);
         adapter.notifyDataSetChanged();
     }
 
-    private List<TouristSpot> createTouristSpots() {
+    //Method for right swipe
+    private void cardRightSwiped(String reqPersonId) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.RIGHT_SWIPE_REQUEST_SEND + reqPersonId, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(response!=null){
+                            try {
+                                String status = response.getString("status").toString().trim();
+                                if(status.equals("New")){
+                                    Log.d("request send",status);
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("RequestSend", request.toString());
+        requestQueue.add(request);
+
+    }
+
+    //Method for card left swiped
+    private void cardLeftSwiped(String reqPersonId) {
+
+        JsonObjectRequest  jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String status = response.getString("status").toString().trim();
+                    if(status.equals("New")){
+                        Log.d("request send",status);
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Log.d("RejectRequest", queue.toString());
+        queue.add(jrequest);
+    }
+
+    //Method for hifi
+
+    private void cardHifiSwiped(String reqPersonId) {
+
+        JsonObjectRequest requests = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.HIFI_SWIPE_UP + reqPersonId, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(response!=null){
+                            try {
+                                String status = response.getString("status").toString().trim();
+                                if(status.equals("New")){
+                                    Log.d("request send",status);
+
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("RequestSend", requests.toString());
+        requestQueue.add(requests);
+
+    }
+
+    /*private List<TouristSpot> createTouristSpots() {
         List<TouristSpot> spots = new ArrayList<>();
         spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
         spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
@@ -707,7 +946,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
         spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
         return spots;
-    }
+    }*/
 
     /* private void reload() {
          cardStackView.setVisibility(View.GONE);
@@ -743,8 +982,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private TouristSpotCardAdapter createTouristSpotCardAdapter() {
 
-        adapter = new TouristSpotCardAdapter(getActivity(),this);
-        adapter.addAll(createTouristSpots());
+        if(allCardList!=null){
+            adapter = new TouristSpotCardAdapter(getActivity(),this);
+            adapter.addAll(allCardList);
+
+        }
         return adapter;
     }
 
@@ -765,6 +1007,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    @Override
+    public void onClick(String bpf_id,String bpf_deviceId) {
+        reqPersonId = bpf_id;
+        deviceId    = bpf_deviceId;
+    }
+
     //Method for card reverse
 
     private void reverse() {
@@ -775,8 +1023,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-    private LinkedList<TouristSpot> extractRemainingTouristSpots() {
-        LinkedList<TouristSpot> spots = new LinkedList<>();
+    private LinkedList<BpFinderModel> extractRemainingTouristSpots() {
+        LinkedList<BpFinderModel> spots = new LinkedList<>();
         for (int i = cardStackView.getTopIndex(); i < adapter.getCount(); i++) {
             spots.add(adapter.getItem(i));
         }
@@ -787,11 +1035,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private void swipeUp() {
 
-        List<TouristSpot> spots = extractRemainingTouristSpots();
+        List<BpFinderModel> spots = extractRemainingTouristSpots();
         if (spots.isEmpty()) {
             return;
         }
-
+        if(spots.size()>0){
+            reqPersonId= spots.get(0).getBpf_id().trim();
+        }
         View target = cardStackView.getTopView();
 
         ValueAnimator rotation = ObjectAnimator.ofPropertyValuesHolder(

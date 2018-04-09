@@ -16,6 +16,16 @@ public class ConnectionModel {
     public String Connected_authToken;
     public String Connected_location;
 
+    public String getConnected_userType() {
+        return Connected_userType;
+    }
+
+    public void setConnected_userType(String connected_userType) {
+        Connected_userType = connected_userType;
+    }
+
+    public String Connected_userType;
+
     public String getConnected_imageUrl() {
         return Connected_imageUrl;
     }

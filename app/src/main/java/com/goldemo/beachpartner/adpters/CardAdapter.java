@@ -1,6 +1,10 @@
 package com.goldemo.beachpartner.adpters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,11 +13,11 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
-import com.goldemo.beachpartner.models.DataModel;
-import com.goldemo.beachpartner.models.PersonModel;
+import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.goldemo.beachpartner.fragments.MyCalendarEvents;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by seq-kala on 20/2/18.
@@ -21,9 +25,9 @@ import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<PersonModel> dataList;
+    private ArrayList<Event> dataList;
 
-    public CardAdapter(Context context, ArrayList<PersonModel> dataList) {
+    public CardAdapter(Context context, ArrayList<Event> dataList) {
         this.dataList = dataList;
         this.mContext = context;
     }
@@ -40,9 +44,31 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
 
-        holder.txtv_date.setText("11/10/2018");
-        holder.txtv_place.setText("America");
+        final Event model = dataList.get(position);
+
+        SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
+        long esDate  = model.getEventStartDate();
+        String date = dft.format(esDate);
+        holder.txtv_date.setText(date);
+        holder.txtv_place.setText(model.getEventVenue());
         holder.txtv_players.setText("Martin, David, John, Hari");
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mycal_event_clicked",model);
+                myCalendarEvents.setArguments(bundle);
+                FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction ctrans = fragmentManager.beginTransaction();
+                ctrans.replace(R.id.container,myCalendarEvents);
+                ctrans.addToBackStack(null);
+                ctrans.commit();
+
+            }
+        });
+
 
     }
 
@@ -61,7 +87,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             txtv_date       =   (TextView) v.findViewById(R.id.txtv_date);
             txtv_place      =   (TextView) v.findViewById(R.id.txtv_place);
             txtv_players    =   (TextView) v.findViewById(R.id.txtv_players);
-            cardView        =   (CardView) v.findViewById(R.id.card_view);
+            cardView        =   (CardView) v.findViewById(R.id.uptournament_card);
 
 
         }
