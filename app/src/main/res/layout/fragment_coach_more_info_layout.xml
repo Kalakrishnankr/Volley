@@ -7,7 +7,7 @@
         android:id="@+id/llCoachMoreInfoDetails"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ScrollView
             android:layout_width="fill_parent"
@@ -85,7 +85,6 @@
                         android:enabled="false"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:focusable="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_weight="1"
@@ -126,7 +125,6 @@
                         android:enabled="false"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:focusable="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_weight="1"
@@ -209,7 +207,6 @@
                         android:enabled="false"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:focusable="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_weight="1"
@@ -254,11 +251,9 @@
                         android:enabled="false"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:focusable="false"
                         android:maxLines="1"
                         android:singleLine="true"
                         android:layout_weight="1"
-                        android:nextFocusDown="@+id/spinner_program_funding"
                         android:paddingStart="5dp"
                         android:paddingLeft="5dp"
                         android:background="@android:color/transparent"/>

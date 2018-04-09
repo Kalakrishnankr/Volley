@@ -70,10 +70,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View  view= inflater.inflate(R.layout.fragment_home, container, false);
         initView(view);
-        prefManager = new PrefManager(getContext());
+        prefManager =  new PrefManager(getContext());
         user_id     =  prefManager.getUserId();
         user_token  =  prefManager.getToken();
-        userType    = prefManager.getUserType();
+        userType    =  prefManager.getUserType();
         //getBlueBP profes
         getBluebpProfiles();
         return view;

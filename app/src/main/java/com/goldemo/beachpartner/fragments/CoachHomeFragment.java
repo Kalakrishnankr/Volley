@@ -1,23 +1,30 @@
 package com.goldemo.beachpartner.fragments;
 
-import android.content.Context;
-import android.net.Uri;
+import android.content.res.Resources;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PagerSnapHelper;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.adpters.CardAdapter;
+import com.goldemo.beachpartner.adpters.MessageAdapter;
+import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.PersonModel;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link CoachHomeFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link CoachHomeFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class CoachHomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -27,8 +34,13 @@ public class CoachHomeFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private OnFragmentInteractionListener mListener;
+    private FrameLayout coachHomeLikesCard;
+    private String user_id,user_token,userType;
+    CardAdapter adapter;
+    MessageAdapter messageAdapter;
+    private PrefManager prefManager;
+    ArrayList<PersonModel> allSampleData;
+    private RecyclerView upcomingRecyclerview,coachMsgRecyclerview;
 
     public CoachHomeFragment() {
         // Required empty public constructor
@@ -65,32 +77,108 @@ public class CoachHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_coach_home, container, false);
+        prefManager = new PrefManager(getContext());
+        user_id     =  prefManager.getUserId();
+        user_token  =  prefManager.getToken();
+        userType    = prefManager.getUserType();
+
+        View view=inflater.inflate(R.layout.fragment_coach_home, container, false);
+        allSampleData = (ArrayList<PersonModel>) createDummyData();
+
+        initView(view);
+        return view;
+
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+    private void initView(View view){
+        upcomingRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcvUpComing);          //Recycler view for upcoming events
+        coachMsgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
+
+        LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        adapter = new CardAdapter(getContext(),allSampleData);
+        upcomingRecyclerview.setAdapter(adapter);
+        SnapHelper snapHelper = new PagerSnapHelper();
+        snapHelper.attachToRecyclerView(upcomingRecyclerview);
+        upcomingRecyclerview.setLayoutManager(layoutmnger);
+        upcomingRecyclerview.setHasFixedSize(true);
+
+
+        /*Message*/
+
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
+        coachMsgRecyclerview.setAdapter(messageAdapter);
+
+        SnapHelper snaper = new PagerSnapHelper();
+        snaper.attachToRecyclerView(coachMsgRecyclerview);
+//        coachMsgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
+//        coachMsgRecyclerview.setItemAnimator(new DefaultItemAnimator());
+        coachMsgRecyclerview.setLayoutManager(layoutManager);
+        coachMsgRecyclerview.setHasFixedSize(true);
+
+
+    }
+
+    private List<PersonModel> createDummyData() {
+
+        List<PersonModel>personModelList = new ArrayList<>();
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
+
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
+
+        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
+        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
+        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
+
+        return personModelList;
+
+    }
+       /* Grid item spacing and padding */
+
+    public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
+
+        private int spanCount;
+        private int spacing;
+        private boolean includeEdge;
+
+        public GridSpacingItemDecoration(int spanCount, int spacing, boolean includeEdge) {
+            this.spanCount = spanCount;
+            this.spacing = spacing;
+            this.includeEdge = includeEdge;
+        }
+
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
+            int position = parent.getChildAdapterPosition(view); // item position
+            int column = position / spanCount; // item column
+
+            if (includeEdge) {
+                outRect.left = spacing - column * spacing / spanCount; // spacing - column * ((1f / spanCount) * spacing)
+                outRect.right = (column + 1) * spacing / spanCount; // (column + 1) * ((1f / spanCount) * spacing)
+
+                if (position < spanCount) { // top edge
+                    outRect.top = spacing;
+                }
+                outRect.bottom = spacing; // item bottom
+            } else {
+                outRect.left = column * spacing / spanCount; // column * ((1f / spanCount) * spacing)
+                outRect.right = spacing - (column + 1) * spacing / spanCount; // spacing - (column + 1) * ((1f /    spanCount) * spacing)
+                if (position >= spanCount) {
+                    outRect.top = spacing; // item top
+                }
+            }
         }
     }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
-        } else {
-            throw new RuntimeException(context.toString()
-                    + " must implement OnFragmentInteractionListener");
-        }
+    private int dpToPx(int dp) {
+        Resources r = getResources();
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
 
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        mListener = null;
-    }
 
     /**
      * This interface must be implemented by activities that contain this
@@ -102,8 +190,5 @@ public class CoachHomeFragment extends Fragment {
      * "http://developer.android.com/training/basics/fragments/communicating.html"
      * >Communicating with Other Fragments</a> for more information.
      */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
+
 }

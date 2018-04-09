@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.DataModel;
 import com.goldemo.beachpartner.models.PersonModel;
 
@@ -22,7 +23,10 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
     public Context mContext;
+    private PrefManager prefManager;
+    private String userType;
     private ArrayList<PersonModel> dataList;
+    MyViewHolder myViewHolder;
 
     public MessageAdapter(Context context, ArrayList<PersonModel> allSampleData) {
         this.dataList = allSampleData;
@@ -31,10 +35,20 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
     @Override
     public MessageAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_item,parent,false);
-        MyViewHolder myViewHolder = new MyViewHolder(itemView);
+        prefManager = new PrefManager(mContext);
+        userType    = prefManager.getUserType();
+        if(userType.equalsIgnoreCase("Athlete")){
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.message_item,parent,false);
+             myViewHolder = new MyViewHolder(itemView);
+
+        }
+        if(userType.equalsIgnoreCase("Coach")){
+            View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.coach_message_home_layout,parent,false);
+            myViewHolder = new MyViewHolder(itemView);
+        }
 
         return myViewHolder;
+
     }
 
     @Override

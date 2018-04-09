@@ -12,6 +12,7 @@ import android.support.v4.app.Fragment;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +30,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.UserDataModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,8 +49,11 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -57,18 +71,19 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private String mParam2;
 
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
-
+    public UserDataModel userDataModel;
     private static boolean editStatus = false;
     private RelativeLayout profileImgLayout;
     private CircularImageView imgProfile;
     private LinearLayout llMenuBasic,llMenuMore,llBasicDetails,llMoreDetails, coachBtnsBottom,coachMore_infoBtnsBottom;
-    private TextView basic_info_tab,more_info_tab,edit_tag;
+    private TextView basic_info_tab,more_info_tab,edit_tag,profileName;
     private View viewBasic,viewMore;
     private EditText editFname,editLname,editGender,editDob,editCity,editPhone,description,years_running,no_athletes,prog_offered,division;
     private Spinner spinnerCollege,program_funding,program_share_athletes;
     private Uri selectedImageUri;
     private Button basicBtnSave,basicBtnCancel,moreBtnSave,moreBtnCancel;
     private ImageView imgEdit,profile_img_editIcon;
+    private String token,user_id;
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -107,8 +122,11 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        token = new PrefManager(getContext()).getToken();
+        user_id = new PrefManager(getContext()).getUserId();
         View view=inflater.inflate(R.layout.fragment_coach_profile, container, false);
         initView(view);
+        setUp();
 
 
         return view;
@@ -130,6 +148,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         viewBasic               = (View) view.findViewById(R.id.viewCoachBasic);
         viewMore                = (View) view.findViewById(R.id.viewCoachMore);
         imgProfile              = (CircularImageView) view.findViewById(R.id.row_icon);
+        profileName             = (TextView) view.findViewById(R.id.coachName);
 
         //For Basic Details
 
@@ -561,6 +580,101 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setEnabled(false);
         program_share_athletes.setBackground(null);
 
+    }
+    private void setUp() {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("response get account--", response.toString());
+                        try {
+                            userDataModel = new UserDataModel();
+                            userDataModel.setId(response.getString("id"));
+                            userDataModel.setFirstName(response.getString("firstName"));
+                            userDataModel.setLastName(response.getString("lastName"));
+                            userDataModel.setGender(response.getString("gender"));
+                            userDataModel.setDob(response.getString("dob"));
+                            userDataModel.setCity(response.getString("city"));
+                            userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+                            //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
+                            setView();
+
+                            //editFname.setText(userDataModel.getFirstName());
+                            //editLname.setText(userDataModel.getLastName());
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        String json = null;
+                        Log.d("error--", error.toString());
+                        NetworkResponse response = error.networkResponse;
+                        if (response != null && response.data != null) {
+                            switch (response.statusCode) {
+                                case 401:
+                                    json = new String(response.data);
+                                    json = trimMessage(json, "detail");
+                                    if (json != null) {
+                                        Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                    }
+                                    break;
+
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", objectRequest.toString());
+        requestQueue.add(objectRequest);
+
+    }
+    private void setView() {
+        if (userDataModel != null) {
+            profileName.setText(userDataModel.getFirstName()+userDataModel.getLastName());
+            editLname.setText(userDataModel.getLastName());
+            editFname.setText(userDataModel.getFirstName());
+            editGender.setText(userDataModel.getGender());
+            editCity.setText(userDataModel.getCity());
+            //Long value to date conversion
+            SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+            long dob       = Long.parseLong(userDataModel.getDob());
+            Date date_dob  = new Date(dob);
+            editDob.setText(dft.format(date_dob));
+            editPhone.setText(userDataModel.getPhoneNumber());
+        }
+    }
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
 

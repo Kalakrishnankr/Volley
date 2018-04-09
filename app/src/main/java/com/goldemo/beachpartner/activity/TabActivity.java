@@ -216,20 +216,41 @@ public class TabActivity extends AppCompatActivity {
             String value = bundle.getString("profile");
             if(value.equals("home")){
                 /*Load default HomeFragment*/
+                if(userType.equalsIgnoreCase("Athlete")){
+                    HomeFragment homeFragment = new HomeFragment();
+                    FragmentManager manager = getSupportFragmentManager();
+                    getSupportActionBar().setTitle("Beach Partner");
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                    transaction.commit();
+                }
+                if(userType.equalsIgnoreCase("Coach")){
+                    CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
+                    getSupportActionBar().setTitle("Beach Partner");
+                    FragmentManager coachHomeManager = getSupportFragmentManager();
+                    FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
+                    coachHomeTransaction.replace(R.id.container, coachHomeFragment,YOUR_FRAGMENT_STRING_TAG);
+                    coachHomeTransaction.commit();
+                }
 
-                HomeFragment homeFragment = new HomeFragment();
-                FragmentManager manager = getSupportFragmentManager();
-                getSupportActionBar().setTitle("Beach Partner");
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
-                transaction.commit();
             }else {
-                ProfileFragment pf = new ProfileFragment();
-                getSupportActionBar().setTitle("Profile");
-                FragmentManager mang = getSupportFragmentManager();
-                FragmentTransaction trans = mang.beginTransaction();
-                trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
-                trans.commit();
+                if(userType.equalsIgnoreCase("Athlete")){
+                    ProfileFragment pf = new ProfileFragment();
+                    getSupportActionBar().setTitle("Profile");
+                    FragmentManager mang = getSupportFragmentManager();
+                    FragmentTransaction trans = mang.beginTransaction();
+                    trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
+                    trans.commit();
+                }
+                if (userType.equalsIgnoreCase("Coach")) {
+                    CoachProfileFragment coachProfileFragment=new CoachProfileFragment();
+                    getSupportActionBar().setTitle("Profile");
+                    FragmentManager mang = getSupportFragmentManager();
+                    FragmentTransaction trans = mang.beginTransaction();
+                    trans.replace(R.id.container, coachProfileFragment,YOUR_FRAGMENT_STRING_TAG);
+                    trans.commit();
+                }
+
             }
         }
 
