@@ -4,7 +4,6 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -96,7 +95,7 @@ public class CoachHomeFragment extends Fragment {
         coachMsgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
 
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        adapter = new CardAdapter(getContext(),allSampleData);
+        //adapter = new CardAdapter(getContext(),allSampleData);
         upcomingRecyclerview.setAdapter(adapter);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(upcomingRecyclerview);

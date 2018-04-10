@@ -21,8 +21,8 @@ public class ApiService {
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
 
-    public static String REQUEST_PASSWORD_RESET= BASE_URL+"account/reset-password/init";
-    public static String CHANGE_PASSWORD= BASE_URL+"account/reset-password/finish";
+    public static String REQUEST_PASSWORD_RESET = BASE_URL+"account/reset-password/init";
+    public static String CHANGE_PASSWORD = BASE_URL+"account/reset-password/finish";
 
     public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
     public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
@@ -30,19 +30,18 @@ public class ApiService {
     public static String GET_ALL_EVENTS         =  BASE_URL+"events/all";
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
 
-    public static String GET_ALL_CONNECTIONS    =  BASE_URL+"users/connected/";
-    public static String ADD_PROFILE_VIDEO_IMAGE=  BASE_URL+"storage/uploadProfileData";
+    public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
+    public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
 
     public static String  UPDATE_USER_DETAILS    = BASE_URL+"users";
     public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
 
-    public static String  POST_USER_MORE_INFO  = BASE_URL+"users/profile";
+    public static String  POST_USER_MORE_INFO        = BASE_URL+"users/profile";
     public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
     public static String RIGHT_SWIPE_REQUEST_SEND=   BASE_URL+"users/request-friendship/";
-    public static String RIGHT_SWIPE_LIKE       =   BASE_URL+"users/accept-friendship/";
-    public static String LEFT_SWIPE_DISLIKE     =   BASE_URL+"users/reject-friendship/";
-    public static String HIFI_SWIPE_UP          =   BASE_URL+"users/request-friendship/";
+    public static String LEFT_SWIPE_DISLIKE      =   BASE_URL+"users/reject-friendship/";
+    public static String HIFI_SWIPE_UP           =   BASE_URL+"users/hifi/";
 
 
 
