@@ -105,6 +105,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     public boolean reverseCount=false;
     private boolean isbpActive =false;
+    private boolean isPartner = false;
     private View view;
     private SharedPreferences prefs;
     private String location,sgender;
@@ -114,8 +115,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private RecyclerView rcv_bpProfiles;
     private BlueBProfileAdapter blueBProfileAdapter;
     private String token,user_id,user_subscription,reqPersonId,deviceId;
-    private List<BpFinderModel>allCardList = new ArrayList<>();
+    private ArrayList<BpFinderModel>allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<>();
+    private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<>();
+
+
     private List<Event>personEventList = new ArrayList<>();
 
 
@@ -123,8 +127,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     @SuppressLint("ValidFragment")
-    public BPFinderFragment(boolean isBPActive) {
+    public BPFinderFragment(boolean isBPActive,boolean isPartnerFinder) {
         isbpActive=isBPActive;
+        isPartner = isPartnerFinder;
     }
 
 
@@ -153,29 +158,24 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFemale.setTextOn("Women");
         btnMale.setTextOn("Men");
         reload();
-
         Bundle data = getArguments();
         if(data!=null){
+            getBpProfiles();//Method for getting next strip
             bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
             int cPosition = data.getInt("cPosition");
-            /*for(int i=0;i<bluebpList.size();i++){
-                if(bluebpList.get(i)==bluebpList.get(cPosition)){
-                    //set bluebp to card
-                    //Toast.makeText(getActivity(), "Set value to cards", Toast.LENGTH_SHORT).show();
-
+            if(bluebpList!=null && bluebpList.size()>0) {
+                adapter = new TouristSpotCardAdapter(getActivity(), this);
+                for(int i=cPosition;i<bluebpList.size();i++){
+                    adapter.addAll(bluebpList.get(i));
                 }
-            }*/
-            if(bluebpList!=null && bluebpList.size()>0){
-                blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpList);
-                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                adapter.addAll(bluebpList);
             }
-
-            adapter = new TouristSpotCardAdapter(getActivity(),this);
-            adapter.addAll(bluebpList);
         }
 
         return view;
     }
+
+
 
     public void setUp(final View view) {
 
@@ -267,7 +267,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             minAge    =   prefs.getInt("minAge",0);
             maxAge    =   prefs.getInt("maxAge",0);
 
-
             tvMin.setText(String.valueOf(minAge));
             tvMax.setText(String.valueOf(maxAge));
             age_bar.getThumb(0).setValue(minAge).setEnabled(true);
@@ -296,6 +295,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                 }
             }
+
+
 
         }
 
@@ -391,6 +392,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onClick(View view) {
 
+                new PrefManager(getContext()).savePageno(-1);
+                getBpProfiles();
 
                 location    =   spinner_location.getText().toString().trim();
                 sgender     =   txtv_gender.getText().toString();
@@ -417,7 +420,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     topFrameLayout.setVisibility(View.GONE);
 
                 }else {
-                    topFrameLayout.setVisibility(View.VISIBLE);
+                    if(isPartner){
+                        topFrameLayout.setVisibility(View.GONE);
+
+                    }else {
+                        topFrameLayout.setVisibility(View.VISIBLE);
+                        if(bluebpList!=null && bluebpList.size()>0){
+                            blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpList);
+                            rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                        }
+                    }
+
                 }
 
                 getAllCards(location,sgender,isCoach,minAge,maxAge);
@@ -958,7 +971,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Api for get individual events for a particular person
 
     public void getIndividualEvents(String reqPersonId){
-
+        personEventList.clear();
         JsonArrayRequest jsonArrayRqst  = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_USER_EVENTS + reqPersonId, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -1035,19 +1048,93 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-    /*private List<TouristSpot> createTouristSpots() {
-        List<TouristSpot> spots = new ArrayList<>();
-        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/2.jpg"));
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/1.jpg"));
-        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/3.jpg"));
-        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/5.jpg"));
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/4.jpg"));
-        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/6.jpg"));
-        spots.add(new TouristSpot("Marti McLaurin", "Athlete", "http://seqato.com/bp/videos/2.mp4","http://seqato.com/bp/images/8.jpg"));
-        spots.add(new TouristSpot("Alivia Orvieto", "Athlete", "http://seqato.com/bp/videos/1.mp4","http://seqato.com/bp/images/7.jpg"));
-        spots.add(new TouristSpot("Liz Held", "Athlete", "http://seqato.com/bp/videos/3.mp4","http://seqato.com/bp/images/9.jpg"));
-        return spots;
-    }*/
+
+
+    //Method for getting bluebpstrips
+    private void getBpProfiles() {
+        bluebpListSecond.clear();
+        int pref_pageno = new PrefManager(getContext()).getPageno();
+        final int pageno = pref_pageno+1;
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&page=" +pageno+ "&size=5", null, new
+                Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if(response!=null && response.length()>0){
+                            for (int i=0;i<response.length();i++){
+                                try {
+                                    JSONObject object = response.getJSONObject(i);
+                                    JSONObject jsonObject = object.getJSONObject("user");
+
+                                    BpFinderModel bpModel = new BpFinderModel();
+                                    bpModel.setBpf_id(jsonObject.getString("id"));
+                                    bpModel.setBpf_firstName(jsonObject.getString("firstName"));
+                                    bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
+                                    bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
+                                    bpModel.setBpf_userType(jsonObject.getString("userType"));
+                                    bpModel.setBpf_age(jsonObject.getString("age"));
+                                    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
+                                    bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
+                                    bpModel.setBpf_termDate(object.getString("termDate"));
+                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));
+                                    bluebpListSecond.add(bpModel);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+
+                            if(bluebpListSecond!=null && bluebpListSecond.size()>0){
+                                new PrefManager(getContext()).savePageno(pageno);
+                                blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpListSecond);
+                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+
+                            }
+                        }else {
+                            new PrefManager(getContext()).savePageno(-1);
+                            getBpProfiles();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonRequest.toString());
+        requestQueue.add(jsonRequest);
+    }
+
+
 
     /* private void reload() {
          cardStackView.setVisibility(View.GONE);
@@ -1103,6 +1190,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         Glide.with(getContext()).load(url).into(imgv_profilepic);
         collapsingToolbarLayout.setTitle(nm);
         rrvBottom.setVisibility(View.GONE);
+
         //imgview.setImageURI(Uri.parse(url));
 //        tvname.setText(nm);
 

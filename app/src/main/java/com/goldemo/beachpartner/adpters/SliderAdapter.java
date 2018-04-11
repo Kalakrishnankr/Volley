@@ -16,6 +16,8 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
     CharSequence titles[];
     int numberOfTabs;
     private static boolean isBPActive = false;
+    private static boolean isPartner = false;
+
     public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs) {
         super(fragmentManager);
 
@@ -35,8 +37,9 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
             return connectionsTabFragment;
 
         }else {
-            isBPActive =true;
-            BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
+            isBPActive =false;
+            isPartner =true;
+            BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive,isPartner);
             return bpFinderFragment;
         }
 

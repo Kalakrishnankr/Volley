@@ -24,6 +24,8 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
 
     public Context mContext;
     private ArrayList<BpFinderModel> dataList;
+    private static  boolean isblueBP = false;
+    private static boolean isPartner = false;
     public ProfileAdapter(Context context, ArrayList<BpFinderModel> dataList) {
         this.dataList=dataList;
         this.mContext=context;
@@ -46,9 +48,9 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
             @Override
             public void onClick(View view) {
                 //Toast.makeText(mContext, String.valueOf(holder.getAdapterPosition()), Toast.LENGTH_SHORT).show();
-                boolean isblueBP = true;
+                isblueBP = true;
                 AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP);
+                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                 Bundle bundle = new Bundle();
                 //cPosition is the current positon
                 bundle.putInt("cPosition", holder.getAdapterPosition());
