@@ -304,7 +304,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //Api for get all blue bp profiles
     private void getBluebpProfiles() {
         bpList.clear();
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&size=5", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -331,6 +331,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     e.printStackTrace();
                                 }
                             }
+                            new PrefManager(getContext()).savePageno(0);
                             setblueBpstrip();
                         }
 

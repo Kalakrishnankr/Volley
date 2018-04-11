@@ -47,6 +47,7 @@ public class TabActivity extends AppCompatActivity {
 
     private BottomNavigationView navigation;
     private static boolean isBPActive = false;
+    private static boolean isPartnerFinder = false;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -77,8 +78,8 @@ public class TabActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_bp:
-
-                    BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
+                    isPartnerFinder=false;
+                    BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive,isPartnerFinder);
                     getSupportActionBar().setTitle("Beach Partner");
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();

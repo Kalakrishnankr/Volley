@@ -66,6 +66,17 @@ public class PrefManager {
         editor.putString("userType",userType);
         editor.commit();
     }
+    public void savePageno(int pageno) {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("BlueBPpageNo", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt("pageNo",pageno);
+        editor.commit();
+    }
+
+    public int getPageno(){
+        SharedPreferences  preferences = context.getSharedPreferences("BlueBPpageNo",Context.MODE_PRIVATE);
+        return preferences.getInt("pageNo",0);
+    }
 
     public String getUserType(){
         SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);

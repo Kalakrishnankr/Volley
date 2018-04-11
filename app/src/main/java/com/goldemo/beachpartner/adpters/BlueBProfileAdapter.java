@@ -1,6 +1,8 @@
 package com.goldemo.beachpartner.adpters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.fragments.BPFinderFragment;
 import com.goldemo.beachpartner.models.BpFinderModel;
 
 import java.util.ArrayList;
@@ -20,6 +23,8 @@ import java.util.ArrayList;
 public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapter.ViewHolder> {
     public Context mContext;
     private ArrayList<BpFinderModel> dataList;
+    private static boolean isPartner = false;
+
     public BlueBProfileAdapter(Context context, ArrayList<BpFinderModel> dataList) {
         this.dataList=dataList;
         this.mContext=context;
@@ -34,10 +39,24 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
 
         BpFinderModel model = dataList.get(position);
         Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imv_profile);
+        holder.imv_profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                boolean isblueBP = true;
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
+                Bundle bundle = new Bundle();
+                //cPosition is the current positon
+                bundle.putInt("cPosition", holder.getAdapterPosition());
+                bundle.putSerializable("bluebplist", dataList);
+                bpFinderFragment.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+            }
+        });
     }
 
 
