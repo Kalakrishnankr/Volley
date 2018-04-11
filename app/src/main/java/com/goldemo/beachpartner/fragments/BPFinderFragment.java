@@ -7,13 +7,17 @@ import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -30,7 +34,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -41,20 +44,23 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.MyInterface;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.adpters.BlueBProfileAdapter;
 import com.goldemo.beachpartner.adpters.TouristSpotCardAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView;
+import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.cardstackview.CardStackView;
 import com.goldemo.beachpartner.cardstackview.SwipeDirection;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.BpFinderModel;
-import com.goldemo.beachpartner.models.PersonModel;
 import com.ramotion.foldingcell.FoldingCell;
+import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -104,9 +110,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private String location,sgender;
     private Boolean isCoach;
     private int minAge,maxAge;
+    private CompactCalendarView compactCalendar;
+    private RecyclerView rcv_bpProfiles;
+    private BlueBProfileAdapter blueBProfileAdapter;
     private String token,user_id,user_subscription,reqPersonId,deviceId;
     private List<BpFinderModel>allCardList = new ArrayList<>();
-    private List<PersonModel>bluebpList = new ArrayList<>();
+    private ArrayList<BpFinderModel>bluebpList = new ArrayList<>();
+    private List<Event>personEventList = new ArrayList<>();
+
 
     public BPFinderFragment() {
     }
@@ -145,15 +156,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         Bundle data = getArguments();
         if(data!=null){
-            bluebpList = data.getParcelableArrayList("bluebplist");
+            bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
             int cPosition = data.getInt("cPosition");
-            for(int i=0;i<bluebpList.size();i++){
+            /*for(int i=0;i<bluebpList.size();i++){
                 if(bluebpList.get(i)==bluebpList.get(cPosition)){
                     //set bluebp to card
                     //Toast.makeText(getActivity(), "Set value to cards", Toast.LENGTH_SHORT).show();
 
                 }
+            }*/
+            if(bluebpList!=null && bluebpList.size()>0){
+                blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpList);
+                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
             }
+
+            adapter = new TouristSpotCardAdapter(getActivity(),this);
+            adapter.addAll(bluebpList);
         }
 
         return view;
@@ -194,14 +212,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         sCoach              =   (Switch) view.findViewById(R.id.swich_coach);
 
-        final CompactCalendarView compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
-        compactCalendarView.setFirstDayOfWeek(Calendar.SUNDAY);
-        compactCalendarView.setUseThreeLetterAbbreviation(true);
+        compactCalendar = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
+        compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
+        compactCalendar.setUseThreeLetterAbbreviation(true);
         collapsingToolbarLayout = (CollapsingToolbarLayout)view. findViewById(R.id.CollapsingToolbarLayout1);
+
+
 
         imgv_rvsecard   =   (ImageView) view.findViewById(R.id.ic_rvsecard);
         imgv_highfi     =   (ImageView) view.findViewById(R.id.ic_high);
         imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
+
+        rcv_bpProfiles  =   (RecyclerView) view.findViewById(R.id.rrv_topbpProfiles);
+        //recycler for top bp profiles
+        LinearLayoutManager lmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        rcv_bpProfiles.setLayoutManager(lmnger);
+        rcv_bpProfiles.setHasFixedSize(true);
 
 
         addLocation();
@@ -209,14 +235,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         showPreviousMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                compactCalendarView.showPreviousMonth();
+                compactCalendar.showPreviousMonth();
             }
         });
 
         showNextMonthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                compactCalendarView.showNextMonth();
+                compactCalendar.showNextMonth();
             }
         });
 
@@ -227,6 +253,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 "fonts/SanFranciscoTextRegular.ttf");
         spinner_location.setTypeface(font);
         spinner_location.setAdapter(dataAdapter);
+
+
 
         //check shared prefvalue
         prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
@@ -464,49 +492,40 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
-        compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+        compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
 
 
+                List<Event> bookingsMap = compactCalendar.getEvents(dateClicked);
 
-                // long dateInMilli = DatetoMilli(dateClicked);
-                //ListView simpleListView=(ListView) view.findViewById(R.id.List1);
 
-               /* for(int i=0;i<eventLists.size();i++){
-                    if(eventLists.get(i).getTimeInMilli()==dateInMilli){
-                        CustomAdapter customAdapter= new CustomAdapter(getActivity(),eventLists);
-                        simpleListView.setAdapter(customAdapter);
+                if (bookingsMap != null) {
 
-                    }else {
-                        simpleListView.setAdapter(null);
+                    for (int i = 0; i < bookingsMap.size(); i++) {
 
+                        // Date date=new Date(bookingsFromMap.get(i).getTimeInMillis());
+                        if ((DatetoMilli(dateClicked)) == (DatetoMilli(new Date(bookingsMap.get(i).getTimeInMillis())))) {
+
+                            Tooltip tooltip = new Tooltip.Builder(compactCalendar)
+                                    .setBackgroundColor(Color.GREEN)
+                                     .setArrowHeight(50f)
+
+                                    .setGravity(Gravity.START)
+                                    .setCancelable(true)
+                                    .setDismissOnClick(true)
+                                    .setText("Event Name :"+bookingsMap.get(i).getEventName()+"\n Event Venue :"+bookingsMap.get(i).getEventLocation())
+                                    .show();
+
+                        }
                     }
-
-
-
-
-                }*/
-
-
-
-//                simpleListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//                    @Override
-//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-////                        Toast.makeText(getContext(),"Hello "+ eventLists.get(position).getData(),Toast.LENGTH_SHORT).show();
-//
-//
-//
-//
-//                    }
-//                });
-
+                }
             }
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 //Log.d(TAG, "Month was scrolled to: " + firstDayOfNewMonth);
-                tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
+                tvmonth.setText(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
             }
 
 
@@ -514,7 +533,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
         // String newFormat= "dd MMMM";
-        tvmonth.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
+        tvmonth.setText(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
 
         //Card reverse onclick
@@ -619,7 +638,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         }) {
 
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization","Bearer "+token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -776,7 +795,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -844,7 +863,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -919,7 +938,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -932,6 +951,88 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         Log.d("RequestSend", requests.toString());
         requestQueue.add(requests);
 
+    }
+
+
+
+    //Api for get individual events for a particular person
+
+    public void getIndividualEvents(String reqPersonId){
+
+        JsonArrayRequest jsonArrayRqst  = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_USER_EVENTS + reqPersonId, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if(response!=null){
+                            for (int i =0;i<response.length();i++){
+
+                                try {
+
+                                    JSONObject obj= response.getJSONObject(i);
+
+                                    JSONObject jsonObject= obj.getJSONObject("event");
+                                    Event eventModel = new Event();
+                                    eventModel.setEventId(jsonObject.getString("id"));
+                                    eventModel.setEventName(jsonObject.getString("eventName"));
+                                    eventModel.setData(jsonObject.getString("eventDescription"));
+                                    eventModel.setEventLocation(jsonObject.getString("eventLocation"));
+                                    eventModel.setEventVenue(jsonObject.getString("eventVenue"));
+                                    eventModel.setEventStartDate(jsonObject.getLong("eventStartDate"));
+                                    eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
+                                    eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
+                                    personEventList.add(eventModel);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            setupPersonCalendar();
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders()  {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonArrayRqst.toString());
+        requestQueue.add(jsonArrayRqst);
+    }
+
+    //Calendar for individual persons
+    private void setupPersonCalendar() {
+        if(personEventList != null && personEventList.size()>0){
+            for (int i = 0; i < personEventList.size(); i++) {
+                compactCalendar.addEvent(personEventList.get(i));
+            }
+        }
     }
 
     /*private List<TouristSpot> createTouristSpots() {
@@ -1011,6 +1112,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     public void onClick(String bpf_id,String bpf_deviceId) {
         reqPersonId = bpf_id;
         deviceId    = bpf_deviceId;
+        getIndividualEvents(reqPersonId);
     }
 
     //Method for card reverse
@@ -1074,6 +1176,25 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         return trimmedString;
     }
+
+    public long DatetoMilli(Date dateClicked) {
+        Date givenDateString = dateClicked;
+        long timeInMilliseconds = 0;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        try {
+            Date mDate = sdf.parse(String.valueOf(givenDateString));
+            mDate.setHours(0);
+            mDate.setMinutes(0);
+            mDate.setSeconds(0);
+            timeInMilliseconds = mDate.getTime();
+            System.out.println("Date in milli :: " + timeInMilliseconds);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return timeInMilliseconds;
+    }
+
     //Method for getting current location
 
     private void getLocation() {
@@ -1081,16 +1202,5 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
 }

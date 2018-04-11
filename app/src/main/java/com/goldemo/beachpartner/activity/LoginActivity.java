@@ -18,7 +18,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -284,15 +283,14 @@ public class LoginActivity extends AppCompatActivity {
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
                                     String subScription=userObj.getString("subscriptions");
-                                    //String uProfileStatus = userObj.getString("profileStatus");
-                                    Boolean uProfileStatus = false;
+                                    String uProfileStatus = userObj.getString("userProfile");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
                                     new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
-                                    if(uProfileStatus){
+                                    if(uProfileStatus!=null && !uProfileStatus.equals("null")){
                                         //already user updated the profile
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                         intent.putExtra("profile","home");
@@ -387,7 +385,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
@@ -451,7 +449,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization","Bearer "+token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -527,7 +525,7 @@ public class LoginActivity extends AppCompatActivity {
         ) {
             // this is the relevant method
             @Override
-            public byte[] getBody() throws AuthFailureError {
+            public byte[] getBody()  {
                 String httpPostBody=user_email;
 
                 return httpPostBody.getBytes();
@@ -694,7 +692,7 @@ public class LoginActivity extends AppCompatActivity {
                     }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json");
                 return headers;

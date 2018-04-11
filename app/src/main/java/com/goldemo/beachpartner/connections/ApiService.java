@@ -27,6 +27,8 @@ public class ApiService {
     public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
     public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
 
+    public static  String GET_SUBSCRIPTIONS      =  BASE_URL+"users/subscriptions";
+
     public static String GET_ALL_EVENTS         =  BASE_URL+"events/all";
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
 

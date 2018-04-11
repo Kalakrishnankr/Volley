@@ -25,7 +25,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -653,7 +652,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             }
         }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -739,11 +738,27 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
 
+                        default:
+                            break;
+                    }
+                }
             }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");

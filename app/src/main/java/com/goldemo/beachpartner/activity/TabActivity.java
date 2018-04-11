@@ -79,7 +79,7 @@ public class TabActivity extends AppCompatActivity {
                 case R.id.navigation_bp:
 
                     BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive);
-                    getSupportActionBar().setTitle("Beach Partner Finder");
+                    getSupportActionBar().setTitle("Beach Partner");
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();
                     tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
@@ -319,7 +319,7 @@ public class TabActivity extends AppCompatActivity {
                 Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.logout:
-                Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();
                 alertLogout();
                 break;
             default:
@@ -337,6 +337,8 @@ public class TabActivity extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 //logout
+                                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
+                                startActivity(intent);
                                 finish();
                                 //System.exit(0);
                             }

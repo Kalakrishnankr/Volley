@@ -13,115 +13,19 @@
         android:layout_height="wrap_content"
         android:visibility="gone">
 
-        <!--<FrameLayout
-            android:layout_width="50dp"
-            android:layout_height="match_parent">
-
-            <ImageView
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:background="@drawable/ic_likes"/>
-
-            <TextView
-                android:text="20+"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:textColor="@color/white"
-                android:layout_marginTop="18dp"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-
-        </FrameLayout>-->
-
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <LinearLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rrv_topbpProfiles"
                 android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_weight="1.5"
-                android:orientation="horizontal">
-
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:id="@+id/img_bpfinder"
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person1" />
-
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person2" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person3" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person1" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person2" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person3" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person1" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person2" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person3" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person2" />
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/person1" />
+                android:layout_height="wrap_content"/>
 
 
-                    </LinearLayout>
+        </LinearLayout>
 
 
-                </HorizontalScrollView>
-
-            </LinearLayout>
-
-
-        </HorizontalScrollView>
     </LinearLayout>
 
     <!--Layout for Filter start here -->

@@ -34,8 +34,7 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.VolleyError;import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
@@ -633,7 +632,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     }
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
