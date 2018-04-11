@@ -89,6 +89,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             public void onClick(View view) {
 
                 myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
                 //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             }
         });

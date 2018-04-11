@@ -28,7 +28,6 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 import android.widget.VideoView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -387,7 +386,7 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                 }) {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;

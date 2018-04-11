@@ -27,6 +27,44 @@ public class BpFinderModel {
     public String bpf_location;
     public String bpf_userType;
     public String bpf_age;
+    public String bpf_effectiveDate;
+    public String bpf_termDate;
+
+    public String getBpf_effectiveDate() {
+        return bpf_effectiveDate;
+    }
+
+    public void setBpf_effectiveDate(String bpf_effectiveDate) {
+        this.bpf_effectiveDate = bpf_effectiveDate;
+    }
+
+    public String getBpf_termDate() {
+        return bpf_termDate;
+    }
+
+    public void setBpf_termDate(String bpf_termDate) {
+        this.bpf_termDate = bpf_termDate;
+    }
+
+    public String getBpf_subscriptionType() {
+        return bpf_subscriptionType;
+    }
+
+    public void setBpf_subscriptionType(String bpf_subscriptionType) {
+        this.bpf_subscriptionType = bpf_subscriptionType;
+    }
+
+    public String bpf_subscriptionType;
+
+    public String getBpf_daysToExpireSubscription() {
+        return bpf_daysToExpireSubscription;
+    }
+
+    public void setBpf_daysToExpireSubscription(String bpf_daysToExpireSubscription) {
+        this.bpf_daysToExpireSubscription = bpf_daysToExpireSubscription;
+    }
+
+    public String bpf_daysToExpireSubscription;
 
     public String getBpf_id() {
         return bpf_id;

@@ -23,7 +23,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -38,6 +37,7 @@ import com.goldemo.beachpartner.adpters.ProfileAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.BpFinderModel;
 import com.goldemo.beachpartner.models.EventAdminModel;
 import com.goldemo.beachpartner.models.PersonModel;
 
@@ -70,6 +70,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private String user_id,user_token,userType;
     private PrefManager prefManager;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
+    private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
 
     public HomeFragment() {
         // Required empty public constructor
@@ -111,7 +112,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         allSampleData = (ArrayList<PersonModel>) createDummyData();
 
 
-        img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
+        //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
         txt_head        =   (TextView)  view.findViewById(R.id.txtview_head);
         txtv_notour     =   (TextView)  view.findViewById(R.id.txtv_notour);
 
@@ -132,10 +133,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
 
+        //Blue BP Adapter class
 
         LinearLayoutManager lmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        profileAdapter = new ProfileAdapter(getContext(),allSampleData);
-        pRecyclerview.setAdapter(profileAdapter);
         pRecyclerview.setLayoutManager(lmnger);
         pRecyclerview.setHasFixedSize(true);
 
@@ -303,9 +303,81 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     //Api for get all blue bp profiles
     private void getBluebpProfiles() {
+        bpList.clear();
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
+                Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        if(response!=null){
+                            for (int i=0;i<response.length();i++){
+                                try {
+                                    JSONObject object = response.getJSONObject(i);
+                                    JSONObject jsonObject = object.getJSONObject("user");
 
+                                    BpFinderModel bpModel = new BpFinderModel();
+                                    bpModel.setBpf_id(jsonObject.getString("id"));
+                                    bpModel.setBpf_firstName(jsonObject.getString("firstName"));
+                                    bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
+                                    bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
+                                    bpModel.setBpf_userType(jsonObject.getString("userType"));
+                                    bpModel.setBpf_age(jsonObject.getString("age"));
+                                    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
+                                    bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
+                                    bpModel.setBpf_termDate(object.getString("termDate"));
+                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));
+                                    bpList.add(bpModel);
+
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            setblueBpstrip();
+                        }
+
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonRequest.toString());
+        requestQueue.add(jsonRequest);
 
     }
+
+
+
     //Get all my tournaments
     private void getMyTournaments() {
         myUpcomingTList.clear();
@@ -380,7 +452,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             }
         }){
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders(){
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + user_token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -404,6 +476,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             txtv_notour.setVisibility(View.VISIBLE);
         }
 
+    }
+
+
+    private void setblueBpstrip() {
+        if(bpList!=null && bpList.size()>0){
+            profileAdapter = new ProfileAdapter(getContext(),bpList);
+            pRecyclerview.setAdapter(profileAdapter);
+        }
     }
 
     private String trimMessage(String json, String detail) {

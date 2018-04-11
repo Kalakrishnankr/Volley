@@ -65,8 +65,8 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:text="MY TEAM"
-                    android:paddingLeft="4dp"
+                    android:text="Potential partners"
+                    android:padding="4dp"
                     android:gravity="center_vertical"
                     android:layout_marginLeft="20dp"
                     android:textColor="@color/white"

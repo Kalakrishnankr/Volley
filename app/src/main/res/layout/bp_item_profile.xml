@@ -7,7 +7,7 @@
 
 
     <com.goldemo.beachpartner.CircularImageView
-        android:id="@+id/imgProfile"
+        android:id="@+id/imgBp"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_gravity="center"

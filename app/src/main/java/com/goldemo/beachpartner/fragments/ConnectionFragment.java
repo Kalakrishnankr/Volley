@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -137,8 +136,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter    =   new ConnectionAdapter(getContext(),coachList);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-        }
+        }else {
+            rcv_conn.setAdapter(null);
 
+        }
     }
 
     /*Method Active Athlete TAb*/
@@ -148,20 +149,24 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_athlete.setBackgroundColor(getResources().getColor(R.color.white));
         txtv_coach.setBackgroundColor(0);
         txtv_coach.setTextColor(getResources().getColor(R.color.white));
-       if(athleteList!=null && athleteList.size()>0){
+        if(athleteList!=null && athleteList.size()>0){
            adapter    =   new ConnectionAdapter(getContext(),athleteList);
            rcv_conn.setAdapter(adapter);
            adapter.notifyDataSetChanged();
-       }
+       }else {
+            rcv_conn.setAdapter(null);
+        }
     }
 
     //Get connection list api
     private void getConnections() {
         connectionList.clear();
+        athleteList.clear();
+        coachList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
         final String token    = new PrefManager(getContext()).getToken();
 
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
@@ -197,7 +202,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
             }
         }){ @Override
-        public Map<String, String> getHeaders() throws AuthFailureError {
+        public Map<String, String> getHeaders()  {
             HashMap<String, String> headers = new HashMap<String, String>();
             headers.put("Authorization", "Bearer " + token);
             //headers.put("Content-Type", "application/json; charset=utf-8");
