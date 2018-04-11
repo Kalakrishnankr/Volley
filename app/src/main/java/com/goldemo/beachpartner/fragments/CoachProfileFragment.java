@@ -83,7 +83,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private Uri selectedImageUri;
     private Button basicBtnSave,basicBtnCancel,moreBtnSave,moreBtnCancel;
     private ImageView imgEdit,profile_img_editIcon;
-    private String token,user_id;
+    private String token,user_id,spinnerCollege_value,program_funding_value,program_share_athletes_value;
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -309,7 +309,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         spinnerCollege.setAdapter(prefAdapter);
         spinnerCollege.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
+               spinnerCollege_value = spinnerCollege.getSelectedItem().toString();
             }
 
             @Override
@@ -329,7 +329,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_funding.setAdapter(fundingAdapter);
         program_funding.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
+                program_funding_value   =  program_funding.getSelectedItem().toString();
             }
 
             @Override
@@ -349,7 +349,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setAdapter(athlete_sharingAdapter);
         program_share_athletes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
+                program_share_athletes_value = program_share_athletes.getSelectedItem().toString();
             }
 
             @Override
@@ -520,7 +520,100 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setBackground(null);
 
 
+
+
+        JSONObject jsonObjectMore = new JSONObject();
+        try {
+            jsonObjectMore.put("cbvaFirstName", "");
+            jsonObjectMore.put("cbvaLastName", "");
+            jsonObjectMore.put("cbvaPlayerNumber","");
+            jsonObjectMore.put("collage",spinnerCollege_value.toString().trim());
+            jsonObjectMore.put("collageClub","");
+            jsonObjectMore.put("collegeBeach", "");
+            jsonObjectMore.put("collegeIndoor", "");
+            jsonObjectMore.put("courtSidePreference", "");
+            jsonObjectMore.put("description",description.getText().toString().trim());
+            jsonObjectMore.put("division",division.getText().toString().trim());
+            jsonObjectMore.put("experience", "");
+            jsonObjectMore.put("fundingStatus","");
+            jsonObjectMore.put("height", "");
+            jsonObjectMore.put("highSchoolAttended", "");
+            jsonObjectMore.put("highestTourRatingEarned", "");
+            jsonObjectMore.put("indoorClubPlayed", "");
+            jsonObjectMore.put("numOfAthlets",no_athletes.getText().toString().trim());
+            jsonObjectMore.put("position", "");
+            jsonObjectMore.put("programsOffered",prog_offered.getText().toString().trim());
+            jsonObjectMore.put("shareAthlets",program_share_athletes_value.toString().trim());
+            jsonObjectMore.put("topFinishes", "");
+            jsonObjectMore.put("totalPoints", "");
+            jsonObjectMore.put("tournamentLevelInterest","");
+            jsonObjectMore.put("toursPlayedIn", "");
+            jsonObjectMore.put("usaVolleyballRanking", "");
+            jsonObjectMore.put("userId", user_id);
+            jsonObjectMore.put("willingToTravel", "");
+            jsonObjectMore.put("yearsRunning",years_running.getText().toString().trim());
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        postUserMoreDetails(jsonObjectMore);
+
+
     }
+
+    private void postUserMoreDetails(JSONObject jsonObjectMore) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
     private void InfoCancelChange(){
         imgProfile.setClickable(false);
         profile_img_editIcon.setVisibility(View.GONE);

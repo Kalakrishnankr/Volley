@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.goldemo.beachpartner.fragments.RegistrationFragment"
+    android:weightSum="10"
+    android:orientation="vertical"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:weightSum="10"
+        android:orientation="horizontal">
+        <ProgressBar
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="9.3"
+            android:layout_gravity="bottom"
+            android:id="@+id/progressBar1"
+            android:background="@color/white"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"/>
+        <ImageView
+            android:id="@+id/close_btn"
+            android:background="@drawable/com_facebook_close"
+            android:layout_width="0dp"
+            android:layout_weight="0.7"
+            android:layout_gravity="bottom"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+    <WebView  xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/registration_webView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="9.5"></WebView>
+
+
+</LinearLayout>
