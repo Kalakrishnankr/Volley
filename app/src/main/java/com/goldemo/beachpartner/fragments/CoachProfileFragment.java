@@ -523,33 +523,33 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         JSONObject jsonObjectMore = new JSONObject();
         try {
-            jsonObjectMore.put("cbvaFirstName", "");
-            jsonObjectMore.put("cbvaLastName", "");
-            jsonObjectMore.put("cbvaPlayerNumber","");
+            jsonObjectMore.put("cbvaFirstName", null);
+            jsonObjectMore.put("cbvaLastName", null);
+            jsonObjectMore.put("cbvaPlayerNumber",null);
             jsonObjectMore.put("collage",spinnerCollege_value.toString().trim());
-            jsonObjectMore.put("collageClub","");
-            jsonObjectMore.put("collegeBeach", "");
-            jsonObjectMore.put("collegeIndoor", "");
-            jsonObjectMore.put("courtSidePreference", "");
+            jsonObjectMore.put("collageClub",null);
+            jsonObjectMore.put("collegeBeach", null);
+            jsonObjectMore.put("collegeIndoor", null);
+            jsonObjectMore.put("courtSidePreference", null);
             jsonObjectMore.put("description",description.getText().toString().trim());
             jsonObjectMore.put("division",division.getText().toString().trim());
-            jsonObjectMore.put("experience", "");
-            jsonObjectMore.put("fundingStatus","");
-            jsonObjectMore.put("height", "");
-            jsonObjectMore.put("highSchoolAttended", "");
-            jsonObjectMore.put("highestTourRatingEarned", "");
-            jsonObjectMore.put("indoorClubPlayed", "");
+            jsonObjectMore.put("experience", null);
+            jsonObjectMore.put("fundingStatus",null);
+            jsonObjectMore.put("height", null);
+            jsonObjectMore.put("highSchoolAttended", null);
+            jsonObjectMore.put("highestTourRatingEarned", null);
+            jsonObjectMore.put("indoorClubPlayed", null);
             jsonObjectMore.put("numOfAthlets",no_athletes.getText().toString().trim());
-            jsonObjectMore.put("position", "");
+            jsonObjectMore.put("position", null);
             jsonObjectMore.put("programsOffered",prog_offered.getText().toString().trim());
             jsonObjectMore.put("shareAthlets",program_share_athletes_value.toString().trim());
-            jsonObjectMore.put("topFinishes", "");
-            jsonObjectMore.put("totalPoints", "");
-            jsonObjectMore.put("tournamentLevelInterest","");
-            jsonObjectMore.put("toursPlayedIn", "");
-            jsonObjectMore.put("usaVolleyballRanking", "");
+            jsonObjectMore.put("topFinishes", null);
+            jsonObjectMore.put("totalPoints", null);
+            jsonObjectMore.put("tournamentLevelInterest",null);
+            jsonObjectMore.put("toursPlayedIn", null);
+            jsonObjectMore.put("usaVolleyballRanking", null);
             jsonObjectMore.put("userId", user_id);
-            jsonObjectMore.put("willingToTravel", "");
+            jsonObjectMore.put("willingToTravel", null);
             jsonObjectMore.put("yearsRunning",years_running.getText().toString().trim());
 
 
@@ -564,7 +564,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -601,7 +601,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Content-Type", "application/json");
                 return headers;
             }
 

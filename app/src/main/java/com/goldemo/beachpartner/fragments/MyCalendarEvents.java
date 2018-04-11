@@ -15,6 +15,7 @@ import android.widget.Toast;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.MyNoteAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.EventAdminModel;
 
 import java.text.SimpleDateFormat;
@@ -26,6 +27,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate;
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
+    private String userType;
 
     private MyNoteAdapter myNoteAdapter;
 
@@ -51,6 +53,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        userType = new PrefManager(getContext()).getUserType();
         View view = inflater.inflate(R.layout.fragment_mycalendar_events, container, false);
         initViews(view);
         Bundle bundle = getArguments();
@@ -91,6 +94,10 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         rcv_mycalendar      =   (RecyclerView) view.findViewById(R.id.rcv_partner_notes);
 
 
+//        Button change according to coach or athlete
+        btn_myCalCourt.setText("Check In");
+        btn_myCalBack.setText("Decline");
+
         //myNoteAdapter       =   new MyNoteAdapter(getContext(),list);
         rcv_mycalendar.setAdapter(myNoteAdapter);
 
@@ -110,7 +117,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                 courtAlert();
                 break;
             case R.id.my_btn_back:
-
+                getActivity().onBackPressed();
                 break;
 
                 default:

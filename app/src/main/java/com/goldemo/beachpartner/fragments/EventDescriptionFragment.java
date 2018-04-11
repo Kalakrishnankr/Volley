@@ -20,14 +20,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.EventAdminModel;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class EventDescriptionFragment extends Fragment implements View.OnClickListener {
@@ -36,7 +49,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private Button btnInvitePartner,btnRegister,btnBack,btnCoachGoing,btnCoachNotGoing;
     private PrefManager prefManager;
     private LinearLayout athleteBtnLt,coachBtnLt;
-    private String user_id,user_token,userType,eventName;
+    private String user_id,user_token,userType,eventName,eventId;
     private Boolean registerCompleted = false;
 
 
@@ -63,7 +76,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         prefManager = new PrefManager(getContext());
         user_id     =  prefManager.getUserId();
         user_token  =  prefManager.getToken();
-        userType    = prefManager.getUserType();
+        userType    =  prefManager.getUserType();
 
         initActivity(view);
 
@@ -71,6 +84,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if(bundle!=null){
             Event event = (Event)bundle.getSerializable("event_clicked");
             EventAdminModel eventAdminModel = event.getEventAdmin();
+            eventId=event.getEventId();
             tview_eventadmin.setText(eventAdminModel.getFirstName().toString());
 
             tview_eventname.setText(event.getEventName().toString());
@@ -177,6 +191,70 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
 
+    private void registerEvent(JSONObject object) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -210,6 +288,17 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     }
 
     private void alertAddToSystemCalendar() {
+        //Register Event Api
+        JSONObject registerObject =new JSONObject();
+        try{
+            registerObject.put("eventId",eventId);
+            registerObject.put("userId",user_id);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        registerEvent(registerObject);
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Add to Your Calendar")
                 .setMessage("Would you like to add it to your Device's calendar?")
@@ -234,6 +323,17 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
 
     private void alertAddToSystemCalendarCoach() {
+        //Register Event Api
+        JSONObject registerObject =new JSONObject();
+        try{
+            registerObject.put("eventId",eventId);
+            registerObject.put("userId",user_id);
+        }
+        catch (JSONException e){
+            e.printStackTrace();
+        }
+        registerEvent(registerObject);
+
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Add to Your Calendar")
                 .setMessage("Would you like to add it to your calendar?")

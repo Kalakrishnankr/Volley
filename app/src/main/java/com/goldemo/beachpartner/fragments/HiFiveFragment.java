@@ -1,26 +1,42 @@
 package com.goldemo.beachpartner.fragments;
 
 import android.content.Context;
-import android.net.Uri;
+
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+
+import android.widget.ImageView;
 import android.widget.ListView;
 
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.Volley;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.HiFiveAdapter;
+import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.HighFiveModel;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link HiFiveFragment.OnFragmentInteractionListener} interface
+
  * to handle interaction events.
  * Use the {@link HiFiveFragment#newInstance} factory method to
  * create an instance of this fragment.
@@ -34,8 +50,11 @@ public class HiFiveFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String user_id,user_token,userType;
+    private PrefManager prefManager;
+    private ImageView noHiFiveImage;
 
-    private OnFragmentInteractionListener mListener;
+
     private ArrayList<HighFiveModel> hiFiveList = new ArrayList<HighFiveModel>();
     ListView listView;
 
@@ -74,37 +93,98 @@ public class HiFiveFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        prefManager =  new PrefManager(getContext());
+        user_id     =  prefManager.getUserId();
+        user_token  =  prefManager.getToken();
+        userType    = prefManager.getUserType();
         View view= inflater.inflate(R.layout.fragment_hi_five, container, false);
-        initList();
+        initList(view);
         listView =  view.findViewById(R.id.listViewHiFives);
-        HiFiveAdapter hiFiveAdapter = new HiFiveAdapter( hiFiveList,getContext());
-        listView.setAdapter(hiFiveAdapter);
+
+
         return view;
     }
-    private void initList() {
-        // We populate the planets
-
-
-
-        hiFiveList.add(new HighFiveModel("Alivia Orvieto","http://seqato.com/bp/images/1.jpg"));
-        hiFiveList.add(new HighFiveModel("Marti McLaurin","http://seqato.com/bp/images/2.jpg"));
-        hiFiveList.add(new HighFiveModel("Liz Held","http://seqato.com/bp/images/3.jpg"));
-        hiFiveList.add(new HighFiveModel("Alivia Orvieto","http://seqato.com/bp/images/4.jpg"));
-        hiFiveList.add(new HighFiveModel("Marti McLaurin","http://seqato.com/bp/images/5.jpg"));
-        hiFiveList.add(new HighFiveModel("Liz Held","http://seqato.com/bp/images/6.jpg"));
+    private void initList(View view) {
+        noHiFiveImage = view.findViewById(R.id.no_hiFives_image);
+        getMyTournaments();
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+
+    private void getMyTournaments() {
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=" + "Hifi" , null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                if(response!=null){
+                    for(int i=0;i<response.length();i++){
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+                            JSONObject obj    = object.getJSONObject("connectedUser");
+                            HighFiveModel model  = new HighFiveModel();
+                            model.setName(obj.getString("firstName")+obj.getString("lastName"));
+                            model.setImageUrl(obj.getString("imageUrl"));
+                            hiFiveList.add(model);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setHifiveList();
+                }
+
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){ @Override
+        public Map<String, String> getHeaders()  {
+            HashMap<String, String> headers = new HashMap<String, String>();
+            headers.put("Authorization", "Bearer " + user_token);
+            //headers.put("Content-Type", "application/json; charset=utf-8");
+            return headers;
+
+        }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonArrayRequest.toString());
+        requestQueue.add(jsonArrayRequest);
+
+
+    }
+
+    private void setHifiveList() {
+        if(hiFiveList!=null && hiFiveList.size()>0){
+            HiFiveAdapter hiFiveAdapter = new HiFiveAdapter( hiFiveList,getContext());
+            listView.setAdapter(hiFiveAdapter);
+            hiFiveAdapter.notifyDataSetChanged();
+
+
+
+        }else {
+            noHiFiveImage.setVisibility(View.VISIBLE);
         }
     }
 
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
 
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
 
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        return trimmedString;
     }
+
+
 }

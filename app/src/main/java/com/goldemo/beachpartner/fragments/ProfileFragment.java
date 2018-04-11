@@ -1673,7 +1673,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Content-Type", "application/json ");
                 return headers;
             }
 

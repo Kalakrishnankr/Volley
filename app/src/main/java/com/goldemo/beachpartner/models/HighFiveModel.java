@@ -17,6 +17,19 @@ public class HighFiveModel  {
         this.imageUrl=imageUrl;
     }
 
+    public HighFiveModel() {
+
+    }
+
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getImage() {
         return imageUrl;
     }

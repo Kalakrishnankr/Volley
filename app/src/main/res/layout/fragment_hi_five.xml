@@ -9,4 +9,11 @@
         android:layout_weight="1"
         android:layout_width="match_parent">
     </ListView>
+    
+    <ImageView
+        android:id="@+id/no_hiFives_image"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:background="@drawable/com_facebook_close"/>
 </LinearLayout>
