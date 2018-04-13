@@ -7,7 +7,6 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Bitmap;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
@@ -51,6 +50,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.OnClickListener;
 import com.goldemo.beachpartner.R;
@@ -121,8 +121,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     private AwesomeValidation awesomeValidation;
     private List<FloatingActionMenu> menus = new ArrayList<>();
+    private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter;
     private Handler mUiHandler = new Handler();
-    Bitmap img_bitmap;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -137,7 +137,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        token = new PrefManager(getContext()).getToken();
+        token   = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         setUp();
         initActivity(view);
@@ -148,80 +148,77 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void initActivity(final View view) {
 
-        profile_img_editIcon = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
-        btnsBottom = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+        btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+        more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
+        imgEdit                 = (ImageView) view.findViewById(R.id.edit);
+        profile_img_editIcon    = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
 
-        more_info_btns_bottom = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
-        imgEdit = (ImageView) view.findViewById(R.id.edit);
-
-        imgProfile = (CircularImageView) view.findViewById(R.id.row_icon);
+        imgProfile  = (CircularImageView) view.findViewById(R.id.row_icon);
         profileName = (TextView) view.findViewById(R.id.profile_name);
-        profileDesig = (TextView) view.findViewById(R.id.profile_designation);
-        edit_tag = (TextView) view.findViewById(R.id.edit_text);
+        profileDesig= (TextView) view.findViewById(R.id.profile_designation);
+        edit_tag    = (TextView) view.findViewById(R.id.edit_text);
 
-
-        imgVideo = (ImageView) view.findViewById(R.id.imgVideo);
-        videoView = (VideoView) view.findViewById(R.id.videoView);
-        imgPlay = (ImageView) view.findViewById(R.id.imgPlay);
-
-        imgShare = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
-        fabImage = (FloatingActionButton) view.findViewById(R.id.fab_image);
-        fabVideo = (FloatingActionButton) view.findViewById(R.id.fab_video);
-
-        /*This for demo only start*/
+        imgVideo    = (ImageView) view.findViewById(R.id.imgVideo);
+        videoView   = (VideoView) view.findViewById(R.id.videoView);
+        imgPlay     = (ImageView) view.findViewById(R.id.imgPlay);
+        imgShare    = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
+        fabImage    = (FloatingActionButton) view.findViewById(R.id.fab_image);
+        fabVideo    = (FloatingActionButton) view.findViewById(R.id.fab_video);
 
         llMenuBasic = (LinearLayout) view.findViewById(R.id.llMenuBasic);
-        llMenuMore = (LinearLayout) view.findViewById(R.id.llMenuMore);
+        llMenuMore  = (LinearLayout) view.findViewById(R.id.llMenuMore);
 
-        basic_info_tab = (TextView) view.findViewById(R.id.basic_info_tab);
-        more_info_tab = (TextView) view.findViewById(R.id.more_info_tab);
-
-        llBasicDetails = (LinearLayout) view.findViewById(R.id.llBasicDetails);
-        llMoreDetails = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
-
-        viewBasic = (View) view.findViewById(R.id.viewBasic);
-        viewMore = (View) view.findViewById(R.id.viewMore);
+        basic_info_tab  = (TextView) view.findViewById(R.id.basic_info_tab);
+        more_info_tab   = (TextView) view.findViewById(R.id.more_info_tab);
+        llBasicDetails  = (LinearLayout) view.findViewById(R.id.llBasicDetails);
+        llMoreDetails   = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
+        viewBasic       = (View) view.findViewById(R.id.viewBasic);
+        viewMore        = (View) view.findViewById(R.id.viewMore);
 
         //For Basic Details
 
-        editFname = (EditText) view.findViewById(R.id.txtvFname);
-        editLname = (EditText) view.findViewById(R.id.txtvLname);
-        editGender = (EditText) view.findViewById(R.id.txtv_gender);
-        editDob = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity = (EditText) view.findViewById(R.id.txtv_city);
-        editPhone = (EditText) view.findViewById(R.id.txtv_mobileno);
+        editFname   = (EditText) view.findViewById(R.id.txtvFname);
+        editLname   = (EditText) view.findViewById(R.id.txtvLname);
+        editGender  = (EditText) view.findViewById(R.id.txtv_gender);
+        editDob     = (EditText) view.findViewById(R.id.txtv_dob);
+        editCity    = (EditText) view.findViewById(R.id.txtv_city);
+        editPhone   = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave = (Button) view.findViewById(R.id.btnsave);
-        basicBtnCancel = (Button) view.findViewById(R.id.btncancel);
+        basicBtnSave    = (Button) view.findViewById(R.id.btnsave);
+        basicBtnCancel  = (Button) view.findViewById(R.id.btncancel);
 
 
         //Fore More Deatsils
 
-        spinnerExp = (Spinner) view.findViewById(R.id.spinner_exp);
-        spinnerExp.setEnabled(false);
-        spinnerPref = (Spinner) view.findViewById(R.id.spinner_pref);
-        spinnerPref.setEnabled(false);
-        spinnerPositon = (Spinner) view.findViewById(R.id.spinner_positon);
-        spinnerPositon.setEnabled(false);
-
-        editHeight = (EditText) view.findViewById(R.id.txtvHeight);
+        spinnerExp        = (Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerPref       = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPositon    = (Spinner) view.findViewById(R.id.spinner_positon);
         spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
-        spinnerTLInterest.setEnabled(false);
-        editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
         spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
+        spinnerWtoTravel  = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+
+
+        spinnerExp.setEnabled(false);
+        spinnerPref.setEnabled(false);
+        spinnerPositon.setEnabled(false);
+        spinnerTLInterest.setEnabled(false);
         spinnerTourRating.setEnabled(false);
-        editCBVANo = (EditText) view.findViewById(R.id.txtvCBVANo);
-        editCBVAFName = (EditText) view.findViewById(R.id.txtvCBVAFName);
-        editCBVALName = (EditText) view.findViewById(R.id.txtvCBVALName);
-        spinnerWtoTravel = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
-        editHighschool = (EditText) view.findViewById(R.id.txtvHighschool);
-        editIndoorClub = (EditText) view.findViewById(R.id.txtvIndoorClub);
-        editColgClub = (EditText) view.findViewById(R.id.txtvColgClub);
-        editColgBeach = (EditText) view.findViewById(R.id.txtvColgBeach);
-        editColgIndoor = (EditText) view.findViewById(R.id.txtvColgIndoor);
+        spinnerWtoTravel.setEnabled(false);
+
+
+        editHeight      = (EditText) view.findViewById(R.id.txtvHeight);
+        editPlayed      = (EditText) view.findViewById(R.id.txtvPlayed);
+        editCBVANo      = (EditText) view.findViewById(R.id.txtvCBVANo);
+        editCBVAFName   = (EditText) view.findViewById(R.id.txtvCBVAFName);
+        editCBVALName   = (EditText) view.findViewById(R.id.txtvCBVALName);
+        editHighschool  = (EditText) view.findViewById(R.id.txtvHighschool);
+        editIndoorClub  = (EditText) view.findViewById(R.id.txtvIndoorClub);
+        editColgClub    = (EditText) view.findViewById(R.id.txtvColgClub);
+        editColgBeach   = (EditText) view.findViewById(R.id.txtvColgBeach);
+        editColgIndoor  = (EditText) view.findViewById(R.id.txtvColgIndoor);
         edit_volleyRanking = (EditText) view.findViewById(R.id.txtvRank);
-        editPoints = (EditText) view.findViewById(R.id.txtvPoints);
+        editPoints      = (EditText) view.findViewById(R.id.txtvPoints);
         topfinishes_txt_1 = (EditText) view.findViewById(R.id.topfinishes_txt_1);
         topfinishes_txt_2 = (EditText) view.findViewById(R.id.topfinishes_txt_2);
         topfinishes_txt_3 = (EditText) view.findViewById(R.id.topfinishes_txt_3);
@@ -242,8 +239,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         topFinishes3_lt = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
 
-        // imgShare.setIconAnimated(false);
-        // imgShare.hideMenuButton(false);
 
         imgShare.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -310,11 +305,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
 
-        // imgShare.setOnClickListener(this);
 
-//        Experience Spinner
-
-
+        /*Experience Spinner*/
         List<String> experience = new ArrayList<>();
         experience.add("“Newbie” New to the Game");
         experience.add("1-2 years Some Indoor/Beach Experience Services");
@@ -322,7 +314,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         experience.add("3-4 years Experienced Tournament Player");
         experience.add("5+ years Multiple Top Finishes/Ranked player");
 
-        ArrayAdapter<String> expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
+        expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
         expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExp.setAdapter(expAdapter);
 
@@ -339,13 +331,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
-//      Court Preference spinner
+        /*Court Preference spinner*/
         spinnerPref.setOnItemSelectedListener(this);
         List<String> courtPref = new ArrayList<>();
         courtPref.add("Left side");
         courtPref.add("Right Side");
         courtPref.add("No Preference");
-        ArrayAdapter<String> prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
+        prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPref.setAdapter(prefAdapter);
         spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -361,13 +353,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
-//        position adapter
+        /*position Spinner*/
         spinnerPositon.setOnItemSelectedListener(this);
         List<String> position = new ArrayList<>();
         position.add("Primary Blocker");
         position.add("Primary Defender");
         position.add("Split Block/Defense");
-        ArrayAdapter<String> positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
+        positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPositon.setAdapter(positionAdapter);
         spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -383,7 +375,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
-//        Tournament Level interest spinner
+        /*Tournament Level interest spinner*/
         spinnerTLInterest.setOnItemSelectedListener(this);
         List<String> tournamentInterest = new ArrayList<>();
         tournamentInterest.add("Novice/Social");
@@ -393,7 +385,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         tournamentInterest.add("AA");
         tournamentInterest.add("AAA");
         tournamentInterest.add("Pro");
-        ArrayAdapter<String> tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
+
+        tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTLInterest.setAdapter(tournamentInterestAdapter);
 
@@ -410,6 +403,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
+        /*Tourrating Spinner*/
         spinnerTourRating.setOnItemSelectedListener(this);
         List<String> rating = new ArrayList<>();
         rating.add("PRO");
@@ -420,7 +414,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         rating.add("B");
         rating.add("C Or Novice");
         rating.add("Unrated");
-        ArrayAdapter<String> highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
+        highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
         highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTourRating.setAdapter(highestRatingAdapter);
 
@@ -438,6 +432,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
+        /*Spinner for willing to travel*/
         spinnerWtoTravel.setOnItemSelectedListener(this);
         List<String> distance = new ArrayList<>();
         distance.add("Not Willing");
@@ -448,7 +443,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         distance.add("Up to 500 miles");
         distance.add("Nationwide");
         distance.add("International");
-        ArrayAdapter<String> distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
+        distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
         highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWtoTravel.setAdapter(distanceAdapter);
 
@@ -509,8 +504,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
-
-
                     imgVideo.setVisibility(View.VISIBLE);
                     profile_img_editIcon.setVisibility(View.VISIBLE);
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
@@ -1040,7 +1033,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         edit_volleyRanking.setEnabled(true);
-        editPoints.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        edit_volleyRanking.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
 
         topfinishes_txt_1.setEnabled(true);
@@ -1064,24 +1057,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     /*validating feilds*/
 
         if (!validate()) {
-
-            //put user fields to json object
-            JSONObject object = new JSONObject();
-            try {
-                object.put("firstName", editFname.getText().toString().trim());
-                object.put("lastName", editLname.getText().toString().trim());
-                object.put("gender", editGender.getText().toString().trim());
-                object.put("city", editCity.getText().toString().trim());
-                object.put("phoneNumber", editPhone.getText().toString().trim());
-                object.put("dob", editDob.getText().toString().trim());
-
-
-            } catch (JSONException e) {
-
-            }
-
-            //update user fields
-            updateUserDetails(object);
 
             imgProfile.setClickable(false);
             profile_img_editIcon.setVisibility(View.GONE);
@@ -1167,6 +1142,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             editPoints.setEnabled(false);
             editPoints.setBackground(null);
 
+            edit_volleyRanking.setEnabled(false);
+            edit_volleyRanking.setBackground(null);
 
             imageView1.setVisibility(View.GONE);
             topfinishes_txt_1.setEnabled(false);
@@ -1181,19 +1158,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
 
-            //put video,image and user_id to json
-            /*JSONObject jsonObject = new JSONObject();
+
+            //put user fields to json object
+            JSONObject object = new JSONObject();
             try {
-                jsonObject.put("profileImg",selectedImageUri);
-                jsonObject.put("profileVideo",selectedVideoUri);
-                jsonObject.put("userId",user_id);
+                object.put("firstName", editFname.getText().toString().trim());
+                object.put("lastName", editLname.getText().toString().trim());
+                object.put("gender", editGender.getText().toString().trim());
+                object.put("city", editCity.getText().toString().trim());
+                object.put("phoneNumber", editPhone.getText().toString().trim());
+                object.put("dob", editDob.getText().toString().trim());
+
+
             } catch (JSONException e) {
-                e.printStackTrace();
+
             }
-
-            //Method for uploading profilePic & profile video
-            uploadFiles(jsonObject);*/
-
 
             JSONObject jsonObjectMore = new JSONObject();
             try {
@@ -1229,7 +1208,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
+            //update user fields
+            updateUserDetails(object);
+            //post more details
             postUserMoreDetails(jsonObjectMore);
 
 
@@ -1526,11 +1507,43 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-                            //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
-                            setView();
+                            userDataModel.setSubscriptions(response.getString("subscriptions"));
+                            userDataModel.setImageUrl(response.getString("imageUrl"));
+                            //userDataModel.setVideoUrl(response.getString("videoUrl"));
+                            //userDataModel.setUserType(response.getString("userType"));
 
-                            //editFname.setText(userDataModel.getFirstName());
-                            //editLname.setText(userDataModel.getLastName());
+                            JSONObject obj = response.getJSONObject("userProfile");
+                            userDataModel.setHeight(obj.getString("height"));
+                            userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
+                            userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
+                            userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
+                            userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
+                            userDataModel.setTotalPoints(obj.getString("totalPoints"));
+                            userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
+                            userDataModel.setCollageClub(obj.getString("collageClub"));
+                            userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
+                            userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
+                            userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
+                            userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
+                            userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
+                            userDataModel.setExperience(obj.getString("experience"));
+                            userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
+                            userDataModel.setPosition(obj.getString("position"));
+                            userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
+                            userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
+                            userDataModel.setTopFinishes(obj.getString("topFinishes"));
+                            userDataModel.setCollage(obj.getString("collage"));
+                            userDataModel.setDescription(obj.getString("description"));
+                            userDataModel.setYearsRunning(obj.getString("yearsRunning"));
+                            userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
+                            userDataModel.setProgramsOffered(obj.getString("programsOffered"));
+                            userDataModel.setDivision(obj.getString("division"));
+                            userDataModel.setFundingStatus(obj.getString("fundingStatus"));
+                            userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+
+                            //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
+                            setViews();
+
 
 
                         } catch (JSONException e) {
@@ -1685,8 +1698,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-    private void setView() {
+    private void setViews() {
         if (userDataModel != null) {
+            //set basic informations of user
+            if (userDataModel.getImageUrl() != null) {
+                Glide.with(getActivity()).load(userDataModel.getImageUrl()).into(imgProfile);
+            }else {
+                imgProfile.setImageResource(R.drawable.ic_person);
+            }
             profileName.setText(userDataModel.getFirstName());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
@@ -1698,6 +1717,49 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             Date date_dob  = new Date(dob);
             editDob.setText(dft.format(date_dob));
             editPhone.setText(userDataModel.getPhoneNumber());
+            //set More information
+            editHeight.setText(userDataModel.getHeight());
+            editCBVAFName.setText(userDataModel.getCbvaFirstName());
+            editCBVALName.setText(userDataModel.getCbvaLastName());
+            editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
+            editColgClub.setText(userDataModel.getCollageClub());
+            editColgBeach.setText(userDataModel.getCollegeBeach());
+            editColgIndoor.setText(userDataModel.getCollegeIndoor());
+            editHighschool.setText(userDataModel.getHighSchoolAttended());
+            editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+            editPoints.setText(userDataModel.getTotalPoints());
+            editPlayed.setText(userDataModel.getToursPlayedIn());
+            String courSidePref = userDataModel.getCourtSidePreference();
+            if(courSidePref != null){
+                int courtPos = prefAdapter.getPosition(courSidePref);
+                spinnerPref.setSelection(courtPos);
+            }
+            String exp = userDataModel.getExperience();
+            if(exp != null){
+                int exper = expAdapter.getPosition(exp);
+                spinnerExp.setSelection(exper);
+            }
+            String highestTER  = userDataModel.getHighestTourRatingEarned();
+            if(highestTER != null){
+                int hter = highestRatingAdapter.getPosition(highestTER);
+                spinnerTourRating.setSelection(hter);
+            }
+            String tourIntrest = userDataModel.getTournamentLevelInterest();
+            if(tourIntrest != null){
+                int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
+                spinnerTLInterest.setSelection(tIL);
+            }
+            String pos = userDataModel.getPosition();
+            if (pos != null){
+                int positions = positionAdapter.getPosition(pos);
+                spinnerPositon.setSelection(positions);
+            }
+            String wTot = userDataModel.getWillingToTravel();
+            if (wTot != null) {
+                int willingTotravel = distanceAdapter.getPosition(wTot);
+                spinnerWtoTravel.setSelection(willingTotravel);
+            }
+
         }
     }
 

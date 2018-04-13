@@ -280,13 +280,16 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
 
+
+
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
                                     String subScription=userObj.getString("subscriptions");
                                     String uProfileStatus = userObj.getString("userProfile");
+                                    String userName = userObj.getString("firstName");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription,userName);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation

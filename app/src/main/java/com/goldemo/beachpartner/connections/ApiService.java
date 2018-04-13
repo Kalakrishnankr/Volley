@@ -27,7 +27,7 @@ public class ApiService {
     public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
     public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
 
-    public static  String GET_SUBSCRIPTIONS      =  BASE_URL+"users/subscriptions";
+    public static  String GET_SUBSCRIPTIONS     =  BASE_URL+"users/subscriptions";
 
     public static String GET_ALL_EVENTS         =  BASE_URL+"events/all";
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
@@ -42,10 +42,10 @@ public class ApiService {
     public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
 
-    public static String  EVENT_REGISTER         =   BASE_URL+"events/user/register";
-    public static String RIGHT_SWIPE_REQUEST_SEND=   BASE_URL+"users/request-friendship/";
-    public static String LEFT_SWIPE_DISLIKE      =   BASE_URL+"users/reject-friendship/";
-    public static String HIFI_SWIPE_UP           =   BASE_URL+"users/hifi/";
+    public static String  EVENT_REGISTER           =   BASE_URL+"events/user/register";
+    public static String  RIGHT_SWIPE_REQUEST_SEND =   BASE_URL+"users/request-friendship/";
+    public static String  LEFT_SWIPE_DISLIKE       =   BASE_URL+"users/reject-friendship/";
+    public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
 
 
 

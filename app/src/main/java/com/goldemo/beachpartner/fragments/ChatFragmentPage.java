@@ -1,8 +1,6 @@
 package com.goldemo.beachpartner.fragments;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -37,20 +35,24 @@ public class ChatFragmentPage extends Fragment {
     private EmojIconActions emojIcon;
     private LinearLayout rootview;
     private ScrollView scrollview;
-    Firebase reference1, reference2;
-    ConnectionFragment connectionFragment;
-    String myId,ChatWith_id,ChatWith_name;
-    public ChatFragmentPage() {
+    Firebase reference1, reference2,ref;
+    String myId,ChatWith_id,ChatWith_name,myName;
+    private int idLeft,idRight;
+
+   /* public ChatFragmentPage() {
         // Required empty public constructor
     }
-
+*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Firebase.setAndroidContext(getActivity());
         Bundle bundle = this.getArguments();
         if(bundle != null){
-            ChatWith_id = bundle.getString("personId");
+            ChatWith_id  = bundle.getString("personId");
+            ChatWith_name= bundle.getString("personName");
+            myName       = bundle.getString("myName");
         }
 
     }
@@ -60,6 +62,8 @@ public class ChatFragmentPage extends Fragment {
                              Bundle savedInstanceState) {
         getActivity().setTitle("Message");
 
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/users");
+        ref = myFirebaseRef.child("users");
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_chat_page, container, false);
         getConnections();
@@ -70,7 +74,6 @@ public class ChatFragmentPage extends Fragment {
 
 
 
-    @RequiresApi(api = Build.VERSION_CODES.M)
     private void initView(View view) {
         submitButton    =   (ImageView) view.findViewById(R.id.sendButton);
         emoji_btn       =   (ImageView) view.findViewById(R.id.emoji_btn);
@@ -105,10 +108,16 @@ public class ChatFragmentPage extends Fragment {
 
                 if(!messageText.equals("")){
                     Map<String, String> map = new HashMap<String, String>();
-                    map.put("message", messageText);
-                    map.put("user", myId);
+                    map.put("text", messageText);
+                    map.put("sender_id", myId);
+                    map.put("receiver_name",ChatWith_name);
+                    map.put("receiver_id",ChatWith_id);
+                    map.put("sender_name",myName);
                     reference1.push().setValue(map);
-                    reference2.push().setValue(map);
+                   // reference2.push().setValue(map);
+
+                    ref.push().setValue(myId+":"+ChatWith_id);
+
                     emojicon_editText.setText("");
                     scrollview.fullScroll(View.FOCUS_DOWN);
                 }
@@ -121,10 +130,12 @@ public class ChatFragmentPage extends Fragment {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 Map map = dataSnapshot.getValue(Map.class);
-                String message = map.get("message").toString();
-                String userName = map.get("user").toString();
-
-                if(userName.equals(myId)){
+                String message = map.get("text").toString();
+                String userId  = map.get("sender_id").toString();
+                String receiverName= map.get("receiver_name").toString();
+                String receiverId = map.get("receiver_id").toString();
+                String senderName = map.get("sender_name").toString();
+                if(userId.equals(myId)){
                     addMessageBox("You:-\n" + message, 1);
                 }
                 else{
@@ -161,29 +172,41 @@ public class ChatFragmentPage extends Fragment {
 
         myId = new PrefManager(getContext()).getUserId();
         Firebase.setAndroidContext(getActivity());
-        reference1 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + myId + "_" + ChatWith_id);
-        reference2 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + ChatWith_id + "_" + myId);
+        if(Integer.parseInt(myId) >Integer.parseInt(ChatWith_id)){
+
+            idLeft = Integer.parseInt(ChatWith_id);
+            idRight = Integer.parseInt(myId);
+        }else {
+
+            idLeft = Integer.parseInt(myId);
+            idRight = Integer.parseInt(ChatWith_id);
+        }
+        reference1 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + idLeft + "-" + idRight);
+        //reference2 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + ChatWith_id + "-" + myId);
     }
 
 
     public void addMessageBox(String message, int type){
-        TextView textView = new TextView(this.getActivity());
-        textView.setText(message);
-        textView.setFocusable(true);
-        LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        lp2.weight = 1.0f;
+        if(getActivity()!=null){
+            TextView textView = new TextView(getActivity());
+            textView.setText(message);
+            textView.setFocusable(true);
+            LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            lp2.weight = 1.0f;
 
-        if(type == 1) {
-            lp2.gravity = Gravity.RIGHT;
-            textView.setBackgroundResource(R.drawable.bubble_in);
+            if(type == 1) {
+                lp2.gravity = Gravity.RIGHT;
+                textView.setBackgroundResource(R.drawable.bubble_in);
+            }
+            else{
+                lp2.gravity = Gravity.LEFT;
+                textView.setBackgroundResource(R.drawable.bubble_out);
+            }
+            textView.setLayoutParams(lp2);
+            rootview.addView(textView);
+            scrollview.fullScroll(View.FOCUS_DOWN);
         }
-        else{
-            lp2.gravity = Gravity.LEFT;
-            textView.setBackgroundResource(R.drawable.bubble_out);
-        }
-        textView.setLayoutParams(lp2);
-        rootview.addView(textView);
-        scrollview.fullScroll(View.FOCUS_DOWN);
+
     }
 
 }

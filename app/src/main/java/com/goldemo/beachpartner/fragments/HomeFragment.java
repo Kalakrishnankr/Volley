@@ -29,6 +29,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
 import com.goldemo.beachpartner.adpters.MessageAdapter;
@@ -38,8 +42,8 @@ import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.BpFinderModel;
+import com.goldemo.beachpartner.models.ConnectionModel;
 import com.goldemo.beachpartner.models.EventAdminModel;
-import com.goldemo.beachpartner.models.PersonModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +54,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -65,25 +68,27 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
-    ArrayList<PersonModel> allSampleData;
-    private TextView txt_head,txtv_notour;
+    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts;
     private String user_id,user_token,userType;
     private PrefManager prefManager;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
     private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
+    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private ArrayList<String> chatList = new ArrayList<>();
+    private ArrayList<ConnectionModel> userList = new ArrayList<>();
+
 
     public HomeFragment() {
         // Required empty public constructor
+
     }
 
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
-
-
+        Firebase.setAndroidContext(getActivity());
     }
 
     @Override
@@ -100,6 +105,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         //getBlueBP profes
         getBluebpProfiles();
         getMyTournaments();
+        getConnections();
 
         return view;
     }
@@ -109,12 +115,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initView(View view) {
 
-        allSampleData = (ArrayList<PersonModel>) createDummyData();
-
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
-        txt_head        =   (TextView)  view.findViewById(R.id.txtview_head);
-        txtv_notour     =   (TextView)  view.findViewById(R.id.txtv_notour);
+        txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
+        txtv_notour     =   (TextView)view.findViewById(R.id.txtv_notour);
+        txtv_nomsgs     =   (TextView)view.findViewById(R.id.txtv_nomessgs);
+        txtv_noreqsts   =   (TextView)view.findViewById(R.id.txtv_noreqsts);
 
 
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
@@ -150,13 +156,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         /*Message*/
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
         SnapHelper snaper = new PagerSnapHelper();
         snaper.attachToRecyclerView(msgRecyclerview);
         msgRecyclerview.setLayoutManager(layoutManager);
         msgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());
-        msgRecyclerview.setAdapter(messageAdapter);
         msgRecyclerview.setHasFixedSize(true);
 
 
@@ -164,36 +168,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         /*Tournament Requests*/
 
         LinearLayoutManager layoutmngerTwo = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
+        //partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
         SnapHelper snap = new PagerSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerTwo);
         parRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
-        parRecyclerview.setAdapter(partnerAdapter);
+        //parRecyclerview.setAdapter(partnerAdapter);
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
 
 
     }
 
-    private List<PersonModel> createDummyData() {
 
-        List<PersonModel>personModelList = new ArrayList<>();
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        return personModelList;
-
-    }
 
 
     @Override
@@ -331,8 +318,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     e.printStackTrace();
                                 }
                             }
-                            new PrefManager(getContext()).savePageno(0);
-                            setblueBpstrip();
+                            if(getActivity()!=null){
+                                new PrefManager(getActivity()).savePageno(0);
+                                setblueBpstrip();
+                            }
                         }
 
 
@@ -485,6 +474,114 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             profileAdapter = new ProfileAdapter(getContext(),bpList);
             pRecyclerview.setAdapter(profileAdapter);
         }
+    }
+
+    //Get connections
+    private void getConnections() {
+        connectionList.clear();
+        String user_id = new PrefManager(getContext()).getUserId();
+        final String token = new PrefManager(getContext()).getToken();
+
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                if (response != null) {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+                            JSONObject obj = object.getJSONObject("connectedUser");
+                            ConnectionModel model = new ConnectionModel();
+                            model.setConnected_uId(obj.getString("id"));
+                            model.setConnected_login(obj.getString("login"));
+                            model.setConnected_firstName(obj.getString("firstName"));
+                            model.setConnected_lastName(obj.getString("lastName"));
+                            model.setConnected_email(obj.getString("email"));
+                            model.setConnected_userType(obj.getString("userType"));
+                            model.setConnected_imageUrl(obj.getString("imageUrl"));
+                            connectionList.add(model);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setUpMessage();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", arrayRequest.toString());
+        requestQueue.add(arrayRequest);
+
+
+    }
+
+    private void setUpMessage() {
+        userList.clear();
+        chatList.clear();
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/messages");
+        myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+
+                    chatList.add(postSnapshot.getKey());
+
+                    /*for (DataSnapshot pSnapshot1 : postSnapshot.getChildren()) {
+                          MessageModel m = pSnapshot1.getValue(MessageModel.class);
+                          if (m.getSender_id().equals(myId)) {
+                              userList.add(m);
+                          }
+                    }*/
+
+                }
+                if(chatList.size()>0 && chatList!=null){
+                    for (int i=0;i<chatList.size();i++){
+                        String chatId = chatList.get(i).split("-")[0];
+                        String chatwith_id = chatList.get(i).split("-")[1];
+                        if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
+                            for (int j=0;j<connectionList.size();j++){
+                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                    userList.add(connectionList.get(j));
+                                }
+                            }
+                        }
+                    }
+                    messageAdapter  =  new MessageAdapter(getContext(),userList);
+                    msgRecyclerview.setAdapter(messageAdapter);
+                    messageAdapter.notifyDataSetChanged();
+                }else {
+                    txtv_nomsgs.setVisibility(View.VISIBLE);
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
     }
 
     private String trimMessage(String json, String detail) {

@@ -24,12 +24,17 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.adpters.CardAdapter;
 import com.goldemo.beachpartner.adpters.MessageAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
+import com.goldemo.beachpartner.models.ConnectionModel;
 import com.goldemo.beachpartner.models.EventAdminModel;
 import com.goldemo.beachpartner.models.PersonModel;
 
@@ -42,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 
@@ -63,37 +67,23 @@ public class CoachHomeFragment extends Fragment {
     ArrayList<PersonModel> allSampleData;
     private RecyclerView upcomingRecyclerview,coachMsgRecyclerview;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
-    private TextView txtv_notour;
+    private TextView txtv_notour,txtv_nomessgs;
+    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private ArrayList<String> chatCoachList = new ArrayList<>();
+    private ArrayList<ConnectionModel> userCoachList = new ArrayList<>();
+
 
     public CoachHomeFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CoachHomeFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CoachHomeFragment newInstance(String param1, String param2) {
-        CoachHomeFragment fragment = new CoachHomeFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+        Firebase.setAndroidContext(getActivity());
     }
 
     @Override
@@ -106,8 +96,8 @@ public class CoachHomeFragment extends Fragment {
         userType    = prefManager.getUserType();
 
         View view=inflater.inflate(R.layout.fragment_coach_home, container, false);
-        allSampleData = (ArrayList<PersonModel>) createDummyData();
         getMyTournaments();
+        getConnections();
 
         initView(view);
         return view;
@@ -117,8 +107,9 @@ public class CoachHomeFragment extends Fragment {
 
     private void initView(View view){
         upcomingRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcvUpComing);          //Recycler view for upcoming events
-        coachMsgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
-        txtv_notour     =   (TextView)  view.findViewById(R.id.txtv_notour);
+        coachMsgRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
+        txtv_notour            =   (TextView)  view.findViewById(R.id.txtv_notour);
+        txtv_nomessgs          =   (TextView) view.findViewById(R.id.txtv_messgs);
 
         LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
 
@@ -134,9 +125,6 @@ public class CoachHomeFragment extends Fragment {
         /*Message*/
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        messageAdapter  =  new MessageAdapter(getContext(),allSampleData);
-        coachMsgRecyclerview.setAdapter(messageAdapter);
-
         SnapHelper snaper = new PagerSnapHelper();
         snaper.attachToRecyclerView(coachMsgRecyclerview);
 //        coachMsgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
@@ -147,24 +135,6 @@ public class CoachHomeFragment extends Fragment {
 
     }
 
-    private List<PersonModel> createDummyData() {
-
-        List<PersonModel>personModelList = new ArrayList<>();
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personModelList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personModelList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personModelList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        return personModelList;
-
-    }
 
     //Get all my tournaments
     private void getMyTournaments() {
@@ -278,6 +248,116 @@ public class CoachHomeFragment extends Fragment {
 
         return trimmedString;
     }
+
+
+    //Get connections
+    private void getConnections() {
+        connectionList.clear();
+        String user_id = new PrefManager(getContext()).getUserId();
+        final String token = new PrefManager(getContext()).getToken();
+
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                if (response != null) {
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+                            JSONObject obj = object.getJSONObject("connectedUser");
+                            ConnectionModel model = new ConnectionModel();
+                            model.setConnected_uId(obj.getString("id"));
+                            model.setConnected_login(obj.getString("login"));
+                            model.setConnected_firstName(obj.getString("firstName"));
+                            model.setConnected_lastName(obj.getString("lastName"));
+                            model.setConnected_email(obj.getString("email"));
+                            model.setConnected_userType(obj.getString("userType"));
+                            model.setConnected_imageUrl(obj.getString("imageUrl"));
+                            connectionList.add(model);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setUpCoachMessage();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", arrayRequest.toString());
+        requestQueue.add(arrayRequest);
+
+
+    }
+
+    private void setUpCoachMessage() {
+
+        userCoachList.clear();
+        chatCoachList.clear();
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/messages");
+        myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+
+                    chatCoachList.add(postSnapshot.getKey());
+
+                    /*for (DataSnapshot pSnapshot1 : postSnapshot.getChildren()) {
+                          MessageModel m = pSnapshot1.getValue(MessageModel.class);
+                          if (m.getSender_id().equals(myId)) {
+                              userList.add(m);
+                          }
+                    }*/
+
+                }
+                if(chatCoachList.size()>0 && chatCoachList!=null){
+                    for (int i=0;i<chatCoachList.size();i++){
+                        String chatId = chatCoachList.get(i).split("-")[0];
+                        String chatwith_id = chatCoachList.get(i).split("-")[1];
+                        if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
+                            for (int j=0;j<connectionList.size();j++){
+                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                    userCoachList.add(connectionList.get(j));
+                                }
+                            }
+                        }
+                    }
+                    messageAdapter  =  new MessageAdapter(getContext(),userCoachList);
+                    coachMsgRecyclerview.setAdapter(messageAdapter);
+                    messageAdapter.notifyDataSetChanged();
+                }else {
+                    txtv_nomessgs.setVisibility(View.VISIBLE);
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
+
+    }
        /* Grid item spacing and padding */
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -318,17 +398,5 @@ public class CoachHomeFragment extends Fragment {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
     }
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
 
 }
