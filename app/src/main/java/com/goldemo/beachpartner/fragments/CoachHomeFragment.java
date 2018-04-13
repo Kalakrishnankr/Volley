@@ -40,13 +40,9 @@ import com.goldemo.beachpartner.adpters.ProfileAdapter;
 import com.goldemo.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
-<<<<<<< HEAD
 import com.goldemo.beachpartner.models.BpFinderModel;
-=======
 import com.goldemo.beachpartner.models.ConnectionModel;
->>>>>>> dbf04bef01c5ffecb23343c3ab21e99a56a6688a
 import com.goldemo.beachpartner.models.EventAdminModel;
-import com.goldemo.beachpartner.models.PersonModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -75,19 +71,16 @@ public class CoachHomeFragment extends Fragment {
     MessageAdapter messageAdapter;
     ProfileAdapter profileAdapter;
     private PrefManager prefManager;
-    ArrayList<PersonModel> allSampleData;
     private RecyclerView upcomingRecyclerview,coachMsgRecyclerview,pRecyclerview;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
-<<<<<<< HEAD
-    private TextView txtv_notour;
-    private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
-    private ArrayList<BpFinderModel> premiumLikesList  = new ArrayList<BpFinderModel>();
-=======
+
     private TextView txtv_notour,txtv_nomessgs;
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatCoachList = new ArrayList<>();
     private ArrayList<ConnectionModel> userCoachList = new ArrayList<>();
->>>>>>> dbf04bef01c5ffecb23343c3ab21e99a56a6688a
+    private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
+    private ArrayList<BpFinderModel> premiumLikesList  = new ArrayList<BpFinderModel>();
+
 
 
     public CoachHomeFragment() {
@@ -114,12 +107,7 @@ public class CoachHomeFragment extends Fragment {
         userSubscription = prefManager.getSubscription();
 
         View view=inflater.inflate(R.layout.fragment_coach_home, container, false);
-<<<<<<< HEAD
-        allSampleData = (ArrayList<PersonModel>) createDummyData();
         getBluebpProfiles();
-//        getLikesList();
-=======
->>>>>>> dbf04bef01c5ffecb23343c3ab21e99a56a6688a
         getMyTournaments();
         getConnections();
 

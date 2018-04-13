@@ -1,18 +1,13 @@
 package com.goldemo.beachpartner.fragments;
 
-import android.content.Context;
-
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -31,7 +26,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -112,7 +106,7 @@ public class HiFiveFragment extends Fragment {
 
 
     private void getHiFiList() {
-
+        hiFiveList.clear();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=" + "Hifi" , null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
