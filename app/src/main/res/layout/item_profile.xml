@@ -8,8 +8,8 @@
 
     <com.goldemo.beachpartner.CircularImageView
         android:id="@+id/imgProfile"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:layout_gravity="center"
         android:background="@drawable/ic_person"/>
 

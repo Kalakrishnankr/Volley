@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -65,10 +66,20 @@ public class LoginActivity extends AppCompatActivity {
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
     private String token;
+    private PrefManager pm;
+    private String registrationSuccessful;
+    private Uri intentData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        intentData = intent.getData();
+
+
+
 
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -98,6 +109,13 @@ public class LoginActivity extends AppCompatActivity {
         mInstagram          = new Instagram(this, ApiService.CLIENT_ID, ApiService.CLIENT_SECRET, ApiService.REDIRECT_URI);
 
         mInstagramSession   = mInstagram.getSession();
+        if(intentData!=null){
+            if(intentData.toString().equals("http://beachpartner.com/")){
+                Toast.makeText(this, ""+intentData.toString(), Toast.LENGTH_SHORT).show();
+                newLoginActivationAlert();
+            }
+        }
+
 
         initActivity();
 
@@ -107,6 +125,8 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void initActivity() {
+
+
 
         userName        =   (EditText) findViewById(R.id.input_username);
         password        =   (EditText) findViewById(R.id.input_password);
@@ -398,6 +418,49 @@ public class LoginActivity extends AppCompatActivity {
         requestQueue.add(objectRequest);
 
     }
+
+    private void newLoginActivationAlert() {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout             = inflater.inflate(R.layout.reg_success_layout,null);
+
+        final ImageView closeBtn        = layout.findViewById(R.id.reg_success_close_btn);
+        final Button return_to_loginBtn = layout.findViewById(R.id.return_to_LoginBtn);
+        final Button never_got_emailBtn = layout.findViewById(R.id.never_btn);
+
+
+        alert.setView(layout);
+
+
+
+        final AlertDialog alertDialog = alert.create();
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+        never_got_emailBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+
+            }
+        });
+        return_to_loginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+//                pm.saveRegistrationStatus("success");
+//                registrationSuccessful=pm.getRegistrationStatus();
+            }
+        });
+
+        alertDialog.show();
+
+    }
+
 
     //Method for get Login user info
     /*private void getUserInfo() {

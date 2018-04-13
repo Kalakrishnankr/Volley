@@ -6,7 +6,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/pop_up_card_ht"
-        android:weightSum="9"
+        android:weightSum="9.5"
         android:orientation="vertical">
         <ImageView
             android:layout_width="match_parent"
@@ -54,6 +54,12 @@
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:text="See who all are interested in you"
+            android:layout_gravity="center"/>
+        <com.goldemo.beachpartner.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="0.5"
+            android:text="Change your location"
             android:layout_gravity="center"/>
         <View
             android:layout_width="match_parent"

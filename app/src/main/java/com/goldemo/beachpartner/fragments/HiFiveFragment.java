@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.android.volley.RequestQueue;
@@ -52,7 +53,7 @@ public class HiFiveFragment extends Fragment {
     private String mParam2;
     private String user_id,user_token,userType;
     private PrefManager prefManager;
-    private ImageView noHiFiveImage;
+    private TextView noHiFiveImage;
 
 
     private ArrayList<HighFiveModel> hiFiveList = new ArrayList<HighFiveModel>();
@@ -105,12 +106,12 @@ public class HiFiveFragment extends Fragment {
         return view;
     }
     private void initList(View view) {
-        noHiFiveImage = view.findViewById(R.id.no_hiFives_image);
-        getMyTournaments();
+        noHiFiveImage = view.findViewById(R.id.no_hiFives_tv);
+        getHiFiList();
     }
 
 
-    private void getMyTournaments() {
+    private void getHiFiList() {
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=" + "Hifi" , null, new Response.Listener<JSONArray>() {
             @Override

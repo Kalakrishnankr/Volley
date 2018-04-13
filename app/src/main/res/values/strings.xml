@@ -127,4 +127,7 @@
 
 
     <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile)will also be notified</string>
+    <string name="reg_success_msg">Thanks for registering.To complete registration please check your email and click on the link(It may take up to 10 minutes). </string>
+    <string name="reg_success_return">Return to Log in</string>
+    <string name="reg_success_never">I never got the email</string>
 </resources>

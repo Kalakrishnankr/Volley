@@ -38,6 +38,7 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
 import com.goldemo.beachpartner.R;
 import com.goldemo.beachpartner.connections.ApiService;
+import com.goldemo.beachpartner.connections.PrefManager;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -344,6 +345,8 @@ public class SignUpActivity extends AppCompatActivity{
 
                                 Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
                                 clearFeilds();
+//                                PrefManager prefManager = new PrefManager(SignUpActivity.this);
+//                                prefManager.saveRegistrationStatus("pending");
                                 Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
                                 startActivity(intent);
                                 finish();

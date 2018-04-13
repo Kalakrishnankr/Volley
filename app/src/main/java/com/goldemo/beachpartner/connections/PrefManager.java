@@ -32,7 +32,18 @@ public class PrefManager {
         editor.putString("subscriptions",subscriptions);
         editor.commit();
     }
-
+//
+//    public void saveRegistrationStatus(String status){
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+//        SharedPreferences.Editor editor = sharedPreferences.edit();
+//        editor.putString("registrationStatus",status);
+//        editor.commit();
+//    }
+//
+//    public String getRegistrationStatus() {
+//        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+//        return sharedPreferences.getString("registrationStatus", "");
+//    }
 
     public String getEmail() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);

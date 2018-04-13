@@ -564,7 +564,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
