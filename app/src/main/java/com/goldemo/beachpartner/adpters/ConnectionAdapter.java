@@ -19,6 +19,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.goldemo.beachpartner.CircularImageView;
 import com.goldemo.beachpartner.R;
+import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.fragments.ChatFragmentPage;
 import com.goldemo.beachpartner.fragments.NoteFragment;
 import com.goldemo.beachpartner.models.ConnectionModel;
@@ -122,6 +123,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
                     bundle.putString("personId", model.getConnected_uId());
+                    bundle.putString("personName",model.getConnected_firstName());
+                    bundle.putString("myName",new PrefManager(mContext).getUserName());
                     chatFragmentPage.setArguments(bundle);
                     FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();

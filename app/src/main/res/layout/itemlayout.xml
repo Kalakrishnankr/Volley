@@ -2,45 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="75dp">
 
     <LinearLayout
         android:id="@+id/item"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="70dp"
         android:orientation="horizontal"
-        android:layout_margin="5dp"
-        android:weightSum="3">
+        android:weightSum="2">
 
         <!--Profile PIcture-->
-        <ImageView
+        <com.goldemo.beachpartner.CircularImageView
             android:id="@+id/chatPic"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"/>
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="5dp"
+            android:padding="5dp"/>
         
         <!--Name & Message and Active Status-->
         <LinearLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
-            android:layout_marginLeft="5dp"
+            android:padding="5dp"
             android:orientation="vertical"
-            android:weightSum="2">
+            android:weightSum="1.5">
 
             <com.goldemo.beachpartner.CustomTextView
                 android:id="@+id/pname"
                 android:layout_width="match_parent"
+                android:layout_height="0dp"
                 android:gravity="left|center"
                 android:textStyle="bold"
-                android:layout_height="0dp"
+                android:textSize="16sp"
                 android:layout_weight="1"/>
 
-            <com.goldemo.beachpartner.CustomTextView
-                android:id="@+id/pmessage"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="0.5"/>
             <com.goldemo.beachpartner.CustomTextView
                 android:id="@+id/pactive_status"
                 android:layout_width="match_parent"
@@ -61,10 +57,10 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/lightGrey"/>
+        android:background="@color/smallgrey"/>
 
 
 </LinearLayout>

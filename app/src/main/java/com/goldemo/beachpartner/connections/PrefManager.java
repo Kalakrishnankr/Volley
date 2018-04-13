@@ -24,12 +24,13 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id,String userType,String subscriptions){
+    public void saveUserDetails(String user_id,String userType,String subscriptions,String userName){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
         editor.putString("userType",userType);
         editor.putString("subscriptions",subscriptions);
+        editor.putString("userName",userName);
         editor.commit();
     }
 //
@@ -48,6 +49,10 @@ public class PrefManager {
     public String getEmail() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         return sharedPreferences.getString("Email", "");
+    }
+    public String getUserName() {
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("userName", "");
     }
 
     public String getUserId(){

@@ -242,7 +242,17 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/txtv_nomessgs"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"
+                        android:text="You have no messages" />
 
 
                     <android.support.v7.widget.RecyclerView
@@ -337,8 +347,16 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/txtv_noreqsts"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"
+                        android:text="You have no requests" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv_partners"
