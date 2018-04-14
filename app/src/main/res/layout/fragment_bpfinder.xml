@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    tools:context="com.goldemo.beachpartner.fragments.BPFinderFragment"
+    tools:context="com.beachpartnerllc.beachpartner.fragments.BPFinderFragment"
     tools:ignore="NamespaceTypo">
 
     <LinearLayout
@@ -66,7 +66,7 @@
                         android:layout_margin="10dp"
                         android:weightSum="2">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -75,7 +75,7 @@
                             android:textColor="@color/menubar"
                             android:text="Age Limit"/>
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_minAge"
                             android:textAlignment="viewEnd"
                             android:layout_width="0dp"
@@ -90,7 +90,7 @@
                             android:textSize="20sp"
                             android:gravity="center_vertical|center"
                             android:layout_weight="0.2"/>
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_maxAge"
                             android:layout_width="0dp"
                             android:textAlignment="viewStart"
@@ -111,7 +111,7 @@
                         android:layout_margin="10dp"
                         android:weightSum="3">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:text="Min"
@@ -141,7 +141,7 @@
 
 
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:text="Max"
@@ -160,7 +160,7 @@
 
         </LinearLayout>
 
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2"
@@ -189,7 +189,7 @@
                     android:layout_gravity="center_vertical"
                     android:weightSum="2">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -224,7 +224,7 @@
 
         </LinearLayout>
 
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.2"
@@ -259,7 +259,7 @@
                         android:layout_marginLeft="10dp"
                         android:weightSum="2">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
@@ -268,7 +268,7 @@
                             android:layout_weight="1"
                             android:text="Show me"/>
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_gender"
                             android:layout_width="0dp"
                             android:gravity="center_vertical"
@@ -337,7 +337,7 @@
                     android:layout_gravity="center_vertical"
                     android:weightSum="2">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -384,7 +384,7 @@
                 android:layout_gravity="center"
                 android:background="@drawable/icon_play"/>
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Play"
@@ -463,7 +463,7 @@
         android:layout_height="wrap_content"
         android:visibility="visible">
 
-        <com.goldemo.beachpartner.cardstackview.CardStackView
+        <com.beachpartnerllc.beachpartner.cardstackview.CardStackView
             android:id="@+id/activity_main_card_stack_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -484,7 +484,7 @@
             app:translationDiff="8"
             app:visibleCount="4">
 
-        </com.goldemo.beachpartner.cardstackview.CardStackView>
+        </com.beachpartnerllc.beachpartner.cardstackview.CardStackView>
 
         <ProgressBar
             android:id="@+id/activity_main_progress_bar"
@@ -648,20 +648,20 @@
                                     android:orientation="vertical"
                                     android:weightSum="3">
 
-                                    <com.goldemo.beachpartner.CustomTextView
+                                    <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:text="EVP indoor Volleyball"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
-                                    <com.goldemo.beachpartner.CustomTextView
+                                    <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:text="JVP indoor Volleyball"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
 
-                                    <com.goldemo.beachpartner.CustomTextView
+                                    <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:text="EVP indoor Volleyball "
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
@@ -689,7 +689,7 @@
                                     android:layout_weight="1.2"
                                     android:background="@drawable/ic_badge"/>
 
-                                <com.goldemo.beachpartner.CustomTextView
+                                <com.beachpartnerllc.beachpartner.CustomTextView
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
                                     android:gravity="center"
@@ -778,7 +778,7 @@
                         android:layout_below="@id/llmonthview"
                         android:layout_weight="5">
 
-                        <com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView
+                        <com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView
                             xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/compactcalendar_view"
                             android:layout_width="match_parent"

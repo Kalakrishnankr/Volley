@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.goldemo.beachpartner.utils.RotateLoading
+        <com.beachpartnerllc.beachpartner.utils.RotateLoading
             android:id="@+id/prsbar"
             android:layout_width="65dp"
             android:layout_height="65dp"
@@ -45,7 +45,7 @@
                 android:layout_alignParentBottom="true"/>
 
 
-            <com.goldemo.beachpartner.utils.RotateLoading
+            <com.beachpartnerllc.beachpartner.utils.RotateLoading
                 android:id="@+id/my_spinner"
                 android:layout_width="65dp"
                 android:layout_height="65dp"

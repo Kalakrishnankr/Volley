@@ -16,7 +16,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -36,7 +36,7 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
@@ -44,7 +44,7 @@
                 android:text="@string/hint_key"/>
 
 
-            <com.goldemo.beachpartner.CustomEditText
+            <com.beachpartnerllc.beachpartner.CustomEditText
                 android:id="@+id/edittxt_key"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -62,7 +62,7 @@
             android:layout_marginRight="5dp"
             android:weightSum="2">
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
@@ -70,7 +70,7 @@
                 android:text="@string/hint_newpassword"/>
 
 
-            <com.goldemo.beachpartner.CustomEditText
+            <com.beachpartnerllc.beachpartner.CustomEditText
                 android:id="@+id/edittxt_newPassword"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -90,7 +90,7 @@
             android:layout_marginRight="5dp"
             android:weightSum="2">
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.8"
@@ -98,7 +98,7 @@
                 android:text="@string/hint_confirm_pwd"/>
 
 
-            <com.goldemo.beachpartner.CustomEditText
+            <com.beachpartnerllc.beachpartner.CustomEditText
                 android:id="@+id/edittxt_confirmPassword"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -125,7 +125,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.4"/>
 
-            <com.goldemo.beachpartner.CustomButton
+            <com.beachpartnerllc.beachpartner.CustomButton
                 android:id="@+id/btn_resetCancel"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -139,7 +139,7 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.2"/>
 
-            <com.goldemo.beachpartner.CustomButton
+            <com.beachpartnerllc.beachpartner.CustomButton
                 android:id="@+id/btn_resetOk"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"

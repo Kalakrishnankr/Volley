@@ -23,7 +23,7 @@
                 android:layout_marginTop="5dp"
                 android:orientation="vertical">
 
-                <com.goldemo.beachpartner.CircularImageView
+                <com.beachpartnerllc.beachpartner.CircularImageView
                     android:id="@+id/imgUserpic"
                     android:layout_width="50dp"
                     android:layout_height="50dp"/>
@@ -36,7 +36,7 @@
                 android:layout_weight="0.3">
 
 
-                <com.goldemo.beachpartner.CustomTextView
+                <com.beachpartnerllc.beachpartner.CustomTextView
                     android:id="@+id/txtv_uname"
                     android:layout_gravity="center"
                     android:textAlignment="center"

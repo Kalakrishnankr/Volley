@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@color/white"
-    tools:context="com.goldemo.beachpartner.fragments.ConnectionFragment">
+    tools:context="com.beachpartnerllc.beachpartner.fragments.ConnectionFragment">
 
     <!-- TODO: Update blank fragment layout -->
     

@@ -35,7 +35,7 @@
                     android:layout_marginTop="10dp"
                     android:weightSum="2">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -72,7 +72,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/college_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -80,7 +80,7 @@
                         android:text="@string/description"
                         android:textStyle="bold" />
 
-                    <com.goldemo.beachpartner.CustomEditText
+                    <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtv_description"
                         android:enabled="false"
                         android:layout_width="0dp"
@@ -111,7 +111,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/description_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -120,7 +120,7 @@
                         android:textStyle="bold" />
 
 
-                    <com.goldemo.beachpartner.CustomEditText
+                    <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtv_years_running"
                         android:enabled="false"
                         android:layout_width="0dp"
@@ -154,7 +154,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/years_running_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -162,7 +162,7 @@
                         android:text="@string/no_of_athletes"
                         android:textStyle="bold" />
 
-                    <com.goldemo.beachpartner.CustomEditText
+                    <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtv_no_athletes"
                         android:enabled="false"
                         android:layout_width="0dp"
@@ -194,7 +194,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/no_of_athletes_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -202,7 +202,7 @@
                         android:text="@string/prog_offered"
                         android:textStyle="bold" />
 
-                    <com.goldemo.beachpartner.CustomEditText
+                    <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtv_prog_offered"
                         android:enabled="false"
                         android:layout_width="0dp"
@@ -238,7 +238,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/prog_offered_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -246,7 +246,7 @@
                         android:text="@string/Division"
                         android:textStyle="bold" />
 
-                    <com.goldemo.beachpartner.CustomEditText
+                    <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtv_division"
                         android:enabled="false"
                         android:layout_width="0dp"
@@ -279,7 +279,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/division_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
@@ -321,7 +321,7 @@
                     android:weightSum="2"
                     android:layout_below="@+id/program_funding_lt">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -364,7 +364,7 @@
                     android:layout_below="@+id/share_athletes_bw_lt"
                     android:weightSum="2">
 
-                    <com.goldemo.beachpartner.CustomButton
+                    <com.beachpartnerllc.beachpartner.CustomButton
                         android:id="@+id/btn_cancel"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -380,7 +380,7 @@
                         android:layout_width="5dp"
                         android:layout_height="match_parent" />
 
-                    <com.goldemo.beachpartner.CustomButton
+                    <com.beachpartnerllc.beachpartner.CustomButton
                         android:id="@+id/btn_save"
                         android:layout_width="0dp"
                         android:textAlignment="center"

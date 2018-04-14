@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="5">
-            <com.goldemo.beachpartner.calendar.compactcalendarview.CompactCalendarView
+            <com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/compactcalendar_view"
                 android:layout_width="fill_parent"

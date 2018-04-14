@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="@dimen/textsize_header"
@@ -25,7 +25,7 @@
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-        <com.goldemo.beachpartner.CustomEditText
+        <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_firstname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -41,7 +41,7 @@
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-        <com.goldemo.beachpartner.CustomEditText
+        <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_lastname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -56,7 +56,7 @@
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-        <com.goldemo.beachpartner.CustomEditText
+        <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -72,7 +72,7 @@
         android:layout_weight="1"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-        <com.goldemo.beachpartner.CustomEditText
+        <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

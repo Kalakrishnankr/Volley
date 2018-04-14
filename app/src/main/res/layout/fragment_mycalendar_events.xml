@@ -36,7 +36,7 @@
                     android:layout_gravity="center"
                     android:background="@drawable/ic_star" />
 
-                <com.goldemo.beachpartner.CustomTextView
+                <com.beachpartnerllc.beachpartner.CustomTextView
                     android:id="@+id/my_event_name"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -87,7 +87,7 @@
                             android:layout_weight="1"
                             android:paddingLeft="10dp">
 
-                            <com.goldemo.beachpartner.CustomTextView
+                            <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:gravity="center_vertical"
@@ -101,7 +101,7 @@
                             android:layout_weight="1"
                             android:paddingLeft="10dp">
 
-                            <com.goldemo.beachpartner.CustomTextView
+                            <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:id="@+id/my_tv_location"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -122,7 +122,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="10dp">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
@@ -136,7 +136,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="10dp">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/my_tv_venue"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -156,7 +156,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="10dp">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:gravity="center_vertical"
@@ -170,7 +170,7 @@
                         android:layout_weight="1"
                         android:paddingLeft="10dp">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/my_tv_admin"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -207,13 +207,13 @@
                         android:layout_marginLeft="39dp"
                         android:weightSum="1">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:text="Start Date:"
                             android:gravity="center"
                             android:layout_weight="0.5"/>
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/my_tv_startDate"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -246,13 +246,13 @@
                         android:layout_marginRight="39dp"
                         android:weightSum="1">
 
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:text="End Date:"
                             android:gravity="center"
                             android:layout_weight="0.5"/>
-                        <com.goldemo.beachpartner.CustomTextView
+                        <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/my_tv_endDate"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
@@ -315,7 +315,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0.5" />
 
-                        <com.goldemo.beachpartner.CustomButton
+                        <com.beachpartnerllc.beachpartner.CustomButton
                             android:id="@+id/my_btn_invite_partner"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
@@ -331,7 +331,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0.2" />
 
-                        <com.goldemo.beachpartner.CustomButton
+                        <com.beachpartnerllc.beachpartner.CustomButton
                             android:id="@+id/my_btn_back"
                             android:layout_width="0dp"
                             android:layout_height="30dp"
@@ -376,7 +376,7 @@
                     android:layout_weight="0.8"
                     android:layout_marginLeft="20dp">
 
-                    <com.goldemo.beachpartner.CustomTextView
+                    <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center_vertical"

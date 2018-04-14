@@ -17,7 +17,7 @@
                 android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
                 android:layout_margin="5dp" />
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:id="@+id/tvContact"
                 android:layout_width="match_parent"
                 android:layout_margin="5dp"

@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.goldemo.beachpartner.fragments.NoteFragment">
+    tools:context="com.beachpartnerllc.beachpartner.fragments.NoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -21,7 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center">
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Notes"

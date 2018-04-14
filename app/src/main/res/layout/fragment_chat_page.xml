@@ -7,7 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
-    tools:context="com.goldemo.beachpartner.fragments.ChatFragmentPage">
+    tools:context="com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage">
 
     <ScrollView
         android:layout_width="match_parent"

@@ -12,7 +12,7 @@
         android:weightSum="2">
 
         <!--Profile PIcture-->
-        <com.goldemo.beachpartner.CircularImageView
+        <com.beachpartnerllc.beachpartner.CircularImageView
             android:id="@+id/chatPic"
             android:layout_width="60dp"
             android:layout_height="60dp"
@@ -28,7 +28,7 @@
             android:orientation="vertical"
             android:weightSum="1.5">
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:id="@+id/pname"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -37,7 +37,7 @@
                 android:textSize="16sp"
                 android:layout_weight="1"/>
 
-            <com.goldemo.beachpartner.CustomTextView
+            <com.beachpartnerllc.beachpartner.CustomTextView
                 android:id="@+id/pactive_status"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -48,7 +48,7 @@
 
        <!-- Time-->
 
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:id="@+id/txtv_time"
             android:layout_width="0dp"
             android:layout_height="match_parent"

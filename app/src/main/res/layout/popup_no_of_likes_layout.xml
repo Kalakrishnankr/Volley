@@ -37,25 +37,25 @@
             android:textColor="@color/cyan"
             android:text="$50.00/Month"
             android:gravity="center"/>
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:text="Get more High Fives"
             android:layout_gravity="center"/>
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:text="Get unlimited Swipes"
             android:layout_gravity="center"/>
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"
             android:text="See who all are interested in you"
             android:layout_gravity="center"/>
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="0.5"

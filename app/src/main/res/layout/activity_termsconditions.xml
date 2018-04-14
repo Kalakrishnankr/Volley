@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="@drawable/bgimage"
-    tools:context="com.goldemo.beachpartner.activity.TermsConditionsActivity">
+    tools:context="com.beachpartnerllc.beachpartner.activity.TermsConditionsActivity">
 
     <ImageView
         android:layout_width="75dp"
@@ -24,7 +24,7 @@
         android:orientation="vertical"
         android:weightSum="3">
 
-        <com.goldemo.beachpartner.CustomTextView
+        <com.beachpartnerllc.beachpartner.CustomTextView
             android:id="@+id/tc"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -44,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <com.goldemo.beachpartner.CustomTextView
+                <com.beachpartnerllc.beachpartner.CustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
@@ -75,7 +75,7 @@
 
 
 
-        <com.goldemo.beachpartner.CustomButton
+        <com.beachpartnerllc.beachpartner.CustomButton
             android:id="@+id/btnContinue"
             android:layout_width="match_parent"
             android:layout_height="0dp"
