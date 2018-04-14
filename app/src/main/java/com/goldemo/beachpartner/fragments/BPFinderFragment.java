@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -57,12 +58,17 @@ import com.goldemo.beachpartner.connections.ApiService;
 import com.goldemo.beachpartner.connections.PrefManager;
 import com.goldemo.beachpartner.models.BpFinderModel;
 import com.ramotion.foldingcell.FoldingCell;
+import com.squareup.okhttp.MediaType;
+import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Request;
+import com.squareup.okhttp.RequestBody;
 import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -93,6 +99,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private AutoCompleteTextView spinner_location;
     private MultiSlider age_bar;
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
 
     public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
@@ -474,6 +482,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 }else {
                     //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
                     cardHifiSwiped(reqPersonId);
+                    JSONArray r =new JSONArray();
+                    r.put(reqPersonId);
+                    sendMessage(r,"Hello","Hi i am Coach","","get over here");
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
@@ -1335,5 +1346,62 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 dialog.dismiss();
             }
         });
+    }
+
+    //push notification
+    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    OkHttpClient mClient = new OkHttpClient();
+
+    public void sendMessage(final JSONArray recipients, final String title, final String body, final String icon, final String message) {
+
+        new AsyncTask<String, String, String>() {
+            @Override
+            protected String doInBackground(String... params) {
+                try {
+                    JSONObject root = new JSONObject();
+                    JSONObject notification = new JSONObject();
+                    notification.put("body", body);
+                    notification.put("title", title);
+                    notification.put("icon", icon);
+
+                    JSONObject data = new JSONObject();
+                    data.put("message", message);
+                    root.put("notification", notification);
+                    root.put("data", data);
+                    root.put("registration_ids", recipients);
+
+                    String result = postToFCM(root.toString());
+                    return result;
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+                try {
+                    JSONObject resultJson = new JSONObject(result);
+                    int success, failure;
+                    success = resultJson.getInt("success");
+                    failure = resultJson.getInt("failure");
+                    Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                }
+            }
+        }.execute();
+    }
+
+    String postToFCM(String bodyString) throws IOException {
+        RequestBody body = RequestBody.create(JSON,bodyString);
+        Request request = new Request.Builder()
+                .url(FCM_MESSAGE_URL)
+                .post(body)
+                .addHeader("Authorization", "key=" + "AIzaSyBe5qWIT32wbwM1kvyOKFgDcbcBRtfmT2Q")
+                .build();
+        com.squareup.okhttp.Response response = mClient.newCall(request).execute();
+        return response.body().string();
     }
 }
