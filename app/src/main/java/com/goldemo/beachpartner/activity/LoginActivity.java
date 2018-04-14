@@ -7,7 +7,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.Gravity;
@@ -66,9 +71,10 @@ public class LoginActivity extends AppCompatActivity {
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
     private String token;
-    private PrefManager pm;
     private String registrationSuccessful;
-    private Uri intentData;
+    private String intentUrlString;
+    private TextView  never_got_email_tv;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,10 +82,12 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         Intent intent = getIntent();
         String action = intent.getAction();
-        intentData = intent.getData();
+        intentUrlString = intent.getDataString();
 
 
-
+        if(new PrefManager(getApplicationContext()).getRegistrationStatus()!=null){
+            registrationSuccessful=new PrefManager(getApplicationContext()).getRegistrationStatus();
+        }
 
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -109,9 +117,9 @@ public class LoginActivity extends AppCompatActivity {
         mInstagram          = new Instagram(this, ApiService.CLIENT_ID, ApiService.CLIENT_SECRET, ApiService.REDIRECT_URI);
 
         mInstagramSession   = mInstagram.getSession();
-        if(intentData!=null){
-            if(intentData.toString().equals("http://beachpartner.com/")){
-                Toast.makeText(this, ""+intentData.toString(), Toast.LENGTH_SHORT).show();
+        if((intentUrlString!=null)||(registrationSuccessful!="")){
+            if((intentUrlString=="http://beachpartner.com/")||registrationSuccessful.equalsIgnoreCase("pending")){
+                Toast.makeText(this, ""+intentUrlString, Toast.LENGTH_SHORT).show();
                 newLoginActivationAlert();
             }
         }
@@ -424,11 +432,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void newLoginActivationAlert() {
 
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        View layout             = inflater.inflate(R.layout.reg_success_layout,null);
+        AlertDialog.Builder alert   = new AlertDialog.Builder(this);
+        LayoutInflater inflater     = this.getLayoutInflater();
+        View layout                 = inflater.inflate(R.layout.reg_success_layout,null);
 
-        final ImageView closeBtn        = layout.findViewById(R.id.reg_success_close_btn);
         final Button return_to_loginBtn = layout.findViewById(R.id.return_to_LoginBtn);
         final Button never_got_emailBtn = layout.findViewById(R.id.never_btn);
 
@@ -438,15 +445,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
         final AlertDialog alertDialog = alert.create();
-        closeBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                alertDialog.dismiss();
-            }
-        });
+
         never_got_emailBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                neverGotEmailAlert();
                 alertDialog.dismiss();
 
             }
@@ -455,8 +458,8 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
-//                pm.saveRegistrationStatus("success");
-//                registrationSuccessful=pm.getRegistrationStatus();
+//                new PrefManager(LoginActivity.this).saveRegistrationStatus("success");
+//                registrationSuccessful=  new PrefManager(LoginActivity.this).getRegistrationStatus();
             }
         });
 
@@ -464,7 +467,42 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    private void neverGotEmailAlert() {
 
+        AlertDialog.Builder alert   = new AlertDialog.Builder(this);
+        LayoutInflater inflater     = this.getLayoutInflater();
+        View layout                 = inflater.inflate(R.layout.never_got_the_email_alert_layout,null);
+        never_got_email_tv          = layout.findViewById(R.id.never_got_text);
+        neverGotEmailAlertTextUnderline();
+        alert.setView(layout);
+
+
+        final AlertDialog alertDialog = alert.create();
+
+        alertDialog.show();
+
+    }
+
+private void neverGotEmailAlertTextUnderline(){
+    SpannableString ss = new SpannableString(getResources().getString(R.string.never_got_the_email_msg));
+    ClickableSpan clickableSpan = new ClickableSpan() {
+        @Override
+        public void onClick(View textView) {
+            Toast.makeText(LoginActivity.this, "Clicked on contact Us ", Toast.LENGTH_SHORT).show();
+        }
+
+        public void updateDrawState(TextPaint ds) {
+            super.updateDrawState(ds);
+            ds.setUnderlineText(true);
+        }
+    };
+    ss.setSpan(clickableSpan, 133, 143, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+
+    never_got_email_tv.setText(ss);
+    never_got_email_tv.setMovementMethod(LinkMovementMethod.getInstance());
+
+}
     //Method for get Login user info
     /*private void getUserInfo() {
 

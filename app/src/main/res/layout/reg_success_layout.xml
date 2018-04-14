@@ -1,76 +1,85 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="11"
+    android:layout_height="400dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:gravity="right|center">
-        <ImageView
-            android:id="@+id/reg_success_close_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/com_facebook_close" />
+        android:layout_height="match_parent"
+        android:weightSum="9"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="4">
+            <ImageView
+                android:id="@+id/happy_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/got_email"
+                android:layout_margin="30dp"
+                android:layout_below="@+id/close_btn"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="2">
+            <com.goldemo.beachpartner.CustomTextView
+                android:id="@+id/succes_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginRight="10dp"
+                android:layout_marginLeft="10dp"
+                android:text="@string/reg_success_msg"
+                android:textColor="@color/black"
+                android:gravity="center"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <com.goldemo.beachpartner.CustomButton
+                android:id="@+id/return_to_LoginBtn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:textAllCaps="false"
+                android:text="@string/reg_success_return"
+                android:background="@drawable/bg_button_save_settings"/>
+        </LinearLayout>
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1">
+            <com.goldemo.beachpartner.CustomButton
+                android:id="@+id/never_btn"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textColor="@color/white"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:layout_marginRight="10dp"
+                android:textAllCaps="false"
+                android:layout_below="@+id/check_email_btn"
+                android:text="@string/reg_success_never"
+                android:background="@drawable/bg_button_save_settings"/>
+        </LinearLayout>
+
     </LinearLayout>
 
-    <ImageView
-        android:id="@+id/happy_img"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="4"
-        android:background="@drawable/got_email"
-        android:layout_below="@+id/close_btn"/>
-    <com.goldemo.beachpartner.CustomTextView
-        android:id="@+id/succes_text"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2"
-        android:text="@string/reg_success_msg"
-        android:textColor="@color/black"
-        android:gravity="center"/>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <com.goldemo.beachpartner.CustomButton
-            android:id="@+id/return_to_LoginBtn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/reg_success_return"
-            android:background="@drawable/bg_button_save_settings"/>
-    </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        <com.goldemo.beachpartner.CustomButton
-            android:id="@+id/never_btn"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textColor="@color/white"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginRight="10dp"
-            android:layout_below="@+id/check_email_btn"
-            android:text="@string/reg_success_never"
-            android:background="@drawable/bg_button_save_settings"/>
-    </LinearLayout>
-    <Space
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"/>
 
 
 </LinearLayout>

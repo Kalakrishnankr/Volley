@@ -345,8 +345,8 @@ public class SignUpActivity extends AppCompatActivity{
 
                                 Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
                                 clearFeilds();
-//                                PrefManager prefManager = new PrefManager(SignUpActivity.this);
-//                                prefManager.saveRegistrationStatus("pending");
+                                PrefManager prefManager = new PrefManager(SignUpActivity.this);
+                                prefManager.saveRegistrationStatus("pending");
                                 Intent intent = new Intent(SignUpActivity.this,LoginActivity.class);
                                 startActivity(intent);
                                 finish();
