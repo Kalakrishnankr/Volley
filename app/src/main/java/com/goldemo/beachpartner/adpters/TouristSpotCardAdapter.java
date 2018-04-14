@@ -58,11 +58,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
 
-        holder.name.setText(spot.getBpf_firstName()+","+spot.getBpf_age());
+        holder.name.setText(spot.getBpf_firstName()+" , "+spot.getBpf_age());
         holder.userType.setText(spot.getBpf_userType());
-        Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
-
-
+        if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
+            Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
+        }
        /* Video Tag onclick listener start*/
 
         holder.image.setOnTouchListener(new View.OnTouchListener() {
@@ -74,10 +74,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 holder.videoView.setVisibility(View.VISIBLE);
-                if(spot.getBpf_videoUrl()!=null){
+                if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equals("null")){
                   holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
                   playvideo(holder);
-
                 }
                 // dialog.setMessage("Please wait");
                 myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
