@@ -393,9 +393,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                new PrefManager(getContext()).savePageno(-1);
-                getBpProfiles();
+                if (getActivity() != null) {
+                    new PrefManager(getContext()).savePageno(-1);
+                    getBpProfiles();
+                }
 
                 location    =   spinner_location.getText().toString().trim();
                 sgender     =   txtv_gender.getText().toString();
@@ -403,7 +404,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
-                if (minAge >= 5 && maxAge <= 100) {
+                if ((minAge >= 5 && maxAge <= 100) && !(minAge == maxAge)) {
                     if (sgender.equals("Both")) {
                         sgender = "";
                     }
@@ -603,7 +604,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_id(jsonObject.getString("id"));
                                     finderModel.setBpf_login(jsonObject.getString("login"));
                                     finderModel.setBpf_userProfile(jsonObject.getString("userProfile"));
-                                    finderModel.setBpf_subscriptions(jsonObject.getString("subscriptions"));
+                                   // finderModel.setBpf_subscriptions(jsonObject.getString("subscriptions"));
                                     finderModel.setBpf_firstName(jsonObject.getString("firstName"));
                                     finderModel.setBpf_lastName(jsonObject.getString("lastName"));
                                     finderModel.setBpf_email(jsonObject.getString("email"));
@@ -1090,10 +1091,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             }
 
                             if(bluebpListSecond!=null && bluebpListSecond.size()>0){
-                                new PrefManager(getContext()).savePageno(pageno);
-                                blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpListSecond);
-                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
-
+                                if(getActivity()!=null){
+                                    new PrefManager(getContext()).savePageno(pageno);
+                                    blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpListSecond);
+                                    rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                                }
                             }
                         }else {
                             new PrefManager(getContext()).savePageno(-1);

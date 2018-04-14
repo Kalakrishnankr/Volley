@@ -16,7 +16,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -117,7 +116,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     private OnClickListener mOnClickListener;
     private VideoView videoView;
-    private Uri selectedImageUri, selectedVideoUri, screenshotUri;
+    private Uri selectedImageUri, selectedVideoUri, screenshotUri,screenshotVideoUri;
     private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
@@ -269,17 +268,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
                 if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
                     if (selectedImageUri != null) {
                         screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
+                        intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        intent.setType("image/*");
+                        startActivity(Intent.createChooser(intent, "Share image via..."));
                     } else if (userDataModel.getImageUrl() != null) {
                         screenshotUri = Uri.parse(userDataModel.getImageUrl());
+                        String type="image";
+                        saveFiles(screenshotUri,type);
                     }
-                    saveImage(screenshotUri);
-                    intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                    intent.setType("image/*");
-                    startActivity(Intent.createChooser(intent, "Share image via..."));
+
 
                 } else {
                     Toast.makeText(getActivity(), "Please upload Image and share it", Toast.LENGTH_SHORT).show();
@@ -293,13 +294,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Video", Toast.LENGTH_SHORT).show();
-                if (selectedVideoUri != null) {
-                    Intent intent = new Intent(Intent.ACTION_SEND);
-                    intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
-                    Uri screenshotUri = Uri.parse(String.valueOf(selectedVideoUri));
-                    intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                    intent.setType("video/*");
-                    startActivity(Intent.createChooser(intent, "Share video via..."));
+                if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
+                    if (selectedVideoUri != null) {
+                        screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
+                        intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
+                        intent.setType("video/*");
+                        startActivity(Intent.createChooser(intent, "Share video via..."));
+                    } else if (userDataModel.getVideoUrl() != null) {
+                        screenshotVideoUri = Uri.parse(userDataModel.getVideoUrl());
+                        String type="video";
+                        saveFiles(screenshotVideoUri,type);
+                    }
+
 
                 } else {
                     Toast.makeText(getActivity(), "Please upload Video and share it", Toast.LENGTH_SHORT).show();
@@ -718,30 +726,55 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
     //Method for save image in card
-    private void saveImage(Uri screenshotUri) {
+    private void saveFiles(Uri screenshotUri,String type) {
 
-        boolean saveVideo = checkExternalDrivePermission(REQUEST_SAVEIMGTODRIVE);
-        if(saveVideo){
-            File direct = new File(Environment.getExternalStorageDirectory()
+        boolean saveFile = checkExternalDrivePermission(REQUEST_SAVEIMGTODRIVE);
+        if(saveFile){
+           /* File direct = new File(Environment.getExternalStorageDirectory()
                     + "BP");
 
             if (!direct.exists()) {
                 direct.mkdirs();
-            }
+            }*/
             DownloadManager mgr = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
 
             Uri downloadUri = Uri.parse(String.valueOf(screenshotUri));
-            DownloadManager.Request request = new DownloadManager.Request(
-                    downloadUri);
 
-            request.setAllowedNetworkTypes(
-                    DownloadManager.Request.NETWORK_WIFI
-                            | DownloadManager.Request.NETWORK_MOBILE)
-                    .setAllowedOverRoaming(false).setTitle("Demo")
-                    .setDescription("Something useful. No, really.")
-                    .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_profile.jpg");
+            if (type.equals("image")) {
+                DownloadManager.Request request = new DownloadManager.Request(
+                        downloadUri);
+                request.setAllowedNetworkTypes(
+                        DownloadManager.Request.NETWORK_WIFI
+                                | DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false).setTitle("Save File")
+                        .setDescription("Something useful. No, really.")
+                        .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_IMG.jpg");
 
-            mgr.enqueue(request);
+                mgr.enqueue(request);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
+                intent.putExtra(Intent.EXTRA_STREAM, System.currentTimeMillis()+"_IMG.jpg");
+                intent.setType("image/*");
+                startActivity(Intent.createChooser(intent, "Share image via..."));
+
+            } else if (type.equals("video")) {
+                DownloadManager.Request request = new DownloadManager.Request(
+                        downloadUri);
+                request.setAllowedNetworkTypes(
+                        DownloadManager.Request.NETWORK_WIFI
+                                | DownloadManager.Request.NETWORK_MOBILE)
+                        .setAllowedOverRoaming(false).setTitle("Save File")
+                        .setDescription("Something useful. No, really.")
+                        .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_VIDEO.mp4");
+
+                mgr.enqueue(request);
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
+                intent.putExtra(Intent.EXTRA_STREAM, System.currentTimeMillis()+"_VIDEO.mp4");
+                intent.setType("video/*");
+                startActivity(Intent.createChooser(intent, "Share video via..."));
+            }
+
         }
 
     }

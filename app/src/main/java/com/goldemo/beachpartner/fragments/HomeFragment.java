@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts;
     private String user_id,user_token,userType;
     private PrefManager prefManager;
+    private LinearLayout ucoming_next,message_next,request_next;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
     private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
@@ -115,6 +117,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void initView(View view) {
 
+        //Next buttons
+        ucoming_next    =   (LinearLayout)view.findViewById(R.id.upcome_next_button);
+        message_next    =   (LinearLayout)view.findViewById(R.id.mess_next_button);
+        request_next    =   (LinearLayout)view.findViewById(R.id.req_next_button);
+
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
         txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
@@ -136,6 +143,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         img_send.setOnClickListener(this);
         img_received.setOnClickListener(this);
         likesCard.setOnClickListener(this);
+
+        ucoming_next.setOnClickListener(this);
+        message_next.setOnClickListener(this);
+        request_next.setOnClickListener(this);
 
 
 
@@ -195,6 +206,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.no_of_likes_card:
                 likesDisplay();
+                break;
+            case R.id.upcome_next_button:
+
+                break;
+            case R.id.mess_next_button:
+                break;
+            case R.id.req_next_button:
                 break;
 
             default:
