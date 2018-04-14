@@ -45,6 +45,7 @@ import com.goldemo.beachpartner.instagram.InstagramSession;
 import com.goldemo.beachpartner.instagram.InstagramUser;
 import com.goldemo.beachpartner.models.UserDataModel;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -284,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
                                     UserDataModel userDataModel = new UserDataModel();
                                     userDataModel.setId(userObj.getString("id"));
                                     userDataModel.setLogin(userObj.getString("login"));
-                                    userDataModel.setSubscriptions(userObj.getString("subscriptions"));
+                                    //userDataModel.setSubscriptions(userObj.getString("subscriptions"));
                                     userDataModel.setFirstName(userObj.getString("firstName"));
                                     userDataModel.setLastName(userObj.getString("lastName"));
                                     userDataModel.setEmail(userObj.getString("email"));
@@ -297,19 +298,30 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setCity(userObj.getString("city"));
                                     userDataModel.setPhoneNumber(userObj.getString("phoneNumber"));
                                     userDataModel.setLocation(userObj.getString("location"));
-                                    userDataModel.setAge(userObj.getString("age"));
+                                    //userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
+
+                                    JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
+                                    for(int i=0;i<jsonArray.length();i++){
+                                        JSONObject obj = jsonArray.getJSONObject(i);
+                                        userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
+                                        userDataModel.setEffectiveDate(obj.getString("effectiveDate"));
+                                        userDataModel.setTermDate(obj.getString("termDate"));
+                                        userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
+
+                                    }
+
 
 
 
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
-                                    String subScription=userObj.getString("subscriptions");
+                                   // String subScription=userObj.getString("subscriptions");
                                     String uProfileStatus = userObj.getString("userProfile");
                                     String userName = userObj.getString("firstName");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription,userName);
+                                    //new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription,userName);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation

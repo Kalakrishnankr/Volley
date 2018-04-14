@@ -24,6 +24,13 @@
             android:layout_alignParentTop="true"
             android:background="#000">
 
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:visibility="gone"/>
+
             <ImageView
                 android:id="@+id/imgVideo"
                 android:layout_width="20dp"
@@ -194,7 +201,6 @@
                 android:layout_centerHorizontal="true"
                 android:drawableLeft="@drawable/ic_athlete_indicator"
                 android:gravity="center"
-                android:text="Athlete"
                 android:textColor="#696969" />
 
             <com.goldemo.beachpartner.CustomTextView

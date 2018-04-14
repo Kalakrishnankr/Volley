@@ -4,6 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,11 +74,13 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 holder.videoView.setVisibility(View.VISIBLE);
-                holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
-               // dialog.setMessage("Please wait");
+                if(spot.getBpf_videoUrl()!=null){
+                  holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
+                  playvideo(holder);
+
+                }
+                // dialog.setMessage("Please wait");
                 myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
-                //holder.videoView.start();
-                playvideo(holder);
                 return false;
             }
         });
@@ -95,14 +98,15 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         });
 
 
-
-
-
         //End video tag here 8/02/2018
 
 
         return contentView;
     }
+
+
+
+
 
     @Override
     public long getItemId(int position) {
@@ -141,6 +145,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         public VideoView videoView;
         public RotateLoading spinnerView,progressBar;
         public Button info;
+        public CardView swipe_card;
 
         public ViewHolder(View view) {
             name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
@@ -150,6 +155,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             progressBar =   (RotateLoading)view.findViewById(R.id.prsbar);
             info        =   (Button)view.findViewById(R.id.btnInfo);
 
+            swipe_card  =   (CardView) view.findViewById(R.id.swipe_card);
             spinnerView =  (RotateLoading)view.findViewById(R.id.my_spinner);
 
         }

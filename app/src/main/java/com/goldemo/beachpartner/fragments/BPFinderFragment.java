@@ -232,7 +232,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         rcv_bpProfiles.setLayoutManager(lmnger);
         rcv_bpProfiles.setHasFixedSize(true);
 
-
         addLocation();
 
         showPreviousMonthButton.setOnClickListener(new View.OnClickListener() {
