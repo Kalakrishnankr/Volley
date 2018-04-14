@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 27
     defaultConfig {
-        applicationId "com.goldemo.beachpartner"
+        applicationId "com.beachpartnerllc.beachpartner"
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
@@ -57,4 +57,5 @@ dependencies {
     compile 'com.github.vihtarb:tooltip:0.1.9'
     compile 'com.firebase:firebase-client-android:2.5.2+'
     compile 'com.github.vihtarb:tooltip:0.1.9'
+    compile 'com.squareup.okhttp:okhttp:2.5.0'
 }
