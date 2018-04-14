@@ -548,7 +548,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             jsonObjectMore.put("tournamentLevelInterest",null);
             jsonObjectMore.put("toursPlayedIn", null);
             jsonObjectMore.put("usaVolleyballRanking", null);
-            jsonObjectMore.put("userId", user_id);
             jsonObjectMore.put("willingToTravel", null);
             jsonObjectMore.put("yearsRunning",years_running.getText().toString().trim());
 
@@ -564,7 +563,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.POST_USER_MORE_INFO, jsonObjectMore,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO+"/"+user_id, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {

@@ -292,7 +292,7 @@ public class LoginActivity extends AppCompatActivity {
                                     UserDataModel userDataModel = new UserDataModel();
                                     userDataModel.setId(userObj.getString("id"));
                                     userDataModel.setLogin(userObj.getString("login"));
-                                    userDataModel.setSubscriptions(userObj.getString("subscriptions"));
+                                   // userDataModel.setSubscriptions(userObj.getString("subscriptions"));
                                     userDataModel.setFirstName(userObj.getString("firstName"));
                                     userDataModel.setLastName(userObj.getString("lastName"));
                                     userDataModel.setEmail(userObj.getString("email"));
@@ -312,12 +312,12 @@ public class LoginActivity extends AppCompatActivity {
 
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
-                                    String subScription=userObj.getString("subscriptions");
+                                   // String subScription=userObj.getString("subscriptions");
                                     String uProfileStatus = userObj.getString("userProfile");
                                     String userName = userObj.getString("firstName");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription,userName);
+                                    //new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,subScription,userName);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
