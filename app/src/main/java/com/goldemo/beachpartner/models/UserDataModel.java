@@ -57,6 +57,52 @@ public class UserDataModel {
     private String programsOffered;
     private String division;
     private String fundingStatus;
+    private String subscriptionType;
+    private String effectiveDate;
+    private String termDate;
+    private String daysToExpireSubscription;
+
+    public String getSubscriptionType() {
+        return subscriptionType;
+    }
+
+    public void setSubscriptionType(String subscriptionType) {
+        this.subscriptionType = subscriptionType;
+    }
+
+    public String getEffectiveDate() {
+        return effectiveDate;
+    }
+
+    public void setEffectiveDate(String effectiveDate) {
+        this.effectiveDate = effectiveDate;
+    }
+
+    public String getTermDate() {
+        return termDate;
+    }
+
+    public void setTermDate(String termDate) {
+        this.termDate = termDate;
+    }
+
+    public String getDaysToExpireSubscription() {
+        return daysToExpireSubscription;
+    }
+
+    public void setDaysToExpireSubscription(String daysToExpireSubscription) {
+        this.daysToExpireSubscription = daysToExpireSubscription;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status;
 
     public String getHeight() {
         return height;
@@ -275,7 +321,6 @@ public class UserDataModel {
     }
 
     private String shareAthlets;
-    private String subscriptions;
 
 
     public String getId() {
@@ -466,13 +511,7 @@ public class UserDataModel {
         this.age = age;
     }
 
-    public String getSubscriptions() {
-        return subscriptions;
-    }
 
-    public void setSubscriptions(String subscriptions) {
-        this.subscriptions = subscriptions;
-    }
 
 
 

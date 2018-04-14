@@ -6,6 +6,8 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.DownloadManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,9 +16,11 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -40,6 +44,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -91,7 +96,7 @@ import java.util.Map;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-    private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
+    private static final int REQUEST_SAVEIMGTODRIVE = 3;
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
     private static final int PICK_IMAGE_REQUEST =0 ;
     private static final int PICK_VIDEO_REQUEST =1;
@@ -102,6 +107,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue,imageUri,videoUri;
     Calendar myCalendar = Calendar.getInstance();
     private TabLayout tabs;
+    private ProgressBar progressbar;
     private ViewPager viewPager;
     private FrameLayout videoFrame;
     private ImageView imgEdit, imgVideo, imgPlay, profile_img_editIcon, imageView1, imageView2, imageView3;
@@ -161,6 +167,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         profileName = (TextView) view.findViewById(R.id.profile_name);
         profileDesig= (TextView) view.findViewById(R.id.profile_designation);
         edit_tag    = (TextView) view.findViewById(R.id.edit_text);
+        progressbar = (ProgressBar)view.findViewById(R.id.progressBar);
 
         imgVideo    = (ImageView) view.findViewById(R.id.imgVideo);
         videoView   = (VideoView) view.findViewById(R.id.videoView);
@@ -191,6 +198,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         basicBtnSave    = (Button) view.findViewById(R.id.btnsave);
         basicBtnCancel  = (Button) view.findViewById(R.id.btncancel);
+
 
 
         //Fore More Deatsils
@@ -712,6 +720,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     //Method for save image in card
     private void saveImage(Uri screenshotUri) {
 
+        boolean saveVideo = checkExternalDrivePermission(REQUEST_SAVEIMGTODRIVE);
+        if(saveVideo){
+            File direct = new File(Environment.getExternalStorageDirectory()
+                    + "BP");
+
+            if (!direct.exists()) {
+                direct.mkdirs();
+            }
+            DownloadManager mgr = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
+
+            Uri downloadUri = Uri.parse(String.valueOf(screenshotUri));
+            DownloadManager.Request request = new DownloadManager.Request(
+                    downloadUri);
+
+            request.setAllowedNetworkTypes(
+                    DownloadManager.Request.NETWORK_WIFI
+                            | DownloadManager.Request.NETWORK_MOBILE)
+                    .setAllowedOverRoaming(false).setTitle("Demo")
+                    .setDescription("Something useful. No, really.")
+                    .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_profile.jpg");
+
+            mgr.enqueue(request);
+        }
+
     }
 
 
@@ -815,24 +847,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         switch (view.getId()) {
 
             case R.id.imgVideo:
-                /*Intent intent = new Intent();
-                intent.setType("video*//*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
-                break;*/
-
                 boolean videoPermission = checkExternalDrivePermission(PICK_VIDEO_REQUEST);
                 if (videoPermission){
                     videoBrowse();
                 }
                 break;
             case R.id.row_icon:
-                /*if (editStatus) {
-                    Intent intent1 = new Intent();
-                    intent1.setType("image*//*");
-                    intent1.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
-                }*/
                 if (editStatus) {
                     boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
                     if (imagePermission) {
@@ -905,16 +925,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void imageBrowse() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
 
     private void videoBrowse() {
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
         startActivityForResult(galleryIntent, PICK_VIDEO_REQUEST);
     }
-    ///
 
 
     private boolean checkExternalDrivePermission(final int type){
@@ -922,8 +939,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         int currentAPIVersion = Build.VERSION.SDK_INT;
         if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
         {
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ||(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
+            {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                     alertBuilder.setCancelable(true);
                     alertBuilder.setTitle("Permission necessary");
@@ -931,13 +949,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         public void onClick(DialogInterface dialog, int which) {
-                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, type);
+                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                         }
                     });
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, type);
+                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                 }
                 return false;
             } else {
@@ -949,8 +967,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-
-    ///
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -998,6 +1014,32 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         public void onClick(DialogInterface dialog, int which) {
                             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_VIDEO_REQUEST);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case REQUEST_SAVEIMGTODRIVE:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary otherwise video upload functionality fails ");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_SAVEIMGTODRIVE);
                         }
                     });
                     AlertDialog alert = alertBuilder.create();
@@ -1672,10 +1714,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-                            userDataModel.setSubscriptions(response.getString("subscriptions"));
+                            //userDataModel.setSubscriptions(response.getString("subscriptions"));
                             userDataModel.setImageUrl(response.getString("imageUrl"));
-                            //userDataModel.setVideoUrl(response.getString("videoUrl"));
-                            //userDataModel.setUserType(response.getString("userType"));
+                            userDataModel.setVideoUrl(response.getString("videoUrl"));
+                            userDataModel.setUserType(response.getString("userType"));
 
                             JSONObject obj = response.getJSONObject("userProfile");
                             userDataModel.setHeight(obj.getString("height"));
@@ -1863,6 +1905,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setViews() {
         if (userDataModel != null) {
             //set basic informations of user
@@ -1871,7 +1914,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }else {
                 imgProfile.setImageResource(R.drawable.ic_person);
             }
+            if (userDataModel.getVideoUrl() != null) {
+                videoView.setVisibility(View.VISIBLE);
+                videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
+                videoView.start();
+                videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                    @Override
+                    public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
+                        if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
+                            progressbar.setVisibility(View.GONE);
+                        }
+                        if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
+                            progressbar.setVisibility(View.VISIBLE);
+                        }
+                        if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
+                            videoView.setVisibility(View.GONE);
+                            progressbar.setVisibility(View.GONE);
+                            imgPlay.setVisibility(View.VISIBLE);
+                        }
+                        return false;
+                    }
+                });
+            }
             profileName.setText(userDataModel.getFirstName());
+            profileDesig.setText(userDataModel.getUserType());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
             editGender.setText(userDataModel.getGender());
