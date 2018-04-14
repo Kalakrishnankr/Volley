@@ -56,7 +56,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MessageAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(MessageAdapter.MyViewHolder holder, final int position) {
 
         final ConnectionModel model = dataList.get(position);
 
@@ -73,8 +73,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
             public void onClick(View view) {
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
-                bundle.putString("personId", model.getConnected_uId());
-                bundle.putString("personName",model.getConnected_firstName());
+                bundle.putString("personId", dataList.get(position).getConnected_uId());
+                bundle.putString("personName",dataList.get(position).getConnected_firstName());
                 bundle.putString("myName",new PrefManager(mContext).getUserName());
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();

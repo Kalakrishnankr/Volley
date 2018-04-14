@@ -1,22 +1,28 @@
 package com.goldemo.beachpartner.fragments;
 
+import android.Manifest;
 import android.animation.AnimatorSet;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -62,10 +68,8 @@ import com.goldemo.beachpartner.utils.FloatingActionMenu;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -75,8 +79,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -91,11 +93,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private static final int REQUEST_TAKE_GALLERY_VIDEO = 1;
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
+    private static final int PICK_IMAGE_REQUEST =0 ;
+    private static final int PICK_VIDEO_REQUEST =1;
     public static boolean isValidate = false;
     private static boolean moreUploadStatus = false;
     private static boolean editStatus = false;
     public UserDataModel userDataModel;
-    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue;
+    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue,imageUri,videoUri;
     Calendar myCalendar = Calendar.getInstance();
     private TabLayout tabs;
     private ViewPager viewPager;
@@ -107,7 +111,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     private OnClickListener mOnClickListener;
     private VideoView videoView;
-    private Uri selectedImageUri, selectedVideoUri, videoUri, imageUri;
+    private Uri selectedImageUri, selectedVideoUri, screenshotUri;
     private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
@@ -256,10 +260,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
-                if (selectedImageUri != null) {
+                if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
-                    Uri screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
+                    if (selectedImageUri != null) {
+                        screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
+                    } else if (userDataModel.getImageUrl() != null) {
+                        screenshotUri = Uri.parse(userDataModel.getImageUrl());
+                    }
+                    saveImage(screenshotUri);
                     intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
                     intent.setType("image/*");
                     startActivity(Intent.createChooser(intent, "Share image via..."));
@@ -700,6 +709,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
     }
+    //Method for save image in card
+    private void saveImage(Uri screenshotUri) {
+
+    }
 
 
     private void setupViewPager(ViewPager viewPager) {
@@ -802,19 +815,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         switch (view.getId()) {
 
             case R.id.imgVideo:
-                Intent intent = new Intent();
-                intent.setType("video/*");
+                /*Intent intent = new Intent();
+                intent.setType("video*//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent, "Select Video"), REQUEST_TAKE_GALLERY_VIDEO);
+                break;*/
+
+                boolean videoPermission = checkExternalDrivePermission(PICK_VIDEO_REQUEST);
+                if (videoPermission){
+                    videoBrowse();
+                }
                 break;
             case R.id.row_icon:
-                if (editStatus) {
+                /*if (editStatus) {
                     Intent intent1 = new Intent();
-                    intent1.setType("image/*");
+                    intent1.setType("image*//*");
                     intent1.setAction(Intent.ACTION_GET_CONTENT);
                     startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
+                }*/
+                if (editStatus) {
+                    boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
+                    if (imagePermission) {
+                        imageBrowse();
+                    }
                 }
-
                 break;
             case R.id.imgPlay:
                 videoView.setVisibility(View.VISIBLE);
@@ -878,6 +902,132 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
     }
+
+    private void imageBrowse() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        // Start the Intent
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+    }
+
+    private void videoBrowse() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        // Start the Intent
+        startActivityForResult(galleryIntent, PICK_VIDEO_REQUEST);
+    }
+    ///
+
+
+    private boolean checkExternalDrivePermission(final int type){
+
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
+        {
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, type);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                } else {
+                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, type);
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+
+    }
+
+
+    ///
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PICK_IMAGE_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    imageBrowse();
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary otherwise image upload functionality fails ");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE_REQUEST);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case PICK_VIDEO_REQUEST:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    videoBrowse();
+
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary otherwise video upload functionality fails ");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_VIDEO_REQUEST);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            default:{
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                return;
+            }
+
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+    ////
+
+
+
+
+
+
+
+
+
+
 
     private void editCustomView() {
 
@@ -1381,74 +1531,96 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
+
+            if(requestCode == PICK_IMAGE_REQUEST){
+                Uri picUri = data.getData();
+
+                selectedImageUri = data.getData();
+                if (selectedImageUri != null) {
+                    File imgfile = new File(String.valueOf(selectedImageUri));
+                    // Get length of file in bytes
+
+                    if (fileSize(imgfile.length()) <= 4) {
+                        imageUri = getPath(selectedImageUri);
+                        imgProfile.setImageURI(selectedImageUri);
+                    } else {
+                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+            }
+            else if(requestCode == PICK_VIDEO_REQUEST){
+                Uri picUri = data.getData();
+
+
                 selectedVideoUri = data.getData();
-                // String filemanagerstring = selectedVideoUri.getPath();
-                // String selectedVideoPath = getPath(selectedVideoUri);
+
                 if (selectedVideoUri != null) {
 
-                    imgVideo.setVisibility(View.GONE);
-                    //videoView.setVisibility(View.VISIBLE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                    videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
+                    File file = new File(String.valueOf(getPath(selectedVideoUri)));
 
-                }
-            }
-            if (requestCode == REQUEST_TAKE_GALLERY_IMAGE) {
-                selectedImageUri = data.getData();
-                String path = selectedImageUri.getPath().toString();
-                System.out. println("path"+path);
-                //String selectedImagePath = getPath(selectedImageUriImg);
-                if (selectedImageUri != null) {
-                    imgProfile.setImageURI(selectedImageUri);
-
+                    if (fileSize(file.length()) <= 30) {
+                        videoUri = getPath(selectedVideoUri);
+                        imgVideo.setVisibility(View.GONE);
+                        imgPlay.setVisibility(View.VISIBLE);
+                        videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
+                    } else {
+                        Toast.makeText(getActivity(), "Video size is too large..", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }
+
 
         }
 
-        if (selectedImageUri != null && selectedVideoUri != null) {
+        if (imageUri != null && videoUri != null) {
+
             //Method for uploading profilePic & profile video
-            uploadFiles(selectedImageUri, selectedVideoUri, user_id);
+            uploadFiles(imageUri, videoUri, user_id);
         }
     }
 
-    public String getRealPathFromURI(Uri uri) {
-        Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null);
-        cursor.moveToFirst();
-        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
-        return cursor.getString(idx);
-    }
-    //Api for upload image and video
-    private void uploadFiles(final Uri imageUri, final Uri videoUri, final String user_id) {
+    //Method for check the size of the selected file
+    private float fileSize(long fileLength){
+        long fileSizeInBytes = fileLength;
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        float fileSizeInMB = fileSizeInKB / 1024;
 
-        Thread thread = new Thread() {
+        return fileSizeInMB;
+    }
+
+    //Api for upload profile image and video
+    private void uploadFiles(final String imagePath, final String videoPath, final String userId) {
+        new Thread(new Runnable(){
             @Override
             public void run() {
                 try {
-                    sleep(3000);
 
-                    HttpClient httpClient = new DefaultHttpClient();
-                    HttpPost httpPost     = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
-                    FileBody fileBodyVideo = new FileBody(new File(String.valueOf(videoUri)));
-                    FileBody fileBodyImage = new FileBody(new File(String.valueOf(imageUri)));
-                    StringBody userID      = new StringBody("userId" + user_id);
+                    //throws ParseException, IOException
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httppost = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
 
-                    MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-                    entity.addPart("profileVideo",fileBodyVideo);
-                    entity.addPart("profileImg",fileBodyImage);
-                    entity.addPart("userId",userID);
-                    httpPost.setEntity(entity);
-                    System.out.println( "executing request " + httpPost.getRequestLine( ) );
-                    HttpResponse responses = null;
-                    System.out.println( "executing request " + httpPost.getRequestLine( ) );
+                    FileBody videoFile = new FileBody(new File(videoPath));
+                    FileBody imageFile = new FileBody(new File(imagePath));
+                    StringBody user_Id = new StringBody(userId);
 
-                    responses = httpClient.execute(httpPost);
-                    HttpEntity resEntity = responses.getEntity( );
+                    MultipartEntity reqEntity = new MultipartEntity();
+                    reqEntity.addPart("profileImg", imageFile);
+                    reqEntity.addPart("profileVideo", videoFile);
+                    reqEntity.addPart("userId", user_Id);
+                    httppost.setEntity(reqEntity);
 
                     // DEBUG
-                    System.out.println( responses.getStatusLine( ) );
+                    System.out.println( "executing request " + httppost.getRequestLine( ) );
+                    HttpResponse response = httpclient.execute( httppost );
+                    HttpEntity resEntity = response.getEntity( );
+
+                    // DEBUG
+                    System.out.println( response.getStatusLine( ) );
                     if (resEntity != null) {
                         System.out.println( EntityUtils.toString( resEntity ) );
                     } // end if
@@ -1457,21 +1629,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         resEntity.consumeContent( );
                     } // end if
 
-                    httpClient.getConnectionManager( ).shutdown( );
-
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                } catch (ClientProtocolException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    httpclient.getConnectionManager( ).shutdown( );
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
                 }
             }
-        };
+        }).start();
 
-        thread.start();
 
     }
 

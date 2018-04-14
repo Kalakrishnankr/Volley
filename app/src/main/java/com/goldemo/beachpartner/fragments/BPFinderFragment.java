@@ -403,40 +403,45 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 isCoach     =   sCoach.isChecked();
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
-                if(sgender.equals("Both")){
-                    sgender="";
-                }
-                SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                preferences.putString("location",spinner_location.getText().toString().trim());
-                preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
-                preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
-                preferences.putString("gender",sgender);
-                preferences.putBoolean("isCoachActive",sCoach.isChecked());
-                preferences.apply();
-                preferences.commit();
-                llvFilter.setVisibility(View.GONE);
-                rr.setVisibility(View.VISIBLE);
-                rrvBottom.setVisibility(View.VISIBLE);
 
-                //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
-                if(isbpActive){
-                    topFrameLayout.setVisibility(View.GONE);
+                if (minAge >= 5 && maxAge <= 100) {
+                    if (sgender.equals("Both")) {
+                        sgender = "";
+                    }
+                    SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                    preferences.putString("location", spinner_location.getText().toString().trim());
+                    preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
+                    preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
+                    preferences.putString("gender", sgender);
+                    preferences.putBoolean("isCoachActive", sCoach.isChecked());
+                    preferences.apply();
+                    preferences.commit();
+                    llvFilter.setVisibility(View.GONE);
+                    rr.setVisibility(View.VISIBLE);
+                    rrvBottom.setVisibility(View.VISIBLE);
 
-                }else {
-                    if(isPartner){
+                    //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
+                    if (isbpActive) {
                         topFrameLayout.setVisibility(View.GONE);
 
-                    }else {
-                        topFrameLayout.setVisibility(View.VISIBLE);
-                        if(bluebpList!=null && bluebpList.size()>0){
-                            blueBProfileAdapter = new BlueBProfileAdapter(getContext(),bluebpList);
-                            rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                    } else {
+                        if (isPartner) {
+                            topFrameLayout.setVisibility(View.GONE);
+
+                        } else {
+                            topFrameLayout.setVisibility(View.VISIBLE);
+                            if (bluebpList != null && bluebpList.size() > 0) {
+                                blueBProfileAdapter = new BlueBProfileAdapter(getContext(), bluebpList);
+                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                            }
                         }
+
                     }
 
+                    getAllCards(location, sgender, isCoach, minAge, maxAge);
+                }else {
+                    Toast.makeText(getActivity(), "Please choose minimum age limit is greater than 5", Toast.LENGTH_SHORT).show();
                 }
-
-                getAllCards(location,sgender,isCoach,minAge,maxAge);
             }
         });
 
