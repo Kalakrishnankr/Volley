@@ -62,7 +62,7 @@ public class ChatFragmentPage extends Fragment {
                              Bundle savedInstanceState) {
         getActivity().setTitle("Message");
 
-        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/users");
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/users");
         ref = myFirebaseRef.child("users");
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_chat_page, container, false);
@@ -181,7 +181,7 @@ public class ChatFragmentPage extends Fragment {
             idLeft = Integer.parseInt(myId);
             idRight = Integer.parseInt(ChatWith_id);
         }
-        reference1 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + idLeft + "-" + idRight);
+        reference1 = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages/" + idLeft + "-" + idRight);
         //reference2 = new Firebase("https://beachpartner-be21e.firebaseio.com/messages/" + ChatWith_id + "-" + myId);
     }
 

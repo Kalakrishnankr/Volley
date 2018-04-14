@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "440257116982",
-    "firebase_url": "https://beachpartner-be21e.firebaseio.com",
-    "project_id": "beachpartner-be21e",
-    "storage_bucket": "beachpartner-be21e.appspot.com"
+    "project_number": "1093023196365",
+    "firebase_url": "https://beachpartner-6cd7a.firebaseio.com",
+    "project_id": "beachpartner-6cd7a",
+    "storage_bucket": "beachpartner-6cd7a.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:440257116982:android:e52479ddae2b7d15",
+        "mobilesdk_app_id": "1:1093023196365:android:b092f044f9416268",
         "android_client_info": {
-          "package_name": "com.goldemo.beachpartner"
+          "package_name": "com.beachpartnerllc.beachpartner"
         }
       },
       "oauth_client": [
         {
-          "client_id": "440257116982-sphqbs1i57sr46rjlq9r5fhg0i745d2q.apps.googleusercontent.com",
+          "client_id": "1093023196365-pdmc4v0etv4n7fksactk6a4fvjd3edmo.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBe5qWIT32wbwM1kvyOKFgDcbcBRtfmT2Q"
+          "current_key": "AIzaSyAw3a7IFGwF6Kp51kiS4fOE4VI7gmglCX0"
         }
       ],
       "services": {

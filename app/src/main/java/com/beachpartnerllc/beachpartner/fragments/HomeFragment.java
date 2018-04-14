@@ -562,7 +562,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void setUpMessage() {
         userList.clear();
         chatList.clear();
-        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/messages");
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {

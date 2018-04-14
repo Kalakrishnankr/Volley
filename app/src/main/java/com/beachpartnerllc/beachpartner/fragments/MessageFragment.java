@@ -61,7 +61,7 @@ public class MessageFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message, container, false);
         myId = new PrefManager(getContext()).getUserId();
-        myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/");
+        myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/");
 
         getConnections();
         initView(view);
@@ -84,7 +84,7 @@ public class MessageFragment extends Fragment {
     //Method for getting chatlist from firebse
     private void setUpMessage() {
         userList.clear();
-        final Firebase myFirebaseRef = new Firebase("https://beachpartner-be21e.firebaseio.com/messages");
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
