@@ -130,4 +130,6 @@
     <string name="reg_success_msg">Thanks for registering.To complete registration please check your email and click on the link(It may take up to 10 minutes). </string>
     <string name="reg_success_return">Return to Log in</string>
     <string name="reg_success_never">I never got the email</string>
+    <string name="never_got_the_email_msg">Please check your spam folder,email may take as long as ten minutes.If even after ten minutes you have not received the email,please contact us so we can help you</string>
+
 </resources>
