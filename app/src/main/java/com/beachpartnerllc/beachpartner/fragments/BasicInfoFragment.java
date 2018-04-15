@@ -9,16 +9,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.beachpartnerllc.beachpartner.OnClickListener;
 import com.beachpartnerllc.beachpartner.R;
 
 
-public class BasicInfoFragment extends Fragment implements OnClickListener {
+public class BasicInfoFragment extends Fragment  {
 
 
     private EditText editFname,editLname,editGender,editDob,editCity,editPhone,editPassword;
     private Button btnSave,btnCancel;
-     OnClickListener mclickListenerOn;
 
     public BasicInfoFragment() {
 
@@ -87,7 +85,7 @@ public class BasicInfoFragment extends Fragment implements OnClickListener {
 
 
 
-    @Override
+   /* @Override
     public void click() {
 
 
@@ -100,7 +98,7 @@ public class BasicInfoFragment extends Fragment implements OnClickListener {
         editCity.setFocusable(true);
         editPhone.setFocusable(true);
         editPassword.setFocusable(true);
-    }
+    }*/
 
     // TODO: Rename method, update argument and hook method into UI event
 

@@ -60,15 +60,14 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
-import com.beachpartnerllc.beachpartner.OnClickListener;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
+import com.bumptech.glide.Glide;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -114,7 +113,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private FloatingActionButton fabImage, fabVideo;
     private CircularImageView imgProfile;
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
-    private OnClickListener mOnClickListener;
     private VideoView videoView;
     private Uri selectedImageUri, selectedVideoUri, screenshotUri,screenshotVideoUri;
     private byte[] multipartBody;
@@ -875,6 +873,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         menuGreen.setIconToggleAnimatorSet(set);*/
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -944,8 +943,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void playVideo() {
         videoView.start();
+        progressbar.setVisibility(View.VISIBLE);
+        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+            @Override
+            public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
+                if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
+                    progressbar.setVisibility(View.GONE);
+                }
+                if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
+                    progressbar.setVisibility(View.VISIBLE);
+                }
+                if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
+                    videoView.setVisibility(View.GONE);
+                    progressbar.setVisibility(View.GONE);
+                    imgPlay.setVisibility(View.VISIBLE);
+                }
+                return false;
+            }
+        });
         videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
             @Override
             public void onCompletion(MediaPlayer mediaPlayer) {
@@ -1420,11 +1438,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 jsonObjectMore.put("position", spinnerPosValue.trim());
                 jsonObjectMore.put("programsOffered",null);
                 jsonObjectMore.put("shareAthlets",null);
-                jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim());
+                jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+","+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
                 jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
                 jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue.trim());
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
-                jsonObjectMore.put("usaVolleyballRanking", 0);
+                jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
                 jsonObjectMore.put("userId", user_id);
                 jsonObjectMore.put("willingToTravel", spinnerWTValue.trim());
                 jsonObjectMore.put("yearsRunning",null);
@@ -1969,6 +1987,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     }
                 });
             }
+            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                @Override
+                public void onCompletion(MediaPlayer mediaPlayer) {
+                    videoView.setVisibility(View.GONE);
+                    progressbar.setVisibility(View.GONE);
+                    imgPlay.setVisibility(View.VISIBLE);
+                }
+            });
             profileName.setText(userDataModel.getFirstName());
             profileDesig.setText(userDataModel.getUserType());
             editLname.setText(userDataModel.getLastName());
@@ -1993,6 +2019,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
             editPoints.setText(userDataModel.getTotalPoints());
             editPlayed.setText(userDataModel.getToursPlayedIn());
+            edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+            String topFinishes = userDataModel.getTopFinishes();
+           /* if (!topFinishes.equals("null")) {
+                List<String> finishes = Arrays.asList(topFinishes.split(","));
+                if(finishes.size()>0){
+                    topfinishes_txt_1.setText(finishes.get(0));
+                    topfinishes_txt_2.setText(finishes.get(1));
+                    topfinishes_txt_3.setText(finishes.get(2));
+                }
+            }*/
+
             String courSidePref = userDataModel.getCourtSidePreference();
             if(courSidePref != null){
                 int courtPos = prefAdapter.getPosition(courSidePref);
