@@ -9,12 +9,15 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.beachpartnerllc.beachpartner.OnClickListener;
+import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
 import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
@@ -26,6 +29,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     MyInterface myInterface;
+
+
 
     public TouristSpotCardAdapter(Context context,MyInterface inter) {
         super(context,0);
@@ -63,27 +68,30 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
         }
-       /* Video Tag onclick listener start*/
 
-        holder.image.setOnTouchListener(new View.OnTouchListener() {
+
+        holder.image.setOnTouchListener(new DoubleTapListener() {
+
             @Override
-            public boolean onTouch(View v, MotionEvent event) {
+            public void onSingleClick(View v) {
 
+            }
+
+            @Override
+            public void onDoubleClick(View v) {
                 holder.image.setVisibility(View.GONE);
                 //holder.progressBar.setVisibility(View.VISIBLE);
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 holder.videoView.setVisibility(View.VISIBLE);
                 if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equals("null")){
-                  holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
-                  playvideo(holder);
+                    holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
+                    playvideo(holder);
                 }
                 // dialog.setMessage("Please wait");
                 myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
-                return false;
             }
         });
-
 
 
         holder.info.setOnClickListener(new View.OnClickListener() {
@@ -137,6 +145,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
 
 
+
     private static class ViewHolder {
         public TextView name;
         public TextView userType;
@@ -159,6 +168,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
         }
     }
+
+
 
 }
 
