@@ -57,6 +57,7 @@ import com.beachpartnerllc.beachpartner.cardstackview.SwipeDirection;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.google.firebase.iid.FirebaseInstanceId;
 import com.ramotion.foldingcell.FoldingCell;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -1351,8 +1352,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     //push notification
-    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+
+    public static final String FCM_MESSAGE_URL = "https://beachpartner-6cd7a.firebaseio.com/send.json";
     OkHttpClient mClient = new OkHttpClient();
+    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
     public void sendMessage(final JSONArray recipients, final String title, final String body, final String icon, final String message) {
 
@@ -1396,14 +1399,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }.execute();
     }
 
+
     String postToFCM(String bodyString) throws IOException {
         RequestBody body = RequestBody.create(JSON,bodyString);
         Request request = new Request.Builder()
                 .url(FCM_MESSAGE_URL)
                 .post(body)
-                .addHeader("Authorization", "key=" + "AIzaSyBe5qWIT32wbwM1kvyOKFgDcbcBRtfmT2Q")
+                .addHeader("Authorization", "key=" + "AIzaSyAw3a7IFGwF6Kp51kiS4fOE4VI7gmglCX0")
                 .build();
         com.squareup.okhttp.Response response = mClient.newCall(request).execute();
         return response.body().string();
     }
+
+
 }
