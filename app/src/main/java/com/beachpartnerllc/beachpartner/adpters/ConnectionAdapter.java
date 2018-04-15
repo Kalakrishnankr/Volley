@@ -16,13 +16,15 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
+import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
+import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
 import com.beachpartnerllc.beachpartner.fragments.NoteFragment;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -34,15 +36,17 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
     public Context mContext;
     private ArrayList<ConnectionModel> dataLists;
+    public ConnectionInterface connectionInterface;
     //    public static boolean isExpanded =false;
 
     public ExpandOrCollapse mAnimationManager;
 
 
 
-    public ConnectionAdapter(Context context, ArrayList<ConnectionModel> allSampleData) {
+    public ConnectionAdapter(Context context, ArrayList<ConnectionModel> allSampleData, ConnectionFragment connectionFragment) {
         this.dataLists=allSampleData;
         this.mContext=context;
+        this.connectionInterface=connectionFragment;
     }
 
     @Override
@@ -116,7 +120,6 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             }
 
             //Set OnclickListener message
-
             holder.txtv_message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -134,14 +137,21 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     ctrans.commit();
                 }
             });
+            //set onclicklister block
+            holder.txtv_block.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //block api
+                    String personid = model.getConnected_uId();
+                    connectionInterface.block(personid);
+                }
+            });
 
 
 
         }
 
     }
-
-
 
     @Override
     public int getItemCount() {
@@ -166,13 +176,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             txtv_message= (TextView)view.findViewById(R.id.message);
             txtv_notes  = (TextView)view.findViewById(R.id.notes);
             cardView    = (CardView)view.findViewById(R.id.card_view);
-
             profilePic  = (CircularImageView)view.findViewById(R.id.thumbnail);
-
-
             rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
-
-
             rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
         }
     }

@@ -13,11 +13,11 @@ public class ApiService {
 
     //For instagram
 
-    public static final String CLIENT_ID    ="7ef2349d030a43a799b913483158b83b";
-    public static final String CLIENT_SECRET="b5ee7c0a6cf64a77a32ebcadde5c428c";
-    public static final String REDIRECT_URI ="http://35.167.128.181/";
+    public static final String CLIENT_ID    ="0c699a86d6ec4266ac7ef63a84cb6115";
+    public static final String CLIENT_SECRET="9d7555b87c5d469e806f66d578db90e4";
+    public static final String REDIRECT_URI ="http://beachpartner.com";
 
-    public static String BASE_URL   =   "http://34.215.18.181:8080/api/";
+    public static String BASE_URL   =   "http://beachpartner.com:8080/api/";
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
 
@@ -46,6 +46,8 @@ public class ApiService {
     public static String  RIGHT_SWIPE_REQUEST_SEND =   BASE_URL+"users/request-friendship/";
     public static String  LEFT_SWIPE_DISLIKE       =   BASE_URL+"users/reject-friendship/";
     public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
+
+    public static String BLOCK_PERSON          =    BASE_URL+"users/block-user/";
 
 
 

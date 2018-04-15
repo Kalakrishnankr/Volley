@@ -1,5 +1,7 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,12 +19,16 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
@@ -37,7 +44,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class ConnectionFragment extends Fragment implements View.OnClickListener {
+public class ConnectionFragment extends Fragment implements View.OnClickListener,ConnectionInterface {
 
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
@@ -46,6 +53,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
     private ArrayList<ConnectionModel>coachList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
+    private ArrayList<ConnectionModel>searchList = new ArrayList<>();
+    private String token;
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -66,7 +75,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_connection, container, false);
-
+        token   = new PrefManager(getContext()).getToken();
         getConnections();
         initActivity(view);
 
@@ -78,9 +87,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
 
     private void initActivity(View view) {
-
-
-
 
         rcv_conn        =   (RecyclerView)view.findViewById(R.id.rcv_connection);
         txtv_athlete    =   (TextView)view.findViewById(R.id.txtAthlete);
@@ -98,10 +104,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_coach.setOnClickListener(this);
 
     }
-
-
-
-
 
 
     @Override
@@ -133,7 +135,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_athlete.setBackgroundColor(0);
         txtv_athlete.setTextColor(getResources().getColor(R.color.white));
         if(coachList!=null && coachList.size()>0){
-            adapter    =   new ConnectionAdapter(getContext(),coachList);
+            adapter    =   new ConnectionAdapter(getContext(),coachList, this);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
         }else {
@@ -150,7 +152,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_coach.setBackgroundColor(0);
         txtv_coach.setTextColor(getResources().getColor(R.color.white));
         if(athleteList!=null && athleteList.size()>0){
-           adapter    =   new ConnectionAdapter(getContext(),athleteList);
+           adapter    =   new ConnectionAdapter(getContext(),athleteList, this);
            rcv_conn.setAdapter(adapter);
            adapter.notifyDataSetChanged();
        }else {
@@ -164,7 +166,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         athleteList.clear();
         coachList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
-        final String token    = new PrefManager(getContext()).getToken();
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
@@ -199,6 +200,23 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
 
             }
         }){ @Override
@@ -229,15 +247,80 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 }
             }
 
-            adapter    =   new ConnectionAdapter(getContext(),athleteList);
+            adapter    =   new ConnectionAdapter(getContext(),athleteList,this);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-
-
 
         }else {
             txtv_noconnection.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void block(String personid) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.BLOCK_PERSON + personid, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String status_res = response.getString("status");
+                    if (status_res.equals("Blocked")) {
+                        Toast.makeText(getContext(), "Person Blocked", Toast.LENGTH_SHORT).show();
+                        adapter.notifyDataSetChanged();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", request.toString());
+        requestQueue.add(request);
+    }
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -288,7 +371,26 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_search,menu);
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
 
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            if(connectionList.size()>0){
+                for(int i =0;i<connectionList.size();i++){
+                    if(searchItem.equals(connectionList.get(i).getConnected_firstName())){
+                        searchList.add(connectionList.get(i));
+                    }
+                }
+            }
+            searchView = (SearchView) searchItem.getActionView();
+
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
+       // return super.onCreateOptionsMenu(menu);
 
         /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
         inflater.inflate(R.menu.sample_menu, menu);*/
@@ -299,11 +401,15 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         switch (item.getItemId()){
             case R.id.action_search:
-
+                searchPerson();
                 break;
             default:
                 break;
         }
         return false;
+    }
+
+    private void searchPerson() {
+
     }
 }
