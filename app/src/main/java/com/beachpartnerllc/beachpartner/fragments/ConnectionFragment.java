@@ -1,5 +1,7 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.SearchManager;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -7,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -50,6 +53,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
     private ArrayList<ConnectionModel>coachList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
+    private ArrayList<ConnectionModel>searchList = new ArrayList<>();
     private String token;
 
     public ConnectionFragment() {
@@ -367,7 +371,26 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_search,menu);
         super.onCreateOptionsMenu(menu, inflater);
+        MenuItem searchItem = menu.findItem(R.id.action_search);
 
+        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
+
+        SearchView searchView = null;
+        if (searchItem != null) {
+            if(connectionList.size()>0){
+                for(int i =0;i<connectionList.size();i++){
+                    if(searchItem.equals(connectionList.get(i).getConnected_firstName())){
+                        searchList.add(connectionList.get(i));
+                    }
+                }
+            }
+            searchView = (SearchView) searchItem.getActionView();
+
+        }
+        if (searchView != null) {
+            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
+        }
+       // return super.onCreateOptionsMenu(menu);
 
         /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
         inflater.inflate(R.menu.sample_menu, menu);*/

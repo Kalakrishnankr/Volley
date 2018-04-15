@@ -6,23 +6,20 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.beachpartnerllc.beachpartner.OnClickListener;
-import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
 import com.beachpartnerllc.beachpartner.utils.RotateLoading;
+import com.bumptech.glide.Glide;
 
 public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
