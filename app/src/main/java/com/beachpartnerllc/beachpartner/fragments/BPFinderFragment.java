@@ -49,10 +49,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-
-import com.beachpartnerllc.beachpartner.MyFirebaseMessagingService;
-import com.bumptech.glide.Glide;
-
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
@@ -498,7 +494,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 }else {
                     //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
-
+                    cardHifiSwiped(reqPersonId);
                     //r.put(reqPersonId);
                     String r="cF2ff-YwPeA:APA91bFMRt6UHIMT-JF1wIEKS0tlXey7zdscMKk2SpvGpBrEhZqb6VzQYfp01ygFAhoC3-W-ASehWuMby-HJFj6UDRSh1dB02gWY6l-ZgR-D79SxpfelpYLK-pewybRaOeScwwWd3JVp";
                     sendMessage(r,"Hello","Hi i am Coach Abraham","");
@@ -1467,14 +1463,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     OkHttpClient mClient = new OkHttpClient();
-<<<<<<< HEAD
-//    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-
     public void sendMessage(final String recipients, final String title, final String body, final String icon) {
-
-=======
-    //String refreshedToken = FirebaseInstanceId.getInstance().getToken();
->>>>>>> 5e709e5a8c918273ea97b72c4fdb68421c957b83
 
 
         new AsyncTask<String, String, String>() {

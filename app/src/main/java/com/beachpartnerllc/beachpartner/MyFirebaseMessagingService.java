@@ -1,9 +1,5 @@
 package com.beachpartnerllc.beachpartner;
 
-
-
-import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -11,27 +7,14 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-import android.support.annotation.RequiresApi;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.activity.LoginActivity;
-import com.beachpartnerllc.beachpartner.connections.MyJobService;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
-import com.firebase.jobdispatcher.GooglePlayDriver;
-import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
-
 import java.util.Map;
-import java.util.Random;
 
 /**
  * Created by Owner on 4/15/2018.
@@ -83,16 +66,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-    private void scheduleJob() {
-        // [START dispatch_job]
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-        Job myJob = dispatcher.newJobBuilder()
-                .setService(MyJobService.class)
-                .setTag("my-job-tag")
-                .build();
-        dispatcher.schedule(myJob);
-        // [END dispatch_job]
-    }
+
 
     /**
      * Handle time allotted to BroadcastReceivers.
