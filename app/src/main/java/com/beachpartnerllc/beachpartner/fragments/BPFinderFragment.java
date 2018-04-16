@@ -1467,14 +1467,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     OkHttpClient mClient = new OkHttpClient();
-<<<<<<< HEAD
-//    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
     public void sendMessage(final String recipients, final String title, final String body, final String icon) {
-
-=======
-    //String refreshedToken = FirebaseInstanceId.getInstance().getToken();
->>>>>>> 5e709e5a8c918273ea97b72c4fdb68421c957b83
 
 
         new AsyncTask<String, String, String>() {

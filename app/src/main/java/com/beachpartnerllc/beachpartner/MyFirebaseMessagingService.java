@@ -22,8 +22,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.activity.LoginActivity;
-import com.beachpartnerllc.beachpartner.connections.MyJobService;
-import com.firebase.jobdispatcher.FirebaseJobDispatcher;
+
+
 import com.firebase.jobdispatcher.GooglePlayDriver;
 import com.firebase.jobdispatcher.Job;
 import com.google.firebase.messaging.FirebaseMessagingService;
@@ -83,16 +83,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
 
 
-    private void scheduleJob() {
-        // [START dispatch_job]
-        FirebaseJobDispatcher dispatcher = new FirebaseJobDispatcher(new GooglePlayDriver(this));
-        Job myJob = dispatcher.newJobBuilder()
-                .setService(MyJobService.class)
-                .setTag("my-job-tag")
-                .build();
-        dispatcher.schedule(myJob);
-        // [END dispatch_job]
-    }
 
     /**
      * Handle time allotted to BroadcastReceivers.
