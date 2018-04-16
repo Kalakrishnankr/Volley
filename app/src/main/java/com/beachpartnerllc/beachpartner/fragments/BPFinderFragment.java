@@ -45,6 +45,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.MyFirebaseMessagingService;
 import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
@@ -483,10 +484,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 }else {
                     //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
-                    cardHifiSwiped(reqPersonId);
-                    JSONArray r =new JSONArray();
-                    r.put(reqPersonId);
-                    sendMessage(r,"Hello","Hi i am Coach","","get over here");
+
+                    //r.put(reqPersonId);
+                    String r="cF2ff-YwPeA:APA91bFMRt6UHIMT-JF1wIEKS0tlXey7zdscMKk2SpvGpBrEhZqb6VzQYfp01ygFAhoC3-W-ASehWuMby-HJFj6UDRSh1dB02gWY6l-ZgR-D79SxpfelpYLK-pewybRaOeScwwWd3JVp";
+                    sendMessage(r,"Hello","Hi i am Coach Abraham","");
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
@@ -1353,11 +1354,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //push notification
 
-    public static final String FCM_MESSAGE_URL = "https://beachpartner-6cd7a.firebaseio.com/send.json";
+    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
     OkHttpClient mClient = new OkHttpClient();
-    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+//    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
-    public void sendMessage(final JSONArray recipients, final String title, final String body, final String icon, final String message) {
+    public void sendMessage(final String recipients, final String title, final String body, final String icon) {
+
+
 
         new AsyncTask<String, String, String>() {
             @Override
@@ -1369,11 +1372,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     notification.put("title", title);
                     notification.put("icon", icon);
 
-                    JSONObject data = new JSONObject();
-                    data.put("message", message);
-                    root.put("notification", notification);
-                    root.put("data", data);
-                    root.put("registration_ids", recipients);
+                    root.put("data", notification);
+                    root.put("to", recipients);
 
                     String result = postToFCM(root.toString());
                     return result;
@@ -1399,13 +1399,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }.execute();
     }
 
-
+//
     String postToFCM(String bodyString) throws IOException {
         RequestBody body = RequestBody.create(JSON,bodyString);
         Request request = new Request.Builder()
                 .url(FCM_MESSAGE_URL)
                 .post(body)
-                .addHeader("Authorization", "key=" + "AIzaSyAw3a7IFGwF6Kp51kiS4fOE4VI7gmglCX0")
+                .addHeader("Authorization", "key=" + "AAAA_n1CZM0:APA91bEzOCp33DEXluIkYPsfheiCk7PINyo0MaxDkk7AfX-uG6PUO1CCggbEnN3IR1sljAm05WY-BGDeyeAOM7l1ciFdFnAV5z5DrnkBaYKQusqJPcvzbyKX-84t1b5SvpXPp75NjJI9")
                 .build();
         com.squareup.okhttp.Response response = mClient.newCall(request).execute();
         return response.body().string();

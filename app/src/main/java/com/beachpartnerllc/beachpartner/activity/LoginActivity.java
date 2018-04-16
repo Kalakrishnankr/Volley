@@ -48,6 +48,8 @@ import com.beachpartnerllc.beachpartner.instagram.Instagram;
 import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
 import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.iid.FirebaseInstanceId;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,6 +85,12 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         intentUrlString = intent.getDataString();
+
+        //Register client App to FCM
+        FirebaseApp.initializeApp(LoginActivity.this);
+
+        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("refreshedToken----",refreshedToken);
 
 
         if(new PrefManager(getApplicationContext()).getRegistrationStatus()!=null){
@@ -307,15 +315,15 @@ public class LoginActivity extends AppCompatActivity {
                                     //userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
 
-                                    JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
-                                    for(int i=0;i<jsonArray.length();i++){
-                                        JSONObject obj = jsonArray.getJSONObject(i);
-                                        userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
-                                        userDataModel.setEffectiveDate(obj.getString("effectiveDate"));
-                                        userDataModel.setTermDate(obj.getString("termDate"));
-                                        userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
-
-                                    }
+//                                    JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
+//                                    for(int i=0;i<jsonArray.length();i++){
+//                                        JSONObject obj = jsonArray.getJSONObject(i);
+//                                        userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
+//                                        userDataModel.setEffectiveDate(obj.getString("effectiveDate"));
+//                                        userDataModel.setTermDate(obj.getString("termDate"));
+//                                        userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
+//
+//                                    }
 
 
 
