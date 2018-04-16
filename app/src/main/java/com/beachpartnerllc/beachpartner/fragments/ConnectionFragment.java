@@ -1,7 +1,5 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -9,7 +7,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -18,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,7 +47,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
     private TextView txtv_coach,txtv_athlete,txtv_noconnection;
-
+    private static boolean isCoachTab=false;
+    private static boolean isAthleteTab=false;
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
     private ArrayList<ConnectionModel>coachList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
@@ -130,6 +129,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
      /*Method for Active Coach Tab*/
 
     private void activeCoachTab() {
+        isAthleteTab=false;
+        isCoachTab  =true;
         txtv_coach.setTextColor(getResources().getColor(R.color.blueDark));
         txtv_coach.setBackgroundColor(getResources().getColor(R.color.white));
         txtv_athlete.setBackgroundColor(0);
@@ -147,6 +148,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     /*Method Active Athlete TAb*/
 
     private void activeAthletTab() {
+        isAthleteTab=true;
+        isCoachTab  =false;
         txtv_athlete.setTextColor(getResources().getColor(R.color.blueDark));
         txtv_athlete.setBackgroundColor(getResources().getColor(R.color.white));
         txtv_coach.setBackgroundColor(0);
@@ -370,30 +373,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_search,menu);
-        super.onCreateOptionsMenu(menu, inflater);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
 
-        SearchManager searchManager = (SearchManager) getActivity().getSystemService(Context.SEARCH_SERVICE);
 
-        SearchView searchView = null;
-        if (searchItem != null) {
-            if(connectionList.size()>0){
-                for(int i =0;i<connectionList.size();i++){
-                    if(searchItem.equals(connectionList.get(i).getConnected_firstName())){
-                        searchList.add(connectionList.get(i));
-                    }
-                }
-            }
-            searchView = (SearchView) searchItem.getActionView();
-
-        }
-        if (searchView != null) {
-            searchView.setSearchableInfo(searchManager.getSearchableInfo(getActivity().getComponentName()));
-        }
-       // return super.onCreateOptionsMenu(menu);
-
-        /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
-        inflater.inflate(R.menu.sample_menu, menu);*/
     }
 
     @Override
@@ -411,5 +392,39 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private void searchPerson() {
 
-    }
+        final EditText editTSearch = ( EditText ) getView().findViewById(R.id.txt_search);
+                String textSearch = editTSearch.getText().toString().trim();
+
+                if (!textSearch.equals("null")) {
+                    if(isAthleteTab){
+                        searchList.clear();
+                        if(athleteList.size()>0){
+                            for(int i =0;i<athleteList.size();i++){
+                                if(textSearch.equals(athleteList.get(i).getConnected_firstName())){
+                                    searchList.add(athleteList.get(i));
+
+                                }
+                            }
+                        }
+                    }else {
+                        searchList.clear();
+                        if(coachList.size()>0){
+                            for(int i =0;i<coachList.size();i++){
+                                if(textSearch.equals(coachList.get(i).getConnected_firstName())){
+                                    searchList.add(coachList.get(i));
+
+                                }
+                            }
+
+                        }
+                    }
+
+                }
+                adapter    =   new ConnectionAdapter(getContext(),searchList,this);
+                rcv_conn.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+
+            }
+
+
 }

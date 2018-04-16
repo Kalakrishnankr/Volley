@@ -33,6 +33,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.instagram.Instagram;
+import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
+import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
+import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -41,15 +48,7 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.connections.ApiService;
-import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.instagram.Instagram;
-import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
-import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
-import com.beachpartnerllc.beachpartner.models.UserDataModel;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -307,7 +306,7 @@ public class LoginActivity extends AppCompatActivity {
                                     //userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
 
-                                    JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
+                                    /*JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
                                     for(int i=0;i<jsonArray.length();i++){
                                         JSONObject obj = jsonArray.getJSONObject(i);
                                         userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
@@ -315,7 +314,7 @@ public class LoginActivity extends AppCompatActivity {
                                         userDataModel.setTermDate(obj.getString("termDate"));
                                         userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
 
-                                    }
+                                    }*/
 
 
 

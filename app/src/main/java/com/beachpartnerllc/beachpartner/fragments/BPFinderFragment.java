@@ -45,7 +45,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
@@ -57,7 +56,8 @@ import com.beachpartnerllc.beachpartner.cardstackview.SwipeDirection;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.google.firebase.iid.FirebaseInstanceId;
+import com.bumptech.glide.Glide;
+import com.google.firebase.FirebaseApp;
 import com.ramotion.foldingcell.FoldingCell;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -136,6 +136,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     public BPFinderFragment() {
+    }
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(getActivity());
+
     }
 
     @SuppressLint("ValidFragment")
@@ -1355,7 +1361,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     public static final String FCM_MESSAGE_URL = "https://beachpartner-6cd7a.firebaseio.com/send.json";
     OkHttpClient mClient = new OkHttpClient();
-    String refreshedToken = FirebaseInstanceId.getInstance().getToken();
+    //String refreshedToken = FirebaseInstanceId.getInstance().getToken();
 
     public void sendMessage(final JSONArray recipients, final String title, final String body, final String icon, final String message) {
 
