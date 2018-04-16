@@ -44,7 +44,7 @@ public class TabActivity extends AppCompatActivity {
 
     FloatingActionButton menu1;
     FloatingActionButton menu2;
-
+    private static  boolean doubleBackToExitPressedOnce = false;
     private BottomNavigationView navigation;
     private static boolean isBPActive = false;
     private static boolean isPartnerFinder = false;
@@ -364,5 +364,7 @@ public class TabActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
+
 
 }

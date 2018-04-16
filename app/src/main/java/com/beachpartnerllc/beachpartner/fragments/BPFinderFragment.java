@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -24,6 +25,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -106,13 +110,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     public ToggleButton btnMale,btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
-    ArrayAdapter<String> dataAdapter;
+    private ArrayAdapter<String> dataAdapter;
     private ImageButton showPreviousMonthButton,showNextMonthButton;
     private Switch sCoach;
     private LinearLayout topFrameLayout;
 
     public static final String MY_PREFS_FILTER = "MyPrefsFile";
-    ArrayList<String>stateList = new ArrayList<>();
+    private ArrayList<String>stateList = new ArrayList<>();
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     public boolean reverseCount=false;
@@ -130,6 +134,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel>allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<>();
     private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<>();
+    private String item_location;
 
 
     private List<Event>personEventList = new ArrayList<>();
@@ -1311,10 +1316,109 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     //Method for getting current location
+    //Conditions for show location
+    //if user_subscription = PRime didn't show payment dialogue
+    //if user_subscription = BlueBP show payment dialogue,once the user paid then show the location
+    // user_subscription = null show the payment dialogue  ,once the user paid then show the location
 
     private void getLocation() {
+        String user_subcription = "";
+        if (user_subcription.equals("Prime")) {
 
-        likesDisplay();
+            Dialog filterDialogue = new Dialog(getContext());
+            //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+            filterDialogue.setContentView(R.layout.popup_locations);
+            filterDialogue.setCanceledOnTouchOutside(true);
+            Window window = filterDialogue.getWindow();
+            WindowManager.LayoutParams wlp = window.getAttributes();
+            wlp.gravity = Gravity.CENTER;
+            wlp.y = 80;
+            wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+            window.setAttributes(wlp);
+            filterDialogue
+                    .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
+            filterDialogue.show();
+            initView(filterDialogue);
+
+        } else if (user_subcription.equals("BlueBP")) {
+            likesDisplay();
+        }else {
+            likesDisplay();
+        }
+
+    }
+
+    private void initView(final Dialog filterDialogue) {
+
+        List<String> regionList = new ArrayList<>();
+        regionList.add("Alaska Region (AK)");
+        regionList.add("Aloha Region (AH)");
+        regionList.add("Arizona Region (AZ)");
+        regionList.add("Badger Region (BG)");
+        regionList.add("Bayou Region (BY)");
+        regionList.add("Carolina Region (CR)");
+        regionList.add("Chesapeake Region (CH)");
+        regionList.add("Columbia Empire Region (CE)");
+        regionList.add("Delta Region (DE)");
+        regionList.add("Evergreen Region (EV)");
+        regionList.add("Florida Region (FL)");
+        regionList.add("Garden Empire Region (GE)");
+        regionList.add("Gateway Region (GW)");
+        regionList.add("Great Lakes Region (GL)");
+        regionList.add("Great Plains Region (GP)");
+        regionList.add("Gulf Coast Region (GC)");
+        regionList.add("Heart of America Region (HA)");
+        regionList.add("Hoosier Region (HO)");
+        regionList.add("Intermountain Region (IM)");
+        regionList.add("Iowa Region (IA)");
+        regionList.add("Iroquois Empire Region (IE)");
+        regionList.add("Keystone Region (KE)");
+        regionList.add("Lakeshore Region (LK)");
+        regionList.add("Lone Star Region (LS)");
+        regionList.add("Moku O Keawe Region (MK)");
+        regionList.add("New England Region (NE)");
+        regionList.add("North Country Region (NO)");
+        regionList.add("North Texas Region (NT)");
+        regionList.add("Northern California Region (NC)");
+        regionList.add("Ohio Valley Region (OV)");
+        regionList.add("Oklahoma Region (OK)");
+        regionList.add("Old Dominion Region (OD)");
+        regionList.add("Palmetto Region (PM)");
+        regionList.add("Pioneer Region (PR)");
+        regionList.add("Puget Sound Region (PS)");
+        regionList.add("Rocky Mountain Region (RM)");
+        regionList.add("Southern Region (SO)");
+        regionList.add("Southern California Region (SC)");
+        regionList.add("Sun Country Region (SU)");
+        regionList.add("Western Empire Region (WE)");
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+
+        final AutoCompleteTextView tv_locations = (AutoCompleteTextView) filterDialogue.findViewById(R.id.item_locations);
+        Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_search);
+
+        final ArrayAdapter<String> adapterLocation = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
+        tv_locations.setTypeface(font);
+        tv_locations.setAdapter(adapterLocation);
+
+        tv_locations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                item_location = adapterLocation.getItem(i);
+
+            }
+        });
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                filterDialogue.dismiss();
+                //Toast.makeText(getActivity(), "Location" + item_location, Toast.LENGTH_SHORT).show();
+                getAllCards(item_location,sgender,isCoach,minAge,maxAge);
+
+            }
+        });
     }
 
     private void likesDisplay() {
@@ -1322,9 +1426,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
 
-
         final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
-
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
 
 

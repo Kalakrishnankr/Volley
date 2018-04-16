@@ -27,6 +27,7 @@ import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 23/2/18.
@@ -37,6 +38,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
     public Context mContext;
     private ArrayList<ConnectionModel> dataLists;
     public ConnectionInterface connectionInterface;
+    private ArrayList<ConnectionModel> mCountryModel;
+
     //    public static boolean isExpanded =false;
 
     public ExpandOrCollapse mAnimationManager;
@@ -110,7 +113,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 }
             });
 
-            holder.txtv_name.setText(dataLists.get(position).getConnected_firstName());
+            holder.txtv_name.setText(dataLists.get(position).getConnected_firstName().trim());
 
             if(!dataLists.get(position).getConnected_imageUrl().equals("null")){
                 Glide.with(mContext).load(dataLists.get(position).getConnected_imageUrl()).into(holder.profilePic);
@@ -158,6 +161,11 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
         return dataLists.size();
     }
 
+    public void setFilter(List<ConnectionModel> countryModels) {
+        mCountryModel = new ArrayList<>();
+        mCountryModel.addAll(countryModels);
+        notifyDataSetChanged();
+    }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView txtv_name,txtv_age,txtv_block,txtv_message,txtv_notes;

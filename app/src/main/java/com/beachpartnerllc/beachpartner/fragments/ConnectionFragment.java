@@ -4,9 +4,11 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -15,7 +17,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,6 +55,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private ArrayList<ConnectionModel>coachList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
     private ArrayList<ConnectionModel>searchList = new ArrayList<>();
+    private List<ConnectionModel>mCountryModel;
     private String token;
 
     public ConnectionFragment() {
@@ -188,7 +191,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             model.setConnected_userType(obj.getString("userType"));
                             model.setConnected_imageUrl(obj.getString("imageUrl"));
                             connectionList.add(model);
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -373,8 +375,50 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
         inflater.inflate(R.menu.menu_search,menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchPerson(query);
+               /* AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                alertDialog.setMessage("Search keyword is " + query);
+                alertDialog.show();*/
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (!newText.isEmpty()) {
+                    final List<ConnectionModel> filteredModelList = filter(connectionList, newText);
+                    adapter.setFilter(filteredModelList);
+                    adapter.notifyDataSetChanged();
+
+                }else {
+                    adapter    =   new ConnectionAdapter(getContext(),athleteList,ConnectionFragment.this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+
+                return false;
+            }
+        });
 
 
+
+    }
+
+    private List<ConnectionModel> filter(List<ConnectionModel> models, String query) {
+        query = query.toLowerCase().trim();
+        final List<ConnectionModel> filteredModelList = new ArrayList<>();
+        for (ConnectionModel model : models) {
+            final String text = model.getConnected_firstName().toLowerCase().trim();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
     }
 
     @Override
@@ -382,7 +426,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         switch (item.getItemId()){
             case R.id.action_search:
-                searchPerson();
+                //searchPerson();
                 break;
             default:
                 break;
@@ -390,17 +434,16 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         return false;
     }
 
-    private void searchPerson() {
+    private void searchPerson(String query) {
 
-        final EditText editTSearch = ( EditText ) getView().findViewById(R.id.txt_search);
-                String textSearch = editTSearch.getText().toString().trim();
+                String textSearch = query;
 
                 if (!textSearch.equals("null")) {
                     if(isAthleteTab){
                         searchList.clear();
                         if(athleteList.size()>0){
                             for(int i =0;i<athleteList.size();i++){
-                                if(textSearch.equals(athleteList.get(i).getConnected_firstName())){
+                                if(textSearch.equalsIgnoreCase(athleteList.get(i).getConnected_firstName().trim())){
                                     searchList.add(athleteList.get(i));
 
                                 }
@@ -410,7 +453,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                         searchList.clear();
                         if(coachList.size()>0){
                             for(int i =0;i<coachList.size();i++){
-                                if(textSearch.equals(coachList.get(i).getConnected_firstName())){
+                                if(textSearch.equalsIgnoreCase(coachList.get(i).getConnected_firstName())){
                                     searchList.add(coachList.get(i));
 
                                 }
@@ -418,11 +461,26 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
                         }
                     }
+                    if (searchList.size() > 0) {
+                        adapter    =   new ConnectionAdapter(getContext(),searchList,this);
+                        rcv_conn.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }else {
+                        Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+                        if (isAthleteTab) {
+                            adapter    =   new ConnectionAdapter(getContext(),athleteList,this);
+                            rcv_conn.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }else {
+                            adapter    =   new ConnectionAdapter(getContext(),coachList,this);
+                            rcv_conn.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+
+                    }
 
                 }
-                adapter    =   new ConnectionAdapter(getContext(),searchList,this);
-                rcv_conn.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+
 
             }
 

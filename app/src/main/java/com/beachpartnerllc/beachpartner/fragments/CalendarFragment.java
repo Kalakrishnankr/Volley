@@ -319,9 +319,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 Window window = filterDialogue.getWindow();
                 WindowManager.LayoutParams wlp = window.getAttributes();
                 wlp.gravity = Gravity.TOP;
-                wlp.y = 120;
+                wlp.y = 80;
                 wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
                 window.setAttributes(wlp);
+                filterDialogue
+                        .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
                 filterDialogue.show();
                 initView(filterDialogue);
                 break;
@@ -338,7 +341,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         Spinner spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
         Spinner spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
 
-        AutoCompleteTextView tv_state = (AutoCompleteTextView) filterDialogue.findViewById(R.id.state_List);
+        final AutoCompleteTextView tv_state = (AutoCompleteTextView) filterDialogue.findViewById(R.id.state_List);
         AutoCompleteTextView tv_region = (AutoCompleteTextView) filterDialogue.findViewById(R.id.region_list);
 
         Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
@@ -564,6 +567,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         tv_region.setTypeface(font);
         tv_region.setAdapter(adapterRegion);
 
+        tv_state.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+        });
 
     }
 
