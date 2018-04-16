@@ -159,7 +159,7 @@ public class LoginActivity extends AppCompatActivity {
         //Login button click
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            
+
             public void onClick(View view) {
 
                 uname = userName.getText().toString().trim();

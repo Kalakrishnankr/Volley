@@ -16,6 +16,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -749,11 +750,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_IMG.jpg");
 
                 mgr.enqueue(request);
+                String rootPath = Environment.getExternalStorageDirectory()
+                        .getAbsolutePath() + "/BP/";
+                File imageFileToShare = new File(rootPath);
+                Uri uri = Uri.fromFile(imageFileToShare);
                 Intent intent = new Intent(Intent.ACTION_SEND);
                 intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
-                intent.putExtra(Intent.EXTRA_STREAM, System.currentTimeMillis()+"_IMG.jpg");
+                intent.putExtra(Intent.EXTRA_STREAM, uri);
                 intent.setType("image/*");
                 startActivity(Intent.createChooser(intent, "Share image via..."));
+                imageFileToShare.delete();
 
             } else if (type.equals("video")) {
                 DownloadManager.Request request = new DownloadManager.Request(
@@ -1589,6 +1595,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editPoints.setEnabled(false);
         editPoints.setBackground(null);
 
+        edit_volleyRanking.setEnabled(false);
+        edit_volleyRanking.setBackground(null);
+
 
         topfinishes_txt_1.setEnabled(false);
         imageView1.setVisibility(View.GONE);
@@ -1958,69 +1967,70 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void setViews() {
-        if (userDataModel != null) {
-            //set basic informations of user
-            if (userDataModel.getImageUrl() != null) {
-                Glide.with(getActivity()).load(userDataModel.getImageUrl()).into(imgProfile);
-            }else {
-                imgProfile.setImageResource(R.drawable.ic_person);
-            }
-            if (userDataModel.getVideoUrl() != null) {
-                videoView.setVisibility(View.VISIBLE);
-                videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
-                videoView.start();
-                videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+        if (getActivity() != null) {
+            if (userDataModel != null) {
+                //set basic informations of user
+                if (userDataModel.getImageUrl() != null) {
+                    Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                }else {
+                    imgProfile.setImageResource(R.drawable.ic_person);
+                }
+                if (userDataModel.getVideoUrl() != null) {
+                    videoView.setVisibility(View.VISIBLE);
+                    videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
+                    videoView.start();
+                    videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                        @Override
+                        public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
+                            if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
+                                progressbar.setVisibility(View.GONE);
+                            }
+                            if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
+                                progressbar.setVisibility(View.VISIBLE);
+                            }
+                            if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
+                                videoView.setVisibility(View.GONE);
+                                progressbar.setVisibility(View.GONE);
+                                imgPlay.setVisibility(View.VISIBLE);
+                            }
+                            return false;
+                        }
+                    });
+                }
+                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     @Override
-                    public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                        if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                            progressbar.setVisibility(View.GONE);
-                        }
-                        if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                            progressbar.setVisibility(View.VISIBLE);
-                        }
-                        if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                            videoView.setVisibility(View.GONE);
-                            progressbar.setVisibility(View.GONE);
-                            imgPlay.setVisibility(View.VISIBLE);
-                        }
-                        return false;
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+                        videoView.setVisibility(View.GONE);
+                        progressbar.setVisibility(View.GONE);
+                        imgPlay.setVisibility(View.VISIBLE);
                     }
                 });
-            }
-            videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                @Override
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    videoView.setVisibility(View.GONE);
-                    progressbar.setVisibility(View.GONE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                }
-            });
-            profileName.setText(userDataModel.getFirstName());
-            profileDesig.setText(userDataModel.getUserType());
-            editLname.setText(userDataModel.getLastName());
-            editFname.setText(userDataModel.getFirstName());
-            editGender.setText(userDataModel.getGender());
-            editCity.setText(userDataModel.getCity());
-            //Long value to date conversion
-            SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
-            long dob       = Long.parseLong(userDataModel.getDob());
-            Date date_dob  = new Date(dob);
-            editDob.setText(dft.format(date_dob));
-            editPhone.setText(userDataModel.getPhoneNumber());
-            //set More information
-            editHeight.setText(userDataModel.getHeight());
-            editCBVAFName.setText(userDataModel.getCbvaFirstName());
-            editCBVALName.setText(userDataModel.getCbvaLastName());
-            editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
-            editColgClub.setText(userDataModel.getCollageClub());
-            editColgBeach.setText(userDataModel.getCollegeBeach());
-            editColgIndoor.setText(userDataModel.getCollegeIndoor());
-            editHighschool.setText(userDataModel.getHighSchoolAttended());
-            editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
-            editPoints.setText(userDataModel.getTotalPoints());
-            editPlayed.setText(userDataModel.getToursPlayedIn());
-            edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
-            String topFinishes = userDataModel.getTopFinishes();
+                profileName.setText(userDataModel.getFirstName());
+                profileDesig.setText(userDataModel.getUserType());
+                editLname.setText(userDataModel.getLastName());
+                editFname.setText(userDataModel.getFirstName());
+                editGender.setText(userDataModel.getGender());
+                editCity.setText(userDataModel.getCity());
+                //Long value to date conversion
+                SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+                long dob       = Long.parseLong(userDataModel.getDob());
+                Date date_dob  = new Date(dob);
+                editDob.setText(dft.format(date_dob));
+                editPhone.setText(userDataModel.getPhoneNumber());
+                //set More information
+                editHeight.setText(userDataModel.getHeight());
+                editCBVAFName.setText(userDataModel.getCbvaFirstName());
+                editCBVALName.setText(userDataModel.getCbvaLastName());
+                editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
+                editColgClub.setText(userDataModel.getCollageClub());
+                editColgBeach.setText(userDataModel.getCollegeBeach());
+                editColgIndoor.setText(userDataModel.getCollegeIndoor());
+                editHighschool.setText(userDataModel.getHighSchoolAttended());
+                editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+                editPoints.setText(userDataModel.getTotalPoints());
+                editPlayed.setText(userDataModel.getToursPlayedIn());
+                edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+                String topFinishes = userDataModel.getTopFinishes();
            /* if (!topFinishes.equals("null")) {
                 List<String> finishes = Arrays.asList(topFinishes.split(","));
                 if(finishes.size()>0){
@@ -2030,38 +2040,40 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 }
             }*/
 
-            String courSidePref = userDataModel.getCourtSidePreference();
-            if(courSidePref != null){
-                int courtPos = prefAdapter.getPosition(courSidePref);
-                spinnerPref.setSelection(courtPos);
-            }
-            String exp = userDataModel.getExperience();
-            if(exp != null){
-                int exper = expAdapter.getPosition(exp);
-                spinnerExp.setSelection(exper);
-            }
-            String highestTER  = userDataModel.getHighestTourRatingEarned();
-            if(highestTER != null){
-                int hter = highestRatingAdapter.getPosition(highestTER);
-                spinnerTourRating.setSelection(hter);
-            }
-            String tourIntrest = userDataModel.getTournamentLevelInterest();
-            if(tourIntrest != null){
-                int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
-                spinnerTLInterest.setSelection(tIL);
-            }
-            String pos = userDataModel.getPosition();
-            if (pos != null){
-                int positions = positionAdapter.getPosition(pos);
-                spinnerPositon.setSelection(positions);
-            }
-            String wTot = userDataModel.getWillingToTravel();
-            if (wTot != null) {
-                int willingTotravel = distanceAdapter.getPosition(wTot);
-                spinnerWtoTravel.setSelection(willingTotravel);
-            }
+                String courSidePref = userDataModel.getCourtSidePreference();
+                if(courSidePref != null){
+                    int courtPos = prefAdapter.getPosition(courSidePref);
+                    spinnerPref.setSelection(courtPos);
+                }
+                String exp = userDataModel.getExperience();
+                if(exp != null){
+                    int exper = expAdapter.getPosition(exp);
+                    spinnerExp.setSelection(exper);
+                }
+                String highestTER  = userDataModel.getHighestTourRatingEarned();
+                if(highestTER != null){
+                    int hter = highestRatingAdapter.getPosition(highestTER);
+                    spinnerTourRating.setSelection(hter);
+                }
+                String tourIntrest = userDataModel.getTournamentLevelInterest();
+                if(tourIntrest != null){
+                    int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
+                    spinnerTLInterest.setSelection(tIL);
+                }
+                String pos = userDataModel.getPosition();
+                if (pos != null){
+                    int positions = positionAdapter.getPosition(pos);
+                    spinnerPositon.setSelection(positions);
+                }
+                String wTot = userDataModel.getWillingToTravel();
+                if (wTot != null) {
+                    int willingTotravel = distanceAdapter.getPosition(wTot);
+                    spinnerWtoTravel.setSelection(willingTotravel);
+                }
 
+            }
         }
+
     }
 
     private String trimMessage(String json, String detail) {

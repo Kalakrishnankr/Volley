@@ -72,6 +72,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             @Override
             public void onSingleClick(View v) {
 
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
+
             }
 
             @Override

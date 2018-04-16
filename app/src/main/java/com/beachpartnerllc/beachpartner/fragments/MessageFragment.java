@@ -84,6 +84,7 @@ public class MessageFragment extends Fragment {
     //Method for getting chatlist from firebse
     private void setUpMessage() {
         userList.clear();
+        chatList.clear();
         final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
