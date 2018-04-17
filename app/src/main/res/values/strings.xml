@@ -46,13 +46,14 @@
     <string name="partnerintrest">Tournament Requests Sent</string>
     <string name="nameerror">Please enter your name</string>
     <string name="lnameerror">Please enter your last name</string>
-    <string name="doberror">Please choose your birth date</string>
+    <string name="doberror">Please enter your date of birth</string>
     <string name="gendererror">Please choose your gender</string>
     <string name="emailerror">Please enter a valid email</string>
     <string name="mobilerror">Please enter a valid mobile number</string>
     <string name="cityerror">Please enter your location</string>
-    <string name="invalid_password">Please enter the password</string>
-    <string name="invalid_confirmpassword">Password does not match</string>
+    <string name="invalid_password">Your password is too small Please enter a minimum of eight characters</string>
+    <string name="invalid_confirmpassword">Confirm password does not match with the password you entered</string>
+    <string name="enter_confirm_pwd">Please confirm your password</string>
 
 
     <string name="settings">Settings</string>

@@ -246,11 +246,20 @@ public class SignUpActivity extends AppCompatActivity{
 
                 addValidationToViews();//Method for validate feilds
                 if(awesomeValidation.validate()){
-                    if(userType!=null){
+                    if(userType!=null&&dob.length()!=0){
                         submitForm();
 
                     }else {
-                        Toast.makeText(SignUpActivity.this, "Please select Your UserType", Toast.LENGTH_SHORT).show();
+                        if(userType==null&&dob.length()==0){
+                            Toast.makeText(SignUpActivity.this, "Please enter your user type and date of birth", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(userType==null){
+                            Toast.makeText(SignUpActivity.this, "Please select Your UserType", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(dob.length()==0){
+                            Toast.makeText(SignUpActivity.this, "Please enter your date of birth", Toast.LENGTH_SHORT).show();
+                        }
+
                     }
 
                 }
@@ -274,6 +283,11 @@ public class SignUpActivity extends AppCompatActivity{
         String regx=".{8,}";
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
+        if(confnPass.length()==0){
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,regx, R.string.enter_confirm_pwd);
+        }
+
+
         //awesomeValidation.addValidation(this, R.id.profile_pic, "^null|$", R.string.error_your_id);
 
     }
