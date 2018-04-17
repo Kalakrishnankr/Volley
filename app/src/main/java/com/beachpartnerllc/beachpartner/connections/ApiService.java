@@ -17,7 +17,7 @@ public class ApiService {
     public static final String CLIENT_SECRET="9d7555b87c5d469e806f66d578db90e4";
     public static final String REDIRECT_URI ="http://beachpartner.com";
 
-    public static String BASE_URL   =   "http://beachpartner.com:8080/api/";
+    public static String BASE_URL   =   "https://beachpartner.com/api/";
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
 
@@ -35,10 +35,9 @@ public class ApiService {
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
 
-    public static String  UPDATE_USER_DETAILS    = BASE_URL+"users";
     public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
 
-    public static String  POST_USER_MORE_INFO        = BASE_URL+"users/profile";
+    public static String  UPDATE_USER_PROFILE        = BASE_URL+"users/update-all/";
     public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
 

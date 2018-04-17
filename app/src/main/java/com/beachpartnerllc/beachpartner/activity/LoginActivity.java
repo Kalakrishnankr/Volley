@@ -5,6 +5,8 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -33,6 +35,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.instagram.Instagram;
+import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
+import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
+import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -41,13 +50,6 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.connections.ApiService;
-import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.instagram.Instagram;
-import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
-import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
-import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.iid.FirebaseInstanceId;
 
@@ -64,18 +66,16 @@ public class LoginActivity extends AppCompatActivity {
     private EditText userName,password;
     private Button btnLogin,approve,cancel;
     private ImageView loginButton,instaLogin;
-    private String uname,passwd;
     private TextView tsignUp,txt_forgotPass,result;
-    CallbackManager callbackManager;
+    private CallbackManager callbackManager;
     private static final String EMAIL = "email";
     private InstagramSession mInstagramSession;
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
-    private String token;
-    private String registrationSuccessful;
-    private String intentUrlString;
+    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId;
     private TextView  never_got_email_tv;
+    private TextInputLayout password_inputText;
 
 
     @Override
@@ -89,9 +89,10 @@ public class LoginActivity extends AppCompatActivity {
         //Register client App to FCM
         FirebaseApp.initializeApp(LoginActivity.this);
 
-        String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("refreshedToken----",refreshedToken);
-
+        refreshedFirebaseToken = FirebaseInstanceId.getInstance().getToken();
+        Log.d("refreshedToken----",refreshedFirebaseToken);
+        deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
+                Settings.Secure.ANDROID_ID);
 
         if(new PrefManager(getApplicationContext()).getRegistrationStatus()!=null){
             registrationSuccessful=new PrefManager(getApplicationContext()).getRegistrationStatus();
@@ -107,8 +108,9 @@ public class LoginActivity extends AppCompatActivity {
                     public void onSuccess(LoginResult loginResult) {
                         Log.d("Success", "Login");
 
-                        startActivity(new Intent(LoginActivity.this,TabActivity.class));
-
+                        Intent newIntent = new Intent(LoginActivity.this,TabActivity.class);
+                        newIntent.putExtra("profile","home");
+                        startActivity(newIntent);
                     }
 
                     @Override
@@ -132,10 +134,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         }
 
-
         initActivity();
-
-
     }
 
 
@@ -151,6 +150,8 @@ public class LoginActivity extends AppCompatActivity {
         tsignUp         =   (TextView) findViewById(R.id.tSignUp);
         loginButton     =   (ImageView)findViewById(R.id.login_button);
         txt_forgotPass  =   (TextView) findViewById(R.id.forgotPass);
+
+        password_inputText = (TextInputLayout) findViewById(R.id.float_label_password);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         progress = new ProgressDialog(LoginActivity.this);
@@ -176,10 +177,13 @@ public class LoginActivity extends AppCompatActivity {
                 if(awesomeValidation.validate()){
 
                         progress.show();
-                        startLoginProcess(uname,passwd);//Method for start login
-                        userName.setText("");
-                        password.setText("");
-                        userName.requestFocus();
+                        if (!refreshedFirebaseToken.isEmpty()) {
+                            startLoginProcess(uname,passwd,refreshedFirebaseToken);//Method for start login
+                            userName.setText("");
+                            password.setText("");
+                            userName.requestFocus();
+                        }
+
                 }
 
             }
@@ -226,7 +230,7 @@ public class LoginActivity extends AppCompatActivity {
 
                 result = (EditText) alertLayout.findViewById(R.id.editTextDialogUserInput);
 
-                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
                 alert.setTitle("Reset Password");
                 alert.setView(alertLayout);
                 alert.setCancelable(false);
@@ -243,13 +247,14 @@ public class LoginActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String user_email = result.getText().toString().trim();
                     if(isValidateUserName(user_email)){
+                        dialog.dismiss();
                         //Method to call reset password
                         resetPassword(user_email);
                         //Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
                     }else {
-                        Toast.makeText(getBaseContext(), "Please check your email" , Toast.LENGTH_SHORT).show();
-
-                    }}
+                        Toast.makeText(getBaseContext(), "Please check your email" + user_email , Toast.LENGTH_SHORT).show();
+                    }
+                    }
                 });
                 AlertDialog dialog = alert.create();
                 dialog.show();
@@ -265,18 +270,20 @@ public class LoginActivity extends AppCompatActivity {
     private void addValidationToViews() {
         awesomeValidation.addValidation(LoginActivity.this, R.id.input_username, Patterns.EMAIL_ADDRESS, R.string.error_username);
         String regx=".{5,}";
-        awesomeValidation.addValidation(LoginActivity.this,R.id.input_password,regx,R.string.invalid_password);
+        awesomeValidation.addValidation(LoginActivity.this, R.id.float_label_password,regx,R.string.invalid_password);
     }
 
 
     //Method for login
-    private void startLoginProcess(final String uname, final String passwd) {
+    private void startLoginProcess(final String uname, final String passwd,String fireToken) {
 
             JSONObject object = new JSONObject();
             try {
                 object.put("password",passwd);
                 object.put("username",uname);
                 object.put("rememberMe",true);
+                object.put("fcmToken",fireToken);
+                object.put("deviceId",deviceId);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -312,21 +319,20 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setCity(userObj.getString("city"));
                                     userDataModel.setPhoneNumber(userObj.getString("phoneNumber"));
                                     userDataModel.setLocation(userObj.getString("location"));
+                                    userDataModel.setFcmToken(userObj.getString("fcmToken"));
                                     //userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
 
-//                                    JSONArray jsonArray = new JSONArray(userObj.getString("subscriptions"));
-//                                    for(int i=0;i<jsonArray.length();i++){
-//                                        JSONObject obj = jsonArray.getJSONObject(i);
-//                                        userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
-//                                        userDataModel.setEffectiveDate(obj.getString("effectiveDate"));
-//                                        userDataModel.setTermDate(obj.getString("termDate"));
-//                                        userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
-//
-//                                    }
-
-
-
+                                    JSONArray jsonArray = userObj.getJSONArray("subscriptions");
+                                    if (jsonArray != null && jsonArray.length() > 0 ) {
+                                        for(int i=0;i<jsonArray.length();i++){
+                                            JSONObject obj = jsonArray.getJSONObject(i);
+                                            userDataModel.setSubscriptionType(obj.getString("subscriptionType"));
+                                            userDataModel.setEffectiveDate(obj.getString("effectiveDate"));
+                                            userDataModel.setTermDate(obj.getString("termDate"));
+                                            userDataModel.setDaysToExpireSubscription(obj.getString("daysToExpireSubscription"));
+                                        }
+                                    }
 
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
@@ -672,6 +678,7 @@ private void neverGotEmailAlertTextUnderline(){
             String insta_username = user.fullName;
             Toast.makeText(LoginActivity.this, "Your are logged in as : "+insta_username, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+            intent.putExtra("profile","home");
             startActivity(intent);
 //            startActivity(new Intent(LoginActivity.this, TabActivity.class));
 

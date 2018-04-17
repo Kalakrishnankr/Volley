@@ -62,6 +62,17 @@ public class UserDataModel {
     private String termDate;
     private String daysToExpireSubscription;
 
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
+    }
+
+    private String fcmToken;
+
+
     public String getSubscriptionType() {
         return subscriptionType;
     }

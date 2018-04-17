@@ -30,11 +30,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
-import com.android.volley.VolleyError;import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
@@ -556,12 +556,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
 
-        postUserMoreDetails(jsonObjectMore);
+       // postUserMoreDetails(jsonObjectMore);
 
 
     }
 
-    private void postUserMoreDetails(JSONObject jsonObjectMore) {
+   /* private void postUserMoreDetails(JSONObject jsonObjectMore) {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO+"/"+user_id, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
@@ -610,7 +610,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Log.d("Request", jsonObjectRequest.toString());
         requestQueue.add(jsonObjectRequest);
 
-    }
+    }*/
 
     private void InfoCancelChange(){
         imgProfile.setClickable(false);

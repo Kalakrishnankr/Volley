@@ -217,7 +217,13 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                                 Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
-
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
                         default:
                             break;
                     }

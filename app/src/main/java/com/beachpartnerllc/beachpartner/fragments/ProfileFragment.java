@@ -1407,24 +1407,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
 
-
-            //put user fields to json object
             JSONObject object = new JSONObject();
             try {
+                object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
                 object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
-                object.put("dob", editDob.getText().toString().trim());
-
-
             } catch (JSONException e) {
-
+                e.printStackTrace();
             }
+
+
 
             JSONObject jsonObjectMore = new JSONObject();
             try {
+
                 jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
                 jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
                 jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());
@@ -1458,9 +1457,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 e.printStackTrace();
             }
             //update user fields
-            updateUserDetails(object);
-            //post more details
-            postUserMoreDetails(jsonObjectMore);
+            JSONObject jsonallobj =new JSONObject();
+            try {
+                jsonallobj.put("userDto",object);
+                jsonallobj.put("userProfileDto",jsonObjectMore);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            updateAllUserDetails(jsonallobj);
 
 
         }
@@ -1861,6 +1866,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     //Get User Details Api
 
+/*
     private void updateUserDetails(JSONObject object) {
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
@@ -1911,17 +1917,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         requestQueue.add(jsonObjectRequest);
 
     }
+*/
 
     //Update User Details
 
-    private void postUserMoreDetails(JSONObject object) {
+    private void updateAllUserDetails(JSONObject object) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO+"/"+user_id, object,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE +user_id, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
                         }
 
                     }
