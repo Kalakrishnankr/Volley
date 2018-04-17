@@ -44,8 +44,8 @@
     <string name="next">Next</string>
     <string name="messages">Messages</string>
     <string name="partnerintrest">Tournament Requests Sent</string>
-    <string name="nameerror">Please enter your name</string>
-    <string name="lnameerror">Please enter your last name</string>
+    <string name="nameerror">Please enter your first name(No special characters allowed)</string>
+    <string name="lnameerror">Please enter your last name(NO special characters allowed)</string>
     <string name="doberror">Please enter your date of birth</string>
     <string name="gendererror">Please choose your gender</string>
     <string name="emailerror">Please enter a valid email</string>

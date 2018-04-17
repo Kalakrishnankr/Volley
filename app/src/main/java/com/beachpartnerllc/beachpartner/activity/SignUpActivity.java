@@ -10,8 +10,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.HideReturnsTransformationMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.Patterns;
@@ -36,9 +39,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.beachpartnerllc.beachpartner.CustomEditText;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.utils.DrawableClickListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,6 +54,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import static com.beachpartnerllc.beachpartner.utils.DrawableClickListener.DrawablePosition.RIGHT;
 
 /**
  * Created by seq-kala on 7/2/18.
@@ -62,12 +69,13 @@ public class SignUpActivity extends AppCompatActivity{
     private ImageView imgVideo,imgProfile,imgPlay;
     private VideoView videoView;
 
-    private EditText user_fname,user_lname,user_dob,user_email,user_password,user_confPasswd,user_location,user_mobileno;
+    private EditText user_fname,user_lname,user_dob,user_email,user_confPasswd,user_location,user_mobileno;
+    CustomEditText user_password;
     private String userName,lastName,dob,email,pass,confnPass,location,mobileno,android_id;
     private Button btnsignUp,user_male,user_female;
     private AwesomeValidation awesomeValidation;
     private  Uri selectedImageUri,selectedVideoUri;
-
+    TextInputLayout dobWrapper,passwordWrapper;
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
     private LinearLayout llogin;
@@ -102,13 +110,15 @@ public class SignUpActivity extends AppCompatActivity{
         user_male       = (Button)    findViewById(R.id.btnMale);
         user_female     = (Button)    findViewById(R.id.btnFemale);
         user_email      = (EditText)  findViewById(R.id.input_email);
-        user_password   = (EditText)  findViewById(R.id.input_password);
+        user_password   = (CustomEditText)  findViewById(R.id.input_password);
         user_confPasswd = (EditText)  findViewById(R.id.input_confirm_password);
         user_location   = (EditText)  findViewById(R.id.input_city);
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
         llogin          = (LinearLayout) findViewById(R.id.login);
         userTypeRadio   = (RadioGroup) findViewById(R.id.user_type);
+        dobWrapper      = (TextInputLayout) findViewById(R.id.dobWrapper);
+        passwordWrapper = (TextInputLayout) findViewById(R.id.pwd_wrapper);
 
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -158,6 +168,26 @@ public class SignUpActivity extends AppCompatActivity{
             }
         });
 
+        user_password.setDrawableClickListener(new DrawableClickListener() {
+            Boolean clicked=false;
+           @Override
+           public void onClick(DrawablePosition target) {
+               switch (target) {
+                   case RIGHT:
+                       clicked=!clicked;
+                       if(clicked){
+                           user_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                       }
+                       else{
+                           user_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                       }
+                       break;
+
+                   default:
+                       break;
+               }
+           }
+       });
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -273,10 +303,23 @@ public class SignUpActivity extends AppCompatActivity{
 
 
     private void addValidationToViews() {
-        //adding validation to edittexts
+        //adding validation to edittext
+       if(user_fname.getText().toString().trim().equals("")){
+           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "", R.string.nameerror);
+       }
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+        if(user_lname.getText().toString().trim().equals("")){
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "", R.string.nameerror);
+        }
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
-        //awesomeValidation.addValidation(SignUpActivity.this, R.id.input_dob, "(0?[1-9]|1[012]) [/.-] (0?[1-9]|[12][0-9]|3[01]) [/.-] ((19|20)\\\\d\\\\d)", R.string.doberror);
+        if(user_dob.getText().toString().trim().equals("")){
+            dobWrapper.setErrorEnabled(true);
+            dobWrapper.setError(getString(R.string.doberror));
+        }
+        else{
+            dobWrapper.setErrorEnabled(false);
+        }
+
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);

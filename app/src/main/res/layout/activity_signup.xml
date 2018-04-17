@@ -98,6 +98,7 @@
                 <!--Date of Birth-->
 
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/dobWrapper"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -193,9 +194,11 @@
 
                 <!--Password-->
                 <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pwd_wrapper"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    app:passwordToggleTintMode="src_atop"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                     <com.beachpartnerllc.beachpartner.CustomEditText
@@ -204,6 +207,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_password"
                         android:inputType="textPassword"
+                        android:drawableRight="@drawable/ic_pwd_toggle"
                         android:textColor="@color/colorPrimary" />
                 </android.support.design.widget.TextInputLayout>
 
