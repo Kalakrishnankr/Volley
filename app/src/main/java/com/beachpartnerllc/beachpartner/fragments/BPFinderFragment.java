@@ -9,7 +9,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -67,7 +66,6 @@ import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.RequestBody;
-import com.tooltip.Tooltip;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -551,16 +549,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         // Date date=new Date(bookingsFromMap.get(i).getTimeInMillis());
                         if ((DatetoMilli(dateClicked)) == (DatetoMilli(new Date(bookingsMap.get(i).getTimeInMillis())))) {
 
-                            Tooltip tooltip = new Tooltip.Builder(compactCalendar)
-                                    .setBackgroundColor(Color.GREEN)
-                                     .setArrowHeight(50f)
-
-                                    .setGravity(Gravity.START)
-                                    .setCancelable(true)
-                                    .setDismissOnClick(true)
-                                    .setText("Event Name :"+bookingsMap.get(i).getEventName()+"\n Event Venue :"+bookingsMap.get(i).getEventLocation())
-                                    .show();
-
                         }
                     }
                 }
@@ -635,7 +623,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_langKey(jsonObject.getString("langKey"));
                                     finderModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
                                     finderModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                                    finderModel.setBpf_resetDate(jsonObject.getString("resetDate"));
+                                    //finderModel.setBpf_resetDate(jsonObject.getString("resetDate"));
                                     finderModel.setBpf_dob(jsonObject.getString("dob"));
                                     finderModel.setBpf_gender(jsonObject.getString("gender"));
                                     finderModel.setBpf_loginType(jsonObject.getString("loginType"));
@@ -645,7 +633,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_authToken(jsonObject.getString("authToken"));
                                     finderModel.setBpf_location(jsonObject.getString("location"));
                                     finderModel.setBpf_userType(jsonObject.getString("userType"));
-                                    finderModel.setBpf_age(jsonObject.getString("age"));
+                                    //finderModel.setBpf_age(jsonObject.getString("age"));
 
                                     allCardList.add(finderModel);
 

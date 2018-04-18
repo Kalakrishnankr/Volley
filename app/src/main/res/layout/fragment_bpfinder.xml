@@ -472,7 +472,7 @@
             android:paddingRight="2dp"
             android:paddingTop="60dp"
             android:paddingBottom="70dp"
-            app:elevationEnabled="true"
+            app:elevationEnabled="false"
             app:leftOverlay="@layout/overlay_left"
             app:rightOverlay="@layout/overlay_right"
             app:scaleDiff="0.03"

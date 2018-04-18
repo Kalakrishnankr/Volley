@@ -1406,20 +1406,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setEnabled(false);
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
-
+            String dateOb = editDob.getText().toString().trim();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+            Date dateDOB  = new Date(dateOb);
             JSONObject object = new JSONObject();
             try {
-                object.put("activated",true);
+                //object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("city", editCity.getText().toString().trim());
+                object.put("dob",dateFormat.format(dateDOB));
+                object.put("location", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
+                object.put("imageUrl",userDataModel.getImageUrl().trim());
+                object.put("videoUrl",userDataModel.getVideoUrl().trim());
+                object.put("userType",userDataModel.getUserType().trim());
+                object.put("langKey",userDataModel.getLangKey().trim());
+                object.put("fcmToken",userDataModel.getFcmToken().trim());
+                object.put("email",userDataModel.getEmail().trim());
+                object.put("deviceId",userDataModel.getDeviceId().trim());
+                object.put("authToken",userDataModel.getAuthToken().trim());
+                object.put("city",userDataModel.getLocation().trim());
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
 
             JSONObject jsonObjectMore = new JSONObject();
             try {
@@ -1427,30 +1438,30 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
                 jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
                 jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());
+                jsonObjectMore.put("collage",0);
                 jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
                 jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
                 jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
                 jsonObjectMore.put("courtSidePreference", spinnerPrefValue.trim());
-                jsonObjectMore.put("description",null);
-                jsonObjectMore.put("division",null);
+                jsonObjectMore.put("description",0);
+                jsonObjectMore.put("division",0);
                 jsonObjectMore.put("experience", spinnerExpValue.trim());
-                jsonObjectMore.put("fundingStatus",null);
+                jsonObjectMore.put("fundingStatus",0);
                 jsonObjectMore.put("height", editHeight.getText().toString().trim());
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
                 jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue.trim());
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
-                jsonObjectMore.put("numOfAthlets",null);
+                jsonObjectMore.put("numOfAthlets",0);
                 jsonObjectMore.put("position", spinnerPosValue.trim());
-                jsonObjectMore.put("programsOffered",null);
-                jsonObjectMore.put("shareAthlets",null);
+                jsonObjectMore.put("programsOffered",0);
+                jsonObjectMore.put("shareAthlets",0);
                 jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+","+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
                 jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
                 jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue.trim());
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
-                jsonObjectMore.put("userId", user_id);
                 jsonObjectMore.put("willingToTravel", spinnerWTValue.trim());
-                jsonObjectMore.put("yearsRunning",null);
+                jsonObjectMore.put("yearsRunning",0);
 
 
             } catch (JSONException e) {
@@ -1459,7 +1470,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             //update user fields
             JSONObject jsonallobj =new JSONObject();
             try {
-                jsonallobj.put("userDto",object);
+                jsonallobj.put("userInputDto",object);
                 jsonallobj.put("userProfileDto",jsonObjectMore);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1779,39 +1790,50 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+                            userDataModel.setLangKey(response.getString("langKey"));
+                            userDataModel.setLocation(response.getString("city"));
                             //userDataModel.setSubscriptions(response.getString("subscriptions"));
                             userDataModel.setImageUrl(response.getString("imageUrl"));
                             userDataModel.setVideoUrl(response.getString("videoUrl"));
                             userDataModel.setUserType(response.getString("userType"));
+                            userDataModel.setFcmToken(response.getString("fcmToken"));
+                            userDataModel.setAuthToken(response.getString("authToken"));
+                            userDataModel.setDeviceId(response.getString("deviceId"));
+                            userDataModel.setEmail(response.getString("email"));
+                            if (!response.getString("userProfile").equals(null) && !response.getString("userProfile").equals("null") ) {
 
-                            JSONObject obj = response.getJSONObject("userProfile");
-                            userDataModel.setHeight(obj.getString("height"));
-                            userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
-                            userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
-                            userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
-                            userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                            userDataModel.setTotalPoints(obj.getString("totalPoints"));
-                            userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
-                            userDataModel.setCollageClub(obj.getString("collageClub"));
-                            userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
-                            userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
-                            userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
-                            userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
-                            userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
-                            userDataModel.setExperience(obj.getString("experience"));
-                            userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
-                            userDataModel.setPosition(obj.getString("position"));
-                            userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
-                            userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
-                            userDataModel.setTopFinishes(obj.getString("topFinishes"));
-                            userDataModel.setCollage(obj.getString("collage"));
-                            userDataModel.setDescription(obj.getString("description"));
-                            userDataModel.setYearsRunning(obj.getString("yearsRunning"));
-                            userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
-                            userDataModel.setProgramsOffered(obj.getString("programsOffered"));
-                            userDataModel.setDivision(obj.getString("division"));
-                            userDataModel.setFundingStatus(obj.getString("fundingStatus"));
-                            userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+                                JSONObject obj = new JSONObject(response.getString("userProfile"));
+                                if (obj != null && obj.length() != 0) {
+                                    userDataModel.setHeight(obj.getString("height"));
+                                    userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
+                                    userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
+                                    userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
+                                    userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
+                                    userDataModel.setTotalPoints(obj.getString("totalPoints"));
+                                    userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
+                                    userDataModel.setCollageClub(obj.getString("collageClub"));
+                                    userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
+                                    userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
+                                    userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
+                                    userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
+                                    userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
+                                    userDataModel.setExperience(obj.getString("experience"));
+                                    userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
+                                    userDataModel.setPosition(obj.getString("position"));
+                                    userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
+                                    userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
+                                    userDataModel.setTopFinishes(obj.getString("topFinishes"));
+                                    userDataModel.setCollage(obj.getString("collage"));
+                                    userDataModel.setDescription(obj.getString("description"));
+                                    userDataModel.setYearsRunning(obj.getString("yearsRunning"));
+                                    userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
+                                    userDataModel.setProgramsOffered(obj.getString("programsOffered"));
+                                    userDataModel.setDivision(obj.getString("division"));
+                                    userDataModel.setFundingStatus(obj.getString("fundingStatus"));
+                                    userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+                                }
+                            }
+
 
                             //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
                             setViews();
@@ -1923,7 +1945,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void updateAllUserDetails(JSONObject object) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE +user_id, object,
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE + user_id, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -1960,7 +1982,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json ");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
 
@@ -2012,12 +2034,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         imgPlay.setVisibility(View.VISIBLE);
                     }
                 });
-                profileName.setText(userDataModel.getFirstName());
-                profileDesig.setText(userDataModel.getUserType());
-                editLname.setText(userDataModel.getLastName());
-                editFname.setText(userDataModel.getFirstName());
-                editGender.setText(userDataModel.getGender());
-                editCity.setText(userDataModel.getCity());
+                profileName.setText(userDataModel.getFirstName().trim());
+                profileDesig.setText(userDataModel.getUserType().trim());
+                editLname.setText(userDataModel.getLastName().trim());
+                editFname.setText(userDataModel.getFirstName().trim());
+                editGender.setText(userDataModel.getGender().trim());
+                editCity.setText(userDataModel.getCity().trim());
                 //Long value to date conversion
                 SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
                 long dob       = Long.parseLong(userDataModel.getDob());

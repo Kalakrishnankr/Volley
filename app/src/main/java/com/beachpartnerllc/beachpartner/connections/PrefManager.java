@@ -40,6 +40,17 @@ public class PrefManager {
         editor.putString("registrationStatus",status);
         editor.commit();
     }
+    public void saveTips(boolean value){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WelcomeTips", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("tips",value);
+        editor.commit();
+    }
+
+    public Boolean getTips(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("WelcomeTips", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("tips", false);
+    }
 
     public String getRegistrationStatus() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
