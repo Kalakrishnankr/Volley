@@ -15,6 +15,7 @@ public class ConnectionModel {
     public String Connected_deviceId;
     public String Connected_authToken;
     public String Connected_location;
+    public boolean Connected_isAvailable_ondate;
 
     public String getConnected_userType() {
         return Connected_userType;
@@ -118,5 +119,11 @@ public class ConnectionModel {
         Connected_location = connected_location;
     }
 
+    public boolean getConnected_isAvailable_ondate() {
+        return Connected_isAvailable_ondate;
+    }
 
+    public void setConnected_isAvailable_ondate(boolean connected_isAvailable_ondate) {
+        Connected_isAvailable_ondate = connected_isAvailable_ondate;
+    }
 }

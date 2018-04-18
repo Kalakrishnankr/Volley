@@ -12,7 +12,9 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
 import android.text.TextUtils;
+import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.LinkMovementMethod;
+import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
@@ -35,6 +37,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.beachpartnerllc.beachpartner.CustomEditText;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
@@ -42,6 +45,7 @@ import com.beachpartnerllc.beachpartner.instagram.Instagram;
 import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
 import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.utils.DrawableClickListener;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -63,7 +67,8 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText userName,password;
+    private EditText userName;
+    private CustomEditText password;
     private Button btnLogin,approve,cancel;
     private ImageView loginButton,instaLogin;
     private TextView tsignUp,txt_forgotPass,result;
@@ -106,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
                 new FacebookCallback<LoginResult>() {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
-                        Log.d("Success", "Login");
+                        Log.d("Success", "Login"+loginResult);
 
                         Intent newIntent = new Intent(LoginActivity.this,TabActivity.class);
                         newIntent.putExtra("profile","home");
@@ -144,7 +149,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
         userName        =   (EditText) findViewById(R.id.input_username);
-        password        =   (EditText) findViewById(R.id.input_password);
+        password        =   (CustomEditText) findViewById(R.id.input_password);
         btnLogin        =   (Button)   findViewById(R.id.btnLogin);
         instaLogin      =   (ImageView)findViewById(R.id.instaLogin);
         tsignUp         =   (TextView) findViewById(R.id.tSignUp);
@@ -157,6 +162,27 @@ public class LoginActivity extends AppCompatActivity {
         progress = new ProgressDialog(LoginActivity.this);
         progress.setMessage("Loading...");
 
+
+        password.setDrawableClickListener(new DrawableClickListener() {
+            Boolean clicked=false;
+            @Override
+            public void onClick(DrawablePosition target) {
+                switch (target) {
+                    case RIGHT:
+                        clicked=!clicked;
+                        if(clicked){
+                            password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                        }
+                        else{
+                            password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                        }
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+        });
         //Login button click
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -194,6 +220,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 LoginManager.getInstance().logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "user_friends"));
+
             }
         });
 
@@ -252,7 +279,7 @@ public class LoginActivity extends AppCompatActivity {
                         resetPassword(user_email);
                         //Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
                     }else {
-                        Toast.makeText(getBaseContext(), "Please check your email" + user_email , Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getBaseContext(), "Please enter a valid email and then click submit" + user_email , Toast.LENGTH_SHORT).show();
                     }
                     }
                 });
@@ -426,6 +453,11 @@ public class LoginActivity extends AppCompatActivity {
                                     json = trimMessage(json,"detail");
                                     if(json!=null){
                                         progress.dismiss();
+                                        if(json.contains("not activated")){
+                                            new PrefManager(LoginActivity.this).saveRegistrationStatus("pending");
+                                            registrationSuccessful=  new PrefManager(LoginActivity.this).getRegistrationStatus();
+                                            Toast.makeText(LoginActivity.this, " "+registrationSuccessful, Toast.LENGTH_LONG).show();
+                                        }
                                         Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
                                         toast.setGravity(Gravity.BOTTOM, 0, 0);
                                         toast.show();

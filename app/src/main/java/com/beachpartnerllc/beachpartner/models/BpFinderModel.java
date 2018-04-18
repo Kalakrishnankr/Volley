@@ -29,6 +29,7 @@ public class BpFinderModel {
     public String bpf_age;
     public String bpf_effectiveDate;
     public String bpf_termDate;
+    public String bpf_fcmToken;
 
     public String getBpf_effectiveDate() {
         return bpf_effectiveDate;
@@ -242,6 +243,10 @@ public class BpFinderModel {
         this.bpf_age = bpf_age;
     }
 
-
-
+    public void setBpf_fcmToken(String bpf_fcmToken) {
+        this.bpf_fcmToken = bpf_fcmToken;
+    }
+    public String  getBpf_fcmToken() {
+        return bpf_fcmToken;
+    }
 }

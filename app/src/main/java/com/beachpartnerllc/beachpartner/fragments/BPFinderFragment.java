@@ -130,7 +130,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private CompactCalendarView compactCalendar;
     private RecyclerView rcv_bpProfiles;
     private BlueBProfileAdapter blueBProfileAdapter;
-    private String token,user_id,user_subscription,reqPersonId,deviceId;
+    private String token,user_id,user_subscription,reqPersonId,deviceId,fcmToken;
     private ArrayList<BpFinderModel>allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<>();
     private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<>();
@@ -496,8 +496,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
                     cardHifiSwiped(reqPersonId);
                     //r.put(reqPersonId);
-                    String r="cF2ff-YwPeA:APA91bFMRt6UHIMT-JF1wIEKS0tlXey7zdscMKk2SpvGpBrEhZqb6VzQYfp01ygFAhoC3-W-ASehWuMby-HJFj6UDRSh1dB02gWY6l-ZgR-D79SxpfelpYLK-pewybRaOeScwwWd3JVp";
-                    sendMessage(r,"Hello","Hi i am Coach Abraham","");
+                    String r=fcmToken;
+                    sendMessage(r,"BeachPartner",new PrefManager(getContext()).getUserName()+"sent you a high five","");
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
@@ -645,6 +645,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_authToken(jsonObject.getString("authToken"));
                                     finderModel.setBpf_location(jsonObject.getString("location"));
                                     finderModel.setBpf_userType(jsonObject.getString("userType"));
+                                    finderModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
                                     finderModel.setBpf_age(jsonObject.getString("age"));
 
                                     allCardList.add(finderModel);
@@ -1229,9 +1230,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     @Override
-    public void onClick(String bpf_id,String bpf_deviceId) {
+    public void onClick(String bpf_id,String bpf_deviceId,String bpf_fcmToken) {
         reqPersonId = bpf_id;
         deviceId    = bpf_deviceId;
+        fcmToken    = bpf_fcmToken;
         getIndividualEvents(reqPersonId);
     }
 

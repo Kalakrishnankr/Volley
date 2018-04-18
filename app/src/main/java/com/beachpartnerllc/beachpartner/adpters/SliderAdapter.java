@@ -1,9 +1,12 @@
 package com.beachpartnerllc.beachpartner.adpters;
 
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.app.FragmentTransaction;
 
+import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionsTabFragment;
 
@@ -15,12 +18,13 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
 
     CharSequence titles[];
     int numberOfTabs;
+    long eventDate;
     private static boolean isBPActive = false;
     private static boolean isPartner = false;
 
-    public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs) {
+    public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs,long eventDate) {
         super(fragmentManager);
-
+        this.eventDate = eventDate;
         this.titles =titles;
         this.numberOfTabs=numberOfTabs;
 
@@ -34,6 +38,9 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
         if(position==0){
 
             ConnectionsTabFragment connectionsTabFragment = new ConnectionsTabFragment();
+            Bundle argDate = new Bundle();
+            argDate.putLong("eventDate",eventDate);
+            connectionsTabFragment.setArguments(argDate);
             return connectionsTabFragment;
 
         }else {

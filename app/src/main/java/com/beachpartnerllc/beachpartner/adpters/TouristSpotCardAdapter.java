@@ -72,7 +72,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             @Override
             public void onSingleClick(View v) {
 
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
 
             }
 
@@ -88,7 +88,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                     playvideo(holder);
                 }
                 // dialog.setMessage("Please wait");
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
             }
         });
 
@@ -98,7 +98,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             public void onClick(View view) {
 
                 myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                 //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
             }
         });

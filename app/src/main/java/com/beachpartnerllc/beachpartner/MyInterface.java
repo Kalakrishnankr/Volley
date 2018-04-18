@@ -7,5 +7,5 @@ package com.beachpartnerllc.beachpartner;
 public interface MyInterface {
 
      void addView(String url, String name);
-     void onClick(String bpf_id, String bpf_deviceId);
+     void onClick(String bpf_id, String bpf_deviceId,String bpf_fcmToken);
 }
