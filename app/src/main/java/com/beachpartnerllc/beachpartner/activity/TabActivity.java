@@ -33,21 +33,21 @@ import com.beachpartnerllc.beachpartner.fragments.SettingsFragment;
 
 public class TabActivity extends AppCompatActivity {
 
-    private TextView mTextMessage;
-    HomeFragment homeFragment;
-    private String YOUR_FRAGMENT_STRING_TAG;
-    private Boolean activeMoreStatus=false;
-    private Boolean moreClickedOnce=true;
-    private Boolean floatMenu1Active=true;
-    private Boolean floatMenu2Active=false;
-    private String userType;
-
-    FloatingActionButton menu1;
-    FloatingActionButton menu2;
-    private static  boolean doubleBackToExitPressedOnce = false;
-    private BottomNavigationView navigation;
+    private static boolean doubleBackToExitPressedOnce = false;
     private static boolean isBPActive = false;
     private static boolean isPartnerFinder = false;
+    HomeFragment homeFragment;
+    FloatingActionButton menu1;
+    FloatingActionButton menu2;
+    private TextView mTextMessage;
+    private String YOUR_FRAGMENT_STRING_TAG;
+    private Boolean activeMoreStatus = false;
+    private Boolean moreClickedOnce = true;
+    private Boolean floatMenu1Active = true;
+    private Boolean floatMenu2Active = false;
+    private String userType;
+    private Boolean tips;
+    private BottomNavigationView navigation;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -55,22 +55,22 @@ public class TabActivity extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.navigation_home:
-                    if(userType.equalsIgnoreCase("Athlete")){
+                    if (userType.equalsIgnoreCase("Athlete")) {
                         HomeFragment homeFragment = new HomeFragment();
                         getSupportActionBar().setTitle("Beach Partner");
                         FragmentManager manager = getSupportFragmentManager();
                         FragmentTransaction transaction = manager.beginTransaction();
-                        transaction.replace(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                        transaction.replace(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
                         transaction.commit();
                         disableFloatButtons();
                         return true;
                     }
-                    if(userType.equalsIgnoreCase("Coach")){
+                    if (userType.equalsIgnoreCase("Coach")) {
                         CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
                         getSupportActionBar().setTitle("Beach Partner");
                         FragmentManager coachHomeManager = getSupportFragmentManager();
                         FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
-                        coachHomeTransaction.replace(R.id.container, coachHomeFragment,YOUR_FRAGMENT_STRING_TAG);
+                        coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
                         coachHomeTransaction.commit();
                         disableFloatButtons();
                         return true;
@@ -78,12 +78,12 @@ public class TabActivity extends AppCompatActivity {
                     return true;
 
                 case R.id.navigation_bp:
-                    isPartnerFinder=false;
-                    BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive,isPartnerFinder);
+                    isPartnerFinder = false;
+                    BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive, isPartnerFinder);
                     getSupportActionBar().setTitle("Beach Partner");
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();
-                    tran.replace(R.id.container, bpFinderFragment,YOUR_FRAGMENT_STRING_TAG);
+                    tran.replace(R.id.container, bpFinderFragment, YOUR_FRAGMENT_STRING_TAG);
                     tran.commit();
                     disableFloatButtons();
                     return true;
@@ -94,34 +94,33 @@ public class TabActivity extends AppCompatActivity {
                     getSupportActionBar().setTitle("Connections");
                     FragmentManager mngr = getSupportFragmentManager();
                     FragmentTransaction trans = mngr.beginTransaction();
-                    trans.replace(R.id.container,connectionFragment,YOUR_FRAGMENT_STRING_TAG);
+                    trans.replace(R.id.container, connectionFragment, YOUR_FRAGMENT_STRING_TAG);
                     trans.commit();
                     disableFloatButtons();
                     return true;
 
                 case R.id.navigation_calendar:
 
-                    CalendarFragment calendarFragment   =   new CalendarFragment();
+                    CalendarFragment calendarFragment = new CalendarFragment();
                     getSupportActionBar().setTitle("Calendar");
-                    FragmentManager cmngr   =   getSupportFragmentManager();
+                    FragmentManager cmngr = getSupportFragmentManager();
                     FragmentTransaction ctrans = cmngr.beginTransaction();
-                    ctrans.replace(R.id.container,calendarFragment,YOUR_FRAGMENT_STRING_TAG);
+                    ctrans.replace(R.id.container, calendarFragment, YOUR_FRAGMENT_STRING_TAG);
                     ctrans.commit();
                     disableFloatButtons();
                     return true;
 
 
                 case R.id.navigation_more:
-                    activeMoreStatus=!activeMoreStatus;
+                    activeMoreStatus = !activeMoreStatus;
 
-                    if(activeMoreStatus){
+                    if (activeMoreStatus) {
                         menu1.setVisibility(View.VISIBLE);
                         menu2.setVisibility(View.VISIBLE);
-                        if(moreClickedOnce||floatMenu1Active){
+                        if (moreClickedOnce || floatMenu1Active) {
                             activateMessageFragment();
-                            moreClickedOnce=false;
-                        }
-                        else if(floatMenu2Active){
+                            moreClickedOnce = false;
+                        } else if (floatMenu2Active) {
                             activateHiFiveFragment();
                         }
 
@@ -150,8 +149,7 @@ public class TabActivity extends AppCompatActivity {
                             }
                         });
 
-                    }
-                    else{
+                    } else {
                         disableFloatButtons();
                     }
 
@@ -165,32 +163,32 @@ public class TabActivity extends AppCompatActivity {
     };
 
     //to disable float buttons
-    public void disableFloatButtons(){
+    public void disableFloatButtons() {
         menu1.setVisibility(View.GONE);
         menu2.setVisibility(View.GONE);
-        activeMoreStatus=false;
+        activeMoreStatus = false;
     }
 
     //to show messages fragment
-    public void activateMessageFragment(){
-        floatMenu1Active=true;
-        floatMenu2Active=false;
-        MessageFragment messageFragment   =   new MessageFragment();
+    public void activateMessageFragment() {
+        floatMenu1Active = true;
+        floatMenu2Active = false;
+        MessageFragment messageFragment = new MessageFragment();
         getSupportActionBar().setTitle("Messages");
-        FragmentManager messageFManager   =   getSupportFragmentManager();
+        FragmentManager messageFManager = getSupportFragmentManager();
         FragmentTransaction messageTrans = messageFManager.beginTransaction();
-        messageTrans.replace(R.id.container,messageFragment,YOUR_FRAGMENT_STRING_TAG);
+        messageTrans.replace(R.id.container, messageFragment, YOUR_FRAGMENT_STRING_TAG);
         messageTrans.commit();
     }
 
-    public void activateHiFiveFragment(){
-        floatMenu1Active=false;
-        floatMenu2Active=true;
-        HiFiveFragment hiFiveFragment   =   new HiFiveFragment();
+    public void activateHiFiveFragment() {
+        floatMenu1Active = false;
+        floatMenu2Active = true;
+        HiFiveFragment hiFiveFragment = new HiFiveFragment();
         getSupportActionBar().setTitle("High Fives");
-        FragmentManager hiFiveFManager   =   getSupportFragmentManager();
+        FragmentManager hiFiveFManager = getSupportFragmentManager();
         FragmentTransaction hiFiveTrans = hiFiveFManager.beginTransaction();
-        hiFiveTrans.replace(R.id.container,hiFiveFragment,YOUR_FRAGMENT_STRING_TAG);
+        hiFiveTrans.replace(R.id.container, hiFiveFragment, YOUR_FRAGMENT_STRING_TAG);
         hiFiveTrans.commit();
     }
 
@@ -200,7 +198,7 @@ public class TabActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tab);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        FrameLayout fg = (FrameLayout)findViewById(R.id.container);
+        FrameLayout fg = (FrameLayout) findViewById(R.id.container);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -208,57 +206,84 @@ public class TabActivity extends AppCompatActivity {
         menu2 = findViewById(R.id.submenu2);
 
 
-        userType   =   new PrefManager(getApplicationContext()).getUserType().trim();
-
+        userType = new PrefManager(getApplicationContext()).getUserType().trim();
+        tips = new PrefManager(getApplicationContext()).getTips();
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
-        if(bundle!=null){
+        if (bundle != null) {
             String value = bundle.getString("profile");
-            if(value.equals("home")){
+            if (value.equals("home")) {
                 /*Load default HomeFragment*/
-                if(userType.equalsIgnoreCase("Athlete")){
+                if (userType.equalsIgnoreCase("Athlete")) {
                     HomeFragment homeFragment = new HomeFragment();
                     FragmentManager manager = getSupportFragmentManager();
                     getSupportActionBar().setTitle("Beach Partner");
                     FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.add(R.id.container, homeFragment,YOUR_FRAGMENT_STRING_TAG);
+                    transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
                     transaction.commit();
                 }
-                if(userType.equalsIgnoreCase("Coach")){
+                if (userType.equalsIgnoreCase("Coach")) {
                     CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
                     getSupportActionBar().setTitle("Beach Partner");
                     FragmentManager coachHomeManager = getSupportFragmentManager();
                     FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
-                    coachHomeTransaction.replace(R.id.container, coachHomeFragment,YOUR_FRAGMENT_STRING_TAG);
+                    coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
                     coachHomeTransaction.commit();
                 }
 
-            }else {
-                if(userType.equalsIgnoreCase("Athlete")){
-                    ProfileFragment pf = new ProfileFragment();
-                    getSupportActionBar().setTitle("Profile");
-                    FragmentManager mang = getSupportFragmentManager();
-                    FragmentTransaction trans = mang.beginTransaction();
-                    trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
-                    trans.commit();
+            } else if (value.equals("help")) {
+                if (userType.equalsIgnoreCase("Athlete")) {
+                    HomeFragment homeFragment = new HomeFragment();
+                    FragmentManager manager = getSupportFragmentManager();
+                    getSupportActionBar().setTitle("Beach Partner");
+                    FragmentTransaction transaction = manager.beginTransaction();
+                    transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
+                    transaction.commit();
                 }
                 if (userType.equalsIgnoreCase("Coach")) {
-                    CoachProfileFragment coachProfileFragment=new CoachProfileFragment();
-                    getSupportActionBar().setTitle("Profile");
-                    FragmentManager mang = getSupportFragmentManager();
-                    FragmentTransaction trans = mang.beginTransaction();
-                    trans.replace(R.id.container, coachProfileFragment,YOUR_FRAGMENT_STRING_TAG);
-                    trans.commit();
+                    CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
+                    getSupportActionBar().setTitle("Beach Partner");
+                    FragmentManager coachHomeManager = getSupportFragmentManager();
+                    FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
+                    coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
+                    coachHomeTransaction.commit();
+                }
+
+            } else {
+                {
+                    if (tips) {
+
+
+                        if (userType.equalsIgnoreCase("Athlete")) {
+                            ProfileFragment pf = new ProfileFragment();
+                            getSupportActionBar().setTitle("Profile");
+                            FragmentManager mang = getSupportFragmentManager();
+                            FragmentTransaction trans = mang.beginTransaction();
+                            trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
+                            trans.commit();
+                        }
+                        if (userType.equalsIgnoreCase("Coach")) {
+                            CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
+                            getSupportActionBar().setTitle("Profile");
+                            FragmentManager mang = getSupportFragmentManager();
+                            FragmentTransaction trans = mang.beginTransaction();
+                            trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
+                            trans.commit();
+                        }
+
+                    } else {
+                        Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
+                        intentTips.putExtra("profile", "profile");
+                        startActivity(intentTips);
+                        finish();
+                    }
+
+
                 }
 
             }
         }
-
-
-
-
-
 
 
     }
@@ -266,7 +291,7 @@ public class TabActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_class_fragment,menu);
+        inflater.inflate(R.menu.menu_class_fragment, menu);
         return true;
     }
 
@@ -281,25 +306,25 @@ public class TabActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.profile:
 //                    userType   =   new PrefManager(getApplicationContext()).getUserType().trim();
-                    if(userType.equalsIgnoreCase("Athlete")){
-                        ProfileFragment pf = new ProfileFragment();
-                        getSupportActionBar().setTitle("Profile");
-                        FragmentManager mang = getSupportFragmentManager();
-                        FragmentTransaction trans = mang.beginTransaction();
-                        trans.replace(R.id.container, pf,YOUR_FRAGMENT_STRING_TAG);
-                        trans.commit();
-                        break;
-                    }
+                if (userType.equalsIgnoreCase("Athlete")) {
+                    ProfileFragment pf = new ProfileFragment();
+                    getSupportActionBar().setTitle("Profile");
+                    FragmentManager mang = getSupportFragmentManager();
+                    FragmentTransaction trans = mang.beginTransaction();
+                    trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
+                    trans.commit();
+                    break;
+                }
 
-                    if(userType.equalsIgnoreCase("Coach")){
-                        CoachProfileFragment coachProfileFragment=new CoachProfileFragment();
-                        getSupportActionBar().setTitle("Profile");
-                        FragmentManager mang = getSupportFragmentManager();
-                        FragmentTransaction trans = mang.beginTransaction();
-                        trans.replace(R.id.container, coachProfileFragment,YOUR_FRAGMENT_STRING_TAG);
-                        trans.commit();
-                        break;
-                    }
+                if (userType.equalsIgnoreCase("Coach")) {
+                    CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
+                    getSupportActionBar().setTitle("Profile");
+                    FragmentManager mang = getSupportFragmentManager();
+                    FragmentTransaction trans = mang.beginTransaction();
+                    trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
+                    trans.commit();
+                    break;
+                }
 
                 break;
             case R.id.about_us:
@@ -313,11 +338,16 @@ public class TabActivity extends AppCompatActivity {
                 getSupportActionBar().setTitle("Settings");
                 FragmentManager settingsMang = getSupportFragmentManager();
                 FragmentTransaction settingsTrans = settingsMang.beginTransaction().addToBackStack(null);
-                settingsTrans.replace(R.id.container, sf,YOUR_FRAGMENT_STRING_TAG);
+                settingsTrans.replace(R.id.container, sf, YOUR_FRAGMENT_STRING_TAG);
                 settingsTrans.commit();
                 break;
             case R.id.help:
                 Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();
+                new PrefManager(getApplicationContext()).saveTips(false);
+                Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
+                intentTips.putExtra("profile", "help");
+                startActivity(intentTips);
+                finish();
                 break;
             case R.id.logout:
                 //Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();
@@ -332,27 +362,27 @@ public class TabActivity extends AppCompatActivity {
 
     private void alertLogout() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Logout")
-                        .setMessage("Would you like to logout ?")
-                        .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                //logout
-                                Intent intent = new Intent(getApplicationContext(),LoginActivity.class);
-                                startActivity(intent);
-                                finish();
-                                //System.exit(0);
-                            }
-                        })
-                        .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+        builder.setTitle("Logout")
+                .setMessage("Would you like to logout ?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        //logout
+                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                        startActivity(intent);
+                        finish();
+                        //System.exit(0);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-                                dialogInterface.cancel();
-                            }
-                        });
-                AlertDialog dialog =  builder.create();
-                dialog.show();
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
     }
 
@@ -364,7 +394,6 @@ public class TabActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
-
 
 
 }

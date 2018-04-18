@@ -78,11 +78,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
             @Override
             public void onDoubleClick(View v) {
-                holder.image.setVisibility(View.GONE);
+                holder.image.setVisibility(View.VISIBLE);
                 //holder.progressBar.setVisibility(View.VISIBLE);
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
-                holder.videoView.setVisibility(View.VISIBLE);
+                //holder.videoView.setVisibility(View.VISIBLE);
                 if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equals("null")){
                     holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
                     playvideo(holder);
