@@ -13,7 +13,7 @@
     <string name="hint_lname">Last Name</string>
     <string name="hint_gender">I am</string>
     <string name="hint_dob">Birth Date</string>
-    <string name="hint_city">City</string>
+    <string name="hintLocation">Location</string>
     <string name="hint_email">Email</string>
     <string name="hint_mobile">Mobile Number</string>
     <string name="hint_male">Male</string>

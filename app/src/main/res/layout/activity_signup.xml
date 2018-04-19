@@ -241,7 +241,7 @@
                         android:id="@+id/input_city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:hint="@string/hint_city"
+                        android:hint="@string/hintLocation"
                         android:inputType="text"
                         android:textColor="@color/colorPrimary" />
                 </android.support.design.widget.TextInputLayout>

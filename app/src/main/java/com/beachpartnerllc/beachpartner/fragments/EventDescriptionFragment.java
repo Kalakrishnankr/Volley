@@ -49,6 +49,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private String user_id,user_token,userType,eventName,eventId;
     private Boolean registerCompleted = false;
 
+    private long event_start;
+
 
     public EventDescriptionFragment() {
         // Required empty public constructor
@@ -89,7 +91,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             tview_location.setText(event.getEventLocation());
 
             SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
-            long event_start    = event.getEventStartDate();
+            event_start    = event.getEventStartDate();
             long event_enddate  = event.getEventEndDate();
             long event_regStart = event.getEventRegStartdate();
             long event_regEnd   = event.getEventRegEnddate();
@@ -153,6 +155,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             case R.id.btn_invite_partner:
                 //call partner Invite Page
                 PartnerInviteFragmentTab fragment   =   new PartnerInviteFragmentTab();
+                Bundle argDate = new Bundle();
+                argDate.putLong("eventDate",event_start);
+                fragment.setArguments(argDate);
                 FragmentTransaction transaction     =   getActivity().getSupportFragmentManager().beginTransaction();
                 transaction.replace(R.id.container,fragment);
                 transaction.addToBackStack(null);

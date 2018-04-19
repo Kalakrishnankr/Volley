@@ -6,10 +6,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.PersonModel;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -19,9 +23,10 @@ import java.util.ArrayList;
 
 public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapter.MyViewHolder> {
     Context mContext;
-    ArrayList<PersonModel>dataModelList;
 
-    public MyConnectionAdapter(Context context, ArrayList<PersonModel> allSampleData) {
+    private ArrayList<ConnectionModel>dataModelList = new ArrayList<>();
+
+    public MyConnectionAdapter(Context context, ArrayList<ConnectionModel>allSampleData) {
 
         this.mContext       =   context;
         this.dataModelList  =   allSampleData;
@@ -39,10 +44,26 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        PersonModel model = dataModelList.get(position);
+        ConnectionModel model = dataModelList.get(position);
 
-        holder.tvname.setText(model.getUname());
-        holder.imgPic.setImageResource(model.getImage());
+
+        holder.tvname.setText(model.getConnected_firstName().trim());
+        if(model.getConnected_isAvailable_ondate()){
+            holder.tv_unavailable.setVisibility(View.GONE);
+            holder.imgAdd.setVisibility(View.VISIBLE);
+
+        }
+        else{
+            holder.invite_partner_container.setBackgroundResource(R.color.smallgrey);
+            holder.imgAdd.setVisibility(View.GONE);
+            holder.tv_unavailable.setVisibility(View.VISIBLE);
+        }
+        if(!model.getConnected_imageUrl().equals("null")){
+            Glide.with(mContext).load(model.getConnected_imageUrl()).into(holder.imgPic);
+            //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
+        }else {
+            holder.imgPic.setImageResource(R.drawable.ic_person);
+        }
 
     }
 
@@ -55,14 +76,17 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tvname;
-        public ImageView imgPic,imgAdd;
+        public TextView tvname,tv_unavailable;
+        public ImageView imgAdd;
+        public CircularImageView imgPic;
+        private LinearLayout invite_partner_container;
         public MyViewHolder(View v) {
             super(v);
-
-            tvname      =   (TextView)v.findViewById(R.id.tview_name);
-            imgPic      =   (ImageView)v.findViewById(R.id.imgPic);
-            imgAdd      =   (ImageView)v.findViewById(R.id.addBtn);
+            invite_partner_container    =   (LinearLayout) v.findViewById(R.id.invite_partner_container);
+            tv_unavailable              =   (TextView)v.findViewById(R.id.unavailable);
+            tvname                      =   (TextView)v.findViewById(R.id.tview_name);
+            imgPic                      =   (CircularImageView)v.findViewById(R.id.imgPic);
+            imgAdd                      =   (ImageView)v.findViewById(R.id.addBtn);
 
         }
     }

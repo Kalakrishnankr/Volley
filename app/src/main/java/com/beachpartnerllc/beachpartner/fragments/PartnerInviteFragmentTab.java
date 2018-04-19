@@ -22,7 +22,7 @@ public class PartnerInviteFragmentTab extends Fragment {
     private SliderAdapter slideAdapter;
     private int numberOfTabs = 2;
     private CharSequence titles[] = {"Connections","Find Partners"};
-
+    private long eventDateToCheck;
     public PartnerInviteFragmentTab() {
         // Required empty public constructor
     }
@@ -39,6 +39,7 @@ public class PartnerInviteFragmentTab extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        eventDateToCheck= getArguments().getLong("eventDate");
         View view   =   inflater.inflate(R.layout.fragment_partner_invite, container, false);
         initActivity(view);
         return view;
@@ -48,7 +49,7 @@ public class PartnerInviteFragmentTab extends Fragment {
 
         pager           =  (ViewPager) view.findViewById(R.id.pager);
         tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
-        slideAdapter    =  new SliderAdapter(getFragmentManager(), titles, numberOfTabs);
+        slideAdapter    =  new SliderAdapter(getFragmentManager(), titles, numberOfTabs,eventDateToCheck);
 
         pager.setAdapter(slideAdapter);
 
