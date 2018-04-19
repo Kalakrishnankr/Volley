@@ -66,6 +66,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 bundle.putString("personId", message.getConnected_uId());
                 bundle.putString("personName",message.getConnected_firstName());
                 bundle.putString("myName",new PrefManager(mContext).getUserName());
+                bundle.putString("personPic",message.getConnected_imageUrl());
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();

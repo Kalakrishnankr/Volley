@@ -25,6 +25,7 @@ public class ApiService {
     public static String CHANGE_PASSWORD = BASE_URL+"account/reset-password/finish";
 
     public static String GET_ACCOUNT_DETAILS    =  BASE_URL+"account";
+    public static String UPDATE_USER_PROFILE    =  BASE_URL+"users/update-all/";
     public static String SAVE_ACCOUNT_DETAILS   =  BASE_URL+"account";
 
     public static  String GET_SUBSCRIPTIONS     =  BASE_URL+"users/subscriptions";
@@ -35,9 +36,7 @@ public class ApiService {
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
 
-    public static String  SEARCH_USER_CARD       = BASE_URL+"users/search";
-
-    public static String  UPDATE_USER_PROFILE        = BASE_URL+"users/update-all/";
+    public static String  SEARCH_USER_CARD        = BASE_URL+"users/search";
     public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
 

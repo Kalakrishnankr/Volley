@@ -12,13 +12,15 @@ import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
-import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,8 +38,9 @@ public class ChatFragmentPage extends Fragment {
     private LinearLayout rootview;
     private ScrollView scrollview;
     Firebase reference1, reference2,ref;
-    String myId,ChatWith_id,ChatWith_name,myName;
+    private String myId,ChatWith_id,ChatWith_name,myName,chatPicture;
     private int idLeft,idRight;
+    private Date currentTime;
 
    /* public ChatFragmentPage() {
         // Required empty public constructor
@@ -53,6 +56,7 @@ public class ChatFragmentPage extends Fragment {
             ChatWith_id  = bundle.getString("personId");
             ChatWith_name= bundle.getString("personName");
             myName       = bundle.getString("myName");
+            chatPicture  = bundle.getString("personPic");
         }
 
     }
@@ -61,7 +65,7 @@ public class ChatFragmentPage extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         getActivity().setTitle("Message");
-
+        currentTime = Calendar.getInstance().getTime();
         final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/users");
         ref = myFirebaseRef.child("users");
         // Inflate the layout for this fragment
@@ -77,7 +81,7 @@ public class ChatFragmentPage extends Fragment {
     private void initView(View view) {
         submitButton    =   (ImageView) view.findViewById(R.id.sendButton);
         emoji_btn       =   (ImageView) view.findViewById(R.id.emoji_btn);
-        emojicon_editText =   (EmojiconEditText) view.findViewById(R.id.emojicon_edit_text);
+        emojicon_editText = (EmojiconEditText) view.findViewById(R.id.emojicon_edit_text);
         rootview        =   (LinearLayout) view.findViewById(R.id.layout1) ;
         scrollview      =   (ScrollView) view.findViewById(R.id.scroll) ;
 
@@ -113,6 +117,8 @@ public class ChatFragmentPage extends Fragment {
                     map.put("receiver_name",ChatWith_name);
                     map.put("receiver_id",ChatWith_id);
                     map.put("sender_name",myName);
+                    map.put("profileImg",chatPicture);
+                    map.put("date", String.valueOf(currentTime));
                     reference1.push().setValue(map);
                    // reference2.push().setValue(map);
 
@@ -135,6 +141,8 @@ public class ChatFragmentPage extends Fragment {
                 String receiverName= map.get("receiver_name").toString();
                 String receiverId = map.get("receiver_id").toString();
                 String senderName = map.get("sender_name").toString();
+                String profilePic = map.get("profileImg").toString();
+                String date = map.get("date").toString();
                 if(userId.equals(myId)){
                     addMessageBox("You:-\n" + message, 1);
                 }

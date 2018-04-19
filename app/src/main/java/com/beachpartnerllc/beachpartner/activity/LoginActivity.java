@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
@@ -73,7 +74,7 @@ public class LoginActivity extends AppCompatActivity {
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
-    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId;
+    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken;
     private TextView  never_got_email_tv;
     private TextInputLayout password_inputText;
 
@@ -107,10 +108,11 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Log.d("Success", "Login");
-
-                        Intent newIntent = new Intent(LoginActivity.this,TabActivity.class);
+                        deviceToken = String.valueOf(loginResult.getAccessToken());
+                        startLoginProcess(null,null,refreshedFirebaseToken,deviceId,deviceToken);
+                        /*Intent newIntent = new Intent(LoginActivity.this,TabActivity.class);
                         newIntent.putExtra("profile","home");
-                        startActivity(newIntent);
+                        startActivity(newIntent);*/
                     }
 
                     @Override
@@ -178,7 +180,7 @@ public class LoginActivity extends AppCompatActivity {
 
                         progress.show();
                         if (!refreshedFirebaseToken.isEmpty()) {
-                            startLoginProcess(uname,passwd,refreshedFirebaseToken);//Method for start login
+                            startLoginProcess(uname,passwd,refreshedFirebaseToken,deviceId,deviceToken);//Method for start login
                             userName.setText("");
                             password.setText("");
                             userName.requestFocus();
@@ -275,7 +277,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //Method for login
-    private void startLoginProcess(final String uname, final String passwd,String fireToken) {
+    private void startLoginProcess(final String uname, final String passwd,String fireToken,String deviceId,String deviceToken) {
 
             JSONObject object = new JSONObject();
             try {
@@ -284,6 +286,7 @@ public class LoginActivity extends AppCompatActivity {
                 object.put("rememberMe",true);
                 object.put("fcmToken",fireToken);
                 object.put("deviceId",deviceId);
+                object.put("deviceToken",deviceToken);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -851,6 +854,20 @@ private void neverGotEmailAlertTextUnderline(){
         String regx_pass= ".{8,}";
         awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_newPassword,regx_pass,R.string.hint_passord_size);
         awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_confirmPassword,R.id.edittxt_newPassword,R.string.hint_didnotmatch);
+    }
+
+    //Check whether the app installed or not
+
+    public boolean appInstalledOrNot(String uri) {
+        PackageManager pm = getApplicationContext().getPackageManager();
+        try {
+            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+
+        }
+
+        return false;
     }
 
 }

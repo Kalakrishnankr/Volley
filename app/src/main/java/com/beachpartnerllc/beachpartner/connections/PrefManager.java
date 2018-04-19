@@ -110,4 +110,5 @@ public class PrefManager {
         return preferences.getString("userType","");
     }
 
+
 }
