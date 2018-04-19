@@ -538,11 +538,11 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="City"
+                                android:text="@string/hintLocation"
                                 android:gravity="center_vertical"
                                 android:textStyle="bold" />
 
-                            <com.beachpartnerllc.beachpartner.CustomEditText
+                            <AutoCompleteTextView
                                 android:id="@+id/txtv_city"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
@@ -551,6 +551,8 @@
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
+                                android:completionThreshold="1"
+                                android:textColor="@color/blueDark"
                                 android:nextFocusDown="@+id/txtv_mobileno"
                                 android:background="@android:color/transparent"
                                 android:layout_weight="1" />

@@ -237,13 +237,14 @@
                     android:layout_weight="1"
                     app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                    <com.beachpartnerllc.beachpartner.CustomEditText
+                    <AutoCompleteTextView
                         android:id="@+id/input_city"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/hintLocation"
                         android:inputType="text"
-                        android:textColor="@color/colorPrimary" />
+                        android:completionThreshold="1"
+                        android:textColor="@color/blueDark" />
                 </android.support.design.widget.TextInputLayout>
 
                 <!--Phone Number-->

@@ -1,14 +1,23 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 
+import android.Manifest;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -18,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -41,10 +51,26 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
+import com.bumptech.glide.Glide;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,7 +95,9 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private String mParam1;
     private String mParam2;
 
+    private static final int REQUEST_SAVEIMGTODRIVE = 3;
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
+    private static final int PICK_IMAGE_REQUEST =0 ;
     public UserDataModel userDataModel;
     private static boolean editStatus = false;
     private RelativeLayout profileImgLayout;
@@ -77,12 +105,15 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private LinearLayout llMenuBasic,llMenuMore,llBasicDetails,llMoreDetails, coachBtnsBottom,coachMore_infoBtnsBottom;
     private TextView basic_info_tab,more_info_tab,edit_tag,profileName;
     private View viewBasic,viewMore;
-    private EditText editFname,editLname,editGender,editDob,editCity,editPhone,description,years_running,no_athletes,prog_offered,division;
-    private Spinner spinnerCollege,program_funding,program_share_athletes;
-    private Uri selectedImageUri;
+    private EditText editFname,editLname,editGender,editDob,editPhone,description,years_running,no_athletes,prog_offered,division,editCollege;
+    private AutoCompleteTextView editCity;
+    private Spinner program_funding,program_share_athletes;
     private Button basicBtnSave,basicBtnCancel,moreBtnSave,moreBtnCancel;
     private ImageView imgEdit,profile_img_editIcon;
-    private String token,user_id,spinnerCollege_value,program_funding_value,program_share_athletes_value;
+    private String token,user_id,program_funding_value,program_share_athletes_value,imgUri;
+    private ArrayList<String>stateList = new ArrayList<>();
+    private ArrayAdapter<String> dataAdapter;
+    private Uri selectedImageUri;
 
     Calendar myCalendar = Calendar.getInstance();
 
@@ -155,7 +186,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         editLname               = (EditText) view.findViewById(R.id.txtvLname);
         editGender              = (EditText) view.findViewById(R.id.txtv_gender);
         editDob                 = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity                = (EditText) view.findViewById(R.id.txtv_city);
+        editCity                = (AutoCompleteTextView) view.findViewById(R.id.txtv_city);
         editPhone               = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
@@ -164,8 +195,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         //Fore More Deatails
 
-        spinnerCollege          = (Spinner) view.findViewById(R.id.spinner_college);
-        spinnerCollege.setEnabled(false);
+        editCollege          = (EditText) view.findViewById(R.id.txtv_college);
+        editCollege.setEnabled(false);
         description             = (EditText) view.findViewById(R.id.txtv_description);
         years_running           = (EditText) view.findViewById(R.id.txtv_years_running);
         no_athletes             = (EditText) view.findViewById(R.id.txtv_no_athletes);
@@ -200,6 +231,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         basicBtnSave.setOnClickListener(this);
         profile_img_editIcon.setOnClickListener(this);
 
+        addLocation();
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -294,29 +326,15 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         });
 
+        dataAdapter     = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, stateList);
+
+        Typeface font   = Typeface.createFromAsset(getContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+        editCity.setTypeface(font);
+        editCity.setAdapter(dataAdapter);
 
 
 
-
-//      College of coach
-        List<String> college = new ArrayList<>();
-        college.add("Left side");
-        college.add("Right Side");
-        college.add("No Preference");
-        ArrayAdapter<String> prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, college);
-        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerCollege.setAdapter(prefAdapter);
-        spinnerCollege.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-               spinnerCollege_value = spinnerCollege.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
 
 //        funding spinner
 
@@ -359,32 +377,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         });
 
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
 
-            if (requestCode == REQUEST_TAKE_GALLERY_IMAGE) {
-                selectedImageUri = data.getData();
-                //String selectedImagePath = getPath(selectedImageUriImg);
-                if (selectedImageUri != null) {
-                    imgProfile.setImageURI(selectedImageUri);
-
-                }
-
-            }
-
-//            JSONObject jsonObject = new JSONObject();
-//            try {
-//                Toast.makeText(getContext(), "Uploading...", Toast.LENGTH_SHORT).show();
-//                jsonObject.put("profileImg",selectedImageUri);
-//                jsonObject.put("userId",user_id);
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//
-//            //Method for uploading profilePic & profile video
-//            uploadFiles(jsonObject);
-        }
-    }
 
     public void updateLabel() {
         String myFormat = "MM-dd-yyyy"; //In which you need put here
@@ -393,6 +386,60 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
 
+    public void addLocation() {
+        stateList.add("Alabama");
+        stateList.add("Alaska");
+        stateList.add("Arizona");
+        stateList.add("Arkansas");
+        stateList.add("California");
+        stateList.add("Colorado");
+        stateList.add("Connecticut");
+        stateList.add("Delaware");
+        stateList.add("Florida");
+        stateList.add("Georgia");
+        stateList.add("Hawaii");
+        stateList.add("Idaho");
+        stateList.add("Illinois");
+        stateList.add("Indiana");
+        stateList.add("Iowa");
+        stateList.add("Kansas");
+        stateList.add("Kentucky");
+        stateList.add("Louisiana");
+        stateList.add("Maine");
+        stateList.add("Maryland");
+        stateList.add("Massachusetts");
+        stateList.add("Michigan");
+        stateList.add("Minnesota");
+        stateList.add("Mississippi");
+        stateList.add("Missouri");
+        stateList.add("Montana");
+        stateList.add("Nebraska");
+        stateList.add("Nevada");
+        stateList.add("New Hampshire");
+        stateList.add("New Jersey");
+        stateList.add("New Mexico");
+        stateList.add("New York");
+        stateList.add("North Carolina");
+        stateList.add("North Dakota");
+        stateList.add("Ohio");
+        stateList.add("Oklahoma");
+        stateList.add("Oregon");
+        stateList.add("Pennsylvania");
+        stateList.add("Rhode Island");
+        stateList.add("South Carolina");
+        stateList.add("South Dakota");
+        stateList.add("Tennessee");
+        stateList.add("Texas");
+        stateList.add("Utah");
+        stateList.add("Vermont");
+        stateList.add("Virginia");
+        stateList.add("Washington");
+        stateList.add("West Virginia");
+        stateList.add("Wisconsin WI");
+        stateList.add("Wyoming WY");
+
+
+    }
 
     private void editBasicInfo() {
 
@@ -426,8 +473,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     }
     private void editMoreInfo(){
-        spinnerCollege.setEnabled(true);
-        spinnerCollege.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+        editCollege.setEnabled(true);
+        editCollege.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
         description.setEnabled(true);
         description.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -488,8 +535,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         //MoreInfo
 
-        spinnerCollege.setEnabled(false);
-        spinnerCollege.setBackground(null);
+        editCollege.setEnabled(false);
+        editCollege.setBackground(null);
 
         description.setEnabled(false);
         description.setBackground(null);
@@ -526,7 +573,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             jsonObjectMore.put("cbvaFirstName", null);
             jsonObjectMore.put("cbvaLastName", null);
             jsonObjectMore.put("cbvaPlayerNumber",null);
-            jsonObjectMore.put("collage",spinnerCollege_value.toString().trim());
+            jsonObjectMore.put("collage",editCollege.toString().trim());
             jsonObjectMore.put("collageClub",null);
             jsonObjectMore.put("collegeBeach", null);
             jsonObjectMore.put("collegeIndoor", null);
@@ -556,7 +603,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             e.printStackTrace();
         }
 
-       // postUserMoreDetails(jsonObjectMore);
+       //postUserMoreDetails(jsonObjectMore);
 
 
     }
@@ -641,8 +688,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         //MoreInfo
 
-        spinnerCollege.setEnabled(false);
-        spinnerCollege.setBackground(null);
+        editCollege.setEnabled(false);
+        editCollege.setBackground(null);
 
         description.setEnabled(false);
         description.setBackground(null);
@@ -687,6 +734,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                             userDataModel.setDob(response.getString("dob"));
                             userDataModel.setCity(response.getString("city"));
                             userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+                            userDataModel.setImageUrl(response.getString("imageUrl"));
                             //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
                             setView();
 
@@ -745,6 +793,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             editFname.setText(userDataModel.getFirstName());
             editGender.setText(userDataModel.getGender());
             editCity.setText(userDataModel.getCity());
+
+            if (userDataModel.getImageUrl() != null) {
+                Glide.with(CoachProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+            }else {
+                imgProfile.setImageResource(R.drawable.ic_person);
+            }
             //Long value to date conversion
             SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
             long dob       = Long.parseLong(userDataModel.getDob());
@@ -753,6 +807,224 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             editPhone.setText(userDataModel.getPhoneNumber());
         }
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK) {
+
+            if(requestCode == PICK_IMAGE_REQUEST){
+                Uri picUri = data.getData();
+
+                selectedImageUri = data.getData();
+                if (selectedImageUri != null) {
+                    File imgfile = new File(String.valueOf(selectedImageUri));
+                    // Get length of file in bytes
+
+                    if (fileSize(imgfile.length()) <= 4) {
+                        imgUri = getPath(selectedImageUri);
+                        imgProfile.setImageURI(selectedImageUri);
+                    } else {
+                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
+
+            }
+
+
+
+        }
+
+        if (imgUri != null) {
+
+            //Method for uploading profilePic & profile video
+            uploadFiles(imgUri, user_id);
+        }
+    }
+
+    private boolean checkExternalDrivePermission(final int type){
+
+        int currentAPIVersion = Build.VERSION.SDK_INT;
+        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
+        {
+            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ||(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
+            {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                } else {
+                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                }
+                return false;
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PICK_IMAGE_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    imageBrowse();
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary otherwise image upload functionality fails ");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PICK_IMAGE_REQUEST);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case REQUEST_SAVEIMGTODRIVE:{
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+
+                } else {
+                    AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
+                    alertBuilder.setCancelable(true);
+                    alertBuilder.setTitle("Permission necessary");
+                    alertBuilder.setMessage("External storage permission is necessary otherwise video upload functionality fails ");
+                    alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                        @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                        public void onClick(DialogInterface dialog, int which) {
+                            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_SAVEIMGTODRIVE);
+                        }
+                    });
+                    AlertDialog alert = alertBuilder.create();
+                    alert.show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            default:{
+                super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+                return;
+            }
+
+
+            // other 'case' lines to check for other
+            // permissions this app might request.
+        }
+    }
+
+    private void imageBrowse() {
+        Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
+    }
+    // UPDATED!
+    public String getPath(Uri uri) {
+        String[] projection = {MediaStore.Video.Media.DATA};
+        Cursor cursor = getActivity().getContentResolver().query(uri, projection, null, null, null);
+        if (cursor != null) {
+            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
+            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
+            int column_index = cursor
+                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } else
+            return null;
+    }
+
+    //Method for check the size of the selected file
+    private float fileSize(long fileLength){
+        long fileSizeInBytes = fileLength;
+        // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
+        long fileSizeInKB = fileSizeInBytes / 1024;
+        // Convert the KB to MegaBytes (1 MB = 1024 KBytes)
+        float fileSizeInMB = fileSizeInKB / 1024;
+
+        return fileSizeInMB;
+    }
+
+    //Api for upload profile image and video
+    private void uploadFiles(final String imagePath, final String userId) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+
+                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+                    sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+                    //throws ParseException, IOException
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httppost = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
+
+                    FileBody imageFile = new FileBody(new File(imagePath));
+                    StringBody user_Id = new StringBody(userId);
+
+                    MultipartEntity reqEntity = new MultipartEntity();
+                    reqEntity.addPart("profileImg", imageFile);
+                    reqEntity.addPart("userId", user_Id);
+                    httppost.setEntity(reqEntity);
+                    // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+                    SchemeRegistry registry = new SchemeRegistry();
+                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                    registry.register(new Scheme("https", sslFactory, 443));
+                    // DEBUG
+                    System.out.println( "executing request " + httppost.getRequestLine( ) );
+                    HttpResponse response = httpclient.execute(httppost);
+                    HttpEntity resEntity = response.getEntity( );
+
+                    // DEBUG
+                    System.out.println( response.getStatusLine( ) );
+                    if (resEntity != null) {
+                        System.out.println( EntityUtils.toString( resEntity ) );
+                    } // end if
+
+                    if (resEntity != null) {
+                        resEntity.consumeContent( );
+                    } // end if
+
+                  //  httpclient.getConnectionManager( ).getSchemeRegistry().register(new Scheme("SSLSocketFactory", SSLSocketFactory.getSocketFactory(), 443));
+                    httpclient.getConnectionManager( ).shutdown( );
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
+
+
+
+
+    }
+
 
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
@@ -774,12 +1046,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         switch (view.getId()) {
 
             case R.id.row_icon:
-                if (editStatus) {
-                    Intent intent1 = new Intent();
-                    intent1.setType("image/*");
-                    intent1.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
-                }
+//                if (editStatus) {
+//                    Intent intent1 = new Intent();
+//                    intent1.setType("image/*");
+//                    intent1.setAction(Intent.ACTION_GET_CONTENT);
+//                    startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
+//                }
 
                 break;
 
@@ -843,10 +1115,11 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 break;
             case R.id.edit_profile_imgCoach:
                 if (editStatus) {
-                    Intent intent1 = new Intent();
-                    intent1.setType("image/*");
-                    intent1.setAction(Intent.ACTION_GET_CONTENT);
-                    startActivityForResult(Intent.createChooser(intent1, "Select Image"), REQUEST_TAKE_GALLERY_IMAGE);
+                    boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
+                    if (imagePermission) {
+                        imageBrowse();
+                    }
+
                 }
 
 

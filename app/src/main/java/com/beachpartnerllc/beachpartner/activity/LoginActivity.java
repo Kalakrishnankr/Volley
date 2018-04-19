@@ -329,7 +329,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                 if(token!=null && !token.isEmpty()) {
                                     progress.dismiss();
-
+                                    new PrefManager(LoginActivity.this).saveRegistrationStatus("success");
                                     JSONObject userObj  = new JSONObject(response.getString("user"));
                                     UserDataModel userDataModel = new UserDataModel();
                                     userDataModel.setId(userObj.getString("id"));

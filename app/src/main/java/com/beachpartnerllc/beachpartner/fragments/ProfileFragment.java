@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
@@ -38,6 +39,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -119,7 +121,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
-    private EditText editFname, editLname, editGender, editDob, editCity, editPhone;
+    private EditText editFname, editLname, editGender, editDob, editPhone;
+    private AutoCompleteTextView editCity;
     private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
@@ -131,6 +134,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter;
     private Handler mUiHandler = new Handler();
+
+    private ArrayList<String> stateList = new ArrayList<>();
+    private ArrayAdapter<String> dataAdapter;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -190,7 +196,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editLname   = (EditText) view.findViewById(R.id.txtvLname);
         editGender  = (EditText) view.findViewById(R.id.txtv_gender);
         editDob     = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity    = (EditText) view.findViewById(R.id.txtv_city);
+        editCity    = (AutoCompleteTextView) view.findViewById(R.id.txtv_city);
         editPhone   = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
@@ -249,6 +255,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         topFinishes3_lt = (LinearLayout) view.findViewById(R.id.topFinishes3_lt);
 
 
+        //autocomplete textview fp
+        addLocation();
+
+        dataAdapter     = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, stateList);
+
+        Typeface font   = Typeface.createFromAsset(getContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+        editCity.setTypeface(font);
+        editCity.setAdapter(dataAdapter);
 
         imgShare.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -2102,6 +2117,60 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             }
         }
+
+    }
+
+    public void addLocation() {
+        stateList.add("Alabama");
+        stateList.add("Alaska");
+        stateList.add("Arizona");
+        stateList.add("Arkansas");
+        stateList.add("California");
+        stateList.add("Colorado");
+        stateList.add("Connecticut");
+        stateList.add("Delaware");
+        stateList.add("Florida");
+        stateList.add("Georgia");
+        stateList.add("Hawaii");
+        stateList.add("Idaho");
+        stateList.add("Illinois");
+        stateList.add("Indiana");
+        stateList.add("Iowa");
+        stateList.add("Kansas");
+        stateList.add("Kentucky");
+        stateList.add("Louisiana");
+        stateList.add("Maine");
+        stateList.add("Maryland");
+        stateList.add("Massachusetts");
+        stateList.add("Michigan");
+        stateList.add("Minnesota");
+        stateList.add("Mississippi");
+        stateList.add("Missouri");
+        stateList.add("Montana");
+        stateList.add("Nebraska");
+        stateList.add("Nevada");
+        stateList.add("New Hampshire");
+        stateList.add("New Jersey");
+        stateList.add("New Mexico");
+        stateList.add("New York");
+        stateList.add("North Carolina");
+        stateList.add("North Dakota");
+        stateList.add("Ohio");
+        stateList.add("Oklahoma");
+        stateList.add("Oregon");
+        stateList.add("Pennsylvania");
+        stateList.add("Rhode Island");
+        stateList.add("South Carolina");
+        stateList.add("South Dakota");
+        stateList.add("Tennessee");
+        stateList.add("Texas");
+        stateList.add("Utah");
+        stateList.add("Vermont");
+        stateList.add("Virginia");
+        stateList.add("Washington");
+        stateList.add("West Virginia");
+        stateList.add("Wisconsin WI");
+        stateList.add("Wyoming WY");
 
     }
 

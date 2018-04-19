@@ -13,7 +13,9 @@
     android:layout_width="match_parent"
     android:layout_height="0dp"
     android:layout_weight="3.5"
-    android:background="@drawable/ic_person">
+    android:backgroundTint="@color/transparent"
+    android:backgroundTintMode="src_atop"
+    android:background="@drawable/coach_background">
 
 
 
@@ -68,7 +70,7 @@
             android:src="@drawable/ic_edit_profile"/>
 
     <View
-        android:layout_width="1dp"
+        android:layout_width="3dp"
         android:layout_height="50dp"
         android:background="@color/white"
         android:layout_toRightOf="@+id/coachName"
@@ -409,11 +411,11 @@
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="City"
+                                android:text="@string/hintLocation"
                                 android:gravity="center_vertical"
                                 android:textStyle="bold" />
 
-                            <com.beachpartnerllc.beachpartner.CustomEditText
+                            <AutoCompleteTextView
                                 android:id="@+id/txtv_city"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
@@ -422,6 +424,8 @@
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
+                                android:completionThreshold="1"
+                                android:textColor="@color/blueDark"
                                 android:nextFocusDown="@+id/txtv_mobileno"
                                 android:background="@android:color/transparent"
                                 android:layout_weight="1" />

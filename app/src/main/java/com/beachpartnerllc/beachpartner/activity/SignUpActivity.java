@@ -6,6 +6,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -50,6 +53,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
@@ -69,7 +73,8 @@ public class SignUpActivity extends AppCompatActivity{
     private ImageView imgVideo,imgProfile,imgPlay;
     private VideoView videoView;
 
-    private EditText user_fname,user_lname,user_dob,user_email,user_confPasswd,user_location,user_mobileno;
+    private EditText user_fname,user_lname,user_dob,user_email,user_confPasswd,user_mobileno;
+    private AutoCompleteTextView user_location_spinner;
     CustomEditText user_password;
     private String userName,lastName,dob,email,pass,confnPass,location,mobileno,android_id;
     private Button btnsignUp,user_male,user_female;
@@ -84,6 +89,9 @@ public class SignUpActivity extends AppCompatActivity{
     private String userType;
     private int paymentStatus;
     private ProgressDialog progress;
+
+    private ArrayList<String> stateList = new ArrayList<>();
+    private ArrayAdapter<String> dataAdapter;
 
 
     @Override
@@ -112,7 +120,7 @@ public class SignUpActivity extends AppCompatActivity{
         user_email      = (EditText)  findViewById(R.id.input_email);
         user_password   = (CustomEditText)  findViewById(R.id.input_password);
         user_confPasswd = (EditText)  findViewById(R.id.input_confirm_password);
-        user_location   = (EditText)  findViewById(R.id.input_city);
+        user_location_spinner   = (AutoCompleteTextView)  findViewById(R.id.input_city);
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
         llogin          = (LinearLayout) findViewById(R.id.login);
@@ -188,6 +196,15 @@ public class SignUpActivity extends AppCompatActivity{
                }
            }
        });
+
+        addLocation();
+
+        dataAdapter     = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item, stateList);
+
+        Typeface font   = Typeface.createFromAsset(getApplicationContext().getAssets(),
+                "fonts/SanFranciscoTextRegular.ttf");
+        user_location_spinner.setTypeface(font);
+        user_location_spinner.setAdapter(dataAdapter);
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -269,7 +286,7 @@ public class SignUpActivity extends AppCompatActivity{
                 email        = user_email.getText().toString().trim();
                 pass         = user_password.getText().toString().trim();
                 confnPass    = user_confPasswd.getText().toString().trim();
-                location     = user_location.getText().toString().trim();
+                location     = user_location_spinner.getText().toString().trim();
                 mobileno     = user_mobileno.getText().toString().trim();
 
 
@@ -468,7 +485,7 @@ public class SignUpActivity extends AppCompatActivity{
         user_email.setText("");
         user_password.setText("");
         user_confPasswd.setText("");
-        user_location.setText("");
+        user_location_spinner.setText("");
         user_mobileno.setText("");
         //userTypeRadio.clearCheck();
     }
@@ -582,6 +599,59 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
 
+    public void addLocation() {
+        stateList.add("Alabama");
+        stateList.add("Alaska");
+        stateList.add("Arizona");
+        stateList.add("Arkansas");
+        stateList.add("California");
+        stateList.add("Colorado");
+        stateList.add("Connecticut");
+        stateList.add("Delaware");
+        stateList.add("Florida");
+        stateList.add("Georgia");
+        stateList.add("Hawaii");
+        stateList.add("Idaho");
+        stateList.add("Illinois");
+        stateList.add("Indiana");
+        stateList.add("Iowa");
+        stateList.add("Kansas");
+        stateList.add("Kentucky");
+        stateList.add("Louisiana");
+        stateList.add("Maine");
+        stateList.add("Maryland");
+        stateList.add("Massachusetts");
+        stateList.add("Michigan");
+        stateList.add("Minnesota");
+        stateList.add("Mississippi");
+        stateList.add("Missouri");
+        stateList.add("Montana");
+        stateList.add("Nebraska");
+        stateList.add("Nevada");
+        stateList.add("New Hampshire");
+        stateList.add("New Jersey");
+        stateList.add("New Mexico");
+        stateList.add("New York");
+        stateList.add("North Carolina");
+        stateList.add("North Dakota");
+        stateList.add("Ohio");
+        stateList.add("Oklahoma");
+        stateList.add("Oregon");
+        stateList.add("Pennsylvania");
+        stateList.add("Rhode Island");
+        stateList.add("South Carolina");
+        stateList.add("South Dakota");
+        stateList.add("Tennessee");
+        stateList.add("Texas");
+        stateList.add("Utah");
+        stateList.add("Vermont");
+        stateList.add("Virginia");
+        stateList.add("Washington");
+        stateList.add("West Virginia");
+        stateList.add("Wisconsin WI");
+        stateList.add("Wyoming WY");
+
+    }
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 
