@@ -582,13 +582,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     for (int i=0;i<chatList.size();i++){
                         String chatId = chatList.get(i).split("-")[0];
                         String chatwith_id = chatList.get(i).split("-")[1];
-                        if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
-                            for (int j=0;j<connectionList.size();j++){
-                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
-                                    userList.add(connectionList.get(j));
+                        if (chatwith_id != null && chatId != null) {
+                            if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
+                                for (int j=0;j<connectionList.size();j++){
+                                    if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                        userList.add(connectionList.get(j));
+                                    }
                                 }
                             }
                         }
+
                     }
                     messageAdapter  =  new MessageAdapter(getContext(),userList);
                     msgRecyclerview.setAdapter(messageAdapter);

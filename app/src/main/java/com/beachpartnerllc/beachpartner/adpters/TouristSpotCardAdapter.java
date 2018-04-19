@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.VideoView;
@@ -21,7 +22,7 @@ import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
 import com.beachpartnerllc.beachpartner.utils.RotateLoading;
 import com.bumptech.glide.Glide;
 
-public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
+public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
@@ -64,6 +65,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         holder.userType.setText(spot.getBpf_userType());
         if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
+            Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
+
         }
 
 
@@ -122,12 +125,17 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     private void playvideo(final ViewHolder holder) {
 
         holder.videoView.start();
+        holder.videoView.setVisibility(View.VISIBLE);
+        holder.frameLayout.setVisibility(View.VISIBLE);
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             holder.videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                 @Override
                 public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
                     if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
                         holder.spinnerView.setVisibility(View.GONE);
+
                     }
                     if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
                         holder.spinnerView.start();
@@ -139,9 +147,15 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                     return false;
                 }
             });
+
+            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    holder.frameLayout.setVisibility(View.GONE);
+                }
+            });
         }
     }
-
 
 
 
@@ -153,6 +167,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         public RotateLoading spinnerView,progressBar;
         public Button info;
         public CardView swipe_card;
+        public FrameLayout frameLayout;
+        public ImageView frameImage;
 
         public ViewHolder(View view) {
             name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
@@ -164,11 +180,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
             swipe_card  =   (CardView) view.findViewById(R.id.swipe_card);
             spinnerView =  (RotateLoading)view.findViewById(R.id.my_spinner);
-
+            frameLayout = (FrameLayout)view.findViewById(R.id.placeholder);
+            frameImage = (ImageView) view.findViewById(R.id.frameimg_view);
         }
     }
 
 
 
 }
-

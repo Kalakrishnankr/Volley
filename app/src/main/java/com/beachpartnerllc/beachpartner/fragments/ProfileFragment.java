@@ -6,7 +6,6 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.DownloadManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
@@ -71,6 +69,9 @@ import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
 import com.bumptech.glide.Glide;
+import com.facebook.CallbackManager;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -131,8 +132,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private int finishCount = 0;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
     private AwesomeValidation awesomeValidation;
+    private boolean saveFile;
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+    Context mContext;
+
     private Handler mUiHandler = new Handler();
 
     private ArrayList<String> stateList = new ArrayList<>();
@@ -140,7 +146,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
@@ -150,7 +155,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-
         token   = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         setUp();
@@ -276,6 +280,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
+
         //share image
         fabImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -284,17 +289,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
                     if (selectedImageUri != null) {
                         screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
-                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setContentUrl(screenshotUri)
+                                .build();
+                        ShareDialog.show(ProfileFragment.this,content);
+                        /*Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
                         intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        intent.setType("image/*");
-                        startActivity(Intent.createChooser(intent, "Share image via..."));
+                        intent.setType("image*//*");
+                        startActivity(Intent.createChooser(intent, "Share image via..."));*/
                     } else if (userDataModel.getImageUrl() != null) {
                         screenshotUri = Uri.parse(userDataModel.getImageUrl());
-                        String type="image";
-                        saveFiles(screenshotUri,type);
+                        ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setContentUrl(screenshotUri)
+                                .build();
+                        ShareDialog.show(ProfileFragment.this,content);
                     }
-
 
                 } else {
                     Toast.makeText(getActivity(), "Please upload Image and share it", Toast.LENGTH_SHORT).show();
@@ -311,15 +321,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
                     if (selectedVideoUri != null) {
                         screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
-                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        /*Intent intent = new Intent(Intent.ACTION_SEND);
                         intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
                         intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        intent.setType("video/*");
-                        startActivity(Intent.createChooser(intent, "Share video via..."));
+                        intent.setType("video*//*");
+                        startActivity(Intent.createChooser(intent, "Share video via..."));*/
+                        ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setContentUrl(screenshotVideoUri)
+                                .build();
+                        ShareDialog.show(ProfileFragment.this,contentvideo);
                     } else if (userDataModel.getVideoUrl() != null) {
                         screenshotVideoUri = Uri.parse(userDataModel.getVideoUrl());
-                        String type="video";
-                        saveFiles(screenshotVideoUri,type);
+                        ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setContentUrl(screenshotVideoUri)
+                                .build();
+                        ShareDialog.show(ProfileFragment.this,contentvideo);
                     }
 
 
@@ -737,64 +753,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
-
-    }
-    //Method for save image in card
-    private void saveFiles(Uri screenshotUri,String type) {
-
-        boolean saveFile = checkExternalDrivePermission(REQUEST_SAVEIMGTODRIVE);
-        if(saveFile){
-           /* File direct = new File(Environment.getExternalStorageDirectory()
-                    + "BP");
-
-            if (!direct.exists()) {
-                direct.mkdirs();
-            }*/
-            DownloadManager mgr = (DownloadManager) getActivity().getSystemService(Context.DOWNLOAD_SERVICE);
-
-            Uri downloadUri = Uri.parse(String.valueOf(screenshotUri));
-
-            if (type.equals("image")) {
-                DownloadManager.Request request = new DownloadManager.Request(
-                        downloadUri);
-                request.setAllowedNetworkTypes(
-                        DownloadManager.Request.NETWORK_WIFI
-                                | DownloadManager.Request.NETWORK_MOBILE)
-                        .setAllowedOverRoaming(false).setTitle("Save File")
-                        .setDescription("Something useful. No, really.")
-                        .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_IMG.jpg");
-
-                mgr.enqueue(request);
-                String rootPath = Environment.getExternalStorageDirectory()
-                        .getAbsolutePath() + "/BP/";
-                File imageFileToShare = new File(rootPath);
-                Uri uri = Uri.fromFile(imageFileToShare);
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
-                intent.putExtra(Intent.EXTRA_STREAM, uri);
-                intent.setType("image/*");
-                startActivity(Intent.createChooser(intent, "Share image via..."));
-                imageFileToShare.delete();
-
-            } else if (type.equals("video")) {
-                DownloadManager.Request request = new DownloadManager.Request(
-                        downloadUri);
-                request.setAllowedNetworkTypes(
-                        DownloadManager.Request.NETWORK_WIFI
-                                | DownloadManager.Request.NETWORK_MOBILE)
-                        .setAllowedOverRoaming(false).setTitle("Save File")
-                        .setDescription("Something useful. No, really.")
-                        .setDestinationInExternalPublicDir("BP",System.currentTimeMillis()+"_VIDEO.mp4");
-
-                mgr.enqueue(request);
-                Intent intent = new Intent(Intent.ACTION_SEND);
-                intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
-                intent.putExtra(Intent.EXTRA_STREAM, System.currentTimeMillis()+"_VIDEO.mp4");
-                intent.setType("video/*");
-                startActivity(Intent.createChooser(intent, "Share video via..."));
-            }
-
-        }
 
     }
 
@@ -2218,4 +2176,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             return mFragmentTitleList.get(position);
         }
     }
+
+
 }

@@ -31,6 +31,7 @@ public class BpFinderModel {
     public String bpf_termDate;
     public String bpf_fcmToken;
 
+
     public String getBpf_effectiveDate() {
         return bpf_effectiveDate;
     }

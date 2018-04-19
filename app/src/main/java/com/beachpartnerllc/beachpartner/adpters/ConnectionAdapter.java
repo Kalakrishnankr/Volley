@@ -131,6 +131,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     bundle.putString("personId", model.getConnected_uId());
                     bundle.putString("personName",model.getConnected_firstName());
                     bundle.putString("myName",new PrefManager(mContext).getUserName());
+                    bundle.putString("personPic",model.getConnected_imageUrl());
                     chatFragmentPage.setArguments(bundle);
                     FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
