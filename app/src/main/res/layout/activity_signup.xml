@@ -244,6 +244,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hintLocation"
                         android:inputType="text"
+                        android:nextFocusDown="@id/input_mobile"
                         android:completionThreshold="1"
                         android:textColor="@color/blueDark" />
                 </android.support.design.widget.TextInputLayout>

@@ -329,7 +329,7 @@ public class SignUpActivity extends AppCompatActivity{
     private void addValidationToViews() {
         //adding validation to edittext
        if(user_fname.getText().toString().trim().equals("")){
-           user_fname.setError("First name cannot a be a whitespace");
+           user_fname.setError("First name cannot be a blank");
            awesomeValidation.clear();
        }
         else{
@@ -337,7 +337,7 @@ public class SignUpActivity extends AppCompatActivity{
            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
        }
         if(user_lname.getText().toString().trim().equals("")){
-           user_lname.setError("Last name cannot a be a whitespace");
+           user_lname.setError("Last name cannot be blank");
             awesomeValidation.clear();
         }
         else{
@@ -350,8 +350,15 @@ public class SignUpActivity extends AppCompatActivity{
         else{
             user_dob.setError(null);
         }
+        if(user_email.getText().toString().trim().equals("")){
+            user_email.setError("Email cannot be blank");
+            awesomeValidation.clear();
+        }
+        else{
+            user_email.setError(null);
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
+        }
 
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
         String regx=".{8,}";
