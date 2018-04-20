@@ -48,21 +48,23 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private RecyclerView rcv_conn;
     private ConnectionAdapter adapter;
-    private TextView txtv_coach,txtv_athlete,txtv_noconnection;
-    private static boolean isCoachTab=false;
-    private static boolean isAthleteTab=false;
-    private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
-    private ArrayList<ConnectionModel>coachList = new ArrayList<>();
-    private ArrayList<ConnectionModel>athleteList = new ArrayList<>();
-    private ArrayList<ConnectionModel>searchList = new ArrayList<>();
-    private List<ConnectionModel>mCountryModel;
-    private String token;
+    private TextView txtv_coach, txtv_athlete, txtv_noconnection;
+    private static boolean isCoachTab = false;
+    private static boolean isAthleteTab = false;
+    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private ArrayList<ConnectionModel> coachList = new ArrayList<>();
+    private ArrayList<ConnectionModel> athleteList = new ArrayList<>();
+    private ArrayList<ConnectionModel> searchList = new ArrayList<>();
+    private ArrayList<ConnectionModel> blockList = new ArrayList<>();
+    private ArrayList<ConnectionModel> blockCoachList = new ArrayList<>();
+    private ArrayList<ConnectionModel> blockAthleteList = new ArrayList<>();
+
+    private List<ConnectionModel> mCountryModel;
+    private String token, user_id;
 
     public ConnectionFragment() {
         // Required empty public constructor
     }
-
-
 
 
     @Override
@@ -77,7 +79,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_connection, container, false);
-        token   = new PrefManager(getContext()).getToken();
+        token = new PrefManager(getContext()).getToken();
+        user_id = new PrefManager(getContext()).getUserId();
         getConnections();
         initActivity(view);
 
@@ -87,21 +90,18 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
 
-
     private void initActivity(View view) {
 
-        rcv_conn        =   (RecyclerView)view.findViewById(R.id.rcv_connection);
-        txtv_athlete    =   (TextView)view.findViewById(R.id.txtAthlete);
-        txtv_coach      =   (TextView)view.findViewById(R.id.txtCoach);
-        txtv_noconnection=  (TextView)view.findViewById(R.id.txtv_conview);
+        rcv_conn = (RecyclerView) view.findViewById(R.id.rcv_connection);
+        txtv_athlete = (TextView) view.findViewById(R.id.txtAthlete);
+        txtv_coach = (TextView) view.findViewById(R.id.txtCoach);
+        txtv_noconnection = (TextView) view.findViewById(R.id.txtv_conview);
 
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(),2);
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         rcv_conn.setLayoutManager(layoutManager);
         //rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
-
         activeAthletTab();
-
         txtv_athlete.setOnClickListener(this);
         txtv_coach.setOnClickListener(this);
 
@@ -111,7 +111,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onClick(View view) {
 
-        switch (view.getId()){
+        switch (view.getId()) {
 
             case R.id.txtAthlete:
                 activeAthletTab();
@@ -132,38 +132,55 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
      /*Method for Active Coach Tab*/
 
     private void activeCoachTab() {
-        isAthleteTab=false;
-        isCoachTab  =true;
+        isAthleteTab = false;
+        isCoachTab = true;
+        rcv_conn.setVisibility(View.VISIBLE);
+        txtv_noconnection.setVisibility(View.GONE);
         txtv_coach.setTextColor(getResources().getColor(R.color.blueDark));
         txtv_coach.setBackgroundColor(getResources().getColor(R.color.white));
         txtv_athlete.setBackgroundColor(0);
         txtv_athlete.setTextColor(getResources().getColor(R.color.white));
-        if(coachList!=null && coachList.size()>0){
-            adapter    =   new ConnectionAdapter(getContext(),coachList, this);
+        coachList.removeAll(blockCoachList);
+        if ((coachList != null && coachList.size() > 0) || blockCoachList.size()>0 ) {
+            if (blockCoachList.size() > 0) {
+                coachList.addAll(blockCoachList);
+            }
+            adapter = new ConnectionAdapter(getContext(), coachList, this);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
-        }else {
+        } else {
             rcv_conn.setAdapter(null);
-
+            rcv_conn.setVisibility(View.GONE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 
     /*Method Active Athlete TAb*/
 
     private void activeAthletTab() {
-        isAthleteTab=true;
-        isCoachTab  =false;
+        isAthleteTab = true;
+        isCoachTab = false;
+        connectionList.clear();
+        rcv_conn.setVisibility(View.VISIBLE);
+        txtv_noconnection.setVisibility(View.GONE);
         txtv_athlete.setTextColor(getResources().getColor(R.color.blueDark));
         txtv_athlete.setBackgroundColor(getResources().getColor(R.color.white));
         txtv_coach.setBackgroundColor(0);
         txtv_coach.setTextColor(getResources().getColor(R.color.white));
-        if(athleteList!=null && athleteList.size()>0){
-           adapter    =   new ConnectionAdapter(getContext(),athleteList, this);
-           rcv_conn.setAdapter(adapter);
-           adapter.notifyDataSetChanged();
-       }else {
+        athleteList.removeAll(blockAthleteList);
+        if (athleteList != null && athleteList.size() > 0 || blockAthleteList.size()>0 )  {
+            if (blockAthleteList.size() > 0) {
+                athleteList.addAll(blockAthleteList);
+            }
+            adapter = new ConnectionAdapter(getContext(), athleteList, this);
+            rcv_conn.setAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        } else {
             rcv_conn.setAdapter(null);
+            rcv_conn.setVisibility(View.GONE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
+
     }
 
     //Get connection list api
@@ -171,18 +188,21 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         connectionList.clear();
         athleteList.clear();
         coachList.clear();
-        String user_id  = new PrefManager(getContext()).getUserId();
+        blockAthleteList.clear();
+        blockCoachList.clear();
+        String user_id = new PrefManager(getContext()).getUserId();
 
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active", null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
-                if(response!=null){
-                    for(int i=0;i<response.length();i++){
+                if (response != null) {
+                    for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject object = response.getJSONObject(i);
-                            JSONObject obj    = object.getJSONObject("connectedUser");
-                            ConnectionModel model  = new  ConnectionModel();
+                            JSONObject obj = object.getJSONObject("connectedUser");
+                            ConnectionModel model = new ConnectionModel();
+                            model.setConnected_status(object.getString("status"));
                             model.setConnected_uId(obj.getString("id"));
                             model.setConnected_login(obj.getString("login"));
                             model.setConnected_firstName(obj.getString("firstName"));
@@ -196,9 +216,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             e.printStackTrace();
                         }
                     }
+                    getBlockedMembers();
                     setConnections();
                 }
-
 
 
             }
@@ -230,14 +250,15 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 }
 
             }
-        }){ @Override
-        public Map<String, String> getHeaders()  {
-            HashMap<String, String> headers = new HashMap<String, String>();
-            headers.put("Authorization", "Bearer " + token);
-            //headers.put("Content-Type", "application/json; charset=utf-8");
-            return headers;
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
 
-        }
+            }
 
         };
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
@@ -245,24 +266,25 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         requestQueue.add(arrayRequest);
 
 
-
     }
 
     private void setConnections() {
-        if(connectionList!=null && connectionList.size()>0){
-            for(int i=0;i<connectionList.size();i++){
-                if(connectionList.get(i).getConnected_userType().equals("Athlete")){
+        rcv_conn.setVisibility(View.VISIBLE);
+        txtv_noconnection.setVisibility(View.GONE);
+        if (connectionList != null && connectionList.size() > 0) {
+            for (int i = 0; i < connectionList.size(); i++) {
+                if (connectionList.get(i).getConnected_userType().equals("Athlete")) {
                     athleteList.add(connectionList.get(i));
-                }else {
+                } else {
                     coachList.add(connectionList.get(i));
                 }
             }
 
-            adapter    =   new ConnectionAdapter(getContext(),athleteList,this);
+            adapter = new ConnectionAdapter(getContext(), athleteList, this);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
 
-        }else {
+        } else {
             txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
@@ -306,7 +328,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 }
 
             }
-        }){
+        }) {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -320,6 +342,76 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         Log.d("Request", request.toString());
         requestQueue.add(request);
     }
+
+    @Override
+    public void unblock(String personid) {
+        //Toast.makeText(getActivity(), "Unblocked"+personid, Toast.LENGTH_SHORT).show();
+        JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UNBLOCK_PERSON + personid, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            try {
+                                String unblockres_status =response.getString("status");
+                                if (unblockres_status.equals("RevBlocked")) {
+                                    Toast.makeText(getActivity(), "Unblocked Person Successfully", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    String json = null;
+                    Log.d("error--", error.toString());
+                    NetworkResponse response = error.networkResponse;
+                    if (response != null && response.data != null) {
+                        switch (response.statusCode) {
+                            case 401:
+                                json = new String(response.data);
+                                json = trimMessage(json, "detail");
+                                if (json != null) {
+                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            case 404:
+                                json = new String(response.data);
+                                json = trimMessage(json, "title");
+                                if (json != null) {
+                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            case 500:
+                                json = new String(response.data);
+                                json = trimMessage(json, "title");
+                                if (json != null) {
+                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                }
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                }
+            }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        RequestQueue queue  = Volley.newRequestQueue(getActivity());
+        Log.d("unblockRequest",queue.toString());
+        queue.add(jsonObjectRequest);
+
+    }
+
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 
@@ -380,7 +472,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
-        inflater.inflate(R.menu.menu_search,menu);
+        inflater.inflate(R.menu.menu_search, menu);
         MenuItem item = menu.findItem(R.id.action_search);
 
         final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
@@ -401,8 +493,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     adapter.setFilter(filteredModelList);
                     adapter.notifyDataSetChanged();
 
-                }else {
-                    adapter    =   new ConnectionAdapter(getContext(),athleteList,ConnectionFragment.this);
+                } else {
+                    adapter = new ConnectionAdapter(getContext(), athleteList, ConnectionFragment.this);
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }
@@ -410,7 +502,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 return false;
             }
         });
-
 
 
     }
@@ -430,7 +521,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_search:
                 //searchPerson();
                 break;
@@ -442,53 +533,128 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private void searchPerson(String query) {
 
-                String textSearch = query;
+        String textSearch = query;
 
-                if (!textSearch.equals("null")) {
-                    if(isAthleteTab){
-                        searchList.clear();
-                        if(athleteList.size()>0){
-                            for(int i =0;i<athleteList.size();i++){
-                                if(textSearch.equalsIgnoreCase(athleteList.get(i).getConnected_firstName().trim())){
-                                    searchList.add(athleteList.get(i));
-
-                                }
-                            }
-                        }
-                    }else {
-                        searchList.clear();
-                        if(coachList.size()>0){
-                            for(int i =0;i<coachList.size();i++){
-                                if(textSearch.equalsIgnoreCase(coachList.get(i).getConnected_firstName())){
-                                    searchList.add(coachList.get(i));
-
-                                }
-                            }
+        if (!textSearch.equals("null")) {
+            if (isAthleteTab) {
+                searchList.clear();
+                if (athleteList.size() > 0) {
+                    for (int i = 0; i < athleteList.size(); i++) {
+                        if (textSearch.equalsIgnoreCase(athleteList.get(i).getConnected_firstName().trim())) {
+                            searchList.add(athleteList.get(i));
 
                         }
                     }
-                    if (searchList.size() > 0) {
-                        adapter    =   new ConnectionAdapter(getContext(),searchList,this);
-                        rcv_conn.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }else {
-                        Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
-                        if (isAthleteTab) {
-                            adapter    =   new ConnectionAdapter(getContext(),athleteList,this);
-                            rcv_conn.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-                        }else {
-                            adapter    =   new ConnectionAdapter(getContext(),coachList,this);
-                            rcv_conn.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
-                        }
+                }
+            } else {
+                searchList.clear();
+                if (coachList.size() > 0) {
+                    for (int i = 0; i < coachList.size(); i++) {
+                        if (textSearch.equalsIgnoreCase(coachList.get(i).getConnected_firstName())) {
+                            searchList.add(coachList.get(i));
 
+                        }
                     }
 
                 }
-
+            }
+            if (searchList.size() > 0) {
+                adapter = new ConnectionAdapter(getContext(), searchList, this);
+                rcv_conn.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+                if (isAthleteTab) {
+                    adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                } else {
+                    adapter = new ConnectionAdapter(getContext(), coachList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
 
             }
+
+        }
+
+
+    }
+
+    //Get Blocked persons
+    private void getBlockedMembers() {
+        blockList.clear();
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Blocked", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                Log.d("response",response.toString());
+                if (response != null && response.length()!=0) {
+                    for(int i =0 ;i<response.length();i++){
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+                            JSONObject obj = object.getJSONObject("connectedUser");
+                            ConnectionModel cModel = new ConnectionModel();
+                            cModel.setConnected_status(object.getString("status"));
+                            cModel.setConnected_uId(obj.getString("id"));
+                            cModel.setConnected_login(obj.getString("login"));
+                            cModel.setConnected_firstName(obj.getString("firstName"));
+                            cModel.setConnected_lastName(obj.getString("lastName"));
+                            cModel.setConnected_email(obj.getString("email"));
+                            cModel.setConnected_userType(obj.getString("userType"));
+                            cModel.setConnected_imageUrl(obj.getString("imageUrl"));
+                            blockList.add(cModel);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    setUpPage();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        Log.d("Request",arrayRequest.toString());
+        requestQueue.add(arrayRequest);
+
+
+    }
+
+    private void setUpPage() {
+        blockCoachList.clear();
+        blockAthleteList.clear();
+        if(blockList!=null && blockList.size()>0){
+            for (int j = 0; j<blockList.size();j++){
+                if (blockList.get(j).getConnected_userType().equals("Athlete")) {
+                    blockAthleteList.add(blockList.get(j));
+                }else {
+                    blockCoachList.add(blockList.get(j));
+                }
+            }
+            if (blockAthleteList.size() > 0) {
+                athleteList.addAll(blockAthleteList);
+                adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                rcv_conn.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+
+    }
 
 
 }

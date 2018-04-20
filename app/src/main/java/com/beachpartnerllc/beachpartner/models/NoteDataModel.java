@@ -5,7 +5,7 @@ package com.beachpartnerllc.beachpartner.models;
  */
 
 public class NoteDataModel {
-
+    private String note_id;
     private String notes;
     private String headerTitle;
     private long timestamp;
@@ -42,5 +42,12 @@ public class NoteDataModel {
 
     public long getTimestamp() {
         return timestamp;
+    }
+    public String getNote_id() {
+        return note_id;
+    }
+
+    public void setNote_id(String note_id) {
+        this.note_id = note_id;
     }
 }

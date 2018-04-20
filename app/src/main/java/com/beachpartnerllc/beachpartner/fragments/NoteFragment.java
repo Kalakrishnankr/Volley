@@ -2,79 +2,61 @@ package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.NotesAdapter;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.NoteDataModel;
+import com.beachpartnerllc.beachpartner.utils.SaveNoteInterface;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
-/**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link NoteFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link NoteFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class NoteFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+public class NoteFragment extends Fragment implements SaveNoteInterface{
 
-    RecyclerView rcVNotes;
+
+    private RecyclerView rcVNotes;
     private NotesAdapter adapter;
-    ArrayList<NoteDataModel> allSampleData;
-    Button addNewBtn;
-//    private NotesAdapter adapter;
+    private ArrayList<NoteDataModel> allSampleData;
+    private ArrayList<NoteDataModel> noteList = new ArrayList<>();
+    private Button addNewBtn;
+    private String personId,myID,personName,myToken;
 
-    private OnFragmentInteractionListener mListener;
-
-    public NoteFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment NoteFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static NoteFragment newInstance(String param1, String param2) {
-        NoteFragment fragment = new NoteFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        Bundle bundle = this.getArguments();
+        if (bundle != null) {
+            personId  = bundle.getString("personId");
+            personName= bundle.getString("personName");
         }
     }
 
@@ -83,17 +65,26 @@ public class NoteFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_note, container, false);
-        rcVNotes =view.findViewById(R.id.rcv_notes);
-        addNewBtn= view.findViewById(R.id.addNew);
-        allSampleData = new ArrayList<NoteDataModel>();
+        initViews(view);
+        myID    = new PrefManager(getContext()).getUserId();
+        myToken = new PrefManager(getContext()).getToken();
+        //Get all notes for a particular person;
+        getNotes();
+        return view;
+    }
 
 
-        adapter     =   new NotesAdapter(getContext(),allSampleData);
+    private void initViews(View view) {
+
+        rcVNotes  = view.findViewById(R.id.rcv_notes);
+        addNewBtn = view.findViewById(R.id.addNew);
+        //allSampleData = new ArrayList<NoteDataModel>();
+
+        adapter     =   new NotesAdapter(getContext(),noteList,this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),1);
         rcVNotes.setLayoutManager(layoutManager);
         rcVNotes.addItemDecoration(new NoteFragment.GridSpacingItemDecoration(1, dpToPx(10), true));
         rcVNotes.setItemAnimator(new DefaultItemAnimator());
-        rcVNotes.setAdapter(adapter);
 
         addNewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,56 +93,291 @@ public class NoteFragment extends Fragment {
                 rcVNotes.setAdapter(adapter);
             }
         });
-
-
-        return view;
     }
 
 
     private void createDummyData() {
         long currentTime;
         NoteDataModel dm = new NoteDataModel();
-        dm.setHeaderTitle("Section ");
-        dm.setNotes("What");
+        dm.setHeaderTitle("");
+        dm.setNotes("");
 
         currentTime  = System.currentTimeMillis();
         dm.setTimestamp(new Date().getTime());
 
-        allSampleData.add(dm);
+        noteList.add(dm);
     }
 
+    //Api for get all notes
+    private void getNotes() {
+        noteList.clear();
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GETALL_NOTE_FROM + myID + "/to/" + personId, null,
+                new Response.Listener<JSONArray>() {
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        Log.d("getNoteResponse",response.toString());
+                        if (response != null ) {
+                            for(int i=0;i<response.length();i++){
+                                try {
+                                    JSONObject object = response.getJSONObject(i);
+                                    NoteDataModel noteDataModel = new NoteDataModel();
+                                    noteDataModel.setNote_id(object.getString("id"));
+                                    noteDataModel.setNotes(object.getString("note"));
+                                    noteList.add(noteDataModel);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            setNoteViews();
+                        }
 
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + myToken);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("responseGetNote",requestQueue.toString());
+        requestQueue.add(arrayRequest);
+
+    }
+
+    private void setNoteViews() {
+        if(noteList.size()>0){
+            adapter     =   new NotesAdapter(getContext(),noteList,this);
+            rcVNotes.setAdapter(adapter);
         }
     }
 
+    //Method for creating a note
 
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
-
-    /**
-     * Converting dp to pixel
-     */
     private int dpToPx(int dp) {
         Resources r = getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, r.getDisplayMetrics()));
+    }
+
+    @Override
+    public void save(String text) {
+
+        JSONObject object = new JSONObject();
+        try {
+            object.put("note",text);
+            object.put("toUserId",personId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        postNote(object);
+    }
+
+
+
+    //Method for post note
+    private void postNote(JSONObject object) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.CREATE_NOTE, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d("respone",response.toString());
+                if (response != null) {
+                    Toast.makeText(getActivity(), "Note Created", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + myToken);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+        };
+
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Log.d("requestCreateNote",queue.toString());
+        queue.add(request);
+
+    }
+
+    @Override
+    public void removeNote(String note_id) {
+        //Api for deleting note
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_DELETE, ApiService.DELETE_NOTE + note_id, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d("responseDelete",response.toString());
+                        if (response != null) {
+                            Toast.makeText(getActivity(), "Note deleted Successfully", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + myToken);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Log.d("deleteNoteRequest",queue.toString());
+        queue.add(jsonObjectRequest);
+    }
+
+    @Override
+    public void update(String text,String noteId) {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("note",text);
+            object.put("toUserId",personId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        updateNote(object,noteId);
+    }
+    //Update  note Api
+    private void updateNote(JSONObject object, String noteId) {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_NOTE + noteId, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    Toast.makeText(getActivity(), "Successfully Updated Note", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + myToken);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        Log.d("updateNoteRequest",queue.toString());
+        queue.add(objectRequest);
     }
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
@@ -187,5 +413,18 @@ public class NoteFragment extends Fragment {
                 }
             }
         }
+    }
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 }

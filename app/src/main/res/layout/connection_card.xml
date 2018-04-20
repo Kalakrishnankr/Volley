@@ -67,7 +67,7 @@
                 android:layout_below="@+id/rlHeader1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone">
+                android:visibility="visible">
 
                 <View
                     android:layout_width="match_parent"
@@ -88,6 +88,7 @@
                     android:paddingRight="@dimen/album_title_padding"/>
 
                 <View
+                    android:id="@+id/viewOne"
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_marginLeft="20dp"

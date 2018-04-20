@@ -7,4 +7,6 @@ package com.beachpartnerllc.beachpartner;
 public interface ConnectionInterface {
 
     void block(String personid);
+
+    void unblock(String personid);
 }

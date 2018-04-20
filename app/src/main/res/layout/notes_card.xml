@@ -53,7 +53,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic__note" />
+                    android:src="@drawable/ic_edit_active" />
 
             </LinearLayout>
 

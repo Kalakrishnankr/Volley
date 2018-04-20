@@ -2,6 +2,7 @@ package com.beachpartnerllc.beachpartner.fragments;
 
 import android.Manifest;
 import android.animation.AnimatorSet;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -570,8 +571,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
-                    imgVideo.setVisibility(View.VISIBLE);
-                    profile_img_editIcon.setVisibility(View.VISIBLE);
+                    //imgVideo.setVisibility(View.VISIBLE);
+                    //profile_img_editIcon.setVisibility(View.VISIBLE);
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
                 } else {
@@ -1182,9 +1183,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //Profile image edit icon active
 
         imgProfile.setClickable(true);
+        imgVideo.setClickable(true);
         btnsBottom.setVisibility(View.VISIBLE);
         more_info_btns_bottom.setVisibility(View.VISIBLE);
         profile_img_editIcon.setVisibility(View.VISIBLE);
+
 
         editFname.setEnabled(true);
         editFname.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -2116,7 +2119,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
+    @SuppressLint("NewApi")
     private void setViews() {
         if (getActivity() != null) {
             if (userDataModel != null) {
@@ -2127,10 +2130,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     imgProfile.setImageResource(R.drawable.ic_person);
                 }
                 if (userDataModel.getVideoUrl() != null) {
-                    videoView.setVisibility(View.VISIBLE);
                     videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
+                    videoView.setVisibility(View.VISIBLE);
                     videoView.start();
-                    videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
+                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+
+                        @Override
+                        public void onPrepared(MediaPlayer mp) {
+
+                            mp.setVolume(0, 0);
+                        }
+                    });
+                }
+                 /*   videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                         @Override
                         public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
                             if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
@@ -2155,7 +2167,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         progressbar.setVisibility(View.GONE);
                         imgPlay.setVisibility(View.VISIBLE);
                     }
-                });
+                });*/
                 profileName.setText(userDataModel.getFirstName().trim());
                 profileDesig.setText(userDataModel.getUserType().trim());
                 editLname.setText(userDataModel.getLastName().trim());

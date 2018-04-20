@@ -15,6 +15,20 @@ public class ConnectionModel {
     public String Connected_deviceId;
     public String Connected_authToken;
     public String Connected_location;
+
+    public String getConnected_status() {
+        return Connected_status;
+    }
+
+    public void setConnected_status(String connected_status) {
+        Connected_status = connected_status;
+    }
+
+    public boolean isConnected_isAvailable_ondate() {
+        return Connected_isAvailable_ondate;
+    }
+
+    public String Connected_status;
     public boolean Connected_isAvailable_ondate;
 
     public String getConnected_userType() {
