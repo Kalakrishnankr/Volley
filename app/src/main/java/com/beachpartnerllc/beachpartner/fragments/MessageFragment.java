@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -42,7 +44,9 @@ public class MessageFragment extends Fragment {
     private ChatListAdapter chatListAdapter;
     private Firebase myFirebaseRef;
     private String myId;
+    private ProgressBar progressBar;
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private TextView tv_nomsgs;
 
     public MessageFragment() {
         // Required empty public constructor
@@ -63,8 +67,8 @@ public class MessageFragment extends Fragment {
         myId = new PrefManager(getContext()).getUserId();
         myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/");
 
-        getConnections();
         initView(view);
+        getConnections();
         return view;
     }
 
@@ -73,6 +77,8 @@ public class MessageFragment extends Fragment {
 
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_chat);
+        progressBar  = (ProgressBar)  view.findViewById(R.id.msg_progress);
+        tv_nomsgs    = (TextView) view.findViewById(R.id.txtv_nomsgs);
         //chatListAdapter =   new ChatListAdapter(getContext(),list);
         RecyclerView.LayoutManager mLayoutmanger = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutmanger);
@@ -81,58 +87,12 @@ public class MessageFragment extends Fragment {
 
     }
 
-    //Method for getting chatlist from firebse
-    private void setUpMessage() {
-        userList.clear();
-        chatList.clear();
-        final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
-        myFirebaseRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
 
-                    chatList.add(postSnapshot.getKey());
-
-                    /*for (DataSnapshot pSnapshot1 : postSnapshot.getChildren()) {
-                          MessageModel m = pSnapshot1.getValue(MessageModel.class);
-                          if (m.getSender_id().equals(myId)) {
-                              userList.add(m);
-                          }
-                    }*/
-
-                }
-                if(chatList.size()>0 && chatList!=null){
-                    for (int i=0;i<chatList.size();i++){
-                        String chatId = chatList.get(i).split("-")[0];
-                        String chatwith_id = chatList.get(i).split("-")[1];
-                        if(chatId.equals(myId) || chatwith_id.equals(myId)){
-                            for (int j=0;j<connectionList.size();j++){
-                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
-                                    userList.add(connectionList.get(j));
-                                }
-                            }
-                        }
-                    }
-                    chatListAdapter = new ChatListAdapter(getContext(), userList);
-                    recyclerView.setAdapter(chatListAdapter);
-                    chatListAdapter.notifyDataSetChanged();
-                }
-
-
-
-            }
-
-            @Override
-            public void onCancelled(FirebaseError firebaseError) {
-
-            }
-        });
-
-    }
 
 
     private void getConnections() {
         connectionList.clear();
+        progressBar.setVisibility(View.VISIBLE);
         String user_id = new PrefManager(getContext()).getUserId();
         final String token = new PrefManager(getContext()).getToken();
 
@@ -185,6 +145,59 @@ public class MessageFragment extends Fragment {
         Log.d("Request", arrayRequest.toString());
         requestQueue.add(arrayRequest);
 
+
+    }
+
+    //Method for getting chatlist from firebse
+    private void setUpMessage() {
+        userList.clear();
+        chatList.clear();
+        final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
+        myFirebaseRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot snapshot) {
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+
+                    chatList.add(postSnapshot.getKey());
+
+                    /*for (DataSnapshot pSnapshot1 : postSnapshot.getChildren()) {
+                          MessageModel m = pSnapshot1.getValue(MessageModel.class);
+                          if (m.getSender_id().equals(myId)) {
+                              userList.add(m);
+                          }
+                    }*/
+
+                }
+                if(chatList.size()>0 && chatList!=null){
+                    for (int i=0;i<chatList.size();i++){
+                        String chatId = chatList.get(i).split("-")[0];
+                        String chatwith_id = chatList.get(i).split("-")[1];
+                        if(chatId.equals(myId) || chatwith_id.equals(myId)){
+                            for (int j=0;j<connectionList.size();j++){
+                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                    userList.add(connectionList.get(j));
+                                }
+                            }
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    chatListAdapter = new ChatListAdapter(getContext(), userList);
+                    recyclerView.setAdapter(chatListAdapter);
+                    chatListAdapter.notifyDataSetChanged();
+                }else {
+                    progressBar.setVisibility(View.GONE);
+                    tv_nomsgs.setVisibility(View.VISIBLE);
+                }
+
+
+
+            }
+
+            @Override
+            public void onCancelled(FirebaseError firebaseError) {
+
+            }
+        });
 
     }
 

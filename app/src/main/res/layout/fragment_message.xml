@@ -5,6 +5,22 @@
     android:background="@color/white"
     tools:context="com.beachpartnerllc.beachpartner.fragments.MessageFragment">
 
+    <ProgressBar
+        android:id="@+id/msg_progress"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/txtv_nomsgs"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_gravity="center_vertical"
+        android:text="No recent messages" />
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcv_chat"
         android:layout_width="match_parent"

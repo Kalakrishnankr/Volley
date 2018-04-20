@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.NetworkResponse;
@@ -48,6 +50,8 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     private ArrayList<NoteDataModel> noteList = new ArrayList<>();
     private Button addNewBtn;
     private String personId,myID,personName,myToken;
+    private ProgressBar progressBar;
+    private TextView txtv_nonotes;
 
 
     @Override
@@ -76,9 +80,11 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
 
     private void initViews(View view) {
 
-        rcVNotes  = view.findViewById(R.id.rcv_notes);
-        addNewBtn = view.findViewById(R.id.addNew);
-        //allSampleData = new ArrayList<NoteDataModel>();
+        rcVNotes    = view.findViewById(R.id.rcv_notes);
+        addNewBtn   = view.findViewById(R.id.addNew);
+        progressBar = view.findViewById(R.id.progress_note);
+        txtv_nonotes = view.findViewById(R.id.txtv_nonotes);
+        noteList = new ArrayList<NoteDataModel>();
 
         adapter     =   new NotesAdapter(getContext(),noteList,this);
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),1);
@@ -89,6 +95,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         addNewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                txtv_nonotes.setVisibility(View.GONE);
                 createDummyData();
                 rcVNotes.setAdapter(adapter);
             }
@@ -111,6 +118,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     //Api for get all notes
     private void getNotes() {
         noteList.clear();
+        progressBar.setVisibility(View.VISIBLE);
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GETALL_NOTE_FROM + myID + "/to/" + personId, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -176,9 +184,12 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     }
 
     private void setNoteViews() {
+        progressBar.setVisibility(View.GONE);
         if(noteList.size()>0){
             adapter     =   new NotesAdapter(getContext(),noteList,this);
             rcVNotes.setAdapter(adapter);
+        }else {
+            txtv_nonotes.setVisibility(View.VISIBLE);
         }
     }
 

@@ -138,11 +138,11 @@ public class ChatFragmentPage extends Fragment {
                 Map map = dataSnapshot.getValue(Map.class);
                 String message = map.get("text").toString();
                 String userId  = map.get("sender_id").toString();
-                String receiverName= map.get("receiver_name").toString();
-                String receiverId = map.get("receiver_id").toString();
-                String senderName = map.get("sender_name").toString();
-                String profilePic = map.get("profileImg").toString();
-                String date = map.get("date").toString();
+                //String receiverName= map.get("receiver_name").toString();
+                //String receiverId = map.get("receiver_id").toString();
+                //String senderName = map.get("sender_name").toString();
+                //String profilePic = map.get("profileImg").toString();
+                //String date = map.get("date").toString();
                 if(userId.equals(myId)){
                     addMessageBox("You:-\n" + message, 1);
                 }

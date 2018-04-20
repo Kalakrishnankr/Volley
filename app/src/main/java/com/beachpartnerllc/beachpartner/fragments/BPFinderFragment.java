@@ -683,9 +683,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonArrayRequest.toString());
-        requestQueue.add(jsonArrayRequest);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonArrayRequest.toString());
+            requestQueue.add(jsonArrayRequest);
+        }
+
 
     }
 
@@ -748,10 +751,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private void paginate() {
 
-        cardStackView.setPaginationReserved();
-        //adapter.addAll(createTouristSpots());
-        adapter.addAll(allCardList);
-        adapter.notifyDataSetChanged();
+        if (getActivity() != null) {
+            if (allCardList != null) {
+                cardStackView.setPaginationReserved();
+                //adapter.addAll(createTouristSpots());
+                adapter.addAll(allCardList);
+                adapter.notifyDataSetChanged();
+            }
+
+        }
+
     }
 
     //Method for right swipe

@@ -47,6 +47,28 @@
                 android:soundEffectsEnabled="false"
                 android:visibility="gone" />
 
+                <FrameLayout
+                    android:id="@+id/placeholder"
+                    android:layout_width="fill_parent"
+                    android:foregroundGravity="center"
+                    android:visibility="gone"
+                    android:layout_height="fill_parent">
+
+                    <ImageView
+                        android:id="@+id/frameimg_view"
+                        android:scaleType="fitXY"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+
+                    <com.beachpartnerllc.beachpartner.utils.RotateLoading
+                        android:id="@+id/my_spinner"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        app:loading_width="5dp"
+                        app:loading_color="#ffffff"
+                        android:layout_gravity="center"/>
+                </FrameLayout>
+
 
             <ImageView
                 android:id="@+id/imgVideo"

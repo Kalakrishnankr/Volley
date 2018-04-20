@@ -169,10 +169,12 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     if (!active_status.isEmpty() && active_status.equals("Blocked")) {
                         String personid = model.getConnected_uId();
                         connectionInterface.unblock(personid);
+                        holder.ItemChanged(position);
                     //block
                     }else if(!active_status.isEmpty() && active_status.equals("Active")) {
                         String personid = model.getConnected_uId();
                         connectionInterface.block(personid);
+                        holder.reMovePosition(position);
                     }
 
                 }
@@ -217,6 +219,20 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
             rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
             viewOne     = (View)view.findViewById(R.id.viewOne);
+        }
+
+        public void reMovePosition(int position) {
+            dataLists.remove(position);
+            notifyItemChanged(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, dataLists.size());
+        }
+
+        public void ItemChanged(int position) {
+            dataLists.remove(position);
+            notifyItemChanged(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, dataLists.size());
         }
     }
 
