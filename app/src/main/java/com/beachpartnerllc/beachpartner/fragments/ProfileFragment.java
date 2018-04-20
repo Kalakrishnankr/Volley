@@ -170,8 +170,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         token   = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
-        setUp();
         initActivity(view);
+        setUp();
 
         return view;
     }
@@ -2175,12 +2175,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if (getActivity() != null) {
             if (userDataModel != null) {
                 //set basic informations of user
-                if (userDataModel.getImageUrl() != null) {
+                if (userDataModel.getImageUrl() != null && !userDataModel.getImageUrl().equals("null")) {
                     Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
                 }else {
                     imgProfile.setImageResource(R.drawable.ic_person);
                 }
-                if (userDataModel.getVideoUrl() != null) {
+                if (userDataModel.getVideoUrl() != null && !userDataModel.getVideoUrl().equals("null")) {
                     videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
                     videoView.setVisibility(View.VISIBLE);
                     videoView.start();

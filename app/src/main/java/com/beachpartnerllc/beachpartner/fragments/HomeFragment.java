@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,7 +70,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
-    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts;
+    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp;
+    private ProgressBar progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
     private String user_id,user_token,userType;
     private PrefManager prefManager;
     private LinearLayout ucoming_next,message_next,request_next;
@@ -123,12 +125,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         message_next    =   (LinearLayout)view.findViewById(R.id.mess_next_button);
         request_next    =   (LinearLayout)view.findViewById(R.id.req_next_button);
 
+        progressBar     =   (ProgressBar)view.findViewById(R.id.progress);
+        progressBar_tour=   (ProgressBar)view.findViewById(R.id.progress_tournament);
+        progressBar_msg =   (ProgressBar)view.findViewById(R.id.progress_msg);
+        progressBar_rqsts=  (ProgressBar)view.findViewById(R.id.progress_request);
+
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
         txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
         txtv_notour     =   (TextView)view.findViewById(R.id.txtv_notour);
         txtv_nomsgs     =   (TextView)view.findViewById(R.id.txtv_nomessgs);
         txtv_noreqsts   =   (TextView)view.findViewById(R.id.txtv_noreqsts);
+        txtv_nobp       =   (TextView)view.findViewById(R.id.txtv_nobp);
 
 
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
@@ -315,6 +323,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //Api for get all blue bp profiles
     private void getBluebpProfiles() {
         bpList.clear();
+        progressBar.setVisibility(View.VISIBLE);
         JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&size=5", null, new
                 Response.Listener<JSONArray>() {
                     @Override
@@ -395,6 +404,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     //Get all my tournaments
     private void getMyTournaments() {
+        progressBar_tour.setVisibility(View.VISIBLE);
         myUpcomingTList.clear();
         SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
         Date date       = Calendar.getInstance().getTime();
@@ -482,6 +492,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     private void setUpMyComingTournament() {
+        progressBar_tour.setVisibility(View.GONE);
         if(myUpcomingTList.size()>0){
             adapter = new CardAdapter(getContext(),myUpcomingTList);
             mRecyclerview.setAdapter(adapter);
@@ -495,15 +506,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     private void setblueBpstrip() {
+        progressBar.setVisibility(View.GONE);
         if(bpList!=null && bpList.size()>0){
             profileAdapter = new ProfileAdapter(getContext(),bpList);
             pRecyclerview.setAdapter(profileAdapter);
+        }else {
+            txtv_nobp.setVisibility(View.VISIBLE);
         }
+
     }
 
     //Get connections
     private void getConnections() {
         connectionList.clear();
+        progressBar_msg.setVisibility(View.VISIBLE);
         String user_id = new PrefManager(getContext()).getUserId();
         final String token = new PrefManager(getContext()).getToken();
 
@@ -593,10 +609,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         }
 
                     }
+                    progressBar_msg.setVisibility(View.GONE);
                     messageAdapter  =  new MessageAdapter(getContext(),userList);
                     msgRecyclerview.setAdapter(messageAdapter);
                     messageAdapter.notifyDataSetChanged();
                 }else {
+                    progressBar_msg.setVisibility(View.GONE);
                     txtv_nomsgs.setVisibility(View.VISIBLE);
                 }
 

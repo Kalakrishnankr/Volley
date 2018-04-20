@@ -66,7 +66,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
         String dobToage = spot.getBpf_dob();
-        if (!dobToage.isEmpty() && !dobToage.equals("null")) {
+        if (dobToage != null && !dobToage.isEmpty() && !dobToage.equals("null")) {
             long millisecond = Long.parseLong(dobToage);
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             Date datef = new Date(millisecond);

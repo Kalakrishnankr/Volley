@@ -19,6 +19,13 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+            <!--<com.beachpartnerllc.beachpartner.utils.RotateLoading
+                android:id="@+id/pbHeaderProgress"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                app:loading_color="@android:color/holo_green_light"
+                app:loading_width="5dp"
+                android:layout_centerInParent="true"/>-->
             <RelativeLayout
                 android:id="@+id/rlHeader1"
                 android:layout_width="match_parent"

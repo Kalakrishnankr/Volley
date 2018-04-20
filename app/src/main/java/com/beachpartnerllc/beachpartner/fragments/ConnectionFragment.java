@@ -17,6 +17,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -61,6 +62,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private List<ConnectionModel> mCountryModel;
     private String token, user_id;
+    private ProgressBar progress;
 
     public ConnectionFragment() {
         // Required empty public constructor
@@ -81,7 +83,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         View view = inflater.inflate(R.layout.fragment_connection, container, false);
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
-        getConnections();
         initActivity(view);
 
         return view;
@@ -96,14 +97,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_athlete = (TextView) view.findViewById(R.id.txtAthlete);
         txtv_coach = (TextView) view.findViewById(R.id.txtCoach);
         txtv_noconnection = (TextView) view.findViewById(R.id.txtv_conview);
+        progress    =   (ProgressBar) view.findViewById(R.id.progress_connection);
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         rcv_conn.setLayoutManager(layoutManager);
         //rcv_conn.addItemDecoration(new GridSpacingItemDecoration(2, dpToPx(10), true));
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
-        activeAthletTab();
         txtv_athlete.setOnClickListener(this);
         txtv_coach.setOnClickListener(this);
+        activeAthletTab();
+        getConnections();
+
 
     }
 
@@ -177,8 +181,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
         } else {
             rcv_conn.setAdapter(null);
-            rcv_conn.setVisibility(View.GONE);
-            txtv_noconnection.setVisibility(View.VISIBLE);
+           // rcv_conn.setVisibility(View.GONE);
+            //txtv_noconnection.setVisibility(View.VISIBLE);
         }
 
     }
@@ -190,8 +194,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         coachList.clear();
         blockAthleteList.clear();
         blockCoachList.clear();
+        progress.setVisibility(View.VISIBLE);
         String user_id = new PrefManager(getContext()).getUserId();
-
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -269,8 +273,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     private void setConnections() {
-        rcv_conn.setVisibility(View.VISIBLE);
-        txtv_noconnection.setVisibility(View.GONE);
+        //rcv_conn.setVisibility(View.VISIBLE);
+        //txtv_noconnection.setVisibility(View.GONE);
+        progress.setVisibility(View.GONE);
         if (connectionList != null && connectionList.size() > 0) {
             for (int i = 0; i < connectionList.size(); i++) {
                 if (connectionList.get(i).getConnected_userType().equals("Athlete")) {
@@ -279,7 +284,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     coachList.add(connectionList.get(i));
                 }
             }
-
+            progress.setVisibility(View.GONE);
             adapter = new ConnectionAdapter(getContext(), athleteList, this);
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
@@ -299,7 +304,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     String status_res = response.getString("status");
                     if (status_res.equals("Blocked")) {
                         Toast.makeText(getContext(), "Person Blocked", Toast.LENGTH_SHORT).show();
-                        adapter.notifyDataSetChanged();
+                        //adapter.notifyDataSetChanged();
+                        getConnections();
                     }
 
                 } catch (JSONException e) {
@@ -317,6 +323,13 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
                             if (json != null) {
                                 Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
@@ -355,6 +368,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                                 String unblockres_status =response.getString("status");
                                 if (unblockres_status.equals("RevBlocked")) {
                                     Toast.makeText(getActivity(), "Unblocked Person Successfully", Toast.LENGTH_SHORT).show();
+                                    getConnections();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -627,9 +641,12 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        Log.d("Request",arrayRequest.toString());
-        requestQueue.add(arrayRequest);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request",arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+
+        }
 
 
     }
@@ -637,6 +654,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private void setUpPage() {
         blockCoachList.clear();
         blockAthleteList.clear();
+        progress.setVisibility(View.GONE);
         if(blockList!=null && blockList.size()>0){
             for (int j = 0; j<blockList.size();j++){
                 if (blockList.get(j).getConnected_userType().equals("Athlete")) {

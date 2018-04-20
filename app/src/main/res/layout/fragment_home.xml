@@ -55,6 +55,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
+                    <ProgressBar
+                        android:id="@+id/progress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+
+                    <TextView
+                        android:id="@+id/txtv_nobp"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:layout_gravity="center_vertical"
+                        android:text="No BlueBP Profiles Found " />
+
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rrv_topProfile"
                         android:layout_width="match_parent"
@@ -144,6 +160,12 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <ProgressBar
+                        android:id="@+id/progress_tournament"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
                     <TextView
                         android:id="@+id/txtv_notour"
                         android:layout_width="match_parent"
@@ -246,6 +268,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/progress_msg"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
+
 
                     <TextView
                         android:id="@+id/txtv_nomessgs"
@@ -364,6 +394,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:orientation="vertical">
+
+                    <ProgressBar
+                        android:id="@+id/progress_request"
+                        android:layout_width="50dp"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:visibility="gone"/>
                     <TextView
                         android:id="@+id/txtv_noreqsts"
                         android:layout_width="match_parent"
