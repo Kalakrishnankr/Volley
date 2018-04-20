@@ -45,7 +45,7 @@ public class WelcomeActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            fromHelp = bundle.getString("profile");
+            fromHelp = bundle.getString("reDirectPage");
         }
         // Checking for first time launch - before calling setContentView()
         prefManager = new PrefManager(this);
@@ -133,7 +133,7 @@ public class WelcomeActivity extends AppCompatActivity {
     private void launchHomeScreen() {
         prefManager.saveTips(true);
         Intent intent = new Intent(WelcomeActivity.this,TabActivity.class);
-        intent.putExtra("profile",fromHelp);
+        intent.putExtra("reDirectPage",fromHelp);
         startActivity(intent);
         finish();
     }

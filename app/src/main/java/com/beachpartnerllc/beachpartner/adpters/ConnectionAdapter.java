@@ -108,7 +108,13 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
                     AppCompatActivity activity = (AppCompatActivity) v.getContext();
                     NoteFragment noteFragment =new NoteFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("personId",model.getConnected_uId());
+                    bundle.putString("personName",model.getConnected_firstName());
+                    noteFragment.setArguments(bundle);
                     activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
+
+
 
                 }
             });
@@ -141,13 +147,34 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     ctrans.commit();
                 }
             });
+            final String active_status = dataLists.get(position).getConnected_status();
+            if (!active_status.equals("null") && !active_status.isEmpty()) {
+                if(active_status.equals("Blocked")){
+                    holder.txtv_block.setText("UNBLOCK");
+                    holder.viewOne.setVisibility(View.GONE);
+                    holder.txtv_message.setVisibility(View.GONE);
+
+                }else  {
+                    holder.txtv_block.setText("BLOCK");
+                    holder.viewOne.setVisibility(View.VISIBLE);
+                    holder.txtv_message.setVisibility(View.VISIBLE);
+                }
+            }
+
             //set onclicklister block
             holder.txtv_block.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //block api
-                    String personid = model.getConnected_uId();
-                    connectionInterface.block(personid);
+                    //unblock api
+                    if (!active_status.isEmpty() && active_status.equals("Blocked")) {
+                        String personid = model.getConnected_uId();
+                        connectionInterface.unblock(personid);
+                    //block
+                    }else if(!active_status.isEmpty() && active_status.equals("Active")) {
+                        String personid = model.getConnected_uId();
+                        connectionInterface.block(personid);
+                    }
+
                 }
             });
 
@@ -174,6 +201,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
         public CardView cardView;
         public RelativeLayout rrHeaderTwo,rrHeaderOne;
         public CircularImageView profilePic;
+        public View viewOne;
 
         public MyViewHolder(View view) {
             super(view);
@@ -188,6 +216,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             profilePic  = (CircularImageView)view.findViewById(R.id.thumbnail);
             rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
             rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
+            viewOne     = (View)view.findViewById(R.id.viewOne);
         }
     }
 

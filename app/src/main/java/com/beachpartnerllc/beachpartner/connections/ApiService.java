@@ -10,6 +10,7 @@ public class ApiService {
     public static int REQUEST_METHOD_POST   =   Request.Method.POST;
     public static int REQUEST_METHOD_GET    =   Request.Method.GET;
     public static int REQUEST_METHOD_PUT    =   Request.Method.PUT;
+    public static int REQUEST_METHOD_DELETE =   Request.Method.DELETE;
 
     //For instagram
 
@@ -45,7 +46,13 @@ public class ApiService {
     public static String  LEFT_SWIPE_DISLIKE       =   BASE_URL+"users/reject-friendship/";
     public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
 
-    public static String BLOCK_PERSON          =    BASE_URL+"users/block-user/";
+    public static String BLOCK_PERSON              =    BASE_URL+"users/block-user/";
+    public static String UNBLOCK_PERSON            =    BASE_URL+"users/unblock-user/";
+
+    public static String CREATE_NOTE               =   BASE_URL+"notes/";
+    public static String GETALL_NOTE_FROM          =   BASE_URL+"notes/from/";
+    public static String DELETE_NOTE               =   BASE_URL+"notes/";
+    public static String UPDATE_NOTE               =   BASE_URL+"notes/";
 
 
 

@@ -212,24 +212,31 @@ public class TabActivity extends AppCompatActivity {
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
-            String value = bundle.getString("profile");
+            String value = bundle.getString("reDirectPage");
             if (value.equals("home")) {
                 /*Load default HomeFragment*/
-                if (userType.equalsIgnoreCase("Athlete")) {
-                    HomeFragment homeFragment = new HomeFragment();
-                    FragmentManager manager = getSupportFragmentManager();
-                    getSupportActionBar().setTitle("Beach Partner");
-                    FragmentTransaction transaction = manager.beginTransaction();
-                    transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
-                    transaction.commit();
-                }
-                if (userType.equalsIgnoreCase("Coach")) {
-                    CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
-                    getSupportActionBar().setTitle("Beach Partner");
-                    FragmentManager coachHomeManager = getSupportFragmentManager();
-                    FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
-                    coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
-                    coachHomeTransaction.commit();
+                if(!tips){
+                    Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
+                    intentTips.putExtra("reDirectPage", "home");
+                    startActivity(intentTips);
+                    finish();
+                }else {
+                    if (userType.equalsIgnoreCase("Athlete")) {
+                        HomeFragment homeFragment = new HomeFragment();
+                        FragmentManager manager = getSupportFragmentManager();
+                        getSupportActionBar().setTitle("Beach Partner");
+                        FragmentTransaction transaction = manager.beginTransaction();
+                        transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
+                        transaction.commit();
+                    }
+                    if (userType.equalsIgnoreCase("Coach")) {
+                        CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
+                        getSupportActionBar().setTitle("Beach Partner");
+                        FragmentManager coachHomeManager = getSupportFragmentManager();
+                        FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
+                        coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
+                        coachHomeTransaction.commit();
+                    }
                 }
 
             } else if (value.equals("help")) {
@@ -253,8 +260,6 @@ public class TabActivity extends AppCompatActivity {
             } else {
                 {
                     if (tips) {
-
-
                         if (userType.equalsIgnoreCase("Athlete")) {
                             ProfileFragment pf = new ProfileFragment();
                             getSupportActionBar().setTitle("Profile");
@@ -274,7 +279,7 @@ public class TabActivity extends AppCompatActivity {
 
                     } else {
                         Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
-                        intentTips.putExtra("profile", "profile");
+                        intentTips.putExtra("reDirectPage", "profile");
                         startActivity(intentTips);
                         finish();
                     }
@@ -342,10 +347,10 @@ public class TabActivity extends AppCompatActivity {
                 settingsTrans.commit();
                 break;
             case R.id.help:
-                Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();
                 new PrefManager(getApplicationContext()).saveTips(false);
                 Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
-                intentTips.putExtra("profile", "help");
+                intentTips.putExtra("reDirectPage", "help");
                 startActivity(intentTips);
                 finish();
                 break;

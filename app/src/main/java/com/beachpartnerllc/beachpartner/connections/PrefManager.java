@@ -47,6 +47,7 @@ public class PrefManager {
         editor.commit();
     }
 
+
     public Boolean getTips(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("WelcomeTips", Context.MODE_PRIVATE);
         return sharedPreferences.getBoolean("tips", false);
@@ -109,6 +110,7 @@ public class PrefManager {
         SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
         return preferences.getString("userType","");
     }
+
 
 
 }

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BeachPartner</string>
+    <string name="app_name">BeachPartner 2</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with :</u></string>
@@ -62,6 +62,7 @@
     <string name="editProfile">Edit Profile</string>
     <string name="share">Share</string>
     <string name="error_username">Please enter a valid username</string>
+    <string name="error_userpassword">Please enter your password</string>
 
     <!--Top menus-->
     <string name="hint_profile">My Profile</string>

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
@@ -51,8 +50,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.firebase.FirebaseApp;
@@ -79,7 +76,7 @@ public class LoginActivity extends AppCompatActivity {
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
-    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken;
+    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken,loggedUname;
     private TextView  never_got_email_tv;
     private TextInputLayout password_inputText;
 
@@ -91,7 +88,7 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         intentUrlString = intent.getDataString();
-
+        loggedUname = new PrefManager(getApplicationContext()).getEmail();
         //Register client App to FCM
         FirebaseApp.initializeApp(LoginActivity.this);
 
@@ -164,6 +161,8 @@ public class LoginActivity extends AppCompatActivity {
         password_inputText = (TextInputLayout) findViewById(R.id.float_label_password);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
+
+        userName.setText(loggedUname);
         progress = new ProgressDialog(LoginActivity.this);
         progress.setMessage("Loading...");
 
@@ -210,7 +209,7 @@ public class LoginActivity extends AppCompatActivity {
                         progress.show();
                         if (!refreshedFirebaseToken.isEmpty()) {
                             startLoginProcess(uname,passwd,refreshedFirebaseToken,deviceId,deviceToken);//Method for start login
-                            userName.setText("");
+                            //userName.setText("");
                             password.setText("");
                             userName.requestFocus();
                         }
@@ -302,7 +301,7 @@ public class LoginActivity extends AppCompatActivity {
     private void addValidationToViews() {
         awesomeValidation.addValidation(LoginActivity.this, R.id.input_username, Patterns.EMAIL_ADDRESS, R.string.error_username);
         String regx=".{5,}";
-        awesomeValidation.addValidation(LoginActivity.this, R.id.float_label_password,regx,R.string.invalid_password);
+        awesomeValidation.addValidation(LoginActivity.this, R.id.float_label_password,regx,R.string.error_userpassword);
     }
 
 
@@ -381,7 +380,7 @@ public class LoginActivity extends AppCompatActivity {
                                     if(uProfileStatus!=null && !uProfileStatus.equals("null")){
                                         //already user updated the profile
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-                                        intent.putExtra("profile","home");
+                                        intent.putExtra("reDirectPage","home");
                                         startActivity(intent);
                                         finish();
                                     }else {
@@ -402,7 +401,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         transaction.add(R.id.container,pfragment);
                                                         transaction.commit();*/
                                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-                                                        intent.putExtra("profile","profile");
+                                                        intent.putExtra("reDirectPage","profile");
                                                         startActivity(intent);
                                                         finish();
 
@@ -416,7 +415,7 @@ public class LoginActivity extends AppCompatActivity {
                                                         dialog.cancel();
                                                         //Goto home fragment
                                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-                                                        intent.putExtra("profile","home");
+                                                        intent.putExtra("reDirectPage","home");
                                                         startActivity(intent);
                                                         finish();
                                                     }
@@ -716,7 +715,7 @@ private void neverGotEmailAlertTextUnderline(){
             String insta_username = user.fullName;
             Toast.makeText(LoginActivity.this, "Your are logged in as : "+insta_username, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-            intent.putExtra("profile","home");
+            intent.putExtra("reDirectPage","home");
             startActivity(intent);
 //            startActivity(new Intent(LoginActivity.this, TabActivity.class));
 
@@ -744,7 +743,7 @@ private void neverGotEmailAlertTextUnderline(){
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    protected void getUserDetails(LoginResult loginResult) {
+   /* protected void getUserDetails(LoginResult loginResult) {
         GraphRequest data_request = GraphRequest.newMeRequest(
                 loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
@@ -762,7 +761,7 @@ private void neverGotEmailAlertTextUnderline(){
         data_request.setParameters(permission_param);
         data_request.executeAsync();
 
-    }
+    }*/
 
     private void resetPasswordCall() {
 
@@ -893,16 +892,5 @@ private void neverGotEmailAlertTextUnderline(){
 
     //Check whether the app installed or not
 
-    public boolean appInstalledOrNot(String uri) {
-        PackageManager pm = getApplicationContext().getPackageManager();
-        try {
-            pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-
-        }
-
-        return false;
-    }
 
 }

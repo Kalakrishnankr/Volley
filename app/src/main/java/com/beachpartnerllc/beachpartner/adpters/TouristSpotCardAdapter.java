@@ -22,10 +22,15 @@ import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
 import com.beachpartnerllc.beachpartner.utils.RotateLoading;
 import com.bumptech.glide.Glide;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
+    private Integer ageInt;
     MyInterface myInterface;
 
 
@@ -60,8 +65,23 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.videoView.setVisibility(View.GONE);
         holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
-
-        holder.name.setText(spot.getBpf_firstName()+" , "+spot.getBpf_age());
+        String dobToage = spot.getBpf_dob();
+        if (!dobToage.isEmpty() && !dobToage.equals("null")) {
+            long millisecond = Long.parseLong(dobToage);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+            Date datef = new Date(millisecond);
+            Calendar today = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(datef);
+            int age = today.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+            if(today.get(Calendar.DAY_OF_YEAR) < cal.get(Calendar.DAY_OF_YEAR)){
+                age--;
+            }
+            ageInt = new Integer(age);
+            holder.name.setText(spot.getBpf_firstName()+" , "+ageInt);
+        }else {
+            holder.name.setText(spot.getBpf_firstName());
+        }
         holder.userType.setText(spot.getBpf_userType());
         if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);

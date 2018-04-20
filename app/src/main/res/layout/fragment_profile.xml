@@ -31,14 +31,6 @@
                 android:layout_gravity="center"
                 android:visibility="gone"/>
 
-            <ImageView
-                android:id="@+id/imgVideo"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_gravity="bottom|right"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_edit_profile"
-                android:visibility="gone" />
 
             <ImageView
                 android:id="@+id/imgPlay"
@@ -52,6 +44,18 @@
                 android:id="@+id/videoView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:soundEffectsEnabled="false"
+                android:visibility="gone" />
+
+
+            <ImageView
+                android:id="@+id/imgVideo"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/ic_edit_profile"
                 android:visibility="gone" />
 
 
@@ -590,6 +594,7 @@
                                 android:enabled="false"
                                 android:layout_height="match_parent"
                                 android:maxLines="1"
+                                android:inputType="number"
                                 android:singleLine="true"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"

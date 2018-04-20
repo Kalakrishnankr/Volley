@@ -196,7 +196,7 @@
                         android:gravity="center"
                         android:layout_weight="0.7"
                         android:textColor="@color/menubar"
-                        android:text="Location"/>
+                        android:text="State"/>
 
 
                     <!--<Spinner
