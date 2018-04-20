@@ -68,6 +68,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
+import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
@@ -77,15 +78,22 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.SingleClientConnManager;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,6 +102,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -1666,10 +1677,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         }
 
-        if (imageUri != null && videoUri != null) {
+        if (imageUri != null || videoUri != null) {
 
             //Method for uploading profilePic & profile video
-            uploadFiles(imageUri, videoUri, user_id);
+            if(videoUri==null){
+                uploadImgFiles(imageUri,user_id);
+            }
+            else{
+                uploadVideoFiles(videoUri, user_id);
+            }
+
         }
     }
 
@@ -1690,10 +1707,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void run() {
                 try {
+//                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+//
+//                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+//                    sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
                     //throws ParseException, IOException
                     HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
+                    HttpPost httppost = new HttpPost("http://beachpartner.com/storage/uploadProfileData");
+//                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
 
                     FileBody videoFile = new FileBody(new File(videoPath));
                     FileBody imageFile = new FileBody(new File(imagePath));
@@ -1705,6 +1727,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     reqEntity.addPart("userId", user_Id);
                     httppost.setEntity(reqEntity);
 
+//                    // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+//                    SchemeRegistry registry = new SchemeRegistry();
+////                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+//                    registry.register(new Scheme("https", sslFactory, 443));
+
                     // DEBUG
                     System.out.println( "executing request " + httppost.getRequestLine( ) );
                     HttpResponse response = httpclient.execute( httppost );
@@ -1714,6 +1741,128 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     System.out.println( response.getStatusLine( ) );
                     if (resEntity != null) {
                         System.out.println( EntityUtils.toString( resEntity ) );
+                    } // end if
+
+                    if (resEntity != null) {
+                        resEntity.consumeContent( );
+                    } // end if
+
+                    httpclient.getConnectionManager( ).shutdown( );
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
+
+    }
+
+    private void uploadImgFiles(final String imagePath,final String userId) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+
+                    HttpClient httpclient = new DefaultHttpClient();
+
+                    SchemeRegistry registry = new SchemeRegistry();
+                    SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
+                    socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                    registry.register(new Scheme("https", socketFactory, 443));
+
+//                    SingleClientConnManager mgr = new SingleClientConnManager(httpclient.getParams(), registry);
+//                    DefaultHttpClient httpClient = new DefaultHttpClient(mgr, httpclient.getParams());
+
+                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+
+
+                    //throws ParseException, IOException
+
+
+                    HttpPost httppost = new HttpPost("https://beachpartner.com/api/storage/uploadProfileData");
+
+                    FileBody imageFile = new FileBody(new File(imagePath));
+                    StringBody user_Id = new StringBody(userId);
+
+                    MultipartEntity reqEntity = new MultipartEntity();
+                    reqEntity.addPart("profileImg", imageFile);
+                    reqEntity.addPart("userId", user_Id);
+                    httppost.setEntity(reqEntity);
+
+
+
+
+                    // DEBUG
+//                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+                    System.out.println( "executing request " + httppost.getRequestLine( ) );
+                    HttpResponse response = httpclient.execute( httppost );
+                    HttpEntity resEntity = response.getEntity( );
+
+
+                    // DEBUG
+                    System.out.println( response.getStatusLine( ) );
+                    if (resEntity != null) {
+                        System.out.println( EntityUtils.toString( resEntity ) );
+                    } // end if
+
+                    if (resEntity != null) {
+                        resEntity.consumeContent( );
+                    } // end if
+
+                    httpclient.getConnectionManager( ).shutdown( );
+                }
+                catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+            }
+        }).start();
+
+
+    }
+
+    private void uploadVideoFiles(final String videoPath, final String userId) {
+        new Thread(new Runnable(){
+            @Override
+            public void run() {
+                try {
+                    HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+
+                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+                    sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+                    //throws ParseException, IOException
+                    HttpClient httpclient = new DefaultHttpClient();
+                    HttpPost httppost = new HttpPost(new URI("https://beachpartner.com/storage/uploadProfileData"));
+                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+
+                    FileBody videoFile = new FileBody(new File(videoPath));
+
+                    StringBody user_Id = new StringBody(userId);
+
+                    MultipartEntity reqEntity = new MultipartEntity();
+
+                    reqEntity.addPart("profileVideo", videoFile);
+                    reqEntity.addPart("userId", user_Id);
+                    httppost.setEntity(reqEntity);
+
+                    // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+                    SchemeRegistry registry = new SchemeRegistry();
+                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+                    registry.register(new Scheme("https", sslFactory, 443));
+
+                    // DEBUG
+                    System.out.println( "executing request " + httppost.getRequestLine( ) );
+                    HttpResponse response = httpclient.execute( httppost );
+                    HttpEntity resEntity = response.getEntity( );
+
+
+                    // DEBUG
+                    System.out.println( response.getStatusLine( ) );
+                    if (resEntity != null) {
+                        System.out.println(  resEntity  );
                     } // end if
 
                     if (resEntity != null) {

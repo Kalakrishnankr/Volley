@@ -62,6 +62,7 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
+import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -71,6 +72,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.security.KeyStore;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -79,6 +81,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -977,13 +981,16 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             @Override
             public void run() {
                 try {
+                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
 
-                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+                    KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                    trustStore.load(null, null);
+                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(trustStore);
                     sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
                     //throws ParseException, IOException
                     HttpClient httpclient = new DefaultHttpClient();
                     HttpPost httppost = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
-
+                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
                     FileBody imageFile = new FileBody(new File(imagePath));
                     StringBody user_Id = new StringBody(userId);
 

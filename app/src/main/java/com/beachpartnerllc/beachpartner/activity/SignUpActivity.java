@@ -22,6 +22,7 @@ import android.util.Patterns;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -80,7 +81,7 @@ public class SignUpActivity extends AppCompatActivity{
     private Button btnsignUp,user_male,user_female;
     private AwesomeValidation awesomeValidation;
     private  Uri selectedImageUri,selectedVideoUri;
-    TextInputLayout dobWrapper,passwordWrapper;
+    TextInputLayout dobWrapper,passwordWrapper,fNameWrapper;
     Calendar myCalendar = Calendar.getInstance();
     private static String sex=null;
     private LinearLayout llogin;
@@ -105,6 +106,9 @@ public class SignUpActivity extends AppCompatActivity{
                 Settings.Secure.ANDROID_ID);
         progress = new ProgressDialog(SignUpActivity.this);
         progress.setMessage("Loading...");
+
+//        SignUpActivity.this.getWindow().setSoftInputMode(
+//                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
 
     }
@@ -127,6 +131,7 @@ public class SignUpActivity extends AppCompatActivity{
         userTypeRadio   = (RadioGroup) findViewById(R.id.user_type);
         dobWrapper      = (TextInputLayout) findViewById(R.id.dobWrapper);
         passwordWrapper = (TextInputLayout) findViewById(R.id.pwd_wrapper);
+        fNameWrapper    = (TextInputLayout)findViewById(R.id.fnameWrapper);
 
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
@@ -255,7 +260,10 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                     Integer ageInt = new Integer(age);
                     if(ageInt<18){
-                        alertMinor();
+                        if(userType.equals("Athlete")){
+                            alertMinor();
+                        }
+
                     }
                 }
             }
@@ -295,7 +303,6 @@ public class SignUpActivity extends AppCompatActivity{
                 if(awesomeValidation.validate()){
                     if(userType!=null&&dob.length()!=0){
                         submitForm();
-
                     }else {
                         if(userType==null&&dob.length()==0){
                             Toast.makeText(SignUpActivity.this, "Please enter your user type and date of birth", Toast.LENGTH_SHORT).show();
@@ -322,19 +329,26 @@ public class SignUpActivity extends AppCompatActivity{
     private void addValidationToViews() {
         //adding validation to edittext
        if(user_fname.getText().toString().trim().equals("")){
-           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "", R.string.nameerror);
+           user_fname.setError("First name cannot a be a whitespace");
+           awesomeValidation.clear();
        }
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+        else{
+           user_fname.setError(null);
+           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+       }
         if(user_lname.getText().toString().trim().equals("")){
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "", R.string.nameerror);
-        }
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
-        if(user_dob.getText().toString().trim().equals("")){
-            dobWrapper.setErrorEnabled(true);
-            dobWrapper.setError(getString(R.string.doberror));
+           user_lname.setError("Last name cannot a be a whitespace");
+            awesomeValidation.clear();
         }
         else{
-            dobWrapper.setErrorEnabled(false);
+            user_lname.setError(null);
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
+        }
+        if(user_dob.getText().toString().trim().equals("")){
+            user_dob.setError(getString(R.string.doberror));
+        }
+        else{
+            user_dob.setError(null);
         }
 
         awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
