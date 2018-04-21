@@ -11,14 +11,21 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.media.ExifInterface;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -94,6 +101,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.text.SimpleDateFormat;
@@ -115,6 +123,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
     private static final int PICK_IMAGE_REQUEST =0 ;
     private static final int PICK_VIDEO_REQUEST =1;
+    private static final String TAG = "ProfileFragment" ;
     public static boolean isValidate = false;
     private static boolean moreUploadStatus = false;
     private static boolean editStatus = false;
@@ -871,17 +880,40 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         switch (view.getId()) {
 
             case R.id.imgVideo:
-                boolean videoPermission = checkExternalDrivePermission(PICK_VIDEO_REQUEST);
-                if (videoPermission){
-                    videoBrowse();
+                //boolean videoPermission = checkExternalDrivePermission(PICK_VIDEO_REQUEST);
+                // if (videoPermission){
+                //videoBrowse();
+
+                Intent videoPicker= getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                if(videoPicker!=null){
+                    Intent imagePicker= getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    if(imagePicker!=null){
+
+                        // getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+
+                        Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                        startActivityForResult(chooseImageIntent, PICK_VIDEO_REQUEST);
+
+                    }
                 }
                 break;
             case R.id.row_icon:
                 if (editStatus) {
-                    boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
-                    if (imagePermission) {
-                        imageBrowse();
+                    //  boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
+                    // if (imagePermission) {
+                    // imageBrowse();
+
+                    Intent imagePicker= getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    if(imagePicker!=null){
+
+                        // getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+
+                        Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                        startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
+
                     }
+
+                    // }
                 }
                 break;
             case R.id.imgPlay:
@@ -1021,7 +1053,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    imageBrowse();
+                   // imageBrowse();
+
                 } else {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                     alertBuilder.setCancelable(true);
@@ -1046,7 +1079,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    videoBrowse();
+                  //  videoBrowse();
 
                 } else {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
@@ -1639,9 +1672,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if (resultCode == Activity.RESULT_OK) {
 
             if(requestCode == PICK_IMAGE_REQUEST){
-                Uri picUri = data.getData();
+                //Uri picUri = data.getData();
 
-                selectedImageUri = data.getData();
+                 selectedImageUri = Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
                 if (selectedImageUri != null) {
                     File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes
@@ -1658,10 +1691,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
             else if(requestCode == PICK_VIDEO_REQUEST){
                 Uri picUri = data.getData();
-
-
-                selectedVideoUri = data.getData();
-
+                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
                 if (selectedVideoUri != null) {
 
                     File file = new File(String.valueOf(getPath(selectedVideoUri)));
@@ -2356,6 +2386,263 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         }
 
         return trimmedString;
+    }
+    //Camera Functionality
+
+    //Intent Chooser
+
+    public  Intent getPickImageIntent(Context context,String type) {
+        Intent chooserIntent = null;
+
+        List<Intent> intentList = new ArrayList<>();
+
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
+
+        if(!hasPermissions(getActivity(),type,intentList, PERMISSIONS)){
+            requestPermissions(PERMISSIONS, PERMISSION_ALL);
+        }
+        else{
+
+
+            if (type.equals("videoIntent")){
+                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+
+
+                if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                    // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                    // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
+                    // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,2097152L);// 10*1024*1024 = 10MB  10485760L
+                    //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+
+                }
+                intentList = addIntentsToList(context, intentList, pickIntent);
+                intentList = addIntentsToList(context, intentList, takeVideoIntent);
+
+            }else if(type.equals("imageIntent")){
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                intentList = addIntentsToList(context, intentList, pickIntent);
+                intentList = addIntentsToList(context, intentList, takePictureIntent);
+        /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        }*/
+            }
+
+        }
+
+
+        if (intentList.size() > 0) {
+            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"hi");
+            // context.getString(R.string.pick_image_intent_text));
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
+        }
+
+        return chooserIntent;
+    }
+
+
+
+    public boolean hasPermissions(Context context,String type,List<Intent> intentList, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    if (type.equals("videoIntent")){
+                        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+
+
+                        if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                            // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                            // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
+                            // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                            takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,2097152L);// 10*1024*1024 = 10MB  10485760L
+                            //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+
+                        }
+                        intentList = addIntentsToList(context, intentList, pickIntent);
+                        intentList = addIntentsToList(context, intentList, takeVideoIntent);
+
+                    }else if(type.equals("imageIntent")){
+                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        intentList = addIntentsToList(context, intentList, pickIntent);
+                        intentList = addIntentsToList(context, intentList, takePictureIntent);
+        /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+        }*/
+                    }
+
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+    // method for add intent to arraylist
+    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
+        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo resolveInfo : resInfo) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            Intent targetedIntent = new Intent(intent);
+            targetedIntent.setPackage(packageName);
+            list.add(targetedIntent);
+            //Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
+        }
+        return list;
+    }
+
+
+/*
+*  Methods for convert the camera image
+*
+* */
+
+
+    public static Bitmap getImageFromResult(Context context, int resultCode,
+                                            Intent imageReturnedIntent) {
+        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
+        Bitmap bm = null;
+        File imageFile = getTempFile(context);
+        if (resultCode == Activity.RESULT_OK) {
+            Uri selectedImage;
+            boolean isCamera = (imageReturnedIntent == null ||
+                    imageReturnedIntent.getData() == null  ||
+                    imageReturnedIntent.getData().toString().contains(imageFile.toString()));
+            if (isCamera) {     /** CAMERA **/
+                selectedImage = Uri.fromFile(imageFile);
+            } else {            /** ALBUM **/
+                selectedImage = imageReturnedIntent.getData();
+            }
+            Log.d(TAG, "selectedImage: " + selectedImage);
+
+            bm = getImageResized(context, selectedImage);
+            int rotation = getRotation(context, selectedImage, isCamera);
+            bm = rotate(bm, rotation);
+        }
+        return bm;
+    }
+
+
+    private static File getTempFile(Context context) {
+        File imageFile = new File(context.getExternalCacheDir(), "BpProfileImage");
+        imageFile.getParentFile().mkdirs();
+        return imageFile;
+    }
+
+    private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sampleSize;
+
+        AssetFileDescriptor fileDescriptor = null;
+        try {
+            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(theUri, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
+                fileDescriptor.getFileDescriptor(), null, options);
+
+        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
+                actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
+
+        return actuallyUsableBitmap;
+    }
+
+    /**
+     * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
+     **/
+    private static Bitmap getImageResized(Context context, Uri selectedImage) {
+        Bitmap bm = null;
+        int[] sampleSizes = new int[]{5, 3, 2, 1};
+        int i = 0;
+        do {
+            bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
+            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
+            i++;
+        } while (bm.getWidth() < 500 && i < sampleSizes.length);
+        return bm;
+    }
+
+
+    private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
+        int rotation;
+        if (isCamera) {
+            rotation = getRotationFromCamera(context, imageUri);
+        } else {
+            rotation = getRotationFromGallery(context, imageUri);
+        }
+        Log.d(TAG, "Image rotation: " + rotation);
+        return rotation;
+    }
+
+    private static int getRotationFromCamera(Context context, Uri imageFile) {
+        int rotate = 0;
+        try {
+
+            context.getContentResolver().notifyChange(imageFile, null);
+            ExifInterface exif = new ExifInterface(imageFile.getPath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
+    public static int getRotationFromGallery(Context context, Uri imageUri) {
+        int result = 0;
+        String[] columns = {MediaStore.Images.Media.ORIENTATION};
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(imageUri, columns, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int orientationColumnIndex = cursor.getColumnIndex(columns[0]);
+                result = cursor.getInt(orientationColumnIndex);
+            }
+        } catch (Exception e) {
+            //Do nothing
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }//End of try-catch block
+        return result;
+    }
+
+
+    private static Bitmap rotate(Bitmap bm, int rotation) {
+        if (rotation != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotation);
+            Bitmap bmOut = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+            return bmOut;
+        }
+        return bm;
     }
 
     private class Adapter extends FragmentPagerAdapter {

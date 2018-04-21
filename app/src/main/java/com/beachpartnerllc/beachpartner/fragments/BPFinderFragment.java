@@ -482,7 +482,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onCardSwiped(SwipeDirection direction) {
                 //abraham 08-03-2018
                 reverseCount=true;
-                imgv_rvsecard.setBackground(getResources().getDrawable(R.drawable.ic_backcard));
+               // imgv_rvsecard.setBackground(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
 
@@ -490,18 +490,27 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if(direction.toString().equals("Right")){
                     //Toast.makeText(getActivity(), "You right swiped :"+reqPersonId, Toast.LENGTH_SHORT).show();
                     //Api for Right swipe/like
-                    cardRightSwiped(reqPersonId);
+                    if (reqPersonId != null) {
+                        cardRightSwiped(reqPersonId);
+                    }
 
                 }else if(direction.toString().equals("Left")){
                     //Toast.makeText(getActivity(), "You Left swiped", Toast.LENGTH_SHORT).show();
-                    cardLeftSwiped(reqPersonId);
+                    if (reqPersonId != null) {
+                        cardLeftSwiped(reqPersonId);
+                    }
 
                 }else {
                     //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
-                    cardHifiSwiped(reqPersonId);
+                    if (reqPersonId != null) {
+                        cardHifiSwiped(reqPersonId);
+                    }
                     //r.put(reqPersonId);
                     String r=fcmToken;
-                    sendMessage(r,"BeachPartner",new PrefManager(getContext()).getUserName()+"sent you a high five","");
+                    String uName =new PrefManager(getContext()).getUserName();
+                    if (fcmToken != null && !fcmToken.equals("null") && uName != null && !uName.equals("null")) {
+                        sendMessage(r,"BeachPartner",uName +"sent you a high five","");
+                    }
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
@@ -957,21 +966,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 404:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1503,10 +1512,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     int success, failure;
                     success = resultJson.getInt("success");
                     failure = resultJson.getInt("failure");
-                    Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
                 } catch (JSONException e) {
                     e.printStackTrace();
-                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getActivity(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
                 }
             }
         }.execute();

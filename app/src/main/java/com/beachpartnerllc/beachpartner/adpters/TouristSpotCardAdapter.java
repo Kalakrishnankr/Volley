@@ -143,6 +143,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         });
 
 
+
         //End video tag here 8/02/2018
 
 

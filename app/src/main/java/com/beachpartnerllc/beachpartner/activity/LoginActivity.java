@@ -255,7 +255,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(awesomeValidation.validate()){
 
                         progress.show();
-                        if (!refreshedFirebaseToken.isEmpty()) {
+                        if (!refreshedFirebaseToken.isEmpty() && refreshedFirebaseToken != null) {
 
                             JSONObject object = new JSONObject();
                             try {

@@ -28,7 +28,7 @@ import java.util.ArrayList;
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHolder> {
     public Context mContext;
     private PrefManager prefManager;
-    private String userType;
+    private String userType,uName;
     private ArrayList<ConnectionModel> dataList;
     MyViewHolder myViewHolder;
 
@@ -71,11 +71,14 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (new PrefManager(mContext).getUserName() != null && new PrefManager(mContext).getUserName().equals("null") ) {
+                    uName=new PrefManager(mContext).getUserName();
+                }
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
                 bundle.putString("personId", dataList.get(position).getConnected_uId());
                 bundle.putString("personName",dataList.get(position).getConnected_firstName());
-                bundle.putString("myName",new PrefManager(mContext).getUserName());
+                bundle.putString("myName",uName);
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();
