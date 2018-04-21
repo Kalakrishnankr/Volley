@@ -108,6 +108,9 @@
             android:name=".activity.TermsConditionsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+
+        <meta-data android:name="android.webkit.WebView.EnableSafeBrowsing"
+            android:value="true" />
     </application>
 
 </manifest>
