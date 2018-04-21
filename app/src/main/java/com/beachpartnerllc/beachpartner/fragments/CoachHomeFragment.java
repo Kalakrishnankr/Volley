@@ -305,7 +305,7 @@ public class CoachHomeFragment extends Fragment {
     //Get blue Bp profiles
     private void getBluebpProfiles() {
         bpList.clear();
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&size=5", null, new
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -332,7 +332,7 @@ public class CoachHomeFragment extends Fragment {
                                     e.printStackTrace();
                                 }
                             }
-                            new PrefManager(getContext()).savePageno(0);
+                            //new PrefManager(getContext()).savePageno(0);
                             setblueBpstrip();
                         }
 

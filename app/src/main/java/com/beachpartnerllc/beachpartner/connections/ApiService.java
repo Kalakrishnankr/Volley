@@ -22,6 +22,8 @@ public class ApiService {
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
 
+    public static String LOGIN_WITH_SOCIAL_MEDIA =  BASE_URL+"authenticate-with-token";
+
     public static String REQUEST_PASSWORD_RESET = BASE_URL+"account/reset-password/init";
     public static String CHANGE_PASSWORD = BASE_URL+"account/reset-password/finish";
 

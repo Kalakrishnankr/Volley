@@ -417,7 +417,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onClick(View view) {
                 if (getActivity() != null) {
                     //new PrefManager(getContext()).savePageno(-1);
-                   // getBpProfiles();
+                    getBpProfiles();
                 }
 
                 location    =   spinner_location.getText().toString().trim();
@@ -761,11 +761,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private void paginate() {
 
         if (getActivity() != null) {
-            if (allCardList.size()!=0) {
-                cardStackView.setPaginationReserved();
-                //adapter.addAll(createTouristSpots());`
-                adapter.addAll(allCardList);
-                adapter.notifyDataSetChanged();
+            if (allCardList.size() != 0 && allCardList.size()>0) {
+                if (adapter != null) {
+                    cardStackView.setPaginationReserved();
+                    //adapter.addAll(createTouristSpots());`
+                    adapter.addAll(allCardList);
+                    adapter.notifyDataSetChanged();
+                }
+
             }
 
         }
@@ -839,9 +842,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("RequestSend", request.toString());
-        requestQueue.add(request);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("RequestSend", request.toString());
+            requestQueue.add(request);
+        }
+
 
     }
 
@@ -907,9 +913,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
 
         };
-        RequestQueue queue = Volley.newRequestQueue(getActivity());
-        Log.d("RejectRequest", queue.toString());
-        queue.add(jrequest);
+        if (getActivity() != null) {
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            Log.d("RejectRequest", queue.toString());
+            queue.add(jrequest);
+        }
+
     }
 
     //Method for hifi
@@ -982,9 +991,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("RequestSend", requests.toString());
-        requestQueue.add(requests);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("RequestSend", requests.toString());
+            requestQueue.add(requests);
+        }
+
 
     }
 
@@ -1055,10 +1067,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 return headers;
             }
         };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonArrayRqst.toString());
+            requestQueue.add(jsonArrayRqst);
+        }
 
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonArrayRqst.toString());
-        requestQueue.add(jsonArrayRqst);
     }
 
     //Calendar for individual persons
@@ -1075,9 +1089,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Method for getting bluebpstrips
     private void getBpProfiles() {
         bluebpListSecond.clear();
-        int pref_pageno = new PrefManager(getContext()).getPageno();
-        final int pageno = pref_pageno+1;
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&page=" +pageno+ "&size=5", null, new
+        //int pref_pageno = new PrefManager(getContext()).getPageno();
+        final int pageno = 0;
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -1106,13 +1120,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                             if(bluebpListSecond!=null && bluebpListSecond.size()>0){
                                 if(getActivity()!=null){
-                                    new PrefManager(getContext()).savePageno(pageno);
+                                    //new PrefManager(getContext()).savePageno(pageno);
                                     blueBProfileAdapter = new BlueBProfileAdapter(getActivity(),bluebpListSecond);
                                     rcv_bpProfiles.setAdapter(blueBProfileAdapter);
                                 }
                             }
                         }else {
-                            new PrefManager(getContext()).savePageno(-1);
+                            //new PrefManager(getContext()).savePageno(-1);
                             getBpProfiles();
                         }
 
@@ -1152,9 +1166,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonRequest.toString());
-        requestQueue.add(jsonRequest);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonRequest.toString());
+            requestQueue.add(jsonRequest);
+        }
+
     }
 
 

@@ -353,7 +353,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
                             if(getActivity()!=null){
-                                new PrefManager(getActivity()).savePageno(0);
+                                //new PrefManager(getActivity()).savePageno(0);
                                 setblueBpstrip();
                             }
 
