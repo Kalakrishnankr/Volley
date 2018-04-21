@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="30dp"
+        android:layout_margin="10dp"
         android:background="@drawable/bg_box"
         android:orientation="vertical"
         android:weightSum="3">
@@ -30,7 +30,7 @@
             android:layout_height="0dp"
             android:gravity="center"
             android:textSize="20sp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.2"
             android:textColor="@color/colorText"
             android:text="@string/terms_conditions"/>
 
@@ -38,20 +38,23 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1.5">
+            android:layout_weight="2.4">
 
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
 
-                <com.beachpartnerllc.beachpartner.CustomTextView
+
+                <!--<com.beachpartnerllc.beachpartner.CustomTextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="15dp"
-                    android:text="@string/conditions"/>
+                    android:text="@string/conditions"/>-->
+
+                <WebView
+                    android:id="@+id/webview_tc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    ></WebView>
 
 
-            </ScrollView>
 
 
 
@@ -79,8 +82,7 @@
             android:id="@+id/btnContinue"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:layout_margin="15dp"
+            android:layout_weight="0.2"
             android:background="@color/btnColor"
             android:text="@string/hint_continue"
             android:textColor="@color/white"/>

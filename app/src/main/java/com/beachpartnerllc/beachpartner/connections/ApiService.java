@@ -55,7 +55,7 @@ public class ApiService {
     public static String GETALL_NOTE_FROM          =   BASE_URL+"notes/from/";
     public static String DELETE_NOTE               =   BASE_URL+"notes/";
     public static String UPDATE_NOTE               =   BASE_URL+"notes/";
-
+    public static String TERMS_AND_CONDITION       =   "https://www.beachpartner.com/terms.html";
 
 
 

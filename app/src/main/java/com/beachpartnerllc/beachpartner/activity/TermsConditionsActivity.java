@@ -5,16 +5,20 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
 
 public class TermsConditionsActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnContinue;
     private CheckBox tickContinue;
+    private WebView webTC;
     public static final String MY_PREFS_NAME = "MyPrefsFile";
 
     @Override
@@ -38,6 +42,8 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
 
         btnContinue     =   (Button) findViewById(R.id.btnContinue);
         tickContinue    =   (CheckBox) findViewById(R.id.checkText);
+        webTC           =   (WebView) findViewById(R.id.webview_tc);
+        webTC.loadUrl(ApiService.TERMS_AND_CONDITION);
 
         btnContinue.setOnClickListener(this);
     }
