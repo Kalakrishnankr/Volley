@@ -18,7 +18,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.HiFiveAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.HighFiveModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,7 +50,7 @@ public class HiFiveFragment extends Fragment {
     private TextView noHiFiveImage;
 
 
-    private ArrayList<HighFiveModel> hiFiveList = new ArrayList<HighFiveModel>();
+    private ArrayList<BpFinderModel> hiFiveList = new ArrayList<BpFinderModel>();
     ListView listView;
 
     public HiFiveFragment() {
@@ -116,9 +116,19 @@ public class HiFiveFragment extends Fragment {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj    = object.getJSONObject("connectedUser");
-                            HighFiveModel model  = new HighFiveModel();
-                            model.setName(obj.getString("firstName")+obj.getString("lastName"));
-                            model.setImageUrl(obj.getString("imageUrl"));
+                            BpFinderModel model  = new BpFinderModel();
+                            model.setBpf_firstName(obj.getString("firstName"));
+                            model.setBpf_lastName(obj.getString("lastName"));
+                            model.setBpf_imageUrl(obj.getString("imageUrl"));
+                            model.setBpf_age(obj.getString("age"));
+                            model.setBpf_videoUrl(obj.getString("videoUrl"));
+                            model.setBpf_dob(obj.getString("dob"));
+                            model.setBpf_gender(obj.getString("gender"));
+                            model.setBpf_fcmToken(obj.getString("fcmToken"));
+                            model.setBpf_location(obj.getString("location"));
+                            model.setBpf_deviceId(obj.getString("deviceId"));
+                            model.setBpf_userType(obj.getString("userType"));
+                            model.setBpf_email(obj.getString("email"));
                             hiFiveList.add(model);
 
 
@@ -144,19 +154,20 @@ public class HiFiveFragment extends Fragment {
             //headers.put("Content-Type", "application/json; charset=utf-8");
             return headers;
 
+        }};
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonArrayRequest.toString());
+            requestQueue.add(jsonArrayRequest);
         }
 
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonArrayRequest.toString());
-        requestQueue.add(jsonArrayRequest);
 
 
     }
 
     private void setHifiveList() {
         if(hiFiveList!=null && hiFiveList.size()>0){
-            HiFiveAdapter hiFiveAdapter = new HiFiveAdapter( hiFiveList,getContext());
+            HiFiveAdapter hiFiveAdapter = new HiFiveAdapter(hiFiveList,getContext());
             listView.setAdapter(hiFiveAdapter);
             hiFiveAdapter.notifyDataSetChanged();
 

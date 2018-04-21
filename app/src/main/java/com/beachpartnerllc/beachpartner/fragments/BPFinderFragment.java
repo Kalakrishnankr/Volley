@@ -132,6 +132,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel>allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<BpFinderModel>();
+    private ArrayList<BpFinderModel>hifiList = new ArrayList<BpFinderModel>();
+
     private String item_location;
 
 
@@ -183,6 +185,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         Bundle data = getArguments();
         if(data!=null){
             getBpProfiles();//Method for getting next strip
+            hifiList   = (ArrayList<BpFinderModel>) data.getSerializable("hifiList");
             bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
             int cPosition = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
@@ -192,6 +195,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         adapter.addAll(bluebpList.get(i));
                     }
                     adapter.addAll(bluebpList);
+                }
+            }
+            if (hifiList != null && hifiList.size() > 0) {
+                adapter = new TouristSpotCardAdapter(getActivity().getApplicationContext(), this);
+                if (hifiList.size()>0) {
+                    for (int j =0; j < hifiList.size(); j++) {
+                        adapter.addAll(hifiList.get(j));
+                    }
+                    //adapter.addAll(hifiList);
                 }
             }
         }
@@ -482,7 +494,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onCardSwiped(SwipeDirection direction) {
                 //abraham 08-03-2018
                 reverseCount=true;
-               // imgv_rvsecard.setBackground(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
+                imgv_rvsecard.setBackground(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
 
@@ -508,7 +520,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     //r.put(reqPersonId);
                     String r=fcmToken;
                     String uName =new PrefManager(getContext()).getUserName();
-                    if (fcmToken != null && !fcmToken.equals("null") && uName != null && !uName.equals("null")) {
+                    if (fcmToken != null && !fcmToken.equalsIgnoreCase("null") && uName != null && !uName.equalsIgnoreCase("null")) {
                         sendMessage(r,"BeachPartner",uName +"sent you a high five","");
                     }
                 }
@@ -616,7 +628,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
         allCardList.clear();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD+"?includeCoach="+isCoach+"&minAge="+minAge+"&maxAge="+maxAge+"&gender="+sgender, null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD+"?includeCoach="+isCoach+"&minAge="+minAge+"&maxAge="+maxAge+"&gender="+sgender+"&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

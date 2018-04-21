@@ -105,7 +105,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
             @Override
             public void onSingleClick(View v) {
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null) {
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("NULL") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null) {
                     myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                 }
 
@@ -118,12 +118,12 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 //holder.videoView.setVisibility(View.VISIBLE);
-                if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equals("null")){
+                if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equalsIgnoreCase("null")){
                     holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
                     playvideo(holder);
                 }
                 // dialog.setMessage("Please wait");
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null) {
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null ) {
                     myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
                 }
             }
@@ -133,8 +133,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null
-                        && spot.getBpf_imageUrl()!=null && !spot.getBpf_imageUrl().equals("null")) {
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null
+                        && spot.getBpf_imageUrl()!=null && !spot.getBpf_imageUrl().equalsIgnoreCase("null")) {
                     myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
                     myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                     //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();

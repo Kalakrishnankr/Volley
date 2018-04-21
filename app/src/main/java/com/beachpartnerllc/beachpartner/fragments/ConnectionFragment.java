@@ -503,17 +503,18 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (!newText.isEmpty()) {
-                    final List<ConnectionModel> filteredModelList = filter(connectionList, newText);
-                    adapter.setFilter(filteredModelList);
-                    adapter.notifyDataSetChanged();
+                if (connectionList != null && connectionList.size() > 0 && athleteList.size() > 0) {
+                    if (!newText.isEmpty()) {
+                        final List<ConnectionModel> filteredModelList = filter(connectionList, newText);
+                        adapter.setFilter(filteredModelList);
+                        adapter.notifyDataSetChanged();
 
-                } else {
-                    adapter = new ConnectionAdapter(getContext(), athleteList, ConnectionFragment.this);
-                    rcv_conn.setAdapter(adapter);
-                    adapter.notifyDataSetChanged();
+                    } else {
+                        adapter = new ConnectionAdapter(getContext(), athleteList, ConnectionFragment.this);
+                        rcv_conn.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
                 }
-
                 return false;
             }
         });

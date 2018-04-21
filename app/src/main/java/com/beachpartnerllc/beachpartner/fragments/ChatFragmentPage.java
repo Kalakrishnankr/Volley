@@ -147,7 +147,7 @@ public class ChatFragmentPage extends Fragment {
                     addMessageBox("You:-\n" + message, 1);
                 }
                 else{
-                    addMessageBox(ChatWith_id + ":-\n" + message, 2);
+                    addMessageBox(ChatWith_name + ":-\n" + message, 2);
                 }
             }
 

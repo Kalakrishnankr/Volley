@@ -73,6 +73,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         myID    = new PrefManager(getContext()).getUserId();
         myToken = new PrefManager(getContext()).getToken();
         //Get all notes for a particular person;
+        noteList.clear();
         getNotes();
         return view;
     }
@@ -95,29 +96,33 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         addNewBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                noteList.clear();
+                getNotes();
                 txtv_nonotes.setVisibility(View.GONE);
+                //Toast.makeText(getActivity(), "List"+noteList.size(), Toast.LENGTH_SHORT).show();
                 createDummyData();
                 rcVNotes.setAdapter(adapter);
+
+
+
             }
         });
     }
 
 
     private void createDummyData() {
+
         long currentTime;
         NoteDataModel dm = new NoteDataModel();
         dm.setHeaderTitle("");
         dm.setNotes("");
-
         currentTime  = System.currentTimeMillis();
         dm.setTimestamp(new Date().getTime());
-
         noteList.add(dm);
     }
 
     //Api for get all notes
     private void getNotes() {
-        noteList.clear();
         progressBar.setVisibility(View.VISIBLE);
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GETALL_NOTE_FROM + myID + "/to/" + personId, null,
                 new Response.Listener<JSONArray>() {

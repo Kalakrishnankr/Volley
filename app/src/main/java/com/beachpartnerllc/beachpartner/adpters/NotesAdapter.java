@@ -100,6 +100,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 } else {
                     if (!text.isEmpty()) {
                         noteInterface.save(text);
+                        holder.edit_notes.setFocusable(false);
                         holder.noteDisabled.setImageResource(R.drawable.ic_edit_active);
                     }
                 }
