@@ -122,7 +122,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     @Override
                     public void onCancel() {
-                        Toast.makeText(LoginActivity.this, "Login Cancel", Toast.LENGTH_LONG).show();
+                        Toast.makeText(LoginActivity.this, "Login Cancelled", Toast.LENGTH_LONG).show();
                     }
 
                     @Override
@@ -728,7 +728,7 @@ private void neverGotEmailAlertTextUnderline(){
 
         @Override
         public void onCancel() {
-            Toast.makeText(LoginActivity.this, "OK. Maybe later?", Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this, "Login cancelled", Toast.LENGTH_SHORT).show();
 
         }
     };

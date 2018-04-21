@@ -23,6 +23,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -83,7 +84,7 @@ public class SignUpActivity extends AppCompatActivity{
     private  Uri selectedImageUri,selectedVideoUri;
     TextInputLayout dobWrapper,passwordWrapper,fNameWrapper;
     Calendar myCalendar = Calendar.getInstance();
-    private static String sex=null;
+    private static String sex="Male";
     private LinearLayout llogin;
     private RadioGroup userTypeRadio;
     private RadioButton rb;
@@ -93,6 +94,7 @@ public class SignUpActivity extends AppCompatActivity{
 
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
+    private boolean validationStatus=false;
 
 
     @Override
@@ -110,6 +112,10 @@ public class SignUpActivity extends AppCompatActivity{
 //        SignUpActivity.this.getWindow().setSoftInputMode(
 //                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
+
+        userTypeRadio.check(R.id.athlete_user);
+        user_male.setTextColor(getResources().getColor(R.color.white));
+        user_male.setBackgroundColor(getResources().getColor(R.color.btnColor));
 
     }
 
@@ -133,6 +139,10 @@ public class SignUpActivity extends AppCompatActivity{
         passwordWrapper = (TextInputLayout) findViewById(R.id.pwd_wrapper);
         fNameWrapper    = (TextInputLayout)findViewById(R.id.fnameWrapper);
 
+
+
+
+
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
@@ -148,6 +158,7 @@ public class SignUpActivity extends AppCompatActivity{
 
 
         });
+
 
         user_male.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +214,8 @@ public class SignUpActivity extends AppCompatActivity{
        });
 
         addLocation();
+
+
 
         dataAdapter     = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item, stateList);
 
@@ -260,10 +273,11 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                     Integer ageInt = new Integer(age);
                     if(ageInt<18){
-                        if(userType.equals("Athlete")){
-                            alertMinor();
+                        if(userType!=null){
+                            if(userType.equals("Athlete")){
+                                alertMinor();
+                            }
                         }
-
                     }
                 }
             }
@@ -300,24 +314,22 @@ public class SignUpActivity extends AppCompatActivity{
 
 
                 addValidationToViews();//Method for validate feilds
-                if(awesomeValidation.validate()){
-                    if(userType!=null&&dob.length()!=0){
-                        submitForm();
-                    }else {
-                        if(userType==null&&dob.length()==0){
+
+
+                if(awesomeValidation.validate()) {
+                    if(validationStatus) {
+                        if (userType == null && dob.length() == 0) {
                             Toast.makeText(SignUpActivity.this, "Please enter your user type and date of birth", Toast.LENGTH_SHORT).show();
+                        } else if (userType == null) {
+                            Toast.makeText(SignUpActivity.this, "Please select Your Usertype", Toast.LENGTH_SHORT).show();
+                        } else if (dob.length() == 0) {
+                            user_dob.setError("Please enter your date of birth");
+                        } else {
+                            if (userType != null && dob.length() != 0) {
+                                submitForm();
+                            }
                         }
-                        else if(userType==null){
-                            Toast.makeText(SignUpActivity.this, "Please select Your UserType", Toast.LENGTH_SHORT).show();
-                        }
-                        else if(dob.length()==0){
-                            Toast.makeText(SignUpActivity.this, "Please enter your date of birth", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-
-                }
-
+                    }}
             }
         });
 
@@ -331,6 +343,7 @@ public class SignUpActivity extends AppCompatActivity{
        if(user_fname.getText().toString().trim().equals("")){
            user_fname.setError("First name cannot be a blank");
            awesomeValidation.clear();
+
        }
         else{
            user_fname.setError(null);
@@ -359,19 +372,44 @@ public class SignUpActivity extends AppCompatActivity{
             awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
         }
 
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
+        if(user_mobileno.getText().toString().trim().equals("")){
+            user_mobileno.setError(getString(R.string.mobilerror));
+            awesomeValidation.clear();
+        }
+        else{
+            user_mobileno.setError(null);
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
+        }
+        if(user_location_spinner.getText().toString().trim().equals("")){
+            user_location_spinner.setError(getString(R.string.cityerror));
+            awesomeValidation.clear();
+        }
+        else{
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
+            user_location_spinner.setError(null);
+        }
         String regx=".{8,}";
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
-        awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
-        if(confnPass.length()==0){
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,regx, R.string.enter_confirm_pwd);
+        if(user_password.getText().toString().trim().equals("")){
+            user_password.setError("Please enter a password");
+            awesomeValidation.clear();
+        }
+        else {
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
+            user_password.setError(null);
+        }
+        if(user_confPasswd.getText().toString().trim().equals("")){
+            user_confPasswd.setError("Please confirm your password");
+            awesomeValidation.clear();
+        }
+        else{
+            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
+            user_confPasswd.setError(null);
         }
 
-
         //awesomeValidation.addValidation(this, R.id.profile_pic, "^null|$", R.string.error_your_id);
-
     }
+
+
 
     private void submitForm() {
 
