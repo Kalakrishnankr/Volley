@@ -151,6 +151,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     Context mContext;
+    private int videoDuration;
 
     private Handler mUiHandler = new Handler();
 
@@ -972,7 +973,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
     private void videoBrowse() {
+
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+        galleryIntent.setType("video/*");
         startActivityForResult(galleryIntent, PICK_VIDEO_REQUEST);
     }
 
@@ -1657,6 +1660,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             }
             else if(requestCode == PICK_VIDEO_REQUEST){
+                Intent intent = new Intent();
+                intent.setType("video/*");
                 Uri picUri = data.getData();
 
 
@@ -1666,13 +1671,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     File file = new File(String.valueOf(getPath(selectedVideoUri)));
 
-                    if (fileSize(file.length()) <= 30) {
+                    if (fileSize(file.length()) <= 30&&videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
-                        imgVideo.setVisibility(View.GONE);
+                        imgVideo.setVisibility(View.VISIBLE);
                         imgPlay.setVisibility(View.VISIBLE);
                         videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
-                        Toast.makeText(getActivity(), "Video size is too large..", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "duration"+videoDuration, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -1688,6 +1694,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 uploadImgFiles(imageUri,user_id);
             }
             else{
+                
                 uploadVideoFiles(videoUri, user_id);
             }
 
@@ -1833,65 +1840,77 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private void uploadVideoFiles(final String videoPath, final String userId) {
 
 
-        new AsyncTask<String, String, HttpEntity>() {
+        Thread thread = new Thread(new Runnable(){
             @Override
-            protected HttpEntity doInBackground(String... params) {
-                try {
+            public void run() {
+                try{
+                    new AsyncTask<String, String, HttpEntity>() {
+                        @Override
+                        protected HttpEntity doInBackground(String... params) {
+                            try {
 
 
-                    FileBody videoFile = new FileBody(new File(videoPath));
+                                FileBody videoFile = new FileBody(new File(videoPath));
 
-                    StringBody user_Id = new StringBody(userId);
+                                StringBody user_Id = new StringBody(userId);
 
-                    MultipartEntity reqEntity = new MultipartEntity();
+                                MultipartEntity reqEntity = new MultipartEntity();
 
-                    reqEntity.addPart("profileVideo", videoFile);
-                    reqEntity.addPart("userId", user_Id);
+                                reqEntity.addPart("profileVideo", videoFile);
+                                reqEntity.addPart("userId", user_Id);
 
 
-                    HttpEntity result = uploadToServer(reqEntity);
-                    return result;
+                                HttpEntity result = uploadToServer(reqEntity);
+                                return result;
 
-                    // DEBUG
-//                    System.out.println( response.getStatusLine( ) );
-//                    if (resEntity != null) {
-//                        System.out.println(  resEntity  );
-//                    } // end if
-//
-//                    if (resEntity != null) {
-//                        resEntity.consumeContent( );
-//                    } // end if
-//
-//                    httpclient.getConnectionManager( ).shutdown( );
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                return null;
-            }
+                                // DEBUG
+                                //                    System.out.println( response.getStatusLine( ) );
+                                //                    if (resEntity != null) {
+                                //                        System.out.println(  resEntity  );
+                                //                    } // end if
+                                //
+                                //                    if (resEntity != null) {
+                                //                        resEntity.consumeContent( );
+                                //                    } // end if
+                                //
+                                //                    httpclient.getConnectionManager( ).shutdown( );
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                            }
+                            return null;
+                        }
 
-            @Override
-            protected void onPostExecute(HttpEntity result) {
-                try {
-                    if (result != null) {
-                        System.out.println( EntityUtils.toString( result ) );
-                    } // end if
+                        @Override
+                        protected void onPostExecute(HttpEntity result) {
+                            try {
+                                if (result != null) {
+                                    System.out.println( EntityUtils.toString( result ) );
+                                } // end if
 
-                    if (result != null) {
-                        result.consumeContent( );
-                        progressbar.setVisibility(View.GONE);
-                    } // end if
+                                if (result != null) {
+                                    result.consumeContent( );
+                                    progressbar.setVisibility(View.GONE);
+                                } // end if
 
-                    int success, failure;
-                   // success = resultJson.getInt("success");
-                    //failure = resultJson.getInt("failure");
-                  //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
+                                int success, failure;
+                                // success = resultJson.getInt("success");
+                                //failure = resultJson.getInt("failure");
+                                //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }.execute();
+
+                }catch (Exception e){
                     e.printStackTrace();
-//                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
                 }
+
             }
-        }.execute();
+        });
+        thread.start();
 
 
     }
@@ -2188,8 +2207,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                         @Override
                         public void onPrepared(MediaPlayer mp) {
-
+                            long milliseconds=videoView.getDuration();
+                            videoDuration = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
                             mp.setVolume(0, 0);
+                            mp.setLooping(true);
                         }
                     });
                 }
