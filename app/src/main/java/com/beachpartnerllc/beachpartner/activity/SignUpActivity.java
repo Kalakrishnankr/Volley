@@ -201,9 +201,11 @@ public class SignUpActivity extends AppCompatActivity{
                        clicked=!clicked;
                        if(clicked){
                            user_password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                           user_password.setCompoundDrawablesWithIntrinsicBounds( 0, 0, R.drawable.ic_passwor_toggle_disable, 0);
                        }
                        else{
                            user_password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                           user_password.setCompoundDrawablesWithIntrinsicBounds(0, 0,  R.drawable.ic_pwd_toggle, 0);
                        }
                        break;
 

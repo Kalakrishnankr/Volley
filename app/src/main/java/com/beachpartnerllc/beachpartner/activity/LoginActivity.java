@@ -176,9 +176,11 @@ public class LoginActivity extends AppCompatActivity {
                         clicked=!clicked;
                         if(clicked){
                             password.setTransformationMethod(HideReturnsTransformationMethod.getInstance());
+                            password.setCompoundDrawablesWithIntrinsicBounds( 0, 0, R.drawable.ic_passwor_toggle_disable, 0);
                         }
                         else{
                             password.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            password.setCompoundDrawablesWithIntrinsicBounds(0, 0,  R.drawable.ic_pwd_toggle, 0);
                         }
                         break;
 

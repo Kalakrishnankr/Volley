@@ -46,8 +46,8 @@
     <string name="start">GOT IT</string>
     <string name="skip">Skip</string>
     <string name="partnerintrest">Tournament Requests Sent</string>
-    <string name="nameerror">Please enter your first name(No special characters allowed)</string>
-    <string name="lnameerror">Please enter your last name(NO special characters allowed)</string>
+    <string name="nameerror">Please enter your first name (No special characters allowed)</string>
+    <string name="lnameerror">Please enter your last name (NO special characters allowed)</string>
     <string name="doberror">Please enter your date of birth</string>
     <string name="gendererror">Please choose your gender</string>
     <string name="emailerror">Please enter a valid email</string>
@@ -134,7 +134,7 @@
     <string name="reg_success_msg">Thanks for registering.To complete registration please check your email and click on the link(It may take up to 10 minutes). </string>
     <string name="reg_success_return">Return to Log in</string>
     <string name="reg_success_never">I never got the email</string>
-    <string name="never_got_the_email_msg">Please check your spam folder,email may take as long as ten minutes.If even after ten minutes you have not received the email,please contact us so we can help you</string>
+    <string name="never_got_the_email_msg">Please check your spam folder, email may take as long as ten minutes. If even after ten minutes you have not received the email, please contact us. So we can help you</string>
     <string name="title_activity_application">ApplicationActivity</string>
 
 </resources>

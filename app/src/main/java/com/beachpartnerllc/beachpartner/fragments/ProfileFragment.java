@@ -377,11 +377,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         /*Experience Spinner*/
         List<String> experience = new ArrayList<>();
-        experience.add("“Newbie” New to the Game");
-        experience.add("1-2 years Some Indoor/Beach Experience Services");
-        experience.add("2-3 years Beach Club/Tournament Experience");
-        experience.add("3-4 years Experienced Tournament Player");
-        experience.add("5+ years Multiple Top Finishes/Ranked player");
+        experience.add("Please Select");
+        experience.add("“Newbie” [New to the Game]");
+        experience.add("1-2 years [Some Indoor/Beach Experience]");
+        experience.add("2-3 years [Beach Club/Tournament Experience]");
+        experience.add("3-4 years [Experienced Tournament Player]");
+        experience.add("More than 4 years");
 
         expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
         expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -403,6 +404,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         /*Court Preference spinner*/
         spinnerPref.setOnItemSelectedListener(this);
         List<String> courtPref = new ArrayList<>();
+        courtPref.add("Please Select");
         courtPref.add("Left side");
         courtPref.add("Right Side");
         courtPref.add("No Preference");
@@ -425,6 +427,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         /*position Spinner*/
         spinnerPositon.setOnItemSelectedListener(this);
         List<String> position = new ArrayList<>();
+        position.add("Please Select");
         position.add("Primary Blocker");
         position.add("Primary Defender");
         position.add("Split Block/Defense");
@@ -447,6 +450,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         /*Tournament Level interest spinner*/
         spinnerTLInterest.setOnItemSelectedListener(this);
         List<String> tournamentInterest = new ArrayList<>();
+        tournamentInterest.add("Please Select");
         tournamentInterest.add("Novice/Social");
         tournamentInterest.add("Unrated");
         tournamentInterest.add("B");
@@ -475,6 +479,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         /*Tourrating Spinner*/
         spinnerTourRating.setOnItemSelectedListener(this);
         List<String> rating = new ArrayList<>();
+        rating.add("Please Select");
         rating.add("PRO");
         rating.add("Open Or AAA");
         rating.add("AA");
@@ -504,6 +509,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         /*Spinner for willing to travel*/
         spinnerWtoTravel.setOnItemSelectedListener(this);
         List<String> distance = new ArrayList<>();
+        distance.add("Please Select");
         distance.add("Not Willing");
         distance.add("Up to 25 miles");
         distance.add("Up to 50 miles");
