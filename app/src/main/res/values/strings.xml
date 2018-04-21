@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BeachPartner 2</string>
+    <string name="app_name">BeachPartner</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with :</u></string>

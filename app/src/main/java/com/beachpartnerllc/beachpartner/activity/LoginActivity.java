@@ -93,7 +93,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
 
         refreshedFirebaseToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("refreshedToken----",refreshedFirebaseToken);
+       // Log.d("refreshedToken----",refreshedFirebaseToken);
         deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
