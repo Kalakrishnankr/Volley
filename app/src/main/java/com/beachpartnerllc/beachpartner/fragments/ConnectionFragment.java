@@ -154,9 +154,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
         } else {
             rcv_conn.setAdapter(null);
-            rcv_conn.setVisibility(View.GONE);
-            txtv_noconnection.setVisibility(View.VISIBLE);
+            //rcv_conn.setVisibility(View.GONE);
+            //txtv_noconnection.setVisibility(View.VISIBLE);
         }
+
     }
 
     /*Method Active Athlete TAb*/
@@ -181,7 +182,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
         } else {
             rcv_conn.setAdapter(null);
-           // rcv_conn.setVisibility(View.GONE);
+            //rcv_conn.setVisibility(View.GONE);
             //txtv_noconnection.setVisibility(View.VISIBLE);
         }
 

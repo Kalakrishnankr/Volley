@@ -65,28 +65,39 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.videoView.setVisibility(View.GONE);
         holder.spinnerView.setVisibility(View.GONE);
         holder.image.setVisibility(View.VISIBLE);
-        String dobToage = spot.getBpf_dob();
-        if (dobToage != null && !dobToage.isEmpty() && !dobToage.equals("null")) {
-            long millisecond = Long.parseLong(dobToage);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-            Date datef = new Date(millisecond);
-            Calendar today = Calendar.getInstance();
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(datef);
-            int age = today.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
-            if(today.get(Calendar.DAY_OF_YEAR) < cal.get(Calendar.DAY_OF_YEAR)){
-                age--;
-            }
-            ageInt = new Integer(age);
-            holder.name.setText(spot.getBpf_firstName()+" , "+ageInt);
+
+        if (spot.getBpf_age() != null) {
+            holder.name.setText(spot.getBpf_firstName()+" , "+spot.getBpf_age());
         }else {
-            holder.name.setText(spot.getBpf_firstName());
+            String dobToage = spot.getBpf_dob();
+            if (!dobToage.isEmpty() && !dobToage.equals(null)) {
+                long millisecond = Long.parseLong(dobToage);
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Date datef = new Date(millisecond);
+                Calendar today = Calendar.getInstance();
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(datef);
+                int age = today.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+                if(today.get(Calendar.DAY_OF_YEAR) < cal.get(Calendar.DAY_OF_YEAR)){
+                    age--;
+                }
+                ageInt = new Integer(age);
+                holder.name.setText(spot.getBpf_firstName()+" , "+ageInt);
+            }else {
+                holder.name.setText(spot.getBpf_firstName());
+            }
         }
+
         holder.userType.setText(spot.getBpf_userType());
         if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
+            holder.spinnerView.stop();
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
 
+        }else {
+            holder.spinnerView.stop();
+            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
+            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
         }
 
 
@@ -94,8 +105,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
             @Override
             public void onSingleClick(View v) {
-
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null) {
+                    myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                }
 
             }
 
@@ -111,7 +123,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                     playvideo(holder);
                 }
                 // dialog.setMessage("Please wait");
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null) {
+                    myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
+                }
             }
         });
 
@@ -119,12 +133,15 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
-                //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equals("null") && !spot.getBpf_deviceId().equals("null") && spot.getBpf_deviceId() != null
+                        && spot.getBpf_imageUrl()!=null && !spot.getBpf_imageUrl().equals("null")) {
+                    myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
+                    myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                    //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
 
 
         //End video tag here 8/02/2018

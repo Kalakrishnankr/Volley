@@ -324,7 +324,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void getBluebpProfiles() {
         bpList.clear();
         progressBar.setVisibility(View.VISIBLE);
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&size=5", null, new
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -341,6 +341,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
                                     bpModel.setBpf_userType(jsonObject.getString("userType"));
                                     bpModel.setBpf_age(jsonObject.getString("age"));
+                                    bpModel.setBpf_dob(jsonObject.getString("dob"));
                                     bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
                                     bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
                                     bpModel.setBpf_termDate(object.getString("termDate"));
@@ -352,7 +353,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 }
                             }
                             if(getActivity()!=null){
-                                new PrefManager(getActivity()).savePageno(0);
+                                //new PrefManager(getActivity()).savePageno(0);
                                 setblueBpstrip();
                             }
 

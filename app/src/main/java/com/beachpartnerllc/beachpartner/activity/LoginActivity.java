@@ -46,6 +46,8 @@ import com.beachpartnerllc.beachpartner.instagram.InstagramSession;
 import com.beachpartnerllc.beachpartner.instagram.InstagramUser;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.DrawableClickListener;
+import com.facebook.AccessToken;
+import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -76,9 +78,10 @@ public class LoginActivity extends AppCompatActivity {
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
-    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken,loggedUname;
+    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken,loggedUname,login_url,insta_login;
     private TextView  never_got_email_tv;
     private TextInputLayout password_inputText;
+    public JSONObject fbObject,instaObject;
 
 
     @Override
@@ -93,7 +96,7 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
 
         refreshedFirebaseToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d("refreshedToken----",refreshedFirebaseToken);
+       // Log.d("refreshedToken----",refreshedFirebaseToken);
         deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
 
@@ -110,8 +113,22 @@ public class LoginActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         Log.d("Success", "Login");
-                        deviceToken = String.valueOf(loginResult.getAccessToken());
-                        startLoginProcess(null,null,refreshedFirebaseToken,deviceId,deviceToken);
+                        //AccessToken token = AccessToken.getCurrentAccessToken();
+                         String fb_token = AccessToken.getCurrentAccessToken().getToken();
+                        //deviceToken = String.valueOf(loginResult.getAccessToken());
+                        try {
+                            fbObject = new JSONObject();
+                            fbObject.put("authToken",fb_token);
+                            fbObject.put("deviceId",deviceId);
+                            fbObject.put("deviceToken",null);
+                            fbObject.put("fcmToken",refreshedFirebaseToken);
+                            fbObject.put("loginType","FB");
+                            fbObject.put("rememberMe",true);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        String fbLogin="FB";
+                        startLoginProcess(fbObject,fbLogin);
                         /*Intent newIntent = new Intent(LoginActivity.this,TabActivity.class);
                         Log.d("Success", "Login"+loginResult);
 
@@ -144,6 +161,37 @@ public class LoginActivity extends AppCompatActivity {
         initActivity();
     }
 
+
+    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+        @Override
+        protected void onCurrentAccessTokenChanged(
+                AccessToken oldAccessToken,
+                AccessToken currentAccessToken) {
+
+        }
+    };
+
+    /*private void loginWithFacebook(JSONObject jsonObject) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LOGIN_WITH_SOCIAL_MEDIA, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        Log.d("loginviaFB",requestQueue.toString());
+        requestQueue.add(request);
+
+
+    }*/
 
 
     private void initActivity() {
@@ -209,8 +257,20 @@ public class LoginActivity extends AppCompatActivity {
                 if(awesomeValidation.validate()){
 
                         progress.show();
-                        if (!refreshedFirebaseToken.isEmpty()) {
-                            startLoginProcess(uname,passwd,refreshedFirebaseToken,deviceId,deviceToken);//Method for start login
+                        if (!refreshedFirebaseToken.isEmpty() && refreshedFirebaseToken != null) {
+
+                            JSONObject object = new JSONObject();
+                            try {
+                                object.put("password",passwd);
+                                object.put("username",uname);
+                                object.put("rememberMe",true);
+                                object.put("fcmToken",refreshedFirebaseToken);
+                                object.put("deviceId",deviceId);
+                                object.put("deviceToken",deviceToken);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                            startLoginProcess(object,"BP");//Method for start login
                             //userName.setText("");
                             password.setText("");
                             userName.requestFocus();
@@ -308,22 +368,15 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //Method for login
-    private void startLoginProcess(final String uname, final String passwd,String fireToken,String deviceId,String deviceToken) {
+    private void startLoginProcess(JSONObject object,String status) {
 
-            JSONObject object = new JSONObject();
-            try {
-                object.put("password",passwd);
-                object.put("username",uname);
-                object.put("rememberMe",true);
-                object.put("fcmToken",fireToken);
-                object.put("deviceId",deviceId);
-                object.put("deviceToken",deviceToken);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        if (status.equals("FB") || status.equals("IN")) {
+            login_url = ApiService.BASE_URL+"authenticate-with-token";
+        }else {
+            login_url = ApiService.LOGIN;
+        }
 
-
-        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LOGIN, object,
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, login_url, object,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -713,13 +766,29 @@ private void neverGotEmailAlertTextUnderline(){
         @Override
         public void onSuccess(InstagramUser user) {
 
-            finish();
+            /*finish();
             String insta_username = user.fullName;
             Toast.makeText(LoginActivity.this, "Your are logged in as : "+insta_username, Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(LoginActivity.this,TabActivity.class);
             intent.putExtra("reDirectPage","home");
-            startActivity(intent);
+            startActivity(intent);*/
 //            startActivity(new Intent(LoginActivity.this, TabActivity.class));
+
+            try {
+                instaObject = new JSONObject();
+                instaObject.put("authToken",insta_login);
+                instaObject.put("deviceId",deviceId);
+                instaObject.put("deviceToken",null);
+                instaObject.put("fcmToken",refreshedFirebaseToken);
+                instaObject.put("loginType","IN");
+                instaObject.put("rememberMe",true);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            String LoginVia="IN";
+            startLoginProcess(fbObject,LoginVia);
+
+
 
         }
 
