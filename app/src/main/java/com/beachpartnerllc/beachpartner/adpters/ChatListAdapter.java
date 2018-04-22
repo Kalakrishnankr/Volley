@@ -12,12 +12,12 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -61,6 +61,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 //Toast.makeText(mContext, "Clicked", Toast.LENGTH_SHORT).show();
+
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
                 bundle.putString("personId", message.getConnected_uId());

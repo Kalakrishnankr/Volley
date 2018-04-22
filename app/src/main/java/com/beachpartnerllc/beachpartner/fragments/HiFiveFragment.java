@@ -117,6 +117,7 @@ public class HiFiveFragment extends Fragment {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj    = object.getJSONObject("connectedUser");
                             BpFinderModel model  = new BpFinderModel();
+                            model.setBpf_id(obj.getString("id"));
                             model.setBpf_firstName(obj.getString("firstName"));
                             model.setBpf_lastName(obj.getString("lastName"));
                             model.setBpf_imageUrl(obj.getString("imageUrl"));

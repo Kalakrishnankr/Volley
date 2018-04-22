@@ -86,7 +86,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
 
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -115,6 +115,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
                 BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                   Bundle bundle = new Bundle();
                 //cPosition is the current positon
+                  bundle.putInt("itemPosition", position);
                   bundle.putSerializable("hifiList", hiFiveList);
                   bpFinderFragment.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();

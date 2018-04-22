@@ -19,6 +19,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.NoteDataModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * Created by Owner on 3/12/2018.
@@ -62,7 +63,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
             }
         });
-        holder.timeStamp.setReferenceTime(dataList.get(position).getTimestamp());
+        holder.timeStamp.setReferenceTime(new Date().getTime());
 
         holder.edit_notes.addTextChangedListener(new TextWatcher() {
             @Override

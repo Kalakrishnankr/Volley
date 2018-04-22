@@ -432,7 +432,7 @@ public class LoginActivity extends AppCompatActivity {
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
-                                    if(uProfileStatus!=null && !uProfileStatus.equals("null")){
+                                    if(uProfileStatus!=null && !uProfileStatus.equalsIgnoreCase("null")){
                                         //already user updated the profile
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                         intent.putExtra("reDirectPage","home");
@@ -780,13 +780,13 @@ private void neverGotEmailAlertTextUnderline(){
                 instaObject.put("deviceId",deviceId);
                 instaObject.put("deviceToken",null);
                 instaObject.put("fcmToken",refreshedFirebaseToken);
-                instaObject.put("loginType","IN");
+                instaObject.put("loginType","IG");
                 instaObject.put("rememberMe",true);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            String LoginVia="IN";
-            startLoginProcess(fbObject,LoginVia);
+            String LoginVia="IG";
+            startLoginProcess(instaObject,LoginVia);
 
 
 
@@ -931,7 +931,7 @@ private void neverGotEmailAlertTextUnderline(){
             @Override
             public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type", "application/json");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
 

@@ -31,7 +31,7 @@ import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
 import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.SettingsFragment;
 
-public class TabActivity extends AppCompatActivity {
+public class TabActivity extends AppCompatActivity  {
 
     private static boolean doubleBackToExitPressedOnce = false;
     private static boolean isBPActive = false;
@@ -204,7 +204,6 @@ public class TabActivity extends AppCompatActivity {
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         menu1 = findViewById(R.id.submenu1);
         menu2 = findViewById(R.id.submenu2);
-
 
         userType = new PrefManager(getApplicationContext()).getUserType().trim();
         tips = new PrefManager(getApplicationContext()).getTips();
@@ -399,6 +398,7 @@ public class TabActivity extends AppCompatActivity {
             super.onBackPressed();
         }
     }
+
 
 
 }

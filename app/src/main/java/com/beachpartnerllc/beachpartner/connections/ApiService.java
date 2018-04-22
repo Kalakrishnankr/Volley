@@ -39,7 +39,7 @@ public class ApiService {
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
 
-    public static String  SEARCH_USER_CARD        = BASE_URL+"users/search";
+    public static String  SEARCH_USER_CARD        =  BASE_URL+"users/search";
     public static String  GET_MYUPCOMING_TOURNAMENTS = BASE_URL+"events/user/between";
 
 
@@ -56,6 +56,8 @@ public class ApiService {
     public static String DELETE_NOTE               =   BASE_URL+"notes/";
     public static String UPDATE_NOTE               =   BASE_URL+"notes/";
     public static String TERMS_AND_CONDITION       =   "https://www.beachpartner.com/terms.html";
+
+    public static String GET_ALL_BLUEBP            =    BASE_URL+"users/search?includeCoach=false&hideLikedUser=true&hideConnectedUser=true&hideRejectedConnections=true&hideBlockedUsers=true&subscriptionType=BlueBP";
 
 
 

@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
@@ -101,11 +102,12 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         }
 
 
+
         holder.image.setOnTouchListener(new DoubleTapListener() {
 
             @Override
             public void onSingleClick(View v) {
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("NULL") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null) {
+                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("NULL") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null) {
                     myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                 }
 
@@ -123,7 +125,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                     playvideo(holder);
                 }
                 // dialog.setMessage("Please wait");
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null ) {
+                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null ) {
                     myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
                 }
             }
@@ -141,7 +143,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 }
             }
         });
-
 
 
         //End video tag here 8/02/2018
@@ -206,6 +207,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         public CardView swipe_card;
         public FrameLayout frameLayout;
         public ImageView frameImage;
+        public RelativeLayout relativeLayout;
 
         public ViewHolder(View view) {
             name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
@@ -219,6 +221,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             spinnerView =  (RotateLoading)view.findViewById(R.id.my_spinner);
             frameLayout = (FrameLayout)view.findViewById(R.id.placeholder);
             frameImage = (ImageView) view.findViewById(R.id.frameimg_view);
+            relativeLayout = (RelativeLayout)view.findViewById(R.id.cardlayout);
         }
     }
 

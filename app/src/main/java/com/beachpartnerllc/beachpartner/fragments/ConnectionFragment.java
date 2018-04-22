@@ -291,7 +291,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
 
         } else {
-            txtv_noconnection.setVisibility(View.VISIBLE);
+            //txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 

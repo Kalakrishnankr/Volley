@@ -36,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class MessageFragment extends Fragment {
+public class MessageFragment extends Fragment  {
 
     ArrayList<String> chatList = new ArrayList<>();
     ArrayList<ConnectionModel> userList = new ArrayList<>();
@@ -200,6 +200,7 @@ public class MessageFragment extends Fragment {
         });
 
     }
+
 
 
 }

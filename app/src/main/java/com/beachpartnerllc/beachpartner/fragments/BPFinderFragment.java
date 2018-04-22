@@ -175,6 +175,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         //
 
         setUp(view);
+        getPreferences();
         btnFemale.setText("Women");
         btnMale.setText("Men");
         btnFemale.setTextOff("Women");
@@ -197,13 +198,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     adapter.addAll(bluebpList);
                 }
             }
+
+            //From hifi fragment page
+            int item_position= data.getInt("itemPosition");
             if (hifiList != null && hifiList.size() > 0) {
                 adapter = new TouristSpotCardAdapter(getActivity().getApplicationContext(), this);
                 if (hifiList.size()>0) {
-                    for (int j =0; j < hifiList.size(); j++) {
+                    for (int j =item_position; j < hifiList.size(); j++) {
                         adapter.addAll(hifiList.get(j));
                     }
                     //adapter.addAll(hifiList);
+                    getAllCards(location, sgender, isCoach, minAge, maxAge);
                 }
             }
         }
@@ -211,6 +216,50 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         return view;
     }
 
+    private void getPreferences() {
+        //check shared prefvalue
+        prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
+        if(prefs!=null){
+
+            location  =   prefs.getString("location",null);
+            sgender   =   prefs.getString("gender",null);
+            isCoach   =   prefs.getBoolean("isCoachActive",false);
+            minAge    =   prefs.getInt("minAge",0);
+            maxAge    =   prefs.getInt("maxAge",0);
+
+            tvMin.setText(String.valueOf(minAge));
+            tvMax.setText(String.valueOf(maxAge));
+            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+            age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
+            spinner_location.setText(location);
+            sCoach.setChecked(isCoach);
+
+            if(sgender!=null){
+                if(sgender.equals("Men")){
+                    txtv_gender.setText("Men");
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                    btnMale.setChecked(true);
+                }else if(sgender.equals("Women")){
+                    txtv_gender.setText("Women");
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                    btnFemale.setChecked(true);
+                }else {
+                    btnMale.setChecked(true);
+                    btnFemale.setChecked(true);
+                    txtv_gender.setText("Both");
+                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnMale.setTextColor(getResources().getColor(R.color.white));
+                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
+                    btnFemale.setTextColor(getResources().getColor(R.color.white));
+                }
+            }
+
+
+
+        }
+    }
 
 
     public void setUp(final View view) {
@@ -292,49 +341,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
 
 
-        //check shared prefvalue
-        prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
 
-        if(prefs!=null){
-
-            location  =   prefs.getString("location",null);
-            sgender   =   prefs.getString("gender",null);
-            isCoach   =   prefs.getBoolean("isCoachActive",false);
-            minAge    =   prefs.getInt("minAge",0);
-            maxAge    =   prefs.getInt("maxAge",0);
-
-            tvMin.setText(String.valueOf(minAge));
-            tvMax.setText(String.valueOf(maxAge));
-            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
-            age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
-            spinner_location.setText(location);
-            sCoach.setChecked(isCoach);
-
-            if(sgender!=null){
-                if(sgender.equals("Men")){
-                    txtv_gender.setText("Men");
-                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
-                    btnMale.setTextColor(getResources().getColor(R.color.white));
-                    btnMale.setChecked(true);
-                }else if(sgender.equals("Women")){
-                    txtv_gender.setText("Women");
-                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
-                    btnFemale.setTextColor(getResources().getColor(R.color.white));
-                    btnFemale.setChecked(true);
-                }else {
-                    btnMale.setChecked(true);
-                    btnFemale.setChecked(true);
-                    txtv_gender.setText("Both");
-                    btnMale.setBackground(getResources().getDrawable(R.color.menubar));
-                    btnMale.setTextColor(getResources().getColor(R.color.white));
-                    btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
-                    btnFemale.setTextColor(getResources().getColor(R.color.white));
-                }
-            }
-
-
-
-        }
 
         //age range bar
         age_bar.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
@@ -499,21 +506,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
 
                 //Methods for swipe card kalakrishnan 06/04/2018
-                if(direction.toString().equals("Right")){
-                    //Toast.makeText(getActivity(), "You right swiped :"+reqPersonId, Toast.LENGTH_SHORT).show();
+                if(direction.toString().equalsIgnoreCase("Right")){
+                    Toast.makeText(getActivity(), "You right swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     //Api for Right swipe/like
                     if (reqPersonId != null) {
                         cardRightSwiped(reqPersonId);
                     }
 
-                }else if(direction.toString().equals("Left")){
-                    //Toast.makeText(getActivity(), "You Left swiped", Toast.LENGTH_SHORT).show();
+                }else if(direction.toString().equalsIgnoreCase("Left")){
+                    Toast.makeText(getActivity(), "You Left swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     if (reqPersonId != null) {
                         cardLeftSwiped(reqPersonId);
                     }
 
-                }else {
-                    //Toast.makeText(getActivity(), "HIFI", Toast.LENGTH_SHORT).show();
+                }else if(direction.toString().equalsIgnoreCase("Top")) {
+                    Toast.makeText(getActivity(), "You Hified : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     if (reqPersonId != null) {
                         cardHifiSwiped(reqPersonId);
                     }
@@ -662,11 +669,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_userType(jsonObject.getString("userType"));
 
                                     finderModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
-
-
                                     //finderModel.setBpf_age(jsonObject.getString("age"));
-
-
                                     allCardList.add(finderModel);
 
                                 } catch (JSONException e) {
@@ -875,7 +878,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Method for card left swiped
     private void cardLeftSwiped(String reqPersonId) {
 
-        JsonObjectRequest  jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest  jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
