@@ -347,7 +347,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
 
@@ -367,7 +367,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                         if (response != null) {
                             try {
                                 String unblockres_status =response.getString("status");
-                                if (unblockres_status.equals("RevBlocked")) {
+                                if (unblockres_status.equals("Active")) {
                                     Toast.makeText(getActivity(), "Unblocked Person Successfully", Toast.LENGTH_SHORT).show();
                                     getConnections();
                                 }
@@ -416,7 +416,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Content-Type", "application/json;charset=utf-8");
                 return headers;
             }
         };
