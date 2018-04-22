@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -33,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
 
@@ -49,6 +51,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.utils.DrawableClickListener;
+import com.beachpartnerllc.beachpartner.utils.FormValidator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -84,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity{
     private  Uri selectedImageUri,selectedVideoUri;
     TextInputLayout dobWrapper,passwordWrapper,fNameWrapper;
     Calendar myCalendar = Calendar.getInstance();
-    private static String sex="Male";
+    private static String sex;
     private LinearLayout llogin;
     private RadioGroup userTypeRadio;
     private RadioButton rb;
@@ -94,7 +97,8 @@ public class SignUpActivity extends AppCompatActivity{
 
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
-    private boolean validationStatus=false;
+    private boolean locationSelectedStatus=false;
+    TextView txt_fnameError,user_lnameError,txt_mobileError, txt_confirmError, txt_dobError,txt_emailError,txt_passwordError,txt_usrTypeError,txt_genderError,txt_cityError;
 
 
     @Override
@@ -113,9 +117,7 @@ public class SignUpActivity extends AppCompatActivity{
 //                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
 
-        userTypeRadio.check(R.id.athlete_user);
-        user_male.setTextColor(getResources().getColor(R.color.white));
-        user_male.setBackgroundColor(getResources().getColor(R.color.btnColor));
+
 
     }
 
@@ -139,8 +141,169 @@ public class SignUpActivity extends AppCompatActivity{
         passwordWrapper = (TextInputLayout) findViewById(R.id.pwd_wrapper);
         fNameWrapper    = (TextInputLayout)findViewById(R.id.fnameWrapper);
 
+        txt_dobError = (TextView)findViewById(R.id.txt_dobError);
+        txt_usrTypeError = (TextView)findViewById(R.id.txt_athleteError);
+        txt_genderError = (TextView)findViewById(R.id.txt_genderError);
+        user_lnameError = (TextView)findViewById(R.id.txt_lnameError);
+        txt_fnameError = (TextView)findViewById(R.id.txt_fnameError);
+        txt_dobError = (TextView)findViewById(R.id.txt_dobError);
+        txt_emailError = (TextView)findViewById(R.id.txt_emailError);
+        txt_confirmError = (TextView)findViewById(R.id.txt_conformError);
+        txt_passwordError = (TextView)findViewById(R.id.txt_passwordError);
+        txt_mobileError = (TextView)findViewById(R.id.txt_mobileError);
+        txt_cityError   =  (TextView) findViewById(R.id.txt_cityError);
 
 
+
+
+// Username focous Listener
+        user_fname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("special character")) {
+                    //user_fname.setText("");
+
+                    txt_fnameError.setVisibility(View.VISIBLE);
+                    txt_fnameError.setText(getResources().getString(R.string.nameerror));
+
+                }else if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("failed")){
+                    //user_fname.setText("");
+
+                    txt_fnameError.setVisibility(View.VISIBLE);
+                    txt_fnameError.setText(getResources().getString(R.string.nameerror));
+
+                }else if(hasFocus){
+
+                    txt_fnameError.setVisibility(View.GONE);
+
+                }
+            }
+        });
+
+// Lastname focous Listener
+        user_lname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("special character")) {
+                    //user_fname.setText("");
+
+                    user_lnameError.setVisibility(View.VISIBLE);
+                    user_lnameError.setText(getResources().getString(R.string.lnameerror));
+
+                }else if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("failed")){
+                    //user_lname.setText("");
+
+                    user_lnameError.setVisibility(View.VISIBLE);
+                    user_lnameError.setText(getResources().getString(R.string.lnameerror));
+
+                }else if(hasFocus){
+
+                    user_lnameError.setVisibility(View.GONE);
+
+                }
+            }
+        });
+// Username focous Listener
+        user_dob.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(user_dob.getText().toString().trim().equals(null)) {
+                    user_dob.setText("");
+
+                    txt_dobError.setVisibility(View.VISIBLE);
+                    txt_dobError.setText(getResources().getString(R.string.doberror));
+
+                }else if(hasFocus){
+
+                    txt_dobError.setVisibility(View.GONE);
+                }
+            }
+        });
+// Username focous Listener
+        user_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus && !new FormValidator().emailValidator(user_email)){
+                    //user_email.setText("");
+                    txt_emailError.setVisibility(View.VISIBLE);
+                    txt_emailError.setText(getResources().getString(R.string.emailerror));
+
+                }else if(hasFocus){
+
+                    txt_emailError.setVisibility(View.GONE);
+
+                }
+            }
+        });
+// Username focous Listener
+        user_password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus && user_password.getText().toString().trim().length()<8){
+
+
+                    txt_passwordError.setVisibility(View.VISIBLE);
+                    txt_passwordError.setText(getResources().getString(R.string.invalid_password));
+
+                }else if(hasFocus){
+
+                    txt_passwordError.setVisibility(View.GONE);
+
+                }
+            }
+        });
+// Username focous Listener
+        user_confPasswd.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus ) {
+                    if(!user_confPasswd.getText().toString().trim().equals(null) && !user_password.getText().toString().trim().equals(null)){
+                        if(!user_password.getText().toString().trim().equals(user_confPasswd.getText().toString().trim())){
+
+                            txt_confirmError.setVisibility(View.VISIBLE);
+                            txt_confirmError.setText(getResources().getString(R.string.invalid_confirmpassword));
+                        }
+                        else{
+                            txt_confirmError.setVisibility(View.GONE);
+
+                        }
+                    }
+
+                }else{
+                    txt_confirmError.setText(getResources().getString(R.string.enter_confirm_pwd));
+                    txt_confirmError.setVisibility(View.GONE);
+
+                }
+            }
+        });
+// Mobile focous Listener
+        user_mobileno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+
+                if(!hasFocus && user_mobileno.getText().length()<=0) {
+                    // user_mobileno.setText("");
+
+                    txt_mobileError.setVisibility(View.VISIBLE);
+                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+
+                }else if(!hasFocus && user_mobileno.getText().toString().equals(null)){
+                    txt_mobileError.setVisibility(View.VISIBLE);
+                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+
+                }else if(hasFocus){
+
+                    txt_mobileError.setVisibility(View.GONE);
+
+                }
+            }
+        });
 
 
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
@@ -152,7 +315,8 @@ public class SignUpActivity extends AppCompatActivity{
                 }else {
                     userType="Athlete";
                 }
-               // Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
+                txt_usrTypeError.setVisibility(View.GONE);
+                // Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -168,6 +332,7 @@ public class SignUpActivity extends AppCompatActivity{
                 user_male.setBackgroundColor(getResources().getColor(R.color.btnColor));
                 user_female.setTextColor(getResources().getColor(R.color.btnColor));
                 user_female.setBackgroundColor(getResources().getColor(R.color.imgBacgnd));
+                txt_genderError.setVisibility(View.GONE);
             }
         });
 
@@ -180,8 +345,13 @@ public class SignUpActivity extends AppCompatActivity{
                 user_female.setBackgroundColor(getResources().getColor(R.color.btnColor));
                 user_male.setTextColor(getResources().getColor(R.color.btnColor));
                 user_male.setBackgroundColor(getResources().getColor(R.color.imgBacgnd));
+                txt_genderError.setVisibility(View.GONE);
+
             }
         });
+
+
+
 
         llogin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,6 +395,22 @@ public class SignUpActivity extends AppCompatActivity{
                 "fonts/SanFranciscoTextRegular.ttf");
         user_location_spinner.setTypeface(font);
         user_location_spinner.setAdapter(dataAdapter);
+
+        user_location_spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                locationSelectedStatus=true;
+                location = dataAdapter.getItem(position);
+            }
+
+        });
+        user_location_spinner.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                locationSelectedStatus=false;
+            }
+        });
+
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -294,6 +480,14 @@ public class SignUpActivity extends AppCompatActivity{
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == DialogInterface.BUTTON_NEGATIVE) {
+                            txt_dobError.setVisibility(View.VISIBLE);
+                            txt_dobError.setText(getResources().getString(R.string.doberror));
+                        }
+                    }
+                });
                 dialog.show();
 
             }
@@ -304,112 +498,151 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
 
-                userName     = user_fname.getText().toString().trim();
-                lastName     = user_lname.getText().toString().trim();
-                dob          = user_dob.getText().toString().trim();
-                email        = user_email.getText().toString().trim();
-                pass         = user_password.getText().toString().trim();
-                confnPass    = user_confPasswd.getText().toString().trim();
-                location     = user_location_spinner.getText().toString().trim();
-                mobileno     = user_mobileno.getText().toString().trim();
+                userName = user_fname.getText().toString().trim();
+                lastName = user_lname.getText().toString().trim();
+                dob = user_dob.getText().toString().trim();
+                email = user_email.getText().toString().trim();
+                pass = user_password.getText().toString().trim();
+                confnPass = user_confPasswd.getText().toString().trim();
+//                location = user_location_spinner.getText().toString().trim();
+                mobileno = user_mobileno.getText().toString().trim();
 
 
+//                addValidationToViews();//Method for validate feilds
+                    if(userName   == null || userName.length()==0){
+                        txt_fnameError.setVisibility(View.VISIBLE);
+                        txt_fnameError.setText(getResources().getString(R.string.fname_blank));
+                    }
+                    if(lastName == null || lastName.length()==0){
+                        user_lnameError.setVisibility(View.VISIBLE);
+                        user_lnameError.setText(getResources().getString(R.string.lname_blank));
+                    }
+                    if(email == null || email.length()==0){
+                        txt_emailError.setVisibility(View.VISIBLE);
+                        txt_emailError.setText(getResources().getString(R.string.email_blank));
+                    }
+                    if(pass == null || pass.length()==0){
+                        txt_passwordError.setVisibility(View.VISIBLE);
+                        txt_passwordError.setText(getResources().getString(R.string.pwd_blank));
+                    }
+                    if(confnPass == null || confnPass.length()==0){
+                        txt_confirmError.setVisibility(View.VISIBLE);
+                        txt_confirmError.setText(getResources().getString(R.string.enter_confirm_pwd));
+                    }
 
-                addValidationToViews();//Method for validate feilds
+
+                    if(mobileno == null || mobileno.length()==0){
+                        txt_mobileError.setVisibility(View.VISIBLE);
+                        txt_mobileError.setText(getResources().getString(R.string.mobile_blank));
+                    }
+                    if(location == null || location.length()==0){
+                      txt_cityError.setVisibility(View.VISIBLE);
+                      txt_cityError.setText(getString(R.string.cityerror));
+                    }
+                    if (userType == null && dob.length() == 0) {
+
+                        txt_dobError.setVisibility(View.VISIBLE);
+                        txt_dobError.setText(getResources().getString(R.string.doberror));
+
+                        txt_usrTypeError.setVisibility(View.VISIBLE);
+                        txt_usrTypeError.setText(getResources().getString(R.string.enter_user_type));
+                        //Toast.makeText(SignUpActivity.this, "Please enter your user type and date of birth", Toast.LENGTH_SHORT).show();
+                    }
+                    if (userType == null) {
+                        txt_usrTypeError.setVisibility(View.VISIBLE);
+                        txt_usrTypeError.setText(getResources().getString(R.string.enter_user_type));
+                    }
+                    if (dob.length() == 0) {
+                        txt_dobError.setVisibility(View.VISIBLE);
+                        txt_dobError.setText(getResources().getString(R.string.doberror));
+
+                    }
+                    if (sex == null) {
+                        txt_genderError.setVisibility(View.VISIBLE);
+                        txt_genderError.setText(getResources().getString(R.string.gendererror));
+                    }
+
+                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==0 && location.length()==0 ) {
+                            submitForm();
+                    }
 
 
-                if(awesomeValidation.validate()) {
-                    if(validationStatus) {
-                        if (userType == null && dob.length() == 0) {
-                            Toast.makeText(SignUpActivity.this, "Please enter your user type and date of birth", Toast.LENGTH_SHORT).show();
-                        } else if (userType == null) {
-                            Toast.makeText(SignUpActivity.this, "Please select Your Usertype", Toast.LENGTH_SHORT).show();
-                        } else if (dob.length() == 0) {
-                            user_dob.setError("Please enter your date of birth");
-                        } else {
-                            if (userType != null && dob.length() != 0) {
-                                submitForm();
-                            }
-                        }
-                    }}
             }
+
         });
-
-
-
     }
 
 
-    private void addValidationToViews() {
-        //adding validation to edittext
-       if(user_fname.getText().toString().trim().equals("")){
-           user_fname.setError("First name cannot be a blank");
-           awesomeValidation.clear();
-
-       }
-        else{
-           user_fname.setError(null);
-           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
-       }
-        if(user_lname.getText().toString().trim().equals("")){
-           user_lname.setError("Last name cannot be blank");
-            awesomeValidation.clear();
-        }
-        else{
-            user_lname.setError(null);
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
-        }
-        if(user_dob.getText().toString().trim().equals("")){
-            user_dob.setError(getString(R.string.doberror));
-        }
-        else{
-            user_dob.setError(null);
-        }
-        if(user_email.getText().toString().trim().equals("")){
-            user_email.setError("Email cannot be blank");
-            awesomeValidation.clear();
-        }
-        else{
-            user_email.setError(null);
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
-        }
-
-        if(user_mobileno.getText().toString().trim().equals("")){
-            user_mobileno.setError(getString(R.string.mobilerror));
-            awesomeValidation.clear();
-        }
-        else{
-            user_mobileno.setError(null);
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
-        }
-        if(user_location_spinner.getText().toString().trim().equals("")){
-            user_location_spinner.setError(getString(R.string.cityerror));
-            awesomeValidation.clear();
-        }
-        else{
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
-            user_location_spinner.setError(null);
-        }
-        String regx=".{8,}";
-        if(user_password.getText().toString().trim().equals("")){
-            user_password.setError("Please enter a password");
-            awesomeValidation.clear();
-        }
-        else {
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
-            user_password.setError(null);
-        }
-        if(user_confPasswd.getText().toString().trim().equals("")){
-            user_confPasswd.setError("Please confirm your password");
-            awesomeValidation.clear();
-        }
-        else{
-            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
-            user_confPasswd.setError(null);
-        }
-
-        //awesomeValidation.addValidation(this, R.id.profile_pic, "^null|$", R.string.error_your_id);
-    }
+//    private void addValidationToViews() {
+//        //adding validation to edittext
+//       if(user_fname.getText().toString().trim().equals("")){
+//           user_fname.setError("First name cannot be a blank");
+//           awesomeValidation.clear();
+//
+//       }
+//        else{
+//           user_fname.setError(null);
+//           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
+//       }
+//        if(user_lname.getText().toString().trim().equals("")){
+//           user_lname.setError("Last name cannot be blank");
+//            awesomeValidation.clear();
+//        }
+//        else{
+//            user_lname.setError(null);
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
+//        }
+//        if(user_dob.getText().toString().trim().equals("")){
+//            user_dob.setError(getString(R.string.doberror));
+//        }
+//        else{
+//            user_dob.setError(null);
+//        }
+//        if(user_email.getText().toString().trim().equals("")){
+//            user_email.setError("Email cannot be blank");
+//            awesomeValidation.clear();
+//        }
+//        else{
+//            user_email.setError(null);
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
+//        }
+//
+//        if(user_mobileno.getText().toString().trim().equals("")){
+//            user_mobileno.setError(getString(R.string.mobilerror));
+//            awesomeValidation.clear();
+//        }
+//        else{
+//            user_mobileno.setError(null);
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
+//        }
+//        if(user_location_spinner.getText().toString().trim().equals("")){
+//            user_location_spinner.setError(getString(R.string.cityerror));
+//            awesomeValidation.clear();
+//        }
+//        else{
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
+//            user_location_spinner.setError(null);
+//        }
+//        String regx=".{8,}";
+//        if(user_password.getText().toString().trim().equals("")){
+//            user_password.setError("Please enter a password");
+//            awesomeValidation.clear();
+//        }
+//        else {
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
+//            user_password.setError(null);
+//        }
+//        if(user_confPasswd.getText().toString().trim().equals("")){
+//            user_confPasswd.setError("Please confirm your password");
+//            awesomeValidation.clear();
+//        }
+//        else{
+//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
+//            user_confPasswd.setError(null);
+//        }
+//
+//        //awesomeValidation.addValidation(this, R.id.profile_pic, "^null|$", R.string.error_your_id);
+//    }
 
 
 

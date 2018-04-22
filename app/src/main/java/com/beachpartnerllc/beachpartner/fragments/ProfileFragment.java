@@ -7,6 +7,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -163,6 +164,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     ShareDialog shareDialog;
     Context mContext;
     private int videoDuration;
+    private ProgressDialog progress;
 
     private Handler mUiHandler = new Handler();
 
@@ -1978,6 +1980,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void uploadVideoFiles(final String videoPath, final String userId) {
 
+        progress = new ProgressDialog(getContext());
+        progress.setTitle("Loading");
+        progress.setMessage("Wait while loading...");
+        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+        progress.show();
 
         Thread thread = new Thread(new Runnable(){
             @Override
@@ -2030,6 +2037,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                 if (result != null) {
                                     result.consumeContent( );
                                     progressbar.setVisibility(View.GONE);
+
                                 } // end if
 
                                 int success, failure;
@@ -2083,6 +2091,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             while(resEntity==null){
 
             }
+            progress.dismiss();
             return resEntity;
         }
         catch (Exception ex) {
@@ -2551,7 +2560,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                     takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
-                    takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,-5);
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                    takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 320);
+                    takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 240);
 
                     //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
 

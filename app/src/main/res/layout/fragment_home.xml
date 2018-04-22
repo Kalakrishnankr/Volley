@@ -167,7 +167,7 @@
                         android:layout_gravity="center"
                         android:visibility="gone"/>
                     <TextView
-                        android:id="@+id/txtv_notour"
+                        android:id="@+id/txtv_notour_athlete"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
@@ -406,7 +406,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
-                        android:visibility="gone"
+                        android:visibility="visible"
                         android:layout_gravity="center_vertical"
                         android:text="You have no requests" />
 

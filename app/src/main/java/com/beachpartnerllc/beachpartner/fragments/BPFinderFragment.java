@@ -528,7 +528,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     String r=fcmToken;
                     String uName =new PrefManager(getContext()).getUserName();
                     if (fcmToken != null && !fcmToken.equalsIgnoreCase("null") && uName != null && !uName.equalsIgnoreCase("null")) {
-                        sendMessage(r,"BeachPartner",uName +"sent you a high five","");
+                        sendMessage(r,"BeachPartner",uName +" sent you a high five","");
                     }
                 }
 
