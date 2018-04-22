@@ -1786,8 +1786,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             if(requestCode == PICK_IMAGE_REQUEST){
                 //Uri picUri = data.getData();
-                selectedImageUri=data.getData();
-//                 selectedImageUri = Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
+
+
+                 selectedImageUri = data.getData();//Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
+
                 if (selectedImageUri != null) {
                     File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes
@@ -1806,8 +1808,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 Uri picUri = data.getData();
+
 //                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
                 selectedVideoUri=data.getData();
+
+
                 if (selectedVideoUri != null) {
 
                     File file = new File(String.valueOf(getPath(selectedVideoUri)));
@@ -2293,7 +2298,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
+                            if (getActivity() != null) {
+                                Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                     }
@@ -2557,12 +2564,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                     takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
                     takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                     takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 320);
                     takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 240);
+
 
                     //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
 

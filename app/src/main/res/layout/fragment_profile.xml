@@ -414,6 +414,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:maxLines="1"
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:textSize="@dimen/text_size"
@@ -459,6 +460,7 @@
                                 android:paddingLeft="5dp"
                                 android:textSize="@dimen/text_size"
                                 android:inputType="text"
+                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                 android:nextFocusDown="@+id/gender_lt"
                                 android:background="@android:color/transparent"/>
 

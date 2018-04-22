@@ -44,6 +44,18 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"/>
+
+            <!--<com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/exo_player_view"
+                android:visibility="visible"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentBottom="true">
+
+            </com.google.android.exoplayer2.ui.SimpleExoPlayerView>-->
             <FrameLayout
                 android:id="@+id/placeholder"
                 android:layout_width="fill_parent"
