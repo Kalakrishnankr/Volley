@@ -190,7 +190,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
             int cPosition = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
-                adapter = new TouristSpotCardAdapter(getActivity().getApplicationContext(), this);
+                adapter = new TouristSpotCardAdapter(getActivity(), this);
                 if (bluebpList.size()!=0) {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
                         adapter.addAll(bluebpList.get(i));
@@ -202,13 +202,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             //From hifi fragment page
             int item_position= data.getInt("itemPosition");
             if (hifiList != null && hifiList.size() > 0) {
-                adapter = new TouristSpotCardAdapter(getActivity().getApplicationContext(), this);
+                adapter = new TouristSpotCardAdapter(getActivity(), this);
                 if (hifiList.size()>0) {
                     for (int j =item_position; j < hifiList.size(); j++) {
                         adapter.addAll(hifiList.get(j));
                     }
                     //adapter.addAll(hifiList);
-                    getAllCards(location, sgender, isCoach, minAge, maxAge);
+                    //getAllCards(location, sgender, isCoach, minAge, maxAge);
                 }
             }
         }

@@ -1683,7 +1683,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             if(requestCode == PICK_IMAGE_REQUEST){
                 //Uri picUri = data.getData();
 
-                 selectedImageUri = Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
+                 selectedImageUri = data.getData();//Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
                 if (selectedImageUri != null) {
                     File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes

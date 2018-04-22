@@ -32,6 +32,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     private Integer ageInt;
+    private String video_url,fcm_token,person_id,deviceId,personName,imageUrl;
+
     MyInterface myInterface;
 
 
@@ -101,16 +103,30 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
         }
 
-
+        if (spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().isEmpty() && !spot.getBpf_deviceId().equalsIgnoreCase("null")) {
+            deviceId = spot.getBpf_deviceId();
+        }
+        if(spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().isEmpty() && !spot.getBpf_fcmToken().equalsIgnoreCase("null")){
+            fcm_token = spot.getBpf_fcmToken();
+        }
+        if (spot.getBpf_id() != null && !spot.getBpf_id().isEmpty() && !spot.getBpf_id().equalsIgnoreCase("null")) {
+            person_id = spot.getBpf_id();
+        }
+        if (spot.getBpf_firstName() != null && !spot.getBpf_firstName().isEmpty() && !spot.getBpf_firstName().equalsIgnoreCase("null")) {
+            personName = spot.getBpf_firstName();
+        }
+        if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().isEmpty() && !spot.getBpf_imageUrl().equalsIgnoreCase("null")) {
+            imageUrl = spot.getBpf_imageUrl();
+        }
+        if (spot.getBpf_videoUrl() != null && !spot.getBpf_videoUrl().isEmpty() && !spot.getBpf_videoUrl().equalsIgnoreCase("null")) {
+            video_url = spot.getBpf_videoUrl();
+        }
 
         holder.image.setOnTouchListener(new DoubleTapListener() {
 
             @Override
             public void onSingleClick(View v) {
-                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null) {
-                    myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
-                }
-
+                    myInterface.onClick(person_id,deviceId,fcm_token);
             }
 
             @Override
@@ -120,14 +136,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 //holder.videoView.setVisibility(View.VISIBLE);
-                if(spot.getBpf_videoUrl()!=null && !spot.getBpf_videoUrl().equalsIgnoreCase("null")){
-                    holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
-                    playvideo(holder);
-                }
+                holder.videoView.setVideoURI(Uri.parse(video_url));
+                playvideo(holder);
                 // dialog.setMessage("Please wait");
-                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null ) {
-                    myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
-                }
+                myInterface.onClick(person_id, deviceId, fcm_token);
+
             }
         });
 
@@ -135,12 +148,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") && !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null
-                        && spot.getBpf_imageUrl()!=null && !spot.getBpf_imageUrl().equalsIgnoreCase("null")) {
-                    myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
-                    myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+
+                    myInterface.addView(imageUrl,personName);
+                    myInterface.onClick(person_id,deviceId,fcm_token);
                     //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
