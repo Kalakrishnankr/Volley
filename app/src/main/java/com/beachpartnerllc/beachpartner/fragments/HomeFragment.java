@@ -333,7 +333,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 try {
                                     JSONObject object = response.getJSONObject(i);
                                     JSONObject jsonObject = object.getJSONObject("user");
-
                                     BpFinderModel bpModel = new BpFinderModel();
                                     bpModel.setBpf_id(jsonObject.getString("id"));
                                     bpModel.setBpf_firstName(jsonObject.getString("firstName"));
@@ -342,6 +341,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                     bpModel.setBpf_userType(jsonObject.getString("userType"));
                                     bpModel.setBpf_age(jsonObject.getString("age"));
                                     bpModel.setBpf_dob(jsonObject.getString("dob"));
+                                    bpModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
+                                    bpModel.setBpf_deviceId(jsonObject.getString("deviceId"));
                                     bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
                                     bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
                                     bpModel.setBpf_termDate(object.getString("termDate"));

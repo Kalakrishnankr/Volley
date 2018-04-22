@@ -195,7 +195,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
                         adapter.addAll(bluebpList.get(i));
                     }
-                    adapter.addAll(bluebpList);
+                   // adapter.addAll(bluebpList);
                 }
             }
 
@@ -1112,9 +1112,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for getting bluebpstrips
     private void getBpProfiles() {
-        bluebpListSecond.clear();
-        //int pref_pageno = new PrefManager(getContext()).getPageno();
-        final int pageno = 0;
         JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
                 Response.Listener<JSONArray>() {
                     @Override
@@ -1151,7 +1148,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             }
                         }else {
                             //new PrefManager(getContext()).savePageno(-1);
-                            getBpProfiles();
+                            //getBpProfiles();
                         }
 
 

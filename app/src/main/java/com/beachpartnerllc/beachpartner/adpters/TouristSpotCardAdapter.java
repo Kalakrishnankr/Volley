@@ -107,7 +107,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
             @Override
             public void onSingleClick(View v) {
-                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("NULL") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null) {
+                if (spot.getBpf_fcmToken() != null || !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") || spot.getBpf_deviceId() != null) {
                     myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                 }
 
