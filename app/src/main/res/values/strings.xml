@@ -2,17 +2,17 @@
     <string name="app_name">BeachPartner</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
-    <string name="connect"><u>Connect with :</u></string>
+    <string name="connect"><u>Connect with:</u></string>
     <string name="dntaccount">Don\'t have an account?</string>
     <string name="signup"><u>SignUp</u></string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Username</string>
-    <string name="hint_forgot">Forgot Password</string>
+    <string name="hint_forgot">Forgot Password?</string>
     <string name="registration">REGISTER</string>
     <string name="hint_fname">First Name</string>
     <string name="hint_lname">Last Name</string>
     <string name="hint_gender">I am</string>
-    <string name="hint_dob">Birth Date</string>
+    <string name="hint_dob">Date of Birth</string>
     <string name="hintLocation">State</string> //note: state populated instead of location
     <string name="hint_email">Email</string>
     <string name="hint_mobile">Mobile Number</string>
@@ -22,6 +22,7 @@
     <string name="login">Login</string>
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
+    <string name="Invalid">Invalid Username or Password</string>
 
 
     <!--Tab Icons-->

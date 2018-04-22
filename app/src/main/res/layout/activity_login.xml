@@ -119,7 +119,7 @@
                 android:layout_height="0dp"
                 android:textSize="@dimen/text_size"
                 android:layout_weight="1.2"
-                android:gravity="top|center"
+                android:gravity="center"
                 android:textColor="@color/btnColor"
                 android:text="@string/hint_forgot"
                 android:layout_gravity="center"/>

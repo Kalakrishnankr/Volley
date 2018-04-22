@@ -416,6 +416,7 @@
                                 android:maxLines="1"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
+                                android:textSize="@dimen/text_size"
                                 android:inputType="text"
                                 android:nextFocusDown="@+id/txtvLname"
                                 android:background="@android:color/transparent"/>
@@ -456,6 +457,7 @@
                                 android:maxLines="1"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
+                                android:textSize="@dimen/text_size"
                                 android:inputType="text"
                                 android:nextFocusDown="@+id/gender_lt"
                                 android:background="@android:color/transparent"/>
@@ -498,6 +500,7 @@
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:clickable="true"
+                                android:textSize="@dimen/text_size"
                                 android:focusable="false"
                                 android:nextFocusDown="@+id/txtv_dob"
                                 android:background="@android:color/transparent"/>
@@ -537,6 +540,7 @@
                                 android:focusable="false"
                                 android:layout_weight="1"
                                 android:paddingStart="5dp"
+                                android:textSize="@dimen/text_size"
                                 android:paddingLeft="5dp"
                                 android:nextFocusDown="@+id/txtv_city"
                                 android:background="@android:color/transparent"/>
@@ -578,6 +582,7 @@
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
                                 android:completionThreshold="1"
+                                android:textSize="@dimen/text_size"
                                 android:textColor="@color/blueDark"
                                 android:nextFocusDown="@+id/txtv_mobileno"
                                 android:background="@android:color/transparent"
@@ -620,6 +625,7 @@
                                 android:singleLine="true"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
+                                android:textSize="@dimen/text_size"
                                 android:gravity="center_vertical"
                                 android:layout_weight="1"
                                 android:background="@android:color/transparent"/>

@@ -18,7 +18,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.hardware.Camera;
 import android.media.ExifInterface;
+import android.media.MediaCodec;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -128,7 +130,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private static boolean moreUploadStatus = false;
     private static boolean editStatus = false;
     public UserDataModel userDataModel;
-    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue,imageUri,videoUri;
+    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue,editHeightValue,imageUri,videoUri;
     Calendar myCalendar = Calendar.getInstance();
     private TabLayout tabs;
     private ProgressBar progressbar;
@@ -146,17 +148,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private View viewBasic, viewMore;
     private EditText editFname, editLname, editGender, editDob, editPhone;
     private AutoCompleteTextView editCity;
-    private EditText editHeight, editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
+    private EditText  editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
     private LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
     private RelativeLayout containingLt;
     private int finishCount = 0;
-    private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel;
+    private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel,editHeight;
     private AwesomeValidation awesomeValidation;
     private boolean saveFile;
     private List<FloatingActionMenu> menus = new ArrayList<>();
-    private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter;
+    private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter,heightAdapter;
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     Context mContext;
@@ -250,7 +252,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerWtoTravel.setEnabled(false);
 
 
-        editHeight      = (EditText) view.findViewById(R.id.txtvHeight);
+        editHeight      = (Spinner) view.findViewById(R.id.txtvHeight);
         editPlayed      = (EditText) view.findViewById(R.id.txtvPlayed);
         editCBVANo      = (EditText) view.findViewById(R.id.txtvCBVANo);
         editCBVAFName   = (EditText) view.findViewById(R.id.txtvCBVAFName);
@@ -400,7 +402,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerExpValue = spinnerExp.getSelectedItem().toString();
+
+                if(!spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerExpValue = spinnerExp.getSelectedItem().toString();
+                }
+                else{
+                    int spinnerExpPos=expAdapter.getPosition(spinnerPosValue);
+                    spinnerExp.setSelection(spinnerExpPos);
+                    spinnerExpValue="";
+                }
             }
 
             @Override
@@ -423,7 +433,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerPrefValue = spinnerPref.getSelectedItem().toString();
+
+                if(!spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerPrefValue = spinnerPref.getSelectedItem().toString();
+                }
+                else{
+                    int spinnerpref=prefAdapter.getPosition(spinnerPosValue);
+                    spinnerPref.setSelection(spinnerpref);
+                    spinnerPrefValue="";
+                }
             }
 
             @Override
@@ -441,12 +459,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         position.add("Primary Defender");
         position.add("Split Block/Defense");
         positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
-        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPositon.setAdapter(positionAdapter);
         spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerPosValue = spinnerPositon.getSelectedItem().toString();
+
+                if(!spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerPosValue = spinnerPositon.getSelectedItem().toString();
+                }
+                else{
+                    int spinnerposition=positionAdapter.getPosition(spinnerPosValue);
+                    spinnerPositon.setSelection(spinnerposition);
+                    spinnerPosValue="";
+                }
             }
 
             @Override
@@ -469,13 +495,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         tournamentInterest.add("Pro");
 
         tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
-        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        tournamentInterestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTLInterest.setAdapter(tournamentInterestAdapter);
 
         spinnerTLInterest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
+
+                if(!spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
+                }
+                else{
+                    int spinnerTLValuePos=tournamentInterestAdapter.getPosition(spinnerTLValue);
+                    spinnerTLInterest.setSelection(spinnerTLValuePos);
+                    spinnerTLValue="";
+                }
             }
 
             @Override
@@ -505,7 +539,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
+                if(!spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
+                }
+                else{
+                    int spinnerTRValuePos=highestRatingAdapter.getPosition(spinnerTRValue);
+                    spinnerTourRating.setSelection(spinnerTRValuePos);
+                    spinnerTRValue="";
+                }
             }
 
             @Override
@@ -528,13 +569,74 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         distance.add("Nationwide");
         distance.add("International");
         distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
-        highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWtoTravel.setAdapter(distanceAdapter);
 
         spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
+                if(!spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
+                }
+                else{
+                    int travelValuePos=distanceAdapter.getPosition(spinnerWTValue);
+                    spinnerWtoTravel.setSelection(travelValuePos);
+                    spinnerWTValue="";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        List<String> height = new ArrayList<>();
+        height.add("Please Select");
+        height.add("4' 10\"");
+        height.add("4' 11\"");
+        height.add("5' 0\"");
+        height.add("5' 1\"");
+        height.add("5' 2\"");
+        height.add("5' 3\"");
+        height.add("5' 4\"");
+        height.add("5' 5\"");
+        height.add("5' 6\"");
+        height.add("5' 7\"");
+        height.add("5' 8\"");
+        height.add("5' 9\"");
+        height.add("6' 0\"");
+        height.add("6' 1\"");
+        height.add("6' 2\"");
+        height.add("6' 3\"");
+        height.add("6' 4\"");
+        height.add("6' 5\"");
+        height.add("6' 6\"");
+        height.add("6' 7\"");
+        height.add("6' 8\"");
+        height.add("6' 9\"");
+        height.add("6' 10\"");
+        height.add("6' 11\"");
+        height.add("7' 0\"");
+
+        heightAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, height);
+        heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        editHeight.setAdapter(heightAdapter);
+
+        editHeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                    editHeightValue = editHeight.getSelectedItem().toString();
+                }
+                else{
+                    int editHeightValuePos=distanceAdapter.getPosition(editHeightValue);
+                    spinnerWtoTravel.setSelection(editHeightValuePos);
+                    editHeightValue="";
+                }
+
             }
 
             @Override
@@ -1446,7 +1548,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
                 object.put("dob",dateFormat.format(dateDOB));
-                object.put("location", editCity.getText().toString().trim());
+                object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
                 object.put("videoUrl",userDataModel.getVideoUrl().trim());
@@ -1456,7 +1558,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 object.put("email",userDataModel.getEmail().trim());
                 object.put("deviceId",userDataModel.getDeviceId().trim());
                 object.put("authToken",userDataModel.getAuthToken().trim());
-                object.put("city",userDataModel.getLocation().trim());
+//                object.put("city",userDataModel.getLocation().trim());
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1477,7 +1579,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 jsonObjectMore.put("division",0);
                 jsonObjectMore.put("experience", spinnerExpValue.trim());
                 jsonObjectMore.put("fundingStatus",0);
-                jsonObjectMore.put("height", editHeight.getText().toString().trim());
+                jsonObjectMore.put("height", editHeightValue.toString().trim());
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
                 jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue.trim());
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
@@ -1682,8 +1784,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             if(requestCode == PICK_IMAGE_REQUEST){
                 //Uri picUri = data.getData();
-
-                 selectedImageUri = Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
+                selectedImageUri=data.getData();
+//                 selectedImageUri = Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
                 if (selectedImageUri != null) {
                     File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes
@@ -1702,7 +1804,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 Uri picUri = data.getData();
-                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
+//                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
+                selectedVideoUri=data.getData();
                 if (selectedVideoUri != null) {
 
                     File file = new File(String.valueOf(getPath(selectedVideoUri)));
@@ -1761,7 +1864,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     //throws ParseException, IOException
                     HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost("http://beachpartner.com/storage/uploadProfileData");
+                    HttpPost httppost = new HttpPost("https://beachpartner.com/storage/uploadProfileData");
 //                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
 
                     FileBody videoFile = new FileBody(new File(videoPath));
@@ -2289,7 +2392,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 editDob.setText(dft.format(date_dob));
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
-                editHeight.setText(userDataModel.getHeight());
+
                 editCBVAFName.setText(userDataModel.getCbvaFirstName());
                 editCBVALName.setText(userDataModel.getCbvaLastName());
                 editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
@@ -2340,6 +2443,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (wTot != null) {
                     int willingTotravel = distanceAdapter.getPosition(wTot);
                     spinnerWtoTravel.setSelection(willingTotravel);
+                }
+                String height =userDataModel.getHeight();
+                if (height != null) {
+                    int heightVal = heightAdapter.getPosition(wTot);
+                    editHeight.setSelection(heightVal);
                 }
 
             }
@@ -2442,7 +2550,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                     // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                    takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,2097152L);// 10*1024*1024 = 10MB  10485760L
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,-5);
+
                     //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
 
                 }

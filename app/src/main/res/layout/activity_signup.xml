@@ -245,7 +245,7 @@
                         android:hint="@string/hintLocation"
                         android:inputType="text"
                         android:nextFocusDown="@id/input_mobile"
-                        android:completionThreshold="1"
+                        android:completionThreshold="2"
                         android:textColor="@color/blueDark" />
                 </android.support.design.widget.TextInputLayout>
 
