@@ -16,6 +16,7 @@ import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
+import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.bumptech.glide.Glide;
 
@@ -29,9 +30,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
     Context mContext;
     ArrayList<ConnectionModel>list;
-    public ChatListAdapter(Context context, ArrayList<ConnectionModel> chatList) {
+    MessageFragment messageFragment;
+    public ChatListAdapter(MessageFragment messageFragment,Context context, ArrayList<ConnectionModel> chatList) {
         this.mContext = context;
         this.list     = chatList;
+        this.messageFragment = messageFragment;
     }
 
     @Override
@@ -75,11 +78,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 ctrans.replace(R.id.container,chatFragmentPage);
                 ctrans.addToBackStack(null);
                 ctrans.commit();
+                disableTabMenuButtons();
             }
         });
 
     }
 
+    private void disableTabMenuButtons(){
+        messageFragment.disableMenu();
+    }
     @Override
     public int getItemCount() {
         return list.size();

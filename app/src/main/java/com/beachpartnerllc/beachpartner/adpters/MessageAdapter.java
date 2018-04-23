@@ -74,6 +74,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
                 if (new PrefManager(mContext).getUserName() != null && new PrefManager(mContext).getUserName().equals("null") ) {
                     uName=new PrefManager(mContext).getUserName();
                 }
+
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
                 bundle.putString("personId", dataList.get(position).getConnected_uId());

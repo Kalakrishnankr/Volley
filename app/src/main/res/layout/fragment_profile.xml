@@ -460,7 +460,6 @@
                                 android:paddingLeft="5dp"
                                 android:textSize="@dimen/text_size"
                                 android:inputType="text"
-                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                 android:nextFocusDown="@+id/gender_lt"
                                 android:background="@android:color/transparent"/>
 

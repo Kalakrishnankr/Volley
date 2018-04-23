@@ -39,6 +39,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -80,6 +81,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
+import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
@@ -107,10 +109,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -118,6 +120,8 @@ import java.util.Map;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
+
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
@@ -317,6 +321,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     if (selectedImageUri != null) {
                         screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
                         ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,content);
@@ -328,6 +335,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     } else if (userDataModel.getImageUrl() != null) {
                         screenshotUri = Uri.parse(userDataModel.getImageUrl());
                         ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,content);
@@ -354,12 +364,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         intent.setType("video*//*");
                         startActivity(Intent.createChooser(intent, "Share video via..."));*/
                         ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,contentvideo);
                     } else if (userDataModel.getVideoUrl() != null) {
                         screenshotVideoUri = Uri.parse(userDataModel.getVideoUrl());
                         ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,contentvideo);
@@ -1357,6 +1373,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 //        editPassword.setEnabled(true);
 //        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
+        editLname.setFilters(new InputFilter[] {
+                new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence cs, int start,
+                                               int end, Spanned spanned, int dStart, int dEnd) {
+                        // TODO Auto-generated method stub
+                        if(cs.equals("")){ // for backspace
+                            return cs;
+                        }
+                        if(cs.toString().matches("[a-zA-Z ]+")){
+                            return cs;
+                        }
+                        return "";
+                    }
+                }
+        });
     }
 
     private void editMoreInfo() {
@@ -1541,8 +1573,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString().trim();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-            Date dateDOB  = new Date(dateOb);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.US);
+            Date dateDOB  = new Date(Long.parseLong(dateOb));
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
@@ -1791,7 +1823,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                  selectedImageUri = data.getData();//Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
 
                 if (selectedImageUri != null) {
-                    File imgfile = new File(String.valueOf(selectedImageUri));
+                    File imgfile = new File(SelectedFilePath.getPath(getApplicationContext(),selectedImageUri));
+                    //File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes
 
                     if (fileSize(imgfile.length()) <= 4) {
@@ -1815,8 +1848,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 if (selectedVideoUri != null) {
 
-                    File file = new File(String.valueOf(getPath(selectedVideoUri)));
+//                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
+                selectedVideoUri=data.getData();
 
+
+                if (selectedVideoUri != null) {
+
+                   // File file = new File(String.valueOf(getPath(selectedVideoUri)));
+                    File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
                     if (fileSize(file.length()) <= 30&&videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         imgVideo.setVisibility(View.VISIBLE);
@@ -1845,6 +1884,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
 
         }
+    }
     }
 
     //Method for check the size of the selected file

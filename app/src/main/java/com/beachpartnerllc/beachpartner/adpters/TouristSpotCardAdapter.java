@@ -1,10 +1,10 @@
 package com.beachpartnerllc.beachpartner.adpters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
-import android.media.MediaPlayer;
 import android.net.Uri;
-import android.os.Build;
 import android.support.v7.widget.CardView;
+import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.beachpartnerllc.beachpartner.MyInterface;
@@ -22,6 +23,19 @@ import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.DoubleTapListener;
 import com.beachpartnerllc.beachpartner.utils.RotateLoading;
 import com.bumptech.glide.Glide;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -32,10 +46,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     private Integer ageInt;
-    private String video_url,fcm_token,person_id,deviceId,personName,imageUrl;
-
+    private String video_url,fcm_token,person_id=null,deviceId,personName,imageUrl;
     MyInterface myInterface;
-
 
 
     public TouristSpotCardAdapter(Context context,MyInterface inter) {
@@ -45,6 +57,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     public View getView(int position, View contentView, ViewGroup parent) {
         final ViewHolder holder;
@@ -64,9 +77,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
         final BpFinderModel spot = getItem(position);
 
-        holder.videoView.stopPlayback();
-        holder.videoView.setVisibility(View.GONE);
-        holder.spinnerView.setVisibility(View.GONE);
+        holder.exoPlayerView.setVisibility(View.INVISIBLE);
+       // holder.exoPlayerView.getOverlayFrameLayout().setFocusable(false);
+       // holder.exoPlayer.clearVideoSurface();
+        holder.spinnerView.setVisibility(View.INVISIBLE);
         holder.image.setVisibility(View.VISIBLE);
 
         if (spot.getBpf_age() != null) {
@@ -121,26 +135,59 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         if (spot.getBpf_videoUrl() != null && !spot.getBpf_videoUrl().isEmpty() && !spot.getBpf_videoUrl().equalsIgnoreCase("null")) {
             video_url = spot.getBpf_videoUrl();
         }
+        //
+
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+        holder.exoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector);
+        final DefaultHttpDataSourceFactory dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
+        final ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
+        holder.exoPlayerView.hideController();
+        holder.exoPlayerView.setControllerAutoShow(false);
+
+      //  holder.exoPlayerView
+
+        //
 
         holder.image.setOnTouchListener(new DoubleTapListener() {
 
             @Override
             public void onSingleClick(View v) {
-                    myInterface.onClick(person_id,deviceId,fcm_token);
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+
             }
 
             @Override
             public void onDoubleClick(View v) {
-                holder.image.setVisibility(View.VISIBLE);
-                //holder.progressBar.setVisibility(View.VISIBLE);
-                holder.spinnerView.setVisibility(View.VISIBLE);
-                holder.spinnerView.start();
-                //holder.videoView.setVisibility(View.VISIBLE);
-                holder.videoView.setVideoURI(Uri.parse(video_url));
-                playvideo(holder);
-                // dialog.setMessage("Please wait");
-                myInterface.onClick(person_id, deviceId, fcm_token);
+              //  holder.image.setVisibility(View.VISIBLE);
 
+                //holder.progressBar.setVisibility(View.VISIBLE);
+              //  holder.spinnerView.setVisibility(View.VISIBLE);
+               // holder.spinnerView.start();
+                //holder.videoView.setVisibility(View.VISIBLE);
+                if (video_url != null) {
+                    //holder.videoView.setVideoURI(Uri.parse(spot.getBpf_videoUrl()));
+                    holder.exoPlayerView.setVisibility(View.VISIBLE);
+                    MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(spot.getBpf_videoUrl()),dataSourceFactory,extractorsFactory,null,null);
+
+                    holder.exoPlayerView.setPlayer(holder.exoPlayer );
+                    holder.exoPlayer.prepare(mediaSource);
+                    holder.exoPlayer.setPlayWhenReady(true);
+                    holder.exoPlayer.setVolume(0);
+                    holder.exoPlayerView.setOnDragListener(new View.OnDragListener() {
+                        @Override
+                        public boolean onDrag(View view, DragEvent dragEvent) {
+                            Toast.makeText(mContext, "Draged", Toast.LENGTH_SHORT).show();
+                            return false;
+                        }
+                    });
+
+                    // playvideo(holder);
+                }
+                // dialog.setMessage("Please wait");
+               /* if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().equals("") ) {
+                    myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
+                }*/
             }
         });
 
@@ -148,11 +195,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                    myInterface.addView(imageUrl,personName);
-                    myInterface.onClick(person_id,deviceId,fcm_token);
-                    //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
-
+                myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
             }
         });
 
@@ -172,7 +216,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         return position;
     }
 
-    private void playvideo(final ViewHolder holder) {
+    /*private void playvideo(final ViewHolder holder) {
 
         holder.videoView.start();
         holder.videoView.setVisibility(View.VISIBLE);
@@ -205,7 +249,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 }
             });
         }
-    }
+    }*/
 
 
 
@@ -220,12 +264,14 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         public FrameLayout frameLayout;
         public ImageView frameImage;
         public RelativeLayout relativeLayout;
+        SimpleExoPlayerView exoPlayerView;
+        SimpleExoPlayer exoPlayer;
 
         public ViewHolder(View view) {
             name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
             userType    =   (TextView) view.findViewById(R.id.item_tourist_spot_card_city);
             image       =   (ImageView) view.findViewById(R.id.img_view);
-            videoView   =   (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
+            //videoView   =   (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
             progressBar =   (RotateLoading)view.findViewById(R.id.prsbar);
             info        =   (Button)view.findViewById(R.id.btnInfo);
 
@@ -234,6 +280,11 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             frameLayout = (FrameLayout)view.findViewById(R.id.placeholder);
             frameImage = (ImageView) view.findViewById(R.id.frameimg_view);
             relativeLayout = (RelativeLayout)view.findViewById(R.id.cardlayout);
+
+            exoPlayerView       = (SimpleExoPlayerView)view.findViewById(R.id.exo_player_view);
+           /* exoPlayerView.hideController();
+            exoPlayerView.setControllerAutoShow(false);*/
+            ;
         }
     }
 
