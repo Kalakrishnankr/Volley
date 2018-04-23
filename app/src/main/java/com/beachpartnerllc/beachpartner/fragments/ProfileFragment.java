@@ -29,6 +29,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -47,6 +48,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -121,6 +123,7 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import static com.beachpartnerllc.beachpartner.utils.SelectedFilePath.getDataColumn;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -182,6 +185,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         getActivity().getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
@@ -190,6 +194,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         user_id = new PrefManager(getContext()).getUserId();
         setUp();
         initActivity(view);
+
+        getActivity().getActionBar();
 
         return view;
     }
@@ -1819,11 +1825,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             if(requestCode == PICK_IMAGE_REQUEST){
                 //Uri picUri = data.getData();
 
-
                  selectedImageUri = data.getData();//Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
 
                 if (selectedImageUri != null) {
-                    File imgfile = new File(SelectedFilePath.getPath(getApplicationContext(),selectedImageUri));
+
+
+                    File imgfile = new File(getRealPath(selectedImageUri));
                     //File imgfile = new File(String.valueOf(selectedImageUri));
                     // Get length of file in bytes
 
@@ -1846,16 +1853,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 selectedVideoUri=data.getData();
 
 
-                if (selectedVideoUri != null) {
 
-//                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
-                selectedVideoUri=data.getData();
 
 
                 if (selectedVideoUri != null) {
 
                    // File file = new File(String.valueOf(getPath(selectedVideoUri)));
-                    File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
+                    File file = new File(getRealPath(selectedVideoUri));
                     if (fileSize(file.length()) <= 30&&videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         imgVideo.setVisibility(View.VISIBLE);
@@ -1867,7 +1871,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     }
                 }
 
-            }
+
 
 
         }
@@ -2025,11 +2029,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void uploadVideoFiles(final String videoPath, final String userId) {
 
-        progress = new ProgressDialog(getContext());
+        /*progress = new ProgressDialog(getContext());
         progress.setTitle("Loading");
         progress.setMessage("Wait while loading...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();
+        progress.show();*/
+        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+
+
 
         Thread thread = new Thread(new Runnable(){
             @Override
@@ -2081,7 +2088,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                                 if (result != null) {
                                     result.consumeContent( );
-                                    progressbar.setVisibility(View.GONE);
+                                    //progressbar.setVisibility(View.GONE);
+                                    if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+                                    } else {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.FALSE);
+                                    }
 
                                 } // end if
 
@@ -2840,6 +2852,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             return bmOut;
         }
         return bm;
+    }
+
+
+
+
+    @SuppressLint("NewApi")
+    private String getRealPath(Uri uri){
+        String filePath = null;
+        String uriString = uri.toString();
+
+        if(uriString.startsWith("content://media")){
+            filePath = getDataColumn(getActivity(), uri, null, null);
+        } else if (uriString.startsWith("file")){
+            filePath = uri.getPath();
+        } else if (uriString.startsWith("content://com")){
+            String docId = DocumentsContract.getDocumentId(uri);
+            String[] split = docId.split(":");
+            Uri contentUri = null;
+            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            String selection = "_id=?";
+            String[] selectionArgs = new String[] {split[1]};
+            filePath = getDataColumn(getActivity(), contentUri, selection, selectionArgs);
+        }
+
+        return filePath;
     }
 
     private class Adapter extends FragmentPagerAdapter {
