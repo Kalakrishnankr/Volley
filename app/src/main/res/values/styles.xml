@@ -30,6 +30,10 @@
         <item name="android:textColor">@color/white</item>
     </style>
 
+    <style name="TextAppearence.App.TextInputLayout.ParentDetails" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/blueDark</item>
+    </style>
+
 
     <style name="MenuButtonsSmall">
         <item name="fab_size">mini</item>

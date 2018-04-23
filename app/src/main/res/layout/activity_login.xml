@@ -74,6 +74,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_userName"
+                    android:textSize="@dimen/text_size"
                     android:textColor="@color/colorPrimary"
                     android:inputType="textEmailAddress" />
             </android.support.design.widget.TextInputLayout>
@@ -90,6 +91,7 @@
                     android:id="@+id/input_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textSize="@dimen/text_size"
                     android:hint="@string/hint_password"
                     android:drawableRight="@drawable/ic_pwd_toggle"
                     android:textColor="@color/colorPrimary"

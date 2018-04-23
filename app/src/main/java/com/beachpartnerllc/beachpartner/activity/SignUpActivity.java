@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -79,7 +80,7 @@ public class SignUpActivity extends AppCompatActivity{
     private VideoView videoView;
 
     private EditText user_fname,user_lname,user_dob,user_email,user_confPasswd,user_mobileno;
-    private AutoCompleteTextView user_location_spinner;
+    private CustomEditText user_location_spinner;
     CustomEditText user_password;
     private String userName,lastName,dob,email,pass,confnPass,location,mobileno,android_id;
     private Button btnsignUp,user_male,user_female;
@@ -94,10 +95,11 @@ public class SignUpActivity extends AppCompatActivity{
     private String userType;
     private int paymentStatus;
     private ProgressDialog progress;
+    private  boolean minorStatus=false;
 
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
-    private boolean locationSelectedStatus=false;
+    private String locationSelectedStatus;
     TextView txt_fnameError,user_lnameError,txt_mobileError, txt_confirmError, txt_dobError,txt_emailError,txt_passwordError,txt_usrTypeError,txt_genderError,txt_cityError;
 
 
@@ -132,7 +134,7 @@ public class SignUpActivity extends AppCompatActivity{
         user_email      = (EditText)  findViewById(R.id.input_email);
         user_password   = (CustomEditText)  findViewById(R.id.input_password);
         user_confPasswd = (EditText)  findViewById(R.id.input_confirm_password);
-        user_location_spinner   = (AutoCompleteTextView)  findViewById(R.id.input_city);
+        user_location_spinner   = (CustomEditText)  findViewById(R.id.input_city);
         user_mobileno   = (EditText)  findViewById(R.id.input_mobile);
         btnsignUp       = (Button)    findViewById(R.id.btnSignUp);
         llogin          = (LinearLayout) findViewById(R.id.login);
@@ -171,12 +173,15 @@ public class SignUpActivity extends AppCompatActivity{
                     //user_fname.setText("");
 
                     txt_fnameError.setVisibility(View.VISIBLE);
-                    txt_fnameError.setText(getResources().getString(R.string.nameerror));
+                    txt_fnameError.setText(getResources().getString(R.string.fname_blank));
 
-                }else if(hasFocus){
+                }
+                else if(!hasFocus&&  new FormValidator().validateEditText(user_fname).equalsIgnoreCase("valid")){
+                    txt_fnameError.setVisibility(View.GONE);
+                }
+                else if(hasFocus){
 
                     txt_fnameError.setVisibility(View.GONE);
-
                 }
             }
         });
@@ -186,20 +191,23 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
-                if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("special character")) {
+                if(!hasFocus && new FormValidator().validateLastName(user_lname).equalsIgnoreCase("special character")) {
                     //user_fname.setText("");
 
                     user_lnameError.setVisibility(View.VISIBLE);
                     user_lnameError.setText(getResources().getString(R.string.lnameerror));
 
-                }else if(!hasFocus && new FormValidator().validateEditText(user_fname).equalsIgnoreCase("failed")){
+                }else if(!hasFocus && new FormValidator().validateLastName(user_lname).equalsIgnoreCase("failed")){
                     //user_lname.setText("");
 
                     user_lnameError.setVisibility(View.VISIBLE);
-                    user_lnameError.setText(getResources().getString(R.string.lnameerror));
+                    user_lnameError.setText(getResources().getString(R.string.lname_blank));
 
-                }else if(hasFocus){
-
+                }
+                else if(!hasFocus&&  new FormValidator().validateEditText(user_lname).equalsIgnoreCase("valid")){
+                    user_lnameError.setVisibility(View.GONE);
+                }
+                else if(hasFocus){
                     user_lnameError.setVisibility(View.GONE);
 
                 }
@@ -210,7 +218,7 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
-                if(user_dob.getText().toString().trim().equals(null)) {
+                if(user_dob.getText().toString().trim().equals("")) {
                     user_dob.setText("");
 
                     txt_dobError.setVisibility(View.VISIBLE);
@@ -287,20 +295,28 @@ public class SignUpActivity extends AppCompatActivity{
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
 
-                if(!hasFocus && user_mobileno.getText().length()<=0) {
-                    // user_mobileno.setText("");
-
+                if(!hasFocus && (user_mobileno.getText().length()<10)) {
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
 
                 }else if(!hasFocus && user_mobileno.getText().toString().equals(null)){
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
-
-                }else if(hasFocus){
-
+                }
+                else if(hasFocus && user_mobileno.getText().length()<10){
+                    txt_mobileError.setVisibility(View.VISIBLE);
+                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+                }
+                else if(!hasFocus &&(user_mobileno.getText().length()==10)){
                     txt_mobileError.setVisibility(View.GONE);
+                }
 
+                else if(hasFocus &&(user_mobileno.getText().length()==10)){
+                    txt_mobileError.setVisibility(View.GONE);
+                }
+
+                else if(hasFocus ){
+                    txt_mobileError.setVisibility(View.GONE);
                 }
             }
         });
@@ -314,6 +330,9 @@ public class SignUpActivity extends AppCompatActivity{
                     userType="Coach";
                 }else {
                     userType="Athlete";
+                    if(minorStatus){
+                        alertMinor();
+                    }
                 }
                 txt_usrTypeError.setVisibility(View.GONE);
                 // Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
@@ -385,31 +404,10 @@ public class SignUpActivity extends AppCompatActivity{
            }
        });
 
-        addLocation();
 
 
 
-        dataAdapter     = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_item, stateList);
 
-        Typeface font   = Typeface.createFromAsset(getApplicationContext().getAssets(),
-                "fonts/SanFranciscoTextRegular.ttf");
-        user_location_spinner.setTypeface(font);
-        user_location_spinner.setAdapter(dataAdapter);
-
-        user_location_spinner.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                locationSelectedStatus=true;
-                location = dataAdapter.getItem(position);
-            }
-
-        });
-        user_location_spinner.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                locationSelectedStatus=false;
-            }
-        });
 
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
@@ -461,6 +459,7 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                     Integer ageInt = new Integer(age);
                     if(ageInt<18){
+                        minorStatus =true;
                         if(userType!=null){
                             if(userType.equals("Athlete")){
                                 alertMinor();
@@ -476,11 +475,12 @@ public class SignUpActivity extends AppCompatActivity{
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                txt_dobError.setVisibility(View.GONE);
                 DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
                 dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
-                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
+                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == DialogInterface.BUTTON_NEGATIVE) {
                             txt_dobError.setVisibility(View.VISIBLE);
@@ -492,6 +492,14 @@ public class SignUpActivity extends AppCompatActivity{
 
             }
         });
+
+        user_location_spinner.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                toursPlayed();
+            }
+        });
+
 
         //SignUp here
         btnsignUp.setOnClickListener(new View.OnClickListener() {
@@ -535,10 +543,18 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_mobileError.setVisibility(View.VISIBLE);
                         txt_mobileError.setText(getResources().getString(R.string.mobile_blank));
                     }
+                    else if(mobileno.length()==10){
+                        txt_mobileError.setVisibility(View.GONE);
+                    }
+
                     if(location == null || location.length()==0){
                       txt_cityError.setVisibility(View.VISIBLE);
                       txt_cityError.setText(getString(R.string.cityerror));
                     }
+                    else{
+                        txt_cityError.setVisibility(View.GONE);
+                    }
+
                     if (userType == null && dob.length() == 0) {
 
                         txt_dobError.setVisibility(View.VISIBLE);
@@ -562,7 +578,7 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
                     }
 
-                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==0 && location.length()==0 ) {
+                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==0 &&locationSelectedStatus!="") {
                             submitForm();
                     }
 
@@ -572,6 +588,31 @@ public class SignUpActivity extends AppCompatActivity{
         });
     }
 
+    public void toursPlayed() {
+        final String[] items = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont", "Virginia", " Washington ", "West Virginia", "Wisconsin ", "Wyoming "};
+// arraylist to keep the selected items
+
+        final android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(SignUpActivity.this, android.app.AlertDialog.THEME_HOLO_LIGHT)
+                .setTitle("Select-Tours Played in")
+                .setSingleChoiceItems(items, 0, new OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        user_location_spinner.setText(items[which]);
+                        location=items[which];
+                        dialog.dismiss();
+                    }
+                }).create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+
+            }
+        });
+
+        dialog.show();
+
+    }
 
 //    private void addValidationToViews() {
 //        //adding validation to edittext
@@ -794,13 +835,13 @@ public class SignUpActivity extends AppCompatActivity{
     private void alertMinor() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Will you be able to manage your payments?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                             paymentStatus=0;
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("No", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         alertPayments();
@@ -816,14 +857,14 @@ public class SignUpActivity extends AppCompatActivity{
     private void alertPayments() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Do you want to link your account with your parent?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Yes", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         paymentStatus=2;
                         alertEnterParentDetails();
                     }
                 })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                .setNegativeButton("No", new OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
@@ -893,59 +934,7 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
 
-    public void addLocation() {
-        stateList.add("Alabama");
-        stateList.add("Alaska");
-        stateList.add("Arizona");
-        stateList.add("Arkansas");
-        stateList.add("California");
-        stateList.add("Colorado");
-        stateList.add("Connecticut");
-        stateList.add("Delaware");
-        stateList.add("Florida");
-        stateList.add("Georgia");
-        stateList.add("Hawaii");
-        stateList.add("Idaho");
-        stateList.add("Illinois");
-        stateList.add("Indiana");
-        stateList.add("Iowa");
-        stateList.add("Kansas");
-        stateList.add("Kentucky");
-        stateList.add("Louisiana");
-        stateList.add("Maine");
-        stateList.add("Maryland");
-        stateList.add("Massachusetts");
-        stateList.add("Michigan");
-        stateList.add("Minnesota");
-        stateList.add("Mississippi");
-        stateList.add("Missouri");
-        stateList.add("Montana");
-        stateList.add("Nebraska");
-        stateList.add("Nevada");
-        stateList.add("New Hampshire");
-        stateList.add("New Jersey");
-        stateList.add("New Mexico");
-        stateList.add("New York");
-        stateList.add("North Carolina");
-        stateList.add("North Dakota");
-        stateList.add("Ohio");
-        stateList.add("Oklahoma");
-        stateList.add("Oregon");
-        stateList.add("Pennsylvania");
-        stateList.add("Rhode Island");
-        stateList.add("South Carolina");
-        stateList.add("South Dakota");
-        stateList.add("Tennessee");
-        stateList.add("Texas");
-        stateList.add("Utah");
-        stateList.add("Vermont");
-        stateList.add("Virginia");
-        stateList.add("Washington");
-        stateList.add("West Virginia");
-        stateList.add("Wisconsin WI");
-        stateList.add("Wyoming WY");
 
-    }
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 

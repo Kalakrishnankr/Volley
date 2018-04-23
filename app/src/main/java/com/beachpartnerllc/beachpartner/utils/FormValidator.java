@@ -33,7 +33,7 @@ public class FormValidator {
 
         if(fields.getText().toString().trim().length() > 0){
 
-            Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+            Pattern p = Pattern.compile("[^a-zA-Z ]", Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(fields.getText().toString().trim());
             boolean check = m.find();
 
@@ -49,6 +49,30 @@ public class FormValidator {
 
         return validationResponse;
     }
+
+    public String validateLastName(EditText fields){
+        String validationResponse = "failed";
+
+        if(fields.getText().toString().trim().length() > 0){
+
+            Pattern p = Pattern.compile("^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", Pattern.CASE_INSENSITIVE);
+            Matcher m = p.matcher(fields.getText().toString().trim());
+            boolean check = m.find();
+
+            if(check){
+
+                validationResponse = "valid";
+            }else {
+                validationResponse = "special character";
+            }
+
+        }else{
+            validationResponse = "failed";
+        }
+
+        return validationResponse;
+    }
+
 
 
     public boolean emailValidator(EditText fields){

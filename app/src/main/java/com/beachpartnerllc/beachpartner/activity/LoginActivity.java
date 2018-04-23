@@ -323,34 +323,43 @@ public class LoginActivity extends AppCompatActivity {
 
                 result = (EditText) alertLayout.findViewById(R.id.editTextDialogUserInput);
 
-                final AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
+                AlertDialog.Builder alert = new AlertDialog.Builder(LoginActivity.this);
                 alert.setTitle("Reset Password");
                 alert.setView(alertLayout);
                 alert.setCancelable(false);
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 
                  @Override public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(getBaseContext(), "Reset cancelled", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Reset cancelled", Toast.LENGTH_SHORT).show();
                     }
                 });
 
-                alert.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                alert.setPositiveButton("Submit",
+                        new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
 
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String user_email = result.getText().toString().trim();
-                    if(isValidateUserName(user_email)){
-                        dialog.dismiss();
-                        //Method to call reset password
-                        resetPassword(user_email);
-                        //Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
-                    }else {
-                        Toast.makeText(getBaseContext(), "Please enter a valid email and then click submit" + user_email , Toast.LENGTH_SHORT).show();
-                    }
-                    }
-                });
-                AlertDialog dialog = alert.create();
+                            }
+                        });
+                final AlertDialog dialog = alert.create();
                 dialog.show();
+
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener( new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                            String user_email = result.getText().toString().trim();
+                            if(isValidateUserName(user_email)){
+                                dialog.dismiss();
+                                //Method to call reset password
+                                resetPassword(user_email);
+                                //Toast.makeText(getBaseContext(), "Mail will be sent to: " + user_email , Toast.LENGTH_SHORT).show();
+                            }else {
+                                result.setError(getString(R.string.emailerror));
+                            }
+                    }
+                });
 
             }
 
@@ -615,7 +624,7 @@ private void neverGotEmailAlertTextUnderline(){
             ds.setUnderlineText(true);
         }
     };
-    ss.setSpan(clickableSpan, 133, 143, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    ss.setSpan(clickableSpan, 95, 105, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
     never_got_email_tv.setText(ss);

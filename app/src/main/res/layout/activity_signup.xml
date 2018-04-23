@@ -275,19 +275,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-
                         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
                         <com.beachpartnerllc.beachpartner.CustomEditText
                             android:id="@+id/input_mobile"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:focusableInTouchMode="true"
+                            android:clickable="true"
+                            android:focusable="true"
                             android:hint="@string/hint_mobile"
-                            android:inputType="phone"
+                            android:inputType="number"
+                            android:focusableInTouchMode="true"
                             android:maxLength="10"
-                            android:textColor="@color/colorPrimary"
-                            android:textIsSelectable="true" />
+                            android:textColor="@color/colorPrimary" />
                     </android.support.design.widget.TextInputLayout>
                     <TextView
                         android:id="@+id/txt_mobileError"
@@ -304,13 +304,14 @@
                         android:layout_weight="1"
                         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-                        <AutoCompleteTextView
+                        <com.beachpartnerllc.beachpartner.CustomEditText
                             android:id="@+id/input_city"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:hint="@string/hintLocation"
-                            android:inputType="text"
-                            android:textColor="@color/blueDark" />
+                            android:clickable="true"
+                            android:focusable="false"
+                            android:textColor="@color/colorPrimary" />
                     </android.support.design.widget.TextInputLayout>
                     <TextView
                         android:id="@+id/txt_cityError"
@@ -352,6 +353,7 @@
             android:layout_weight="1"
             android:orientation="horizontal"
             android:weightSum="2"
+            android:gravity="center"
             android:layout_marginTop="10dp">
 
 

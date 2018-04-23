@@ -15,6 +15,7 @@
                 android:textSize="@dimen/textsize_header"
                 android:gravity="center"
                 android:textStyle="bold"
+                android:background="@color/smallgrey"
                 android:text="Enter your parent details"
                 android:textColor="@color/btnColor"/>
     </LinearLayout>
@@ -23,13 +24,15 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.ParentDetails">
 
         <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_firstname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/hint_fname"
+            android:focusableInTouchMode="true"
+            android:textSize="@dimen/text_size"
             android:inputType="textCapWords"
             android:textColor="@color/colorPrimary" />
     </android.support.design.widget.TextInputLayout>
@@ -39,13 +42,14 @@
         android:layout_height="0dp"
         android:paddingLeft="5dp"
         android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.ParentDetails">
 
         <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_lastname"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/hint_lname"
+            android:textSize="@dimen/text_size"
             android:inputType="textCapWords"
             android:textColor="@color/colorPrimary" />
     </android.support.design.widget.TextInputLayout>
@@ -54,14 +58,15 @@
         android:layout_height="0dp"
         android:paddingLeft="5dp"
         android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.ParentDetails">
 
         <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_email"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:hint="@string/hint_email"
-            android:inputType="textCapWords"
+            android:textSize="@dimen/text_size"
+            android:inputType="text"
             android:textColor="@color/colorPrimary" />
     </android.support.design.widget.TextInputLayout>
 
@@ -70,12 +75,13 @@
         android:layout_height="0dp"
         android:paddingLeft="5dp"
         android:layout_weight="1"
-        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout.ParentDetails">
 
         <com.beachpartnerllc.beachpartner.CustomEditText
             android:id="@+id/input_parent_phone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:textSize="@dimen/text_size"
             android:hint="@string/hint_mobile"
             android:inputType="number"
             android:textColor="@color/colorPrimary" />
