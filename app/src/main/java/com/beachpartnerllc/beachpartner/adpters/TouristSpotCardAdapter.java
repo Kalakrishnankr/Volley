@@ -32,7 +32,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     private Integer ageInt;
-    private String video_url,fcm_token,person_id,deviceId,personName,imageUrl;
+    private String video_url,fcm_token,person_id=null,deviceId,personName,imageUrl;
 
     MyInterface myInterface;
 
@@ -126,7 +126,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
             @Override
             public void onSingleClick(View v) {
-                    myInterface.onClick(person_id,deviceId,fcm_token);
+                    myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
             }
 
             @Override
@@ -136,10 +136,12 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 holder.spinnerView.setVisibility(View.VISIBLE);
                 holder.spinnerView.start();
                 //holder.videoView.setVisibility(View.VISIBLE);
-                holder.videoView.setVideoURI(Uri.parse(video_url));
-                playvideo(holder);
+                if (video_url != null) {
+                    holder.videoView.setVideoURI(Uri.parse(video_url));
+                    playvideo(holder);
+                }
                 // dialog.setMessage("Please wait");
-                myInterface.onClick(person_id, deviceId, fcm_token);
+                //myInterface.onClick(person_id, deviceId, fcm_token);
 
             }
         });
@@ -148,9 +150,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.info.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                    myInterface.addView(imageUrl,personName);
-                    myInterface.onClick(person_id,deviceId,fcm_token);
+                myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
                     //Toast.makeText(getContext(), "Clicked", Toast.LENGTH_SHORT).show();
 
             }
@@ -201,6 +202,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
+                    mp.setVolume(0,0);
                     holder.frameLayout.setVisibility(View.GONE);
                 }
             });

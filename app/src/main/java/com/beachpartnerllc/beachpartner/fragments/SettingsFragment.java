@@ -144,7 +144,11 @@ public class SettingsFragment extends Fragment {
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
 
                 if (thumbIndex == 0) {
-                    tvMin.setText(String.valueOf(value));
+                    if (value < 5) {
+                        tvMin.setText(String.valueOf(5));
+                    }else {
+                        tvMin.setText(String.valueOf(value));
+                    }
                 } else {
                     tvMax.setText(String.valueOf(value));
                 }

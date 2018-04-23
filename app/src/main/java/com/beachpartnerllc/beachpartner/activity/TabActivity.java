@@ -36,6 +36,7 @@ public class TabActivity extends AppCompatActivity  {
     private static boolean doubleBackToExitPressedOnce = false;
     private static boolean isBPActive = false;
     private static boolean isPartnerFinder = false;
+    private FrameLayout fg;
     HomeFragment homeFragment;
     FloatingActionButton menu1;
     FloatingActionButton menu2;
@@ -198,7 +199,7 @@ public class TabActivity extends AppCompatActivity  {
         setContentView(R.layout.activity_tab);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
-        FrameLayout fg = (FrameLayout) findViewById(R.id.container);
+        fg = (FrameLayout) findViewById(R.id.container);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
@@ -392,13 +393,37 @@ public class TabActivity extends AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
-        if (getFragmentManager().getBackStackEntryCount() > 0) {
-            getFragmentManager().popBackStack();
+      if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+            getSupportFragmentManager().popBackStack();
         } else {
-            super.onBackPressed();
+           // super.onBackPressed();
+          new AlertDialog.Builder(this)
+                  .setTitle("Close App ?")
+                  .setMessage("Do you really want to exit app?")
+                  .setPositiveButton("YES",
+                          new DialogInterface.OnClickListener() {
+
+                              @Override
+                              public void onClick(DialogInterface dialog,
+                                                  int which) {
+
+                                  //finish();
+                                  Intent intent = new Intent(TabActivity.this,LoginActivity.class);
+                                  startActivity(intent);
+                                  finish();
+                              }
+                          })
+                  .setNegativeButton("NO",
+                          new DialogInterface.OnClickListener() {
+
+                              @Override
+                              public void onClick(DialogInterface dialog,
+                                                  int which) {
+                              }
+                          }).show();
         }
+
+
     }
-
-
 
 }

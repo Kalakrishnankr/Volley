@@ -3,10 +3,6 @@ package com.beachpartnerllc.beachpartner.adpters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -20,9 +16,7 @@ import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
-import com.beachpartnerllc.beachpartner.fragments.NoteFragment;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.bumptech.glide.Glide;
 
@@ -106,13 +100,11 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 @Override
                 public void onClick(View v) {
 
-                    AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                    NoteFragment noteFragment =new NoteFragment();
+
                     Bundle bundle = new Bundle();
                     bundle.putString("personId",model.getConnected_uId());
                     bundle.putString("personName",model.getConnected_firstName());
-                    noteFragment.setArguments(bundle);
-                    activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
+                    connectionInterface.connectionToNote(bundle);
 
 
 
@@ -132,19 +124,14 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             holder.txtv_message.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
+
                     Bundle bundle = new Bundle();
                     bundle.putString("personId", model.getConnected_uId());
                     bundle.putString("personName",model.getConnected_firstName());
                     bundle.putString("myName",new PrefManager(mContext).getUserName());
                     bundle.putString("personPic",model.getConnected_imageUrl());
-                    chatFragmentPage.setArguments(bundle);
-                    FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
-                    FragmentTransaction ctrans = manager.beginTransaction();
-                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                    ctrans.replace(R.id.container,chatFragmentPage);
-                    ctrans.addToBackStack(null);
-                    ctrans.commit();
+                    connectionInterface.transition(bundle);
+
                 }
             });
             final String active_status = dataLists.get(position).getConnected_status();
@@ -168,12 +155,12 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     //unblock api
                     if (!active_status.isEmpty() && active_status.equals("Blocked")) {
                         String personid = model.getConnected_uId();
-                        connectionInterface.unblock(personid);
+                        connectionInterface.unblock(personid,model.getConnected_firstName());
                         holder.ItemChanged(position);
                     //block
                     }else if(!active_status.isEmpty() && active_status.equals("Active")) {
                         String personid = model.getConnected_uId();
-                        connectionInterface.block(personid);
+                        connectionInterface.block(personid,model.getConnected_firstName());
                         holder.reMovePosition(position);
                     }
 

@@ -191,11 +191,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             int cPosition = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                if (bluebpList.size()!=0) {
+                if (bluebpList.size()>0) {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
                         adapter.addAll(bluebpList.get(i));
                     }
-                   // adapter.addAll(bluebpList);
+
                 }
             }
 
@@ -207,10 +207,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     for (int j =item_position; j < hifiList.size(); j++) {
                         adapter.addAll(hifiList.get(j));
                     }
-                    //adapter.addAll(hifiList);
-                    //getAllCards(location, sgender, isCoach, minAge, maxAge);
                 }
             }
+            getAllCards(location, sgender, isCoach, minAge, maxAge);
+
         }
 
         return view;
@@ -349,7 +349,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
 
                 if (thumbIndex == 0) {
-                    tvMin.setText(String.valueOf(value));
+                    if (value < 5) {
+                        tvMin.setText("5");
+                    }else {
+                        tvMin.setText(String.valueOf(value));
+                    }
                 } else {
                     tvMax.setText(String.valueOf(value));
                 }
@@ -445,7 +449,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
-                if ((minAge >= 5 && maxAge <= 100) && !(minAge == maxAge)) {
                     if (sgender.equals("Both")) {
                         sgender = "";
                     }
@@ -482,9 +485,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     }
 
                     getAllCards(location, sgender, isCoach, minAge, maxAge);
-                }else {
-                    Toast.makeText(getActivity(), "Please choose minimum age limit is greater than 5", Toast.LENGTH_SHORT).show();
-                }
+
             }
         });
 
@@ -528,7 +529,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     String r=fcmToken;
                     String uName =new PrefManager(getContext()).getUserName();
                     if (fcmToken != null && !fcmToken.equalsIgnoreCase("null") && uName != null && !uName.equalsIgnoreCase("null")) {
-                        sendMessage(r,"BeachPartner",uName +"sent you a high five","");
+                        sendMessage(r,"BeachPartner",uName +" sent you a high five","");
                     }
                 }
 

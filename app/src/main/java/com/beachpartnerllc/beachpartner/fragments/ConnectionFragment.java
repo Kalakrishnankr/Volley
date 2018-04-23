@@ -4,6 +4,8 @@ import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.GridLayoutManager;
@@ -296,7 +298,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void block(String personid) {
+    public void block(String personid, final String person_name) {
 
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.BLOCK_PERSON + personid, null, new Response.Listener<JSONObject>() {
             @Override
@@ -304,7 +306,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 try {
                     String status_res = response.getString("status");
                     if (status_res.equals("Blocked")) {
-                        Toast.makeText(getContext(), "Person Blocked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), person_name +" Blocked", Toast.LENGTH_SHORT).show();
                         //adapter.notifyDataSetChanged();
                         getConnections();
                     }
@@ -358,7 +360,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void unblock(String personid) {
+    public void unblock(String personid, final String person_name) {
         //Toast.makeText(getActivity(), "Unblocked"+personid, Toast.LENGTH_SHORT).show();
         JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UNBLOCK_PERSON + personid, null,
                 new Response.Listener<JSONObject>() {
@@ -368,7 +370,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             try {
                                 String unblockres_status =response.getString("status");
                                 if (unblockres_status.equals("Active")) {
-                                    Toast.makeText(getActivity(), "Unblocked Person Successfully", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), person_name+" Unblocked", Toast.LENGTH_SHORT).show();
                                     getConnections();
                                 }
                             } catch (JSONException e) {
@@ -425,6 +427,29 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         Log.d("unblockRequest",queue.toString());
         queue.add(jsonObjectRequest);
 
+    }
+
+    @Override
+    public void transition(Bundle bundle) {
+
+        if (getActivity() != null) {
+            ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
+            getActivity().setTitle("Calendar");
+            chatFragmentPage.setArguments(bundle);
+            FragmentManager hiFiveFManager = getActivity().getSupportFragmentManager();
+            FragmentTransaction hiFiveTrans = hiFiveFManager.beginTransaction();
+            hiFiveTrans.replace(R.id.container, chatFragmentPage);
+            hiFiveTrans.addToBackStack(null);
+            hiFiveTrans.commit();
+        }
+
+    }
+
+    @Override
+    public void connectionToNote(Bundle bundle) {
+        NoteFragment noteFragment =new NoteFragment();
+        noteFragment.setArguments(bundle);
+        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
     }
 
     private String trimMessage(String json, String detail) {

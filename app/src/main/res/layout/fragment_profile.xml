@@ -458,7 +458,6 @@
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
-                                android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                 android:nextFocusDown="@+id/gender_lt"
                                 android:background="@android:color/transparent"/>
 

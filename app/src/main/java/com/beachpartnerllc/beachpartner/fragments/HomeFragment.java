@@ -111,6 +111,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getBluebpProfiles();
         getMyTournaments();
         getConnections();
+        getRequests();
 
         return view;
     }
@@ -208,10 +209,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         switch(view.getId()){
             case R.id.imgview_send:
                 txt_head.setText("Tournament Requests Sent");
+                txtv_noreqsts.setText("No requests send");
                 break;
 
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
+                txtv_noreqsts.setText("No requests received");
                 break;
             case R.id.no_of_likes_card:
                 likesDisplay();
@@ -602,10 +605,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         String chatwith_id = chatList.get(i).split("-")[1];
                         if (chatwith_id != null && chatId != null) {
                             if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
-                                for (int j=0;j<connectionList.size();j++){
-                                    if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
-                                        userList.add(connectionList.get(j));
+                                if (connectionList.size() > 0 && connectionList != null) {
+                                    for (int j=0;j<connectionList.size();j++){
+                                        if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                            userList.add(connectionList.get(j));
+                                        }
                                     }
+                                }else {
+                                    txtv_nomsgs.setVisibility(View.VISIBLE);
                                 }
                             }
                         }
@@ -629,6 +636,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
             }
         });
+
+    }
+
+    //
+    private void getRequests() {
 
     }
 

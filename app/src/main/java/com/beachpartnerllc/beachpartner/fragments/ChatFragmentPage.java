@@ -50,7 +50,9 @@ public class ChatFragmentPage extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(getActivity());
+        if (getActivity() != null) {
+            Firebase.setAndroidContext(getActivity());
+        }
         Bundle bundle = this.getArguments();
         if(bundle != null){
             ChatWith_id  = bundle.getString("personId");
@@ -64,7 +66,7 @@ public class ChatFragmentPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        getActivity().setTitle("Message");
+
         currentTime = Calendar.getInstance().getTime();
         final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/users");
         ref = myFirebaseRef.child("users");
@@ -72,6 +74,7 @@ public class ChatFragmentPage extends Fragment {
         View view= inflater.inflate(R.layout.fragment_chat_page, container, false);
         getConnections();
         initView(view);
+
 
         return view;
     }
@@ -178,7 +181,7 @@ public class ChatFragmentPage extends Fragment {
 
     private void getConnections() {
 
-        myId = new PrefManager(getContext()).getUserId();
+        myId = new PrefManager(getActivity()).getUserId();
         Firebase.setAndroidContext(getActivity());
         if(Integer.parseInt(myId) >Integer.parseInt(ChatWith_id)){
 

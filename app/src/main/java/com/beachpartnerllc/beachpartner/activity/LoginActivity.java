@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
     private Instagram mInstagram;
     private AwesomeValidation awesomeValidation;
     private ProgressDialog progress;
-    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken,loggedUname,login_url,insta_login;
+    private String uname,passwd,registrationSuccessful,token,intentUrlString,refreshedFirebaseToken,deviceId,deviceToken,loggedUname,login_url,insta_login,loggedPassword;
     private TextView  never_got_email_tv;
     private TextInputLayout password_inputText;
     public JSONObject fbObject,instaObject;
@@ -91,7 +91,9 @@ public class LoginActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String action = intent.getAction();
         intentUrlString = intent.getDataString();
-        loggedUname = new PrefManager(getApplicationContext()).getEmail();
+        //Get user name and password from shared preference
+        loggedUname     = new PrefManager(getApplicationContext()).getEmail();
+        loggedPassword  = new PrefManager(getApplicationContext()).getPassword();
         //Register client App to FCM
         FirebaseApp.initializeApp(LoginActivity.this);
 
@@ -210,7 +212,9 @@ public class LoginActivity extends AppCompatActivity {
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
+        //Set user name and password
         userName.setText(loggedUname);
+        password.setText(loggedPassword);
         progress = new ProgressDialog(LoginActivity.this);
         progress.setMessage("Loading...");
 
@@ -272,7 +276,7 @@ public class LoginActivity extends AppCompatActivity {
                             }
                             startLoginProcess(object,"BP");//Method for start login
                             //userName.setText("");
-                            password.setText("");
+                            //password.setText("");
                             userName.requestFocus();
                         }
 

@@ -55,8 +55,9 @@ public class MessageFragment extends Fragment  {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(getActivity());
-
+        if (getActivity() != null) {
+            Firebase.setAndroidContext(getActivity());
+        }
     }
 
     @Override

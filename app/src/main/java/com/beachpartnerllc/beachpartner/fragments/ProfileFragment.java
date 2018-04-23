@@ -36,6 +36,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -104,10 +105,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
+import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -313,6 +314,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     if (selectedImageUri != null) {
                         screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
                         ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,content);
@@ -324,6 +328,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     } else if (userDataModel.getImageUrl() != null) {
                         screenshotUri = Uri.parse(userDataModel.getImageUrl());
                         ShareLinkContent content = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,content);
@@ -350,12 +357,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         intent.setType("video*//*");
                         startActivity(Intent.createChooser(intent, "Share video via..."));*/
                         ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,contentvideo);
                     } else if (userDataModel.getVideoUrl() != null) {
                         screenshotVideoUri = Uri.parse(userDataModel.getVideoUrl());
                         ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                                .setQuote("BeachPartner")
+                                .setContentTitle("BeachPartner")
+                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,contentvideo);
@@ -1253,6 +1266,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 //        editPassword.setEnabled(true);
 //        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
+        editLname.setFilters(new InputFilter[] {
+                new InputFilter() {
+                    @Override
+                    public CharSequence filter(CharSequence cs, int start,
+                                               int end, Spanned spanned, int dStart, int dEnd) {
+                        // TODO Auto-generated method stub
+                        if(cs.equals("")){ // for backspace
+                            return cs;
+                        }
+                        if(cs.toString().matches("[a-zA-Z ]+")){
+                            return cs;
+                        }
+                        return "";
+                    }
+                }
+        });
     }
 
     private void editMoreInfo() {
@@ -1437,8 +1466,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString().trim();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
-            Date dateDOB  = new Date(dateOb);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.US);
+            Date dateDOB  = new Date(Long.parseLong(dateOb));
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
