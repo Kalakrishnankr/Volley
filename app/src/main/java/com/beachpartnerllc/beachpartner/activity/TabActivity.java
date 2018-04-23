@@ -170,6 +170,9 @@ public class TabActivity extends AppCompatActivity  {
         activeMoreStatus = false;
     }
 
+    public void setActionBarTitle(String title){
+        getSupportActionBar().setTitle(title);
+    }
     //to show messages fragment
     public void activateMessageFragment() {
         floatMenu1Active = true;

@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -47,7 +50,7 @@ public class MessageFragment extends Fragment  {
     private ProgressBar progressBar;
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private TextView tv_nomsgs;
-
+    TabActivity tabActivity;
     public MessageFragment() {
         // Required empty public constructor
     }
@@ -89,7 +92,17 @@ public class MessageFragment extends Fragment  {
     }
 
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+        }
+    }
 
+    public void disableMenu(){
+        tabActivity.disableFloatButtons();
+    }
 
     private void getConnections() {
         connectionList.clear();
@@ -182,7 +195,7 @@ public class MessageFragment extends Fragment  {
                         }
                     }
                     progressBar.setVisibility(View.GONE);
-                    chatListAdapter = new ChatListAdapter(getContext(), userList);
+                    chatListAdapter = new ChatListAdapter(MessageFragment.this,getContext(), userList);
                     recyclerView.setAdapter(chatListAdapter);
                     chatListAdapter.notifyDataSetChanged();
                 }else {

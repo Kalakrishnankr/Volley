@@ -3,6 +3,8 @@ package com.beachpartnerllc.beachpartner.fragments;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -32,6 +34,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
@@ -65,7 +68,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private List<ConnectionModel> mCountryModel;
     private String token, user_id;
     private ProgressBar progress;
-
+    TabActivity tabActivity;
     public ConnectionFragment() {
         // Required empty public constructor
     }
@@ -92,6 +95,14 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Connections");
+        }
+    }
 
     private void initActivity(View view) {
 

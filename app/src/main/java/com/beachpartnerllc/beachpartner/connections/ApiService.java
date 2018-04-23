@@ -14,8 +14,8 @@ public class ApiService {
 
     //For instagram
 
-    public static final String CLIENT_ID    =" dd6421acfc084990bf574443dcd6cffc";
-    public static final String CLIENT_SECRET=" 79894a2a08fa424e9f4813d0bc6da5f1 ";
+    public static final String CLIENT_ID    ="0c699a86d6ec4266ac7ef63a84cb6115";
+    public static final String CLIENT_SECRET=" 9d7555b87c5d469e806f66d578db90e4";
     public static final String REDIRECT_URI ="http://beachpartner.com";
 
     public static String BASE_URL   =   "https://beachpartner.com/api/";

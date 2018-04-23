@@ -156,16 +156,13 @@
                         android:text="@string/hint_height"
                         android:textStyle="bold" />
 
-                    <com.beachpartnerllc.beachpartner.CustomEditText
+                    <Spinner
                         android:id="@+id/txtvHeight"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="15dp"
                         android:layout_weight="1"
-                        android:background="@android:color/transparent"
                         android:enabled="false"
-                        android:inputType="text"
-                        android:maxLines="1"
-                        android:nextFocusDown="@+id/spinner_tl_interest"
                         android:paddingLeft="5dp"
                         android:paddingStart="5dp" />
 
@@ -243,6 +240,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:focusable="false"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvHighest"
                         android:paddingLeft="5dp"

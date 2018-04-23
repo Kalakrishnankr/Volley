@@ -18,7 +18,6 @@ import android.text.method.PasswordTransformationMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.util.Patterns;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -517,14 +516,17 @@ public class LoginActivity extends AppCompatActivity {
                                     json = trimMessage(json,"detail");
                                     if(json!=null){
                                         progress.dismiss();
+                                        if(json.contains("Bad credentials")){
+                                //            Toast.makeText(LoginActivity.this, " "+getString(R.string.Invalid), Toast.LENGTH_LONG).show();
+                                        }
                                         if(json.contains("not activated")){
                                             new PrefManager(LoginActivity.this).saveRegistrationStatus("pending");
                                             registrationSuccessful=  new PrefManager(LoginActivity.this).getRegistrationStatus();
                                             Toast.makeText(LoginActivity.this, " "+registrationSuccessful, Toast.LENGTH_LONG).show();
                                         }
-                                        Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
-                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
-                                        toast.show();
+//                                        Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
+//                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
+//                                        toast.show();
                                     }
                                     break;
                                     default:

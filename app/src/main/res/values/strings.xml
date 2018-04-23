@@ -2,17 +2,18 @@
     <string name="app_name">BeachPartner</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
-    <string name="connect"><u>Connect with :</u></string>
+    <string name="connect"><u>Connect with:</u></string>
     <string name="dntaccount">Don\'t have an account?</string>
     <string name="signup"><u>SignUp</u></string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Username</string>
-    <string name="hint_forgot">Forgot Password</string>
+    <string name="hint_forgot">Forgot Password?</string>
     <string name="registration">REGISTER</string>
+    <string name="enter_user_type">You must choose either one user type</string>
     <string name="hint_fname">First Name</string>
     <string name="hint_lname">Last Name</string>
     <string name="hint_gender">I am</string>
-    <string name="hint_dob">Birth Date</string>
+    <string name="hint_dob">Date of Birth</string>
     <string name="hintLocation">State</string> //note: state populated instead of location
     <string name="hint_email">Email</string>
     <string name="hint_mobile">Mobile Number</string>
@@ -22,6 +23,7 @@
     <string name="login">Login</string>
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
+    <string name="Invalid">Invalid Username or Password</string>
 
 
     <!--Tab Icons-->
@@ -53,9 +55,15 @@
     <string name="emailerror">Please enter a valid email</string>
     <string name="mobilerror">Please enter a valid mobile number</string>
     <string name="cityerror">Please enter your location</string>
-    <string name="invalid_password">Your password is too small Please enter a minimum of eight characters</string>
+    <string name="invalid_password">Your password is too small. Please enter a minimum of eight characters</string>
     <string name="invalid_confirmpassword">Confirm password does not match with the password you entered</string>
     <string name="enter_confirm_pwd">Please confirm your password</string>
+    <string name="fname_blank">Firstname cannot be blank</string>
+    <string name="lname_blank">Lastname cannot be blank</string>
+    <string name="email_blank">Email cannot be blank</string>
+    <string name="pwd_blank">Password cannot be blank </string>
+    <string name="confpwd_blank">Confirm password cannot be blank or whitespace</string>
+    <string name="mobile_blank">Mobile number cannot be blank</string>
 
 
     <string name="settings">Settings</string>

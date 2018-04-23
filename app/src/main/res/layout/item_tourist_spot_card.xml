@@ -24,6 +24,7 @@
             app:loading_width="5dp"
             android:layout_centerInParent="true"/>
         <ImageView
+            android:visibility="invisible"
             android:id="@+id/img_view"
             android:scaleType="fitXY"
             android:layout_width="match_parent"
@@ -32,9 +33,10 @@
 
 
         <RelativeLayout
+            android:id="@+id/rrlv"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
+<!--
             <VideoView
                 android:id="@+id/item_tourist_spot_card_image"
                 android:layout_width="fill_parent"
@@ -43,19 +45,30 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"/>
+                android:layout_alignParentBottom="true"/>-->
+            <FrameLayout
+                android:focusableInTouchMode="false"
+                android:gravity="bottom"
+                android:focusable="false"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+               >
 
-            <!--<com.google.android.exoplayer2.ui.SimpleExoPlayerView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+            <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+                android:layout_width="fill_parent"
+                android:layout_height="500dp"
                 android:id="@+id/exo_player_view"
+                android:clickable="false"
+                app:use_controller="false"
+                app:auto_show="false"
                 android:visibility="visible"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true">
 
-            </com.google.android.exoplayer2.ui.SimpleExoPlayerView>-->
+            </com.google.android.exoplayer2.ui.SimpleExoPlayerView>
+            </FrameLayout>
             <FrameLayout
                 android:id="@+id/placeholder"
                 android:layout_width="fill_parent"
@@ -77,6 +90,8 @@
                     app:loading_color="#ffffff"
                     android:layout_gravity="center"/>
             </FrameLayout>
+
+
         </RelativeLayout>
 
 

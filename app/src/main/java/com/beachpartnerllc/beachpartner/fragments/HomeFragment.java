@@ -134,7 +134,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
         txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
-        txtv_notour     =   (TextView)view.findViewById(R.id.txtv_notour);
+        txtv_notour     =   (TextView)view.findViewById(R.id.txtv_notour_athlete);
         txtv_nomsgs     =   (TextView)view.findViewById(R.id.txtv_nomessgs);
         txtv_noreqsts   =   (TextView)view.findViewById(R.id.txtv_noreqsts);
         txtv_nobp       =   (TextView)view.findViewById(R.id.txtv_nobp);
@@ -504,6 +504,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             SnapHelper snapHelper = new PagerSnapHelper();
             snapHelper.attachToRecyclerView(mRecyclerview);
         }else {
+            mRecyclerview.setVisibility(View.GONE);
             txtv_notour.setVisibility(View.VISIBLE);
         }
 

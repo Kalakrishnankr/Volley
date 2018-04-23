@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,6 +15,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -41,7 +44,7 @@ public class ChatFragmentPage extends Fragment {
     private String myId,ChatWith_id,ChatWith_name,myName,chatPicture;
     private int idLeft,idRight;
     private Date currentTime;
-
+    TabActivity tabActivity;
    /* public ChatFragmentPage() {
         // Required empty public constructor
     }
@@ -80,6 +83,14 @@ public class ChatFragmentPage extends Fragment {
     }
 
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if(getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity) getActivity();
+            tabActivity.setActionBarTitle(myName);
+        }
+    }
 
     private void initView(View view) {
         submitButton    =   (ImageView) view.findViewById(R.id.sendButton);
