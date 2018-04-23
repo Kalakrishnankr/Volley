@@ -19,7 +19,9 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.hardware.Camera;
 import android.media.ExifInterface;
+import android.media.MediaCodec;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -1846,6 +1848,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 if (selectedVideoUri != null) {
 
+//                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
+                selectedVideoUri=data.getData();
+
+
+                if (selectedVideoUri != null) {
+
                    // File file = new File(String.valueOf(getPath(selectedVideoUri)));
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
                     if (fileSize(file.length()) <= 30&&videoDuration <= 30) {
@@ -1876,6 +1884,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
 
         }
+    }
     }
 
     //Method for check the size of the selected file

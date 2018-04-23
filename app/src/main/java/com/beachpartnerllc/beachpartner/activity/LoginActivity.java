@@ -517,7 +517,8 @@ public class LoginActivity extends AppCompatActivity {
                                     if(json!=null){
                                         progress.dismiss();
                                         if(json.contains("Bad credentials")){
-                                //            Toast.makeText(LoginActivity.this, " "+getString(R.string.Invalid), Toast.LENGTH_LONG).show();
+
+                                            Toast.makeText(LoginActivity.this, " "+getString(R.string.Invalid), Toast.LENGTH_LONG).show();
                                         }
                                         if(json.contains("not activated")){
                                             new PrefManager(LoginActivity.this).saveRegistrationStatus("pending");
