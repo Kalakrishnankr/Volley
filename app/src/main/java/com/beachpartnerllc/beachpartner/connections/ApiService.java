@@ -59,6 +59,7 @@ public class ApiService {
 
     public static String GET_ALL_BLUEBP            =    BASE_URL+"users/search?includeCoach=false&hideLikedUser=true&hideConnectedUser=true&hideRejectedConnections=true&hideBlockedUsers=true&subscriptionType=BlueBP";
 
+    public static String ABOUT_US_PAGE             =   "https://www.beachpartner.com/about_us.html";
 
 
 }

@@ -17,10 +17,10 @@ import android.view.View;
 import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.fragments.AboutUsFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;
@@ -273,6 +273,7 @@ public class TabActivity extends AppCompatActivity  {
                             FragmentTransaction trans = mang.beginTransaction();
                             trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
                             trans.commit();
+                            disableFloatButtons();
                         }
                         if (userType.equalsIgnoreCase("Coach")) {
                             CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
@@ -281,6 +282,7 @@ public class TabActivity extends AppCompatActivity  {
                             FragmentTransaction trans = mang.beginTransaction();
                             trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
                             trans.commit();
+                            disableFloatButtons();
                         }
 
                     } else {
@@ -324,6 +326,7 @@ public class TabActivity extends AppCompatActivity  {
                     FragmentTransaction trans = mang.beginTransaction();
                     trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
                     trans.commit();
+                    disableFloatButtons();
                     break;
                 }
 
@@ -334,15 +337,23 @@ public class TabActivity extends AppCompatActivity  {
                     FragmentTransaction trans = mang.beginTransaction();
                     trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
                     trans.commit();
+                    disableFloatButtons();
                     break;
                 }
 
                 break;
             case R.id.about_us:
-                Toast.makeText(this, "Clicked AboutUs", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clicked AboutUs", Toast.LENGTH_SHORT).show();
+                AboutUsFragment aboutUsFragment = new AboutUsFragment();
+                getSupportActionBar().setTitle("About Us");
+                FragmentManager mang = getSupportFragmentManager();
+                FragmentTransaction trans = mang.beginTransaction();
+                trans.replace(R.id.container, aboutUsFragment, YOUR_FRAGMENT_STRING_TAG);
+                trans.commit();
+                disableFloatButtons();
                 break;
             case R.id.feedback:
-                Toast.makeText(this, "Clicked Feedback", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(this, "Clicked Feedback", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.settings:
                 SettingsFragment sf = new SettingsFragment();
@@ -351,6 +362,7 @@ public class TabActivity extends AppCompatActivity  {
                 FragmentTransaction settingsTrans = settingsMang.beginTransaction().addToBackStack(null);
                 settingsTrans.replace(R.id.container, sf, YOUR_FRAGMENT_STRING_TAG);
                 settingsTrans.commit();
+                disableFloatButtons();
                 break;
             case R.id.help:
                 //Toast.makeText(this, "Clicked Help", Toast.LENGTH_SHORT).show();

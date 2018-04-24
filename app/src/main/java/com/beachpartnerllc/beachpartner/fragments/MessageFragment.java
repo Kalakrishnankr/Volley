@@ -196,11 +196,16 @@ public class MessageFragment extends Fragment  {
                         String chatId = chatList.get(i).split("-")[0];
                         String chatwith_id = chatList.get(i).split("-")[1];
                         if(chatId.equals(myId) || chatwith_id.equals(myId)){
-                            for (int j=0;j<connectionList.size();j++){
-                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
-                                    userList.add(connectionList.get(j));
+                            if (connectionList.size() > 0 && connectionList != null) {
+                                for (int j=0;j<connectionList.size();j++){
+                                    if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                        userList.add(connectionList.get(j));
+                                    }
                                 }
+                            }else {
+                                tv_nomsgs.setVisibility(View.VISIBLE);
                             }
+
                         }
                     }
                     progressBar.setVisibility(View.GONE);

@@ -14,7 +14,8 @@
     <string name="hint_lname">Last Name</string>
     <string name="hint_gender">I am</string>
     <string name="hint_dob">Date of Birth</string>
-    <string name="hintLocation">State</string> //note: state populated instead of location
+    <string name="hintLocation">State</string>
+    //note: state populated instead of location
     <string name="hint_email">Email</string>
     <string name="hint_mobile">Mobile Number</string>
     <string name="hint_male">Male</string>

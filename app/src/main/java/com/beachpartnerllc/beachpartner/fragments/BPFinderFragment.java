@@ -42,9 +42,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
@@ -545,7 +547,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     }
                 }
 
-                if (cardStackView.getTopIndex() == adapter.getCount()/* - 5*/) {
+                if (cardStackView.getTopIndex() == adapter.getCount() /*- 5*/) {
                     Log.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
                     noCrads();
                    // paginate();
@@ -654,6 +656,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
 
+
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
         allCardList.clear();
@@ -699,7 +702,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 }
 
                             }
-                            if(allCardList.size()!=0){
+                            if(allCardList.size()>0){
                                 paginate();
                             }else {
                                 noCrads();
@@ -741,8 +744,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         };
         if (getActivity() != null) {
+            int socketTimeout = 30000; // 30 seconds. You can change it
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             Log.d("Request", jsonArrayRequest.toString());
+            jsonArrayRequest.setRetryPolicy(policy);
             requestQueue.add(jsonArrayRequest);
         }
 
