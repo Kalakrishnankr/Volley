@@ -416,8 +416,8 @@ public class TabActivity extends AppCompatActivity  {
         } else {
            // super.onBackPressed();
           new AlertDialog.Builder(this)
-                  .setTitle("Close App ?")
-                  .setMessage("Do you really want to exit app?")
+                  //.setTitle("Close App ?")
+                  .setMessage("Are you sure you want to exit?")
                   .setPositiveButton("YES",
                           new DialogInterface.OnClickListener() {
 

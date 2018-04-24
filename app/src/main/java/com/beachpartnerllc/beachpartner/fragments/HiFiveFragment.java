@@ -107,7 +107,7 @@ public class HiFiveFragment extends Fragment {
 
     private void getHiFiList() {
         hiFiveList.clear();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=Hifi" , null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=Hifi&showReceived=true" , null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
