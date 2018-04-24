@@ -1235,7 +1235,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
                     chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
@@ -2048,7 +2048,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                 //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
                             }
                         }
-                    }.execute().get(300000, TimeUnit.MILLISECONDS);
+                    }.execute();//.get(300000, TimeUnit.MILLISECONDS);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -2161,7 +2161,7 @@ exoPlayer.stop();
                                 //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
                             }
                         }
-                    }.execute().get(300000, TimeUnit.MILLISECONDS);
+                    }.execute();   //.get(300000, TimeUnit.MILLISECONDS);
 
                 }catch (Exception e){
                     e.printStackTrace();
@@ -2298,7 +2298,6 @@ exoPlayer.stop();
             while(resEntity==null){
 
             }
-            progress.dismiss();
             return resEntity;
         }
         catch (Exception ex) {
@@ -2819,7 +2818,7 @@ exoPlayer.stop();
 
 
         if (intentList.size() > 0) {
-            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"hi");
+            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"");
             // context.getString(R.string.pick_image_intent_text));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
         }
