@@ -1,35 +1,37 @@
 package com.beachpartnerllc.beachpartner.models;
 
+import java.io.Serializable;
+
 /**
  * Created by seq-kala on 3/4/18.
  */
 
-public class BpFinderModel {
-    public String bpf_id;
-    public String bpf_login;
-    public String bpf_userProfile;
-    public String bpf_subscriptions;
-    public String bpf_firstName;
-    public String bpf_lastName;
-    public String bpf_email;
-    public String bpf_activated;
-    public String bpf_langKey;
-    public String bpf_imageUrl;
-    public String bpf_videoUrl;
-    public String bpf_resetDate;
-    public String bpf_dob;
-    public String bpf_gender;
-    public String bpf_loginType;
-    public String bpf_city;
-    public String bpf_phoneNumber;
-    public String bpf_deviceId;
-    public String bpf_authToken;
-    public String bpf_location;
-    public String bpf_userType;
-    public String bpf_age;
-    public String bpf_effectiveDate;
-    public String bpf_termDate;
-    public String bpf_fcmToken;
+public class BpFinderModel implements Serializable {
+    private String bpf_id;
+    private String bpf_login;
+    private String bpf_userProfile;
+    private String bpf_subscriptions;
+    private String bpf_firstName;
+    private String bpf_lastName;
+    private String bpf_email;
+    private String bpf_activated;
+    private String bpf_langKey;
+    private String bpf_imageUrl;
+    private String bpf_videoUrl;
+    private String bpf_resetDate;
+    private String bpf_dob;
+    private String bpf_gender;
+    private String bpf_loginType;
+    private String bpf_city;
+    private String bpf_phoneNumber;
+    private String bpf_deviceId;
+    private String bpf_authToken;
+    private String bpf_location;
+    private String bpf_userType;
+    private String bpf_age;
+    private String bpf_effectiveDate;
+    private String bpf_termDate;
+    private String bpf_fcmToken;
 
 
     public String getBpf_effectiveDate() {
