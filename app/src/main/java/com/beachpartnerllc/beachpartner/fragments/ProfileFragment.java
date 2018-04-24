@@ -706,7 +706,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 }
                 else{
                     int editHeightValuePos=distanceAdapter.getPosition(editHeightValue);
-                    spinnerWtoTravel.setSelection(editHeightValuePos);
+                    editHeight.setSelection(editHeightValuePos);
                     editHeightValue="";
                 }
 
@@ -1452,6 +1452,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void editMoreInfo() {
 
+        btnsBottom.setVisibility(View.VISIBLE);
+        more_info_btns_bottom.setVisibility(View.VISIBLE);
 
         spinnerExp.setEnabled(true);
         spinnerExp.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
