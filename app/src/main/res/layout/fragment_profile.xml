@@ -1,18 +1,20 @@
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:weightSum="1">
+    android:orientation="vertical">
 
     <RelativeLayout
         android:id="@+id/rrTop"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="280dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_weight="0.55">
+        android:layout_centerHorizontal="true">
 
 
         <FrameLayout
@@ -47,27 +49,27 @@
                 android:soundEffectsEnabled="false"
                 android:visibility="gone" />
 
-                <FrameLayout
-                    android:id="@+id/placeholder"
-                    android:layout_width="fill_parent"
-                    android:foregroundGravity="center"
-                    android:visibility="gone"
-                    android:layout_height="fill_parent">
+            <FrameLayout
+                android:id="@+id/placeholder"
+                android:layout_width="fill_parent"
+                android:foregroundGravity="center"
+                android:visibility="gone"
+                android:layout_height="fill_parent">
 
-                    <ImageView
-                        android:id="@+id/frameimg_view"
-                        android:scaleType="fitXY"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent" />
+                <ImageView
+                    android:id="@+id/frameimg_view"
+                    android:scaleType="fitXY"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
 
-                    <com.beachpartnerllc.beachpartner.utils.RotateLoading
-                        android:id="@+id/my_spinner"
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        app:loading_width="5dp"
-                        app:loading_color="#ffffff"
-                        android:layout_gravity="center"/>
-                </FrameLayout>
+                <com.beachpartnerllc.beachpartner.utils.RotateLoading
+                    android:id="@+id/my_spinner"
+                    android:layout_width="65dp"
+                    android:layout_height="65dp"
+                    app:loading_width="5dp"
+                    app:loading_color="#ffffff"
+                    android:layout_gravity="center"/>
+            </FrameLayout>
 
 
             <ImageView
@@ -258,9 +260,8 @@
     <LinearLayout
         android:id="@+id/tab"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.45"
-        android:weightSum="1"
+        android:layout_height="match_parent"
+        android:weightSum="10"
         android:orientation="vertical"
         android:paddingTop="5dp">
         <!--<view-->
@@ -269,8 +270,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.2"
+            android:layout_height="50dp"
             android:orientation="horizontal"
             android:background="#eeeeee"
             android:weightSum="1">
@@ -361,23 +361,17 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.8"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
 
 
             <LinearLayout
                 android:id="@+id/llBasicDetails"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="400dp"
                 android:orientation="vertical">
 
-                <ScrollView
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_below="@+id/tab"
-                    android:isScrollContainer="false"
-                    android:fillViewport="true">
+
 
                     <RelativeLayout
                         android:layout_width="match_parent"
@@ -393,7 +387,7 @@
                         <LinearLayout
                             android:id="@+id/firstname"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -434,7 +428,7 @@
                         <LinearLayout
                             android:id="@+id/lastname"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -477,7 +471,7 @@
                         <LinearLayout
                             android:id="@+id/gender_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -518,7 +512,7 @@
                         <LinearLayout
                             android:id="@+id/birth_date_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:orientation="horizontal"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
@@ -558,7 +552,7 @@
                         <LinearLayout
                             android:id="@+id/city_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -601,7 +595,7 @@
                         <LinearLayout
                             android:id="@+id/phone_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -710,7 +704,7 @@
 
                     </RelativeLayout>
 
-                </ScrollView>
+
 
             </LinearLayout>
             <!--Base Info end-->
@@ -744,3 +738,4 @@
 
 
 </LinearLayout>
+</ScrollView>

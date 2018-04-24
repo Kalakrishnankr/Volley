@@ -77,7 +77,7 @@ public class BasicInfoFragment extends Fragment  {
         editDob         =   (EditText)view.findViewById(R.id.txtv_dob);
         editCity        =   (EditText)view.findViewById(R.id.txtv_city);
         editPhone       =   (EditText)view.findViewById(R.id.txtv_mobileno);
-        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
+
 
         btnSave         =   (Button)view.findViewById(R.id.btnsave);
         btnCancel       =   (Button)view.findViewById(R.id.btncancel);

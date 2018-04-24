@@ -4,7 +4,7 @@
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
     <string name="dntaccount">Don\'t have an account?</string>
-    <string name="signup"><u>SignUp</u></string>
+    <string name="signup"><u>Sign Up</u></string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Username</string>
     <string name="hint_forgot">Forgot Password?</string>
@@ -58,8 +58,8 @@
     <string name="invalid_password">Your password is too small. Please enter a minimum of eight characters</string>
     <string name="invalid_confirmpassword">Confirm password does not match with the password you entered</string>
     <string name="enter_confirm_pwd">Please confirm your password</string>
-    <string name="fname_blank">Firstname cannot be blank</string>
-    <string name="lname_blank">Lastname cannot be blank</string>
+    <string name="fname_blank">First name cannot be blank</string>
+    <string name="lname_blank">Last name cannot be blank</string>
     <string name="email_blank">Email cannot be blank</string>
     <string name="pwd_blank">Password cannot be blank </string>
     <string name="confpwd_blank">Confirm password cannot be blank or whitespace</string>

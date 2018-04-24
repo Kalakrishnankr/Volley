@@ -4,7 +4,10 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -70,9 +73,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
-    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp;
+    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
     private ProgressBar progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
-    private String user_id,user_token,userType;
+    private String user_id,user_token,userType,no_likes_count;
     private PrefManager prefManager;
     private LinearLayout ucoming_next,message_next,request_next;
     private LinearLayoutManager layoutManagerBluebp,layoutManagerUp,layoutManagerMsg,layoutmngerReqst;
@@ -80,6 +83,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatList = new ArrayList<>();
+    private ArrayList<ConnectionModel> likesList = new ArrayList<>();
     private ArrayList<ConnectionModel> userList = new ArrayList<>();
 
 
@@ -116,8 +120,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-
+        getPeopleWhoLiked();
+    }
 
     private void initView(View view) {
 
@@ -143,6 +151,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
         img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
         likesCard       =   (FrameLayout)view.findViewById(R.id.no_of_likes_card);
+        txtv_likes      =   (TextView)view.findViewById(R.id.txtv_likes_athlete);
 
         pRecyclerview   =   (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
         mRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv);          //Recycler view for upcoming events
@@ -197,6 +206,16 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         //parRecyclerview.setAdapter(partnerAdapter);
         parRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
+
+        //setting the no. of likes inside the card
+
+        if(no_likes_count==null){
+            txtv_likes.setText("No");
+        }
+        else{
+            txtv_likes.setText(no_likes_count);
+        }
+
 
 
     }
@@ -275,6 +294,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 dialog.dismiss();
             }
         });
+
+
+        if(userType=="Athlete"){
+
+            boolean isblueBP=true;
+            boolean isPartner=false;
+            BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
+            Bundle bundle = new Bundle();
+            //cPosition is the current positon
+
+            bundle.putSerializable("bluebplist", likesList);
+            bpFinderFragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+        }
     }
 
 
@@ -580,6 +613,65 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
 
     }
+
+    //Get connections
+    private void getPeopleWhoLiked() {
+
+        String user_id = new PrefManager(getContext()).getUserId();
+        final String token = new PrefManager(getContext()).getToken();
+
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New", null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+
+                if (response != null) {
+                    no_likes_count= String.valueOf(response.length());
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+                            JSONObject object = response.getJSONObject(i);
+                            JSONObject obj = object.getJSONObject("connectedUser");
+                            ConnectionModel model = new ConnectionModel();
+                            model.setConnected_uId(obj.getString("id"));
+                            model.setConnected_login(obj.getString("login"));
+                            model.setConnected_firstName(obj.getString("firstName"));
+                            model.setConnected_lastName(obj.getString("lastName"));
+                            model.setConnected_email(obj.getString("email"));
+                            model.setConnected_userType(obj.getString("userType"));
+                            model.setConnected_imageUrl(obj.getString("imageUrl"));
+                            likesList.add(model);
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", arrayRequest.toString());
+        requestQueue.add(arrayRequest);
+
+
+    }
+
 
     private void setUpMessage() {
         userList.clear();
