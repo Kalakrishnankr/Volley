@@ -1010,43 +1010,31 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(View view) {
+
+        int PERMISSION_ALL = 1;
+        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
+
         switch (view.getId()) {
 
             case R.id.imgVideo:
-                //boolean videoPermission = checkExternalDrivePermission(PICK_VIDEO_REQUEST);
-                // if (videoPermission){
-                //videoBrowse();
 
-                Intent videoPicker= getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
-                if(videoPicker!=null){
-                    Intent imagePicker= getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
-                    if(imagePicker!=null){
+                if(!hasPermissions(getActivity(),PERMISSIONS)){
+                    requestPermissions(PERMISSIONS, PERMISSION_ALL);
+                }else {
+                    Intent chooseVideoIntent = getPickImageIntent(getActivity().getApplicationContext(), "videoIntent");
+                    startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
 
-                        // getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
-
-                        Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
-                        startActivityForResult(chooseImageIntent, PICK_VIDEO_REQUEST);
-
-                    }
                 }
                 break;
             case R.id.row_icon:
                 if (editStatus) {
-                    //  boolean imagePermission = checkExternalDrivePermission(PICK_IMAGE_REQUEST);
-                    // if (imagePermission) {
-                    // imageBrowse();
-
-                    Intent imagePicker= getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
-                    if(imagePicker!=null){
-
-                        // getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
-
-                        Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    if(!hasPermissions(getActivity(),PERMISSIONS)){
+                        requestPermissions(PERMISSIONS, PERMISSION_ALL);
+                    }else {
+                        Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
                         startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
-
                     }
 
-                    // }
                 }
                 break;
             case R.id.imgPlay:
@@ -1185,7 +1173,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                    startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                    // imageBrowse();
@@ -1212,9 +1201,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                  //  videoBrowse();
+                    Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
 
                 } else {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
@@ -1580,7 +1568,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString().trim();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.US);
-            Date dateDOB  = new Date(Long.parseLong(dateOb));
+            Date dateDOB  = new Date(Long.parseLong(dateOb.trim()));
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
@@ -2599,13 +2587,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         List<Intent> intentList = new ArrayList<>();
 
-        int PERMISSION_ALL = 1;
-        String[] PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE};
-
-        if(!hasPermissions(getActivity(),type,intentList, PERMISSIONS)){
-            requestPermissions(PERMISSIONS, PERMISSION_ALL);
-        }
-        else{
 
 
             if (type.equals("videoIntent")){
@@ -2641,7 +2622,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
         }*/
-            }
+
 
         }
 
@@ -2657,38 +2638,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
 
-    public boolean hasPermissions(Context context,String type,List<Intent> intentList, String... permissions) {
+    public boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
             for (String permission : permissions) {
                 if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
-                    if (type.equals("videoIntent")){
-                        Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
-
-
-                        if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                            // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                            // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
-                            // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                            takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,2097152L);// 10*1024*1024 = 10MB  10485760L
-                            //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
-
-                        }
-                        intentList = addIntentsToList(context, intentList, pickIntent);
-                        intentList = addIntentsToList(context, intentList, takeVideoIntent);
-
-                    }else if(type.equals("imageIntent")){
-                        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                        Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                                android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                        intentList = addIntentsToList(context, intentList, pickIntent);
-                        intentList = addIntentsToList(context, intentList, takePictureIntent);
-        /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-            //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-
-        }*/
-                    }
 
                     return false;
                 }
