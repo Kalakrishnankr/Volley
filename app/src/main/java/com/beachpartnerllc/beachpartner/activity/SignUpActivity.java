@@ -573,7 +573,7 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
                     }
 
-                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()!=0 &&(locationSelectedStatus!=""||locationSelectedStatus!=null)) {
+                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()!=0 &&(locationSelectedStatus!=null)) {
                             submitForm();
                     }
 
@@ -760,6 +760,8 @@ public class SignUpActivity extends AppCompatActivity{
 
 
                             }else{
+                                PrefManager prefManager = new PrefManager(SignUpActivity.this);
+                                prefManager.saveRegistrationStatus("");
                                 Toast.makeText(SignUpActivity.this, "Failed", Toast.LENGTH_LONG).show();
 
                             }

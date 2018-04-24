@@ -128,15 +128,18 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-import java.sql.Date;
+
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -302,6 +305,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
         spinnerWtoTravel  = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        editHeight      = (Spinner) view.findViewById(R.id.txtvHeight);
 
 
         spinnerExp.setEnabled(false);
@@ -310,9 +314,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerTLInterest.setEnabled(false);
         spinnerTourRating.setEnabled(false);
         spinnerWtoTravel.setEnabled(false);
+        editHeight.setEnabled(false);
 
 
-        editHeight      = (Spinner) view.findViewById(R.id.txtvHeight);
+
         editPlayed      = (EditText) view.findViewById(R.id.txtvPlayed);
         editCBVANo      = (EditText) view.findViewById(R.id.txtvCBVANo);
         editCBVAFName   = (EditText) view.findViewById(R.id.txtvCBVAFName);
@@ -1353,7 +1358,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
     public void toursPlayed() {
-        final CharSequence[] items = {" AVP ", " AVP First ", " AAU ", "USAV Juniors", "USAV Adults", "VolleyAmerica National Rankings"};
+        final CharSequence[] items = {" AVP Next ", " AVP First ", " CBVA Adult ", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","VolleyOC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
         final ArrayList seletedItems = new ArrayList();
 
@@ -1635,21 +1640,36 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString().trim();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.US);
 
-            Date dateDOB  = null;
-            try {
-                dateDOB = (Date) dateFormat.parse(dateOb.trim());
-            } catch (ParseException e) {
+            //long date = Long.parseLong(dateOb);
+
+            /*Date date = null;
+            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss'Z'",Locale.US);
+            try
+            {
+                date = dateFormat.parse(dateOb);
+            }
+            catch(Exception e)
+            {
                 e.printStackTrace();
             }
+            long milliseconds = date.getTime();*/
+//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+
+
+//            Date dateDOB = new Date(dateOb);
+//            try {
+//                dateDOB = (Date) dateFormat.parse(dateOb);
+//            } catch (ParseException e) {
+//                e.printStackTrace();
+//            }
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("dob",dateDOB);
+                object.put("dob","2018-02-20T17:09:49.544Z");
                 object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
@@ -1676,25 +1696,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
                 jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
                 jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
-                jsonObjectMore.put("courtSidePreference", spinnerPrefValue.trim());
+                jsonObjectMore.put("courtSidePreference", spinnerPrefValue);
                 jsonObjectMore.put("description",0);
                 jsonObjectMore.put("division",0);
-                jsonObjectMore.put("experience", spinnerExpValue.trim());
+                jsonObjectMore.put("experience", spinnerExpValue);
                 jsonObjectMore.put("fundingStatus",0);
-                jsonObjectMore.put("height", editHeightValue.toString().trim());
+                jsonObjectMore.put("height", editHeightValue);
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
-                jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue.trim());
+                jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue);
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
                 jsonObjectMore.put("numOfAthlets",0);
-                jsonObjectMore.put("position", spinnerPosValue.trim());
+                jsonObjectMore.put("position", spinnerPosValue);
                 jsonObjectMore.put("programsOffered",0);
                 jsonObjectMore.put("shareAthlets",0);
                 jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+","+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
                 jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
-                jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue.trim());
+                jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue);
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
-                jsonObjectMore.put("willingToTravel", spinnerWTValue.trim());
+                jsonObjectMore.put("willingToTravel", spinnerWTValue);
                 jsonObjectMore.put("yearsRunning",0);
 
 
@@ -2660,10 +2680,10 @@ exoPlayer.stop();
                 if(userDataModel.getIndoorClubPlayed()!=null){
                     editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
                 }
-                if(userDataModel.getTotalPoints()!=null){
+                if(!userDataModel.getTotalPoints().equalsIgnoreCase("null")){
                     editPoints.setText(userDataModel.getTotalPoints());
                 }
-                if(userDataModel.getToursPlayedIn()!=null){
+                if(!userDataModel.getToursPlayedIn().equalsIgnoreCase("null")){
                     editPlayed.setText(userDataModel.getToursPlayedIn());
                 }
                 if(userDataModel.getUsaVolleyballRanking()!=null){
