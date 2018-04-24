@@ -139,10 +139,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>hifiList = new ArrayList<BpFinderModel>();
-
+    private ArrayList<BpFinderModel>noLikes  = new ArrayList<BpFinderModel>();
     private String item_location;
-
-
     private List<Event>personEventList = new ArrayList<Event>();
 
 
@@ -198,6 +196,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             getBpProfiles();//Method for getting next strip
             hifiList   = (ArrayList<BpFinderModel>) data.getSerializable("hifiList");
             bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
+            noLikes    = (ArrayList<BpFinderModel>) data.getSerializable("noLikeslist");
             int cPosition = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
@@ -206,6 +205,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         adapter.addAll(bluebpList.get(i));
                     }
 
+                }
+            }
+
+            //From 20+ Likes
+            if (noLikes !=null && noLikes.size() > 0) {
+                adapter = new TouristSpotCardAdapter(getActivity(), this);
+                for (int k = 0; k < noLikes.size() ; k++) {
+                    adapter.addAll(noLikes.get(k));
                 }
             }
 
@@ -246,13 +253,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             sCoach.setChecked(isCoach);
 
             if(sgender!=null){
-                if(sgender.equals("Men")){
-                    txtv_gender.setText("Men");
+                if(sgender.equals("Male")){
+                    txtv_gender.setText("Male");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setChecked(true);
-                }else if(sgender.equals("Women")){
-                    txtv_gender.setText("Women");
+                }else if(sgender.equals("Female")){
+                    txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setChecked(true);
@@ -365,11 +372,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (thumbIndex == 0) {
                     if (value < 5) {
                         tvMin.setText("5");
+
                     }else {
                         tvMin.setText(String.valueOf(value));
                     }
                 } else {
-                    tvMax.setText(String.valueOf(value));
+                    if(value < 5){
+                        tvMax.setText("5");
+                    }else {
+                        tvMax.setText(String.valueOf(value));
+                    }
                 }
 
             }
@@ -397,12 +409,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
                 else if(isChecked){
-                    txtv_gender.setText("Men");
+                    txtv_gender.setText("Male");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
                 else if(!isChecked ){
-                    txtv_gender.setText("Women");
+                    txtv_gender.setText("Female");
                     btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnMale.setTextColor(getResources().getColor(R.color.black));
                     btnFemale.setChecked(true);
@@ -427,12 +439,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 }
                 else if(isChecked){
-                    txtv_gender.setText("Women");
+                    txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                 }
                 else if(!isChecked ){
-                    txtv_gender.setText("Men");
+                    txtv_gender.setText("Male");
                     btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnFemale.setTextColor(getResources().getColor(R.color.black));
                     btnMale.setChecked(true);
