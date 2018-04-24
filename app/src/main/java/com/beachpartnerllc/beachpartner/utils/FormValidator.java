@@ -2,6 +2,7 @@ package com.beachpartnerllc.beachpartner.utils;
 
 import android.util.Patterns;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,58 +16,59 @@ import static android.provider.ContactsContract.Intents.Insert.EMAIL;
 public class FormValidator {
 
 
-    private boolean validateAll(EditText[] fields){
-        for(int i = 0; i < fields.length; i++){
+    private boolean validateAll(EditText[] fields) {
+        for (int i = 0; i < fields.length; i++) {
             EditText currentField = fields[i];
-            if(currentField.getText().toString().length() <= 0){
+            if (currentField.getText().toString().length() <= 0) {
                 return false;
             }
         }
         return true;
     }
-    private boolean valiadteEmail(EditText fields){
+
+    private boolean valiadteEmail(EditText fields) {
         return true;
     }
 
-    public String validateEditText(EditText fields){
+    public String validateEditText(EditText fields) {
         String validationResponse = "failed";
 
-        if(fields.getText().toString().trim().length() > 0){
+        if (fields.getText().toString().trim().length() > 0) {
 
             Pattern p = Pattern.compile("[^a-zA-Z ]", Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(fields.getText().toString().trim());
             boolean check = m.find();
 
-            if(check){
+            if (check) {
                 validationResponse = "special character";
-            }else {
+            } else {
                 validationResponse = "valid";
             }
 
-        }else{
+        } else {
             validationResponse = "failed";
         }
 
         return validationResponse;
     }
 
-    public String validateLastName(EditText fields){
+    public String validateLastName(EditText fields) {
         String validationResponse = "failed";
 
-        if(fields.getText().toString().trim().length() > 0){
+        if (fields.getText().toString().trim().length() > 0) {
 
             Pattern p = Pattern.compile("^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", Pattern.CASE_INSENSITIVE);
             Matcher m = p.matcher(fields.getText().toString().trim());
             boolean check = m.find();
 
-            if(check){
+            if (check) {
 
                 validationResponse = "valid";
-            }else {
+            } else {
                 validationResponse = "special character";
             }
 
-        }else{
+        } else {
             validationResponse = "failed";
         }
 
@@ -74,28 +76,28 @@ public class FormValidator {
     }
 
 
+    public boolean emailValidator(EditText fields) {
 
-    public boolean emailValidator(EditText fields){
-
-        boolean validEmail=false;
-        if(fields.getText().toString().trim().length() > 0){
+        boolean validEmail = false;
+        if (fields.getText().toString().trim().length() > 0) {
 
             // String regex = "^(.+)@(.+)$";
             String regex = "(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|\"(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21\\x23-\\x5b\\x5d-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])*\")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\\x01-\\x08\\x0b\\x0c\\x0e-\\x1f\\x21-\\x5a\\x53-\\x7f]|\\\\[\\x01-\\x09\\x0b\\x0c\\x0e-\\x7f])+)\\])";
 
             Pattern p = Pattern.compile(regex);
-            Matcher m = p.matcher((CharSequence)fields.getText().toString().trim());
+            Matcher m = p.matcher((CharSequence) fields.getText().toString().trim());
             boolean check = m.matches();
 
-            if(check){
+            if (check) {
                 validEmail = true;
-            }else {
+            } else {
                 validEmail = false;
             }
 
-        }else{
+        } else {
             validEmail = false;
         }
         return validEmail;
     }
+
 }
