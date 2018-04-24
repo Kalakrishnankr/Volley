@@ -19,16 +19,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.beachpartnerllc.beachpartner.activity.TabActivity;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.ChatListAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,20 +36,23 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
 public class MessageFragment extends Fragment  {
 
-    ArrayList<String> chatList = new ArrayList<>();
-    ArrayList<ConnectionModel> userList = new ArrayList<>();
+
     private RecyclerView recyclerView;
     private ChatListAdapter chatListAdapter;
     private Firebase myFirebaseRef;
     private String myId;
     private ProgressBar progressBar;
-    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private TextView tv_nomsgs;
+    ArrayList<String> chatList = new ArrayList<>();
+    ArrayList<ConnectionModel> userList = new ArrayList<>();
+    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+
     TabActivity tabActivity;
     public MessageFragment() {
         // Required empty public constructor
@@ -97,6 +100,8 @@ public class MessageFragment extends Fragment  {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Messages");
+
         }
     }
 
@@ -171,7 +176,6 @@ public class MessageFragment extends Fragment  {
             @Override
             public void onDataChange(DataSnapshot snapshot) {
                 for (DataSnapshot postSnapshot : snapshot.getChildren()) {
-
                     chatList.add(postSnapshot.getKey());
 
                     /*for (DataSnapshot pSnapshot1 : postSnapshot.getChildren()) {
@@ -182,16 +186,26 @@ public class MessageFragment extends Fragment  {
                     }*/
 
                 }
+                HashSet<String> hashSet = new HashSet<String>();
+                hashSet.addAll(chatList);
+                chatList.clear();
+                userList.clear();
+                chatList.addAll(hashSet);
                 if(chatList.size()>0 && chatList!=null){
                     for (int i=0;i<chatList.size();i++){
                         String chatId = chatList.get(i).split("-")[0];
                         String chatwith_id = chatList.get(i).split("-")[1];
                         if(chatId.equals(myId) || chatwith_id.equals(myId)){
-                            for (int j=0;j<connectionList.size();j++){
-                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
-                                    userList.add(connectionList.get(j));
+                            if (connectionList.size() > 0 && connectionList != null) {
+                                for (int j=0;j<connectionList.size();j++){
+                                    if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                        userList.add(connectionList.get(j));
+                                    }
                                 }
+                            }else {
+                                tv_nomsgs.setVisibility(View.VISIBLE);
                             }
+
                         }
                     }
                     progressBar.setVisibility(View.GONE);

@@ -34,6 +34,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -59,6 +60,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 
@@ -73,6 +75,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
+    private TabActivity tabActivity;
     private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
     private ProgressBar progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
     private String user_id,user_token,userType,no_likes_count;
@@ -112,19 +115,28 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         user_token  =  prefManager.getToken();
         userType    =  prefManager.getUserType();
         //getBlueBP profes
-        getBluebpProfiles();
-        getMyTournaments();
-        getConnections();
-        getRequests();
+
 
         return view;
     }
 
+
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Beach Partner");
+        }
+        getBluebpProfiles();
+        getMyTournaments();
+        getConnections();
+        getRequests();
         getPeopleWhoLiked();
+
+
     }
 
     private void initView(View view) {
@@ -360,7 +372,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void getBluebpProfiles() {
         bpList.clear();
         progressBar.setVisibility(View.VISIBLE);
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
+
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -692,6 +705,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     }*/
 
                 }
+                HashSet<String> hashSet = new HashSet<String>();
+                hashSet.addAll(chatList);
+                chatList.clear();
+                userList.clear();
+                chatList.addAll(hashSet);
                 if(chatList.size()>0 && chatList!=null){
                     for (int i=0;i<chatList.size();i++){
                         String chatId = chatList.get(i).split("-")[0];

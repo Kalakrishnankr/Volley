@@ -305,7 +305,7 @@ public class CoachHomeFragment extends Fragment {
     //Get blue Bp profiles
     private void getBluebpProfiles() {
         bpList.clear();
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {

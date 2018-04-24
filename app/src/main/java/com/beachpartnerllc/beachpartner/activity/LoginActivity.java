@@ -260,7 +260,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(awesomeValidation.validate()){
 
                         progress.show();
-                        if (!refreshedFirebaseToken.isEmpty() && refreshedFirebaseToken != null && !refreshedFirebaseToken.equalsIgnoreCase("null")) {
+                        if (refreshedFirebaseToken != null ) {
 
                             JSONObject object = new JSONObject();
                             try {
@@ -438,9 +438,10 @@ public class LoginActivity extends AppCompatActivity {
                                    // String subScription=userObj.getString("subscriptions");
                                     String uProfileStatus = userObj.getString("userProfile");
                                     String userName = userObj.getString("firstName");
+                                    String userPic  = userObj.getString("imageUrl");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation

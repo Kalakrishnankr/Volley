@@ -16,6 +16,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.style.ForegroundColorSpan;
@@ -41,13 +42,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
@@ -122,12 +126,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private boolean isPartner = false;
     private View view;
     private SharedPreferences prefs;
-    private String location,sgender;
+    private String location,sgender,profileImage;
     private Boolean isCoach;
     private int minAge,maxAge;
     private CompactCalendarView compactCalendar;
     private RecyclerView rcv_bpProfiles;
     private BlueBProfileAdapter blueBProfileAdapter;
+    private CardView empty_card;
+    private CircularImageView profilePic;
     private String token,user_id,user_subscription,reqPersonId,deviceId,fcmToken;
     private ArrayList<BpFinderModel>allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>bluebpList = new ArrayList<BpFinderModel>();
@@ -182,7 +188,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMale.setTextOff("Men");
         btnFemale.setTextOn("Women");
         btnMale.setTextOn("Men");
+        //reload card
         reload();
+        //get profile pic from preference
+        profileImage = new PrefManager(getActivity()).getProfilePic();
+
         Bundle data = getArguments();
         if(data!=null){
             getBpProfiles();//Method for getting next strip
@@ -215,6 +225,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         return view;
     }
+
 
     private void getPreferences() {
         //check shared prefvalue
@@ -273,6 +284,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         tvmonth             =   (TextView) view.findViewById(R.id.month_name);
         ImageView toggle    =   (ImageView) view.findViewById(R.id.toggle);
         rrvBottom           =   (RelativeLayout) view.findViewById(R.id.rrv_bottomMenus);
+
+        empty_card          =   (CardView) view.findViewById(R.id.no_cards);
+        profilePic          =   (CircularImageView)view.findViewById(R.id.profilePic);
 
         //Layout for filters
 
@@ -502,7 +516,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onCardSwiped(SwipeDirection direction) {
                 //abraham 08-03-2018
                 reverseCount=true;
-                imgv_rvsecard.setBackground(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
+                imgv_rvsecard.setBackground(BPFinderFragment.this.getResources().getDrawable(R.drawable.ic_backcard));
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
 
@@ -533,9 +547,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     }
                 }
 
-                if (cardStackView.getTopIndex() == adapter.getCount() - 5) {
+                if (cardStackView.getTopIndex() == adapter.getCount() /*- 5*/) {
                     Log.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
-                    paginate();
+                    noCrads();
+                   // paginate();
                 }
             }
 
@@ -555,6 +570,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 Log.d("CardStackView", "onCardClicked: " + index);
             }
         });
+
 
         //Calendar
 
@@ -630,6 +646,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    private void noCrads() {
+        if (getActivity() != null) {
+            cardStackView.setVisibility(View.INVISIBLE);
+            empty_card.setVisibility(View.VISIBLE);
+            Glide.with(getActivity()).load(profileImage).into(profilePic);
+        }
+
+    }
 
 
 
@@ -678,8 +702,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 }
 
                             }
-                            if(allCardList.size()!=0){
+                            if(allCardList.size()>0){
                                 paginate();
+                            }else {
+                                noCrads();
                             }
 
                         }
@@ -718,8 +744,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         };
         if (getActivity() != null) {
+            int socketTimeout = 30000; // 30 seconds. You can change it
+            RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
+                    DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             Log.d("Request", jsonArrayRequest.toString());
+            jsonArrayRequest.setRetryPolicy(policy);
             requestQueue.add(jsonArrayRequest);
         }
 
@@ -1113,7 +1144,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for getting bluebpstrips
     private void getBpProfiles() {
-        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP", null, new
+        JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
