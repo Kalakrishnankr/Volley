@@ -57,7 +57,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     public View getView(int position, View contentView, ViewGroup parent) {
         final ViewHolder holder;
@@ -113,8 +113,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
         }else {
             holder.spinnerView.stop();
-            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
-            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
+            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
+            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
+              holder.image.setBackground(getContext().getDrawable(R.drawable.user_img));
+              holder.frameImage.setBackground(getContext().getDrawable(R.drawable.user_img));
         }
 
         if (spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().isEmpty() && !spot.getBpf_deviceId().equalsIgnoreCase("null")) {
