@@ -6,13 +6,8 @@
     <LinearLayout
         android:id="@+id/llMoreInfoDetails"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-
-        <ScrollView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:fillViewport="true">
+        android:layout_height="1150dp"
+        android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/scroll_more"
@@ -29,7 +24,7 @@
                 <LinearLayout
                     android:id="@+id/experience_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
@@ -66,7 +61,7 @@
                 <LinearLayout
                     android:id="@+id/court_preference_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/experience_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -103,7 +98,7 @@
                 <LinearLayout
                     android:id="@+id/position_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/court_preference_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -141,7 +136,7 @@
                 <LinearLayout
                     android:id="@+id/height_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/position_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -159,8 +154,7 @@
                     <Spinner
                         android:id="@+id/txtvHeight"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
@@ -179,7 +173,7 @@
                 <LinearLayout
                     android:id="@+id/interest_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/height_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -197,8 +191,7 @@
                     <Spinner
                         android:id="@+id/spinner_tl_interest"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
@@ -217,7 +210,7 @@
                 <LinearLayout
                     android:id="@+id/tours_played_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/interest_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -262,7 +255,7 @@
                 <LinearLayout
                     android:id="@+id/tour_rating_highest_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/tours_played_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -280,8 +273,7 @@
                     <Spinner
                         android:id="@+id/spinner_tour_rating"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="15dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
@@ -301,7 +293,7 @@
                 <LinearLayout
                     android:id="@+id/cbva_player_no_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/tour_rating_highest_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -324,6 +316,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvCBVAFName"
                         android:paddingLeft="5dp"
@@ -343,7 +336,7 @@
                 <LinearLayout
                     android:id="@+id/cbva_first_name_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/cbva_player_no_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -366,6 +359,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvCBVALName"
                         android:paddingLeft="5dp"
@@ -385,7 +379,7 @@
                 <LinearLayout
                     android:id="@+id/cbva_last_name_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/cbva_first_name_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -408,6 +402,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/spinner_Wto_travel"
                         android:paddingLeft="5dp"
@@ -426,7 +421,7 @@
                 <LinearLayout
                     android:id="@+id/willingness_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/cbva_last_name_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -465,7 +460,7 @@
                 <LinearLayout
                     android:id="@+id/high_school_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/willingness_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -483,11 +478,12 @@
                     <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtvHighschool"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvIndoorClub"
                         android:paddingLeft="5dp"
@@ -508,7 +504,7 @@
                 <LinearLayout
                     android:id="@+id/indoor_club_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/high_school_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -526,11 +522,12 @@
                     <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtvIndoorClub"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvColgClub"
                         android:paddingLeft="5dp"
@@ -550,7 +547,7 @@
                 <LinearLayout
                     android:id="@+id/college_club_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/indoor_club_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -568,11 +565,12 @@
                     <com.beachpartnerllc.beachpartner.CustomEditText
                         android:id="@+id/txtvColgClub"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvColgBeach"
                         android:paddingLeft="5dp"
@@ -592,7 +590,7 @@
                 <LinearLayout
                     android:id="@+id/college_beach_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/college_club_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -615,6 +613,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvColgIndoor"
                         android:paddingLeft="5dp"
@@ -634,7 +633,7 @@
                 <LinearLayout
                     android:id="@+id/college_indoor_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/college_beach_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -658,6 +657,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvPoints"
                         android:paddingLeft="5dp"
@@ -677,7 +677,7 @@
                 <LinearLayout
                     android:id="@+id/points_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="30dp"
                     android:layout_below="@+id/college_indoor_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -700,6 +700,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/txtvYouLinks"
                         android:paddingLeft="5dp"
@@ -803,7 +804,7 @@
                 <LinearLayout
                     android:id="@+id/ranking_lt"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="33dp"
                     android:layout_below="@+id/points_lt"
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
@@ -845,7 +846,7 @@
                 <LinearLayout
                     android:id="@+id/topFinishes0fLastYear"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:layout_below="@+id/ranking_lt"
                     android:orientation="vertical">
 
@@ -857,7 +858,7 @@
                     <LinearLayout
                         android:id="@+id/topFinishes1_lt"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="33dp"
                         android:layout_below="@+id/points_lt"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
@@ -880,8 +881,7 @@
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/topfinishes_txt_1"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="match_parent"
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:inputType="text"
@@ -915,7 +915,7 @@
                     <LinearLayout
                         android:id="@+id/topFinishes2_lt"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="33dp"
                         android:layout_below="@+id/topFinishes1_lt"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
@@ -932,14 +932,13 @@
 
                         <RelativeLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1">
 
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/topfinishes_txt_2"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="match_parent"
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:inputType="text"
@@ -972,7 +971,7 @@
                     <LinearLayout
                         android:id="@+id/topFinishes3_lt"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:layout_height="33dp"
                         android:layout_below="@+id/topFinishes2_lt"
                         android:layout_marginBottom="10dp"
                         android:layout_marginTop="10dp"
@@ -989,14 +988,13 @@
 
                         <RelativeLayout
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1">
 
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/topfinishes_txt_3"
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="5dp"
+                                android:layout_height="match_parent"
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:inputType="text"
@@ -1032,7 +1030,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="30dp"
                     android:layout_below="@+id/topFinishes0fLastYear"
-                    android:layout_margin="10dp"
                     android:orientation="horizontal"
                     android:visibility="gone"
                     android:weightSum="2">
@@ -1068,8 +1065,6 @@
                 </LinearLayout>
 
             </RelativeLayout>
-
-        </ScrollView>
 
 
     </LinearLayout>

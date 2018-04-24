@@ -295,10 +295,10 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
                 }
-                else if(hasFocus && user_mobileno.getText().length()<10){
-                    txt_mobileError.setVisibility(View.VISIBLE);
-                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
-                }
+//                else if(hasFocus && user_mobileno.getText().length()<10){
+//                    txt_mobileError.setVisibility(View.VISIBLE);
+//                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+//                }
                 else if(!hasFocus &&(user_mobileno.getText().length()==10)){
                     txt_mobileError.setVisibility(View.GONE);
                 }
@@ -535,6 +535,9 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_mobileError.setVisibility(View.VISIBLE);
                         txt_mobileError.setText(getResources().getString(R.string.mobile_blank));
                     }
+                    else if(mobileno.length()<10){
+                        txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+                    }
                     else if(mobileno.length()==10){
                         txt_mobileError.setVisibility(View.GONE);
                     }
@@ -570,7 +573,7 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
                     }
 
-                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==0 &&locationSelectedStatus!="") {
+                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()!=0 &&(locationSelectedStatus!=""||locationSelectedStatus!=null)) {
                             submitForm();
                     }
 
@@ -591,7 +594,9 @@ public class SignUpActivity extends AppCompatActivity{
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         user_location_spinner.setText(items[which]);
+
                         location=items[which];
+                        locationSelectedStatus=location;
                         dialog.dismiss();
                     }
                 }).create();
