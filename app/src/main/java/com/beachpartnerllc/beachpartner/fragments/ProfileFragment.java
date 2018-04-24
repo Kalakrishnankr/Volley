@@ -1751,6 +1751,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
+    private void nullCheck(){
+
+    }
+
     private void validateFeilds() {
         awesomeValidation.addValidation(getActivity(), R.id.txtvFname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
         awesomeValidation.addValidation(getActivity(), R.id.txtvLname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
@@ -2632,18 +2636,47 @@ exoPlayer.stop();
                 editDob.setText(dft.format(date_dob));
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
+                if(userDataModel.getCbvaFirstName()!=null){
+                    editCBVAFName.setText(userDataModel.getCbvaFirstName());
+                }
+                if(userDataModel.getCbvaLastName()!=null){
+                    editCBVALName.setText(userDataModel.getCbvaLastName());
+                }
+                if(userDataModel.getCbvaPlayerNumber()!=null){
+                    editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
+                }
+                if(userDataModel.getCollageClub()!=null){
+                    editColgClub.setText(userDataModel.getCollageClub());
+                }
+                if(userDataModel.getCollegeBeach()!=null){
+                    editColgBeach.setText(userDataModel.getCollegeBeach());
+                }
+                if(userDataModel.getCollegeIndoor()!=null){
+                    editColgIndoor.setText(userDataModel.getCollegeIndoor());
+                }
+                if(userDataModel.getHighSchoolAttended()!=null){
+                    editHighschool.setText(userDataModel.getHighSchoolAttended());
+                }
+                if(userDataModel.getIndoorClubPlayed()!=null){
+                    editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+                }
+                if(userDataModel.getTotalPoints()!=null){
+                    editPoints.setText(userDataModel.getTotalPoints());
+                }
+                if(userDataModel.getToursPlayedIn()!=null){
+                    editPlayed.setText(userDataModel.getToursPlayedIn());
+                }
+                if(userDataModel.getUsaVolleyballRanking()!=null){
+                    edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+                }
 
-                editCBVAFName.setText(userDataModel.getCbvaFirstName());
-                editCBVALName.setText(userDataModel.getCbvaLastName());
-                editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
-                editColgClub.setText(userDataModel.getCollageClub());
-                editColgBeach.setText(userDataModel.getCollegeBeach());
-                editColgIndoor.setText(userDataModel.getCollegeIndoor());
-                editHighschool.setText(userDataModel.getHighSchoolAttended());
-                editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
-                editPoints.setText(userDataModel.getTotalPoints());
-                editPlayed.setText(userDataModel.getToursPlayedIn());
-                edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+
+
+
+
+
+
+
                 String topFinishes = userDataModel.getTopFinishes();
            /* if (!topFinishes.equals("null")) {
                 List<String> finishes = Arrays.asList(topFinishes.split(","));
@@ -2689,6 +2722,7 @@ exoPlayer.stop();
                     int heightVal = heightAdapter.getPosition(wTot);
                     editHeight.setSelection(heightVal);
                 }
+
 
             }
         }
