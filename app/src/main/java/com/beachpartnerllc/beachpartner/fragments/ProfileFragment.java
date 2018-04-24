@@ -112,6 +112,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Date;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -1568,14 +1569,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString().trim();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS",Locale.US);
-            Date dateDOB  = new Date(Long.parseLong(dateOb.trim()));
+
+            Date dateDOB  = null;
+            try {
+                dateDOB = (Date) dateFormat.parse(dateOb.trim());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("dob",dateFormat.format(dateDOB));
+                object.put("dob",dateDOB);
                 object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
