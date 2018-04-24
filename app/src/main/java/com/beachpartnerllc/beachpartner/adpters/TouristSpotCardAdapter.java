@@ -144,6 +144,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         final ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         holder.exoPlayerView.hideController();
         holder.exoPlayerView.setControllerAutoShow(false);
+        holder.exoPlayerView.setMinimumWidth(1000);
+        holder.exoPlayerView.setMinimumHeight(1000);
 
       //  holder.exoPlayerView
 
@@ -183,6 +185,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                     });
 
                     // playvideo(holder);
+                }else {
+                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
+                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
                 }
                 // dialog.setMessage("Please wait");
                /* if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().equals("") ) {

@@ -317,7 +317,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 try {
                     String status_res = response.getString("status");
                     if (status_res.equals("Blocked")) {
-                        Toast.makeText(getContext(), person_name +" Blocked", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), " You have blocked "+person_name , Toast.LENGTH_SHORT).show();
                         //adapter.notifyDataSetChanged();
                         getConnections();
                     }
@@ -381,7 +381,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             try {
                                 String unblockres_status =response.getString("status");
                                 if (unblockres_status.equals("Active")) {
-                                    Toast.makeText(getActivity(), person_name+" Unblocked", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "You have unblocked "+person_name, Toast.LENGTH_SHORT).show();
                                     getConnections();
                                 }
                             } catch (JSONException e) {

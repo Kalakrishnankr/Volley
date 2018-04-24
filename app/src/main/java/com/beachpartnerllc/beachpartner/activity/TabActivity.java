@@ -425,10 +425,10 @@ public class TabActivity extends AppCompatActivity  {
                               public void onClick(DialogInterface dialog,
                                                   int which) {
 
-                                  //finish();
-                                  Intent intent = new Intent(TabActivity.this,LoginActivity.class);
-                                  startActivity(intent);
                                   finish();
+                                  /*Intent intent = new Intent(TabActivity.this,LoginActivity.class);
+                                  startActivity(intent);
+                                  finish();*/
                               }
                           })
                   .setNegativeButton("NO",

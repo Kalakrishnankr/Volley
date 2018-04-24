@@ -206,6 +206,8 @@ public class MessageFragment extends Fragment  {
                                 tv_nomsgs.setVisibility(View.VISIBLE);
                             }
 
+                        }else {
+                            tv_nomsgs.setVisibility(View.VISIBLE);
                         }
                     }
                     progressBar.setVisibility(View.GONE);

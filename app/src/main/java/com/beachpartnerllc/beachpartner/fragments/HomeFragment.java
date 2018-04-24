@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -103,7 +102,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Firebase.setAndroidContext(getActivity());
+        if (getActivity() != null) {
+            Firebase.setAndroidContext(getActivity());
+
+        }
     }
 
     @Override
@@ -136,6 +138,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getBluebpProfiles();
         getMyTournaments();
         getConnections();
+        //setUpMessage();
 
         /*getRequests();
         getPeopleWhoLiked();*/
@@ -233,8 +236,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         else{
             txtv_likes.setText(no_likes_count);
         }
-
-
 
     }
 
@@ -582,6 +583,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onResponse(JSONArray response) {
                 if (response != null) {
+                    no_likes_count= String.valueOf(response.length());
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject object = response.getJSONObject(i);
@@ -826,7 +828,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 }else {
                                     txtv_nomsgs.setVisibility(View.VISIBLE);
                                 }
-                            }
+                            }/*else {
+                                txtv_nomsgs.setVisibility(View.VISIBLE);
+                            }*/
                         }
 
                     }

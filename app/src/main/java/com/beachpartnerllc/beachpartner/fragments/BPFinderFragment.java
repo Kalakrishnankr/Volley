@@ -534,20 +534,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 //Methods for swipe card kalakrishnan 06/04/2018
                 if(direction.toString().equalsIgnoreCase("Right")){
-                    Toast.makeText(getActivity(), "You right swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "You right swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     //Api for Right swipe/like
                     if (reqPersonId != null) {
                         cardRightSwiped(reqPersonId);
                     }
 
                 }else if(direction.toString().equalsIgnoreCase("Left")){
-                    Toast.makeText(getActivity(), "You Left swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "You Left swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     if (reqPersonId != null) {
                         cardLeftSwiped(reqPersonId);
                     }
 
                 }else if(direction.toString().equalsIgnoreCase("Top")) {
-                    Toast.makeText(getActivity(), "You Hified : "+reqPersonId, Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(getActivity(), "You Hified : "+reqPersonId, Toast.LENGTH_SHORT).show();
                     if (reqPersonId != null) {
                         cardHifiSwiped(reqPersonId);
                     }
@@ -876,21 +876,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 404:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -947,21 +947,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 404:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1025,21 +1025,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                                //Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 404:
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                               // Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
