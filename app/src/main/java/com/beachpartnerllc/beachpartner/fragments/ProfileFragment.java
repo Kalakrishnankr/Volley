@@ -137,6 +137,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -232,6 +233,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         extractorsFactory = new DefaultExtractorsFactory();
         playerView.hideController();
         playerView.setControllerAutoShow(false);
+
+        progress = new ProgressDialog(getContext());
+
 
         return view;
     }
@@ -1231,7 +1235,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
                     chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
@@ -1261,7 +1265,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
                     chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
@@ -1875,6 +1879,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     // TODO: Rename method, update argument and hook method into UI event
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK || resultCode==-1) {
 
@@ -1929,7 +1934,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         videoUri = getPath(selectedVideoUri);
                         imgVideo.setVisibility(View.VISIBLE);
                         imgPlay.setVisibility(View.VISIBLE);
-
+                        exoPlayer.stop();
+                        playVideo(String.valueOf(getPath(selectedVideoUri)));
 
                         //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
@@ -1943,18 +1949,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         }
 
-        if (imageUri != null || videoUri != null) {
 
-            //Method for uploading profilePic & profile video
-            if(videoUri==null){
-                uploadImgFiles(imageUri,user_id);
-            }
-            else{
-                
-                uploadVideoFiles(videoUri, user_id);
-            }
-
-        }
     }
     }
 
@@ -1969,124 +1964,103 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         return fileSizeInMB;
     }
 
-    //Api for upload profile image and video
-    private void uploadFiles(final String imagePath, final String videoPath, final String userId) {
-        new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-//                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-//
-//                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-//                    sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
-                    //throws ParseException, IOException
-                    HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost("https://beachpartner.com/storage/uploadProfileData");
-//                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-
-                    FileBody videoFile = new FileBody(new File(videoPath));
-                    FileBody imageFile = new FileBody(new File(imagePath));
-                    StringBody user_Id = new StringBody(userId);
-
-                    MultipartEntity reqEntity = new MultipartEntity();
-                    reqEntity.addPart("profileImg", imageFile);
-                    reqEntity.addPart("profileVideo", videoFile);
-                    reqEntity.addPart("userId", user_Id);
-                    httppost.setEntity(reqEntity);
-
-//                    // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-//                    SchemeRegistry registry = new SchemeRegistry();
-////                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-//                    registry.register(new Scheme("https", sslFactory, 443));
-
-                    // DEBUG
-                    System.out.println( "executing request " + httppost.getRequestLine( ) );
-                    HttpResponse response = httpclient.execute( httppost );
-                    HttpEntity resEntity = response.getEntity( );
-
-                    // DEBUG
-                    System.out.println( response.getStatusLine( ) );
-                    if (resEntity != null) {
-                        System.out.println( EntityUtils.toString( resEntity ) );
-                    } // end if
-
-                    if (resEntity != null) {
-                        resEntity.consumeContent( );
-                    } // end if
-
-                    httpclient.getConnectionManager( ).shutdown( );
-                }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-            }
-        }).start();
-
-
-    }
 
     private void uploadImgFiles(final String imagePath,final String userId) {
-        new Thread(new Runnable(){
+
+        if(!progress.isShowing()) {
+            progress.setTitle("Loading");
+            progress.setMessage("Please wait until uploading is complete...");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.show();
+        }
+        // getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+
+
+
+        AsyncTask.execute(new Runnable() {
             @Override
             public void run() {
-                try {
-                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-
-                    HttpClient httpclient = new DefaultHttpClient();
-
-                    SchemeRegistry registry = new SchemeRegistry();
-                    SSLSocketFactory socketFactory = SSLSocketFactory.getSocketFactory();
-                    socketFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-                    registry.register(new Scheme("https", socketFactory, 443));
-
-//                    SingleClientConnManager mgr = new SingleClientConnManager(httpclient.getParams(), registry);
-//                    DefaultHttpClient httpClient = new DefaultHttpClient(mgr, httpclient.getParams());
-
-                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
+                try{
+                    new AsyncTask<String, String, HttpEntity>() {
+                        @Override
+                        protected HttpEntity doInBackground(String... params) {
+                            try {
 
 
-                    //throws ParseException, IOException
+                                FileBody imageFile = new FileBody(new File(imagePath));
+
+                                StringBody user_Id = new StringBody(userId);
+
+                                MultipartEntity reqEntity = new MultipartEntity();
+
+                                reqEntity.addPart("profileImg", imageFile);
+                                reqEntity.addPart("userId", user_Id);
 
 
-                    HttpPost httppost = new HttpPost("https://www.beachpartner.com/api/storage/uploadProfileData");
-
-                    FileBody imageFile = new FileBody(new File(imagePath));
-                    StringBody user_Id = new StringBody(userId);
-
-                    MultipartEntity reqEntity = new MultipartEntity();
-                    reqEntity.addPart("profileImg", imageFile);
-                    reqEntity.addPart("userId", user_Id);
-                    httppost.setEntity(reqEntity);
+                                HttpEntity result = uploadToServer(reqEntity);
+                                return result;
 
 
 
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                                progress.dismiss();
+                                Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
 
-                    // DEBUG
-//                    HttpsURLConnection.setDefaultHostnameVerifier(hostnameVerifier);
-                    System.out.println( "executing request " + httppost.getRequestLine( ) );
-                    HttpResponse response = httpclient.execute( httppost );
-                    HttpEntity resEntity = response.getEntity( );
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(HttpEntity result) {
+                            try {
+                                if (result != null) {
+                                    System.out.println( EntityUtils.toString( result ) );
+                                } // end if
+
+                                if (result != null) {
+                                    result.consumeContent( );
+                                    progress.dismiss();
+
+                                        Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
 
 
-                    // DEBUG
-                    System.out.println( response.getStatusLine( ) );
-                    if (resEntity != null) {
-                        System.out.println( EntityUtils.toString( resEntity ) );
-                    } // end if
+                                    if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+                                    } else {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.FALSE);
+                                    }
 
-                    if (resEntity != null) {
-                        resEntity.consumeContent( );
-                    } // end if
+                                } // end if
 
-                    httpclient.getConnectionManager( ).shutdown( );
+                                int success, failure;
+                                // success = resultJson.getInt("success");
+                                //failure = resultJson.getInt("failure");
+                                //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                progress.dismiss();
+                                Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+
+
+                                //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }.execute();//.get(300000, TimeUnit.MILLISECONDS);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    progress.dismiss();
+                    Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+
+
                 }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                }
+
             }
-        }).start();
+        });
+
 
 
     }
@@ -2095,17 +2069,112 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
     private void uploadVideoFiles(final String videoPath, final String userId) {
-
-        progress = new ProgressDialog(getContext());
-        progress.setTitle("Loading");
-        progress.setMessage("Please wait until uploading is complete...");
-        progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();
+if(!progress.isShowing()) {
+    progress.setTitle("Loading");
+    progress.setMessage("Please wait until uploading is complete...");
+    progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+    progress.show();
+}
        // getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
 
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                try{
+                    new AsyncTask<String, String, HttpEntity>() {
+                        @Override
+                        protected HttpEntity doInBackground(String... params) {
+                            try {
 
 
-        Thread thread = new Thread(new Runnable(){
+                                FileBody videoFile = new FileBody(new File(videoPath));
+
+                                StringBody user_Id = new StringBody(userId);
+
+                                MultipartEntity reqEntity = new MultipartEntity();
+
+                                reqEntity.addPart("profileVideo", videoFile);
+                                reqEntity.addPart("userId", user_Id);
+
+
+                                HttpEntity result = uploadToServer(reqEntity);
+                                return result;
+
+                                // DEBUG
+                                //                    System.out.println( response.getStatusLine( ) );
+                                //                    if (resEntity != null) {
+                                //                        System.out.println(  resEntity  );
+                                //                    } // end if
+                                //
+                                //                    if (resEntity != null) {
+                                //                        resEntity.consumeContent( );
+                                //                    } // end if
+                                //
+                                //                    httpclient.getConnectionManager( ).shutdown( );
+                            }
+                            catch (Exception ex) {
+                                ex.printStackTrace();
+                                progress.dismiss();
+                            }
+                            return null;
+                        }
+
+                        @Override
+                        protected void onPostExecute(HttpEntity result) {
+                            try {
+                                if (result != null) {
+                                    System.out.println( EntityUtils.toString( result ) );
+                                } // end if
+
+                                if (result != null) {
+                                    result.consumeContent( );
+                                    progress.dismiss();
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+exoPlayer.stop();
+                                        MediaSource mediaSource=buildMediaSource(selectedVideoUri);
+
+                                        playerView.setPlayer(exoPlayer);
+                                        exoPlayer.prepare(mediaSource);
+                                        exoPlayer.setPlayWhenReady(true);
+
+
+                                        Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
+
+                                    }
+                                    if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+                                    } else {
+                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.FALSE);
+                                    }
+
+                                } // end if
+
+                                int success, failure;
+                                // success = resultJson.getInt("success");
+                                //failure = resultJson.getInt("failure");
+                                //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                progress.dismiss();
+
+
+                                //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    }.execute();   //.get(300000, TimeUnit.MILLISECONDS);
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                    progress.dismiss();
+
+
+                }
+
+
+            }
+        });
+
+       /* Thread thread = new Thread(new Runnable(){
             @SuppressLint("StaticFieldLeak")
             @Override
             public void run() {
@@ -2143,6 +2212,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             }
                             catch (Exception ex) {
                                 ex.printStackTrace();
+                                progress.dismiss();
                             }
                             return null;
                         }
@@ -2156,9 +2226,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                                 if (result != null) {
                                     result.consumeContent( );
-                                    progressbar.setVisibility(View.GONE);
+                                    progress.dismiss();
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
                                         playVideo(String.valueOf(getPath(selectedVideoUri)));
+
+                                        Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
+
                                     }
                                     if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
                                         getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
@@ -2174,6 +2247,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                 //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                progress.dismiss();
+
+
                                 //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
                             }
                         }
@@ -2181,11 +2257,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 }catch (Exception e){
                     e.printStackTrace();
+                    progress.dismiss();
+
+
                 }
 
             }
         });
         thread.start();
+*/
 
 
     }
@@ -2193,7 +2273,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
         HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
         try {
-            progressbar.setVisibility(View.VISIBLE);
             SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
             sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
 
@@ -2219,7 +2298,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             while(resEntity==null){
 
             }
-            progress.dismiss();
             return resEntity;
         }
         catch (Exception ex) {
@@ -2422,7 +2500,40 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             if (getActivity() != null) {
-                                Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
+
+                                if (imageUri != null || videoUri != null) {
+
+                                    //Method for uploading profilePic & profile video
+                                    if(videoUri!=null){
+
+                                        uploadVideoFiles(videoUri, user_id);
+                                    }
+                                    else if(imageUri!=null){
+                                        uploadImgFiles(imageUri,user_id);
+
+                                        exoPlayer.stop();
+
+                                        MediaSource mediaSource=buildMediaSource(selectedVideoUri);
+
+                                        playerView.setPlayer(exoPlayer);
+                                        exoPlayer.prepare(mediaSource);
+                                        exoPlayer.setPlayWhenReady(true);
+
+                                    }else{
+                                        Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
+                                    }
+
+                                }
+                            }else{
+
+                                if (userDataModel.getImageUrl() != null) {
+                                    Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                                }else {
+                                    imgProfile.setImageResource(R.drawable.ic_person);
+                                }
+                                if (userDataModel.getVideoUrl() != null) {
+                                    playVideo(userDataModel.getVideoUrl());
+                                }
                             }
                         }
 
@@ -2707,7 +2818,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
         if (intentList.size() > 0) {
-            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"hi");
+            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"");
             // context.getString(R.string.pick_image_intent_text));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
         }
@@ -2928,6 +3039,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
+    }
+
+
+    private MediaSource buildMediaSource(Uri uri){
+        return new ExtractorMediaSource(uri,
+                new DefaultHttpDataSourceFactory("ua"),
+                new DefaultExtractorsFactory(),null,null);
+
     }
 
     private class Adapter extends FragmentPagerAdapter {
