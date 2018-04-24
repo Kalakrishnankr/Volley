@@ -31,6 +31,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
@@ -89,6 +90,21 @@ import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.Player;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ExtractorsFactory;
+import com.google.android.exoplayer2.source.ExtractorMediaSource;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelector;
+import com.google.android.exoplayer2.ui.PlayerView;
+import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
+import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -107,6 +123,7 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -124,6 +141,8 @@ import java.util.Map;
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 
+import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
+import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
 import static com.beachpartnerllc.beachpartner.utils.SelectedFilePath.getDataColumn;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
@@ -150,7 +169,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private FloatingActionButton fabImage, fabVideo;
     private CircularImageView imgProfile;
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
-    private VideoView videoView;
+    //private VideoView videoView;
     private Uri selectedImageUri, selectedVideoUri, screenshotUri,screenshotVideoUri;
     private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
@@ -173,6 +192,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     Context mContext;
     private int videoDuration;
     private ProgressDialog progress;
+    private PlayerView playerView;
+
+    SimpleExoPlayer exoPlayer;
+
+     DefaultHttpDataSourceFactory dataSourceFactory = null;
+     ExtractorsFactory extractorsFactory = null;
 
     private Handler mUiHandler = new Handler();
 
@@ -194,13 +219,29 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         token   = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         setUp();
+
         initActivity(view);
 
         getActivity().getActionBar();
 
+
+        BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+        TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+        dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
+        extractorsFactory = new DefaultExtractorsFactory();
+        playerView.hideController();
+        playerView.setControllerAutoShow(false);
+
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+
+    }
 
     private void initActivity(final View view) {
 
@@ -216,7 +257,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         progressbar = (ProgressBar)view.findViewById(R.id.progressBar);
 
         imgVideo    = (ImageView) view.findViewById(R.id.imgVideo);
-        videoView   = (VideoView) view.findViewById(R.id.videoView);
+        //videoView   = (VideoView) view.findViewById(R.id.videoView);
+        playerView       = (PlayerView) view.findViewById(R.id.exoplayer_profile);
+
         imgPlay     = (ImageView) view.findViewById(R.id.imgPlay);
         imgShare    = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
         fabImage    = (FloatingActionButton) view.findViewById(R.id.fab_image);
@@ -1023,6 +1066,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     requestPermissions(PERMISSIONS, PERMISSION_ALL);
                 }else {
                     Intent chooseVideoIntent = getPickImageIntent(getActivity().getApplicationContext(), "videoIntent");
+                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
 
                 }
@@ -1033,14 +1077,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         requestPermissions(PERMISSIONS, PERMISSION_ALL);
                     }else {
                         Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
+                        chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+
                         startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
                     }
 
                 }
                 break;
             case R.id.imgPlay:
-                videoView.setVisibility(View.VISIBLE);
-                playVideo();
+               // videoView.setVisibility(View.VISIBLE);
+                //playVideo();
                 // videoView.start();
                 break;
 
@@ -1090,8 +1136,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private void playVideo() {
-        videoView.start();
+    private void playVideo(String videoURL) {
+       /* videoView.start();
         progressbar.setVisibility(View.VISIBLE);
         videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
             @Override
@@ -1117,7 +1163,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 imgPlay.setVisibility(View.VISIBLE);
 
             }
-        });
+        });*/
+
+
+        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
+
+
+        playerView.setPlayer(exoPlayer);
+        exoPlayer.prepare(mediaSource);
+        exoPlayer.setPlayWhenReady(true);
+        exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+      //  exoPlayer.setVideoScalingMode(100);
+        exoPlayer.setVolume(0);
     }
 
     private void imageBrowse() {
@@ -1175,6 +1232,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
+                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
@@ -1203,6 +1262,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
+                    chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+
                     startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
 
                 } else {
@@ -1815,29 +1876,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     // TODO: Rename method, update argument and hook method into UI event
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK) {
+        if (resultCode == Activity.RESULT_OK || resultCode==-1) {
 
-            if(requestCode == PICK_IMAGE_REQUEST){
-                //Uri picUri = data.getData();
+            if(requestCode == PICK_IMAGE_REQUEST) {
 
-                 selectedImageUri = data.getData();//Uri.parse(data.getExtras().get("data").toString());//data.getData();//data.getExtras().get("data");
+                if (data.hasExtra("data")) {
+                    Bitmap photo = (Bitmap) data.getExtras().get("data");
+                    selectedImageUri = getImageUri(getApplicationContext(), photo);
+                } else {
+                    // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
 
-                if (selectedImageUri != null) {
+
+                    // CALL THIS METHOD TO GET THE ACTUAL PATH
+                    // File finalFile = new File(getRealPathFromURI(tempUri));
 
 
-                    File imgfile = new File(getRealPath(selectedImageUri));
-                    //File imgfile = new File(String.valueOf(selectedImageUri));
-                    // Get length of file in bytes
-
-                    if (fileSize(imgfile.length()) <= 4) {
-                        imageUri = getPath(selectedImageUri);
-                        imgProfile.setImageURI(selectedImageUri);
-                    } else {
-                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
-                    }
-
+                    //Uri picUri = data.getData();
+                    selectedImageUri = data.getData();
                 }
+                    if (selectedImageUri != null) {
 
+                        File imgfile = new File(getRealPathFromURI(selectedImageUri));
+                        //File imgfile = new File(String.valueOf(selectedImageUri));
+                        // Get length of file in bytes
+
+                        if (fileSize(imgfile.length()) <= 4) {
+                            imageUri = getRealPathFromURI(selectedImageUri);
+                            Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
+
+                        } else {
+                            Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
+                        }
+                    }
             }
             else if(requestCode == PICK_VIDEO_REQUEST){
                 Intent intent = new Intent();
@@ -1854,12 +1924,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (selectedVideoUri != null) {
 
                    // File file = new File(String.valueOf(getPath(selectedVideoUri)));
-                    File file = new File(getRealPath(selectedVideoUri));
-                    if (fileSize(file.length()) <= 30&&videoDuration <= 30) {
+                    File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
+                    if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         imgVideo.setVisibility(View.VISIBLE);
                         imgPlay.setVisibility(View.VISIBLE);
-                        videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
+
+
+                        //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
                         Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
                         Toast.makeText(getContext(), "duration"+videoDuration, Toast.LENGTH_SHORT).show();
@@ -2024,16 +2096,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void uploadVideoFiles(final String videoPath, final String userId) {
 
-        /*progress = new ProgressDialog(getContext());
+        progress = new ProgressDialog(getContext());
         progress.setTitle("Loading");
-        progress.setMessage("Wait while loading...");
+        progress.setMessage("Please wait until uploading is complete...");
         progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-        progress.show();*/
-        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
+        progress.show();
+       // getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
 
 
 
         Thread thread = new Thread(new Runnable(){
+            @SuppressLint("StaticFieldLeak")
             @Override
             public void run() {
                 try{
@@ -2083,7 +2156,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                                 if (result != null) {
                                     result.consumeContent( );
-                                    //progressbar.setVisibility(View.GONE);
+                                    progressbar.setVisibility(View.GONE);
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                                        playVideo(String.valueOf(getPath(selectedVideoUri)));
+                                    }
                                     if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
                                         getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
                                     } else {
@@ -2402,19 +2478,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     imgProfile.setImageResource(R.drawable.ic_person);
                 }
                 if (userDataModel.getVideoUrl() != null) {
-                    videoView.setVideoURI(Uri.parse(userDataModel.getVideoUrl()));
-                    videoView.setVisibility(View.VISIBLE);
-                    videoView.start();
-                    videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            long milliseconds=videoView.getDuration();
-                            videoDuration = (int) ((milliseconds % (1000 * 60 * 60)) % (1000 * 60) / 1000);
-                            mp.setVolume(0, 0);
-                            mp.setLooping(true);
-                        }
-                    });
+                   playVideo(userDataModel.getVideoUrl());
                 }
                  /*   videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                         @Override
@@ -2598,8 +2662,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             if (type.equals("videoIntent")){
                 Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                takeVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+
                 Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI);
+                        MediaStore.Video.Media.INTERNAL_CONTENT_URI);
 
 
                 if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -2620,9 +2686,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 intentList = addIntentsToList(context, intentList, takeVideoIntent);
 
             }else if(type.equals("imageIntent")){
+
+
+
+
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+
                 Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
                 intentList = addIntentsToList(context, intentList, pickIntent);
                 intentList = addIntentsToList(context, intentList, takePictureIntent);
         /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -2830,13 +2902,32 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             String docId = DocumentsContract.getDocumentId(uri);
             String[] split = docId.split(":");
             Uri contentUri = null;
-            contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+            contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             String selection = "_id=?";
             String[] selectionArgs = new String[] {split[1]};
             filePath = getDataColumn(getActivity(), contentUri, selection, selectionArgs);
         }
 
         return filePath;
+    }
+
+
+
+
+
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getApplicationContext().getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
     }
 
     private class Adapter extends FragmentPagerAdapter {
