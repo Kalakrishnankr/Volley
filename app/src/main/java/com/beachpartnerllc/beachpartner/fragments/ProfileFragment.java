@@ -108,6 +108,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.zxing.common.StringUtils;
 
 
 import org.apache.http.HttpEntity;
@@ -239,6 +240,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         progress = new ProgressDialog(getContext());
 
+        playerView.setUseArtwork(true);
+        playerView.setResizeMode(exoPlayer.getVideoScalingMode());
 
         return view;
     }
@@ -1159,33 +1162,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void playVideo(String videoURL) {
-       /* videoView.start();
-        progressbar.setVisibility(View.VISIBLE);
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                    progressbar.setVisibility(View.GONE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                    progressbar.setVisibility(View.VISIBLE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                    videoView.setVisibility(View.GONE);
-                    progressbar.setVisibility(View.GONE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                }
-                return false;
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                videoView.setVisibility(View.GONE);
-                imgPlay.setVisibility(View.VISIBLE);
 
-            }
-        });*/
 
 
         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
@@ -1193,6 +1170,39 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         playerView.setPlayer(exoPlayer);
         exoPlayer.prepare(mediaSource);
+        exoPlayer.setPlayWhenReady(true);
+        exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+        playerView.setUseController(false);
+        exoPlayer.setVolume(0);
+    }
+
+
+    private void playVideoFromFile(Uri fileURL){
+
+
+
+        DataSpec dataSpec = new DataSpec(fileURL);
+        final FileDataSource fileDataSource = new FileDataSource();
+        try {
+            fileDataSource.open(dataSpec);
+        } catch (FileDataSource.FileDataSourceException e) {
+            e.printStackTrace();
+        }
+
+        DataSource.Factory factory = new DataSource.Factory() {
+            @Override
+            public DataSource createDataSource() {
+                return fileDataSource;
+            }
+        };
+        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
+                factory, new DefaultExtractorsFactory(), null, null);
+
+        exoPlayer.prepare(audioSource);
+
+
+        playerView.setPlayer(exoPlayer);
+        exoPlayer.prepare(audioSource);
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         playerView.setUseController(false);
@@ -1975,12 +1985,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
                     exoPlayer.stop();
                     Uri uri = Uri.fromFile(file);    //Uri.parse(getPath(selectedVideoUri));
+                    playVideoFromFile(uri);
 
-                    playVideo(String.valueOf(uri));
-                    /*MediaSource mediaSource = buildMediaSource(uri);
-                    exoPlayer.prepare(mediaSource, true, false);
-                    exoPlayer.setPlayWhenReady(true);
-                    exoPlayer.setRepeatMode(1);*/
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         //imgVideo.setVisibility(View.VISIBLE);
@@ -2095,7 +2101,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
                                     userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
                                     userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                                    userDataModel.setTotalPoints(obj.getString("totalPoints"));
+                                    userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
                                     userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
                                     userDataModel.setCollageClub(obj.getString("collageClub"));
                                     userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
@@ -2107,7 +2113,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
                                     userDataModel.setPosition(obj.getString("position"));
                                     userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
-                                    userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
+
+                                    userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
                                     userDataModel.setTopFinishes(obj.getString("topFinishes"));
                                     userDataModel.setCollage(obj.getString("collage"));
                                     userDataModel.setDescription(obj.getString("description"));
@@ -2262,7 +2269,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     imgProfile.setImageResource(R.drawable.ic_person);
                                 }
                                 if (userDataModel.getVideoUrl() != null) {
-                                    playVideo(userDataModel.getVideoUrl());
+                                   // playVideo(userDataModel.getVideoUrl());
                                 }
 
                                 progress.dismiss();
@@ -2818,7 +2825,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-
+public String isEmptyOrNull(String stringToCheck){
+       String stringValue = " ";
+    if(stringToCheck != null && !stringToCheck.isEmpty()){
+        if(stringToCheck.equalsIgnoreCase("null")){
+            stringValue = " ";
+        }
+    }else{
+        stringValue = stringToCheck;
+    }
+    return stringValue;
+}
 
 
 
