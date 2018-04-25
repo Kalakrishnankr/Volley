@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context="com.beachpartnerllc.beachpartner.fragments.HomeFragment"
     android:background="@color/white">
@@ -38,7 +39,7 @@
 
                 <TextView
                     android:id="@+id/txtv_likes_athlete"
-                    android:text="20+"
+                    android:text=""
                     android:textAlignment="center"
                     android:textStyle="bold"
                     android:textSize="12sp"
@@ -55,26 +56,45 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
 
-                    <ProgressBar
-                        android:id="@+id/progress"
+                    <RelativeLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:visibility="gone"/>
+                        android:layout_height="wrap_content">
 
-                    <TextView
-                        android:id="@+id/txtv_nobp"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:visibility="gone"
-                        android:layout_gravity="center_vertical"
-                        android:text="No BlueBP profiles found " />
+                        <com.wang.avi.AVLoadingIndicatorView
+                            android:id="@+id/progress"
+                            android:layout_width="50dp"
+                            android:layout_height="50dp"
+                            android:layout_gravity="bottom"
+                            style="@style/AVLoadingIndicatorView"
+                            android:visibility="invisible"
+                            android:layout_marginTop="5dp"
+                            android:layout_marginLeft="130dp"
+                            app:indicatorName="LineScaleIndicator"
+                            app:indicatorColor="@color/menubar"/>
 
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/rrv_topProfile"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+
+                        <TextView
+                            android:id="@+id/txtv_nobp"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:visibility="gone"
+                            android:layout_gravity="center_vertical"
+                            android:text="No BlueBP profiles found " />
+
+                        <android.support.v7.widget.RecyclerView
+                            android:id="@+id/rrv_topProfile"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"/>
+
+                    </RelativeLayout>
+                    <!--<ProgressBar-->
+                        <!--android:id="@+id/progress"-->
+                        <!--android:layout_width="match_parent"-->
+                        <!--android:layout_height="wrap_content"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--android:visibility="gone"/>-->
+
 
 
                 </LinearLayout>
@@ -160,12 +180,26 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ProgressBar
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <!--<ProgressBar
                         android:id="@+id/progress_tournament"
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:visibility="gone"/>
+                        android:visibility="gone"/>-->
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/progress_tournament"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/AVLoadingIndicatorView"
+                        android:visibility="invisible"
+                        android:layout_centerInParent="true"
+                        app:indicatorName="LineScaleIndicator"
+                        app:indicatorColor="@color/menubar"/>
                     <TextView
                         android:id="@+id/txtv_notour_athlete"
                         android:layout_width="match_parent"
@@ -182,6 +216,7 @@
 
                     </android.support.v7.widget.RecyclerView>
 
+                    </RelativeLayout>
                 </LinearLayout>
 
 
@@ -269,12 +304,28 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ProgressBar
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <!--<ProgressBar
                         android:id="@+id/progress_msg"
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:visibility="gone"/>
+                        android:visibility="gone"/>-->
+
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/progress_msg"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/AVLoadingIndicatorView"
+                        android:visibility="invisible"
+                        android:layout_centerInParent="true"
+                        app:indicatorName="LineScaleIndicator"
+                        app:indicatorColor="@color/menubar"/>
+
 
 
                     <TextView
@@ -293,6 +344,8 @@
                         android:layout_height="match_parent">
 
                     </android.support.v7.widget.RecyclerView>
+
+                    </RelativeLayout>
 
 
                 </LinearLayout>
@@ -395,12 +448,27 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
-                    <ProgressBar
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    <!--<ProgressBar
                         android:id="@+id/progress_request"
                         android:layout_width="50dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
-                        android:visibility="gone"/>
+                        android:visibility="gone"/>-->
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/progress_request"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        style="@style/AVLoadingIndicatorView"
+                        android:visibility="invisible"
+                        android:layout_centerInParent="true"
+                        app:indicatorName="LineScaleIndicator"
+                        app:indicatorColor="@color/menubar"/>
+
                     <TextView
                         android:id="@+id/txtv_noreqsts"
                         android:layout_width="match_parent"
@@ -418,7 +486,7 @@
 
                     </android.support.v7.widget.RecyclerView>
 
-
+                    </RelativeLayout>
 
                 </LinearLayout>
 

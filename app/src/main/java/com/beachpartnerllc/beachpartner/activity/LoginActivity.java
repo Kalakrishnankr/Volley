@@ -445,12 +445,15 @@ public class LoginActivity extends AppCompatActivity {
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
+
                                     if(uProfileStatus!=null && !uProfileStatus.equalsIgnoreCase("null")){
 //                                        already user updated the profile
+
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                         intent.putExtra("reDirectPage","home");
                                         startActivity(intent);
                                         finish();
+
                                     }
                                     else{
                                         //Whether user want to update his/her profile o
@@ -494,6 +497,7 @@ public class LoginActivity extends AppCompatActivity {
                                         alert.show();
 
                                     }
+
 
 
 

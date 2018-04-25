@@ -86,20 +86,31 @@ import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.zxing.common.StringUtils;
+
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -123,9 +134,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.net.URI;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -189,8 +202,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private String selectedTours;
     Bitmap profilePhoto = null;
     SimpleExoPlayer exoPlayer;
-    private PhotoAsyncTask asyncTask;
     private String location_change="profile";
+    private static PhotoAsyncTask asyncTask;
+
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
     private ScrollView scrollview_profile;
@@ -250,6 +264,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         progress = new ProgressDialog(getContext());
 
+        playerView.setUseArtwork(true);
+        playerView.setResizeMode(exoPlayer.getVideoScalingMode());
 
         return view;
     }
@@ -259,6 +275,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         super.onViewCreated(view, savedInstanceState);
 
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (exoPlayer != null) {
+
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+
+//        asyncTask.setListener(null);
     }
 
     private void initActivity(final View view) {
@@ -1158,33 +1187,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void playVideo(String videoURL) {
-       /* videoView.start();
-        progressbar.setVisibility(View.VISIBLE);
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                    progressbar.setVisibility(View.GONE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                    progressbar.setVisibility(View.VISIBLE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                    videoView.setVisibility(View.GONE);
-                    progressbar.setVisibility(View.GONE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                }
-                return false;
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                videoView.setVisibility(View.GONE);
-                imgPlay.setVisibility(View.VISIBLE);
 
-            }
-        });*/
 
 
         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
@@ -1192,6 +1195,39 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         playerView.setPlayer(exoPlayer);
         exoPlayer.prepare(mediaSource);
+        exoPlayer.setPlayWhenReady(true);
+        exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+        playerView.setUseController(false);
+        exoPlayer.setVolume(0);
+    }
+
+
+    private void playVideoFromFile(Uri fileURL){
+
+
+
+        DataSpec dataSpec = new DataSpec(fileURL);
+        final FileDataSource fileDataSource = new FileDataSource();
+        try {
+            fileDataSource.open(dataSpec);
+        } catch (FileDataSource.FileDataSourceException e) {
+            e.printStackTrace();
+        }
+
+        DataSource.Factory factory = new DataSource.Factory() {
+            @Override
+            public DataSource createDataSource() {
+                return fileDataSource;
+            }
+        };
+        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
+                factory, new DefaultExtractorsFactory(), null, null);
+
+        exoPlayer.prepare(audioSource);
+
+
+        playerView.setPlayer(exoPlayer);
+        exoPlayer.prepare(audioSource);
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         playerView.setUseController(false);
@@ -1654,37 +1690,44 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setEnabled(false);
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
-            String dateOb = editDob.getText().toString().trim();
+            String dateOb = editDob.getText().toString();
+
+           // Log.d("date--",c);
 
             //long date = Long.parseLong(dateOb);
+           // DateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy",
+           //         Locale.ENGLISH);
 
-            /*Date date = null;
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss'Z'",Locale.US);
-            try
-            {
-                date = dateFormat.parse(dateOb);
-            }
-            catch(Exception e)
-            {
+          //  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date date=null;
+            Date dateLong=null;
+            String stringDate = null;
+            try {
+
+                date = new SimpleDateFormat("MM-dd-yyyy").parse(dateOb);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
+                stringDate = dateFormat.format(date);
+
+                dateLong = dateFormat.parse(stringDate);
+
+
+            } catch (ParseException e) {
+
                 e.printStackTrace();
+
             }
-            long milliseconds = date.getTime();*/
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 
-//            Date dateDOB = new Date(dateOb);
-//            try {
-//                dateDOB = (Date) dateFormat.parse(dateOb);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("dob","2018-02-20T17:09:49.544Z");
+                object.put("dob",stringDate);
                 object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
@@ -1971,16 +2014,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     // File file = new File(String.valueOf(getPath(selectedVideoUri)));
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
+                    exoPlayer.stop();
+                    Uri uri = Uri.fromFile(file);    //Uri.parse(getPath(selectedVideoUri));
+                    playVideoFromFile(uri);
+
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
-                        imgVideo.setVisibility(View.VISIBLE);
-                        imgPlay.setVisibility(View.VISIBLE);
-                        //exoPlayer.stop();
+                        //imgVideo.setVisibility(View.VISIBLE);
+                        //imgPlay.setVisibility(View.VISIBLE);
+                       // exoPlayer.stop();
 
                         //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
                         Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getContext(), "duration"+videoDuration, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -2010,8 +2056,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
-            progress.setMessage("Please wait until uploading is complete...");
-            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+            progress.setMessage("Please wait while we save your data");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             progress.show();
         }
 
@@ -2023,7 +2070,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if(value!=null){
 
                     progress.dismiss();
-                    Toast.makeText(getActivity(),"User details updated successfully",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -2031,122 +2078,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         asyncTask.execute();
 
     }
-
-
-
-
-   /* private void uploadVideoFiles(final String videoPath, final String userId) {
-if(!progress.isShowing()) {
-    progress.setTitle("Loading");
-    progress.setMessage("Please wait until uploading is complete...");
-    progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-    progress.show();
-}
-       // getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
-
-        AsyncTask.execute(new Runnable() {
-            @Override
-            public void run() {
-                try{
-                    new AsyncTask<String, String, HttpEntity>() {
-                        @Override
-                        protected HttpEntity doInBackground(String... params) {
-                            try {
-
-
-                                FileBody videoFile = new FileBody(new File(videoPath));
-
-                                StringBody user_Id = new StringBody(userId);
-
-                                MultipartEntity reqEntity = new MultipartEntity();
-
-                                reqEntity.addPart("profileVideo", videoFile);
-                                reqEntity.addPart("userId", user_Id);
-
-
-                                HttpEntity result = uploadToServer(reqEntity);
-                                return result;
-
-                                // DEBUG
-                                //                    System.out.println( response.getStatusLine( ) );
-                                //                    if (resEntity != null) {
-                                //                        System.out.println(  resEntity  );
-                                //                    } // end if
-                                //
-                                //                    if (resEntity != null) {
-                                //                        resEntity.consumeContent( );
-                                //                    } // end if
-                                //
-                                //                    httpclient.getConnectionManager( ).shutdown( );
-                            }
-                            catch (Exception ex) {
-                                ex.printStackTrace();
-                                progress.dismiss();
-                            }
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(HttpEntity result) {
-                            try {
-                                if (result != null) {
-                                    System.out.println( EntityUtils.toString( result ) );
-                                } // end if
-
-                                if (result != null) {
-                                    result.consumeContent( );
-                                    progress.dismiss();
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-exoPlayer.stop();
-                                        MediaSource mediaSource=buildMediaSource(selectedVideoUri);
-
-                                        playerView.setPlayer(exoPlayer);
-                                        exoPlayer.prepare(mediaSource);
-                                        exoPlayer.setPlayWhenReady(true);
-
-
-                                        Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
-
-                                    }
-                                    if (getActivity().getSupportLoaderManager().hasRunningLoaders()) {
-                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.TRUE);
-                                    } else {
-                                        getActivity().setProgressBarIndeterminateVisibility(Boolean.FALSE);
-                                    }
-
-                                } // end if
-
-                                int success, failure;
-                                // success = resultJson.getInt("success");
-                                //failure = resultJson.getInt("failure");
-                                //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                progress.dismiss();
-
-
-                                //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                            }
-                        }
-                    }.execute();   //.get(300000, TimeUnit.MILLISECONDS);
-
-                }catch (Exception e){
-                    e.printStackTrace();
-                    progress.dismiss();
-
-
-                }
-
-
-            }
-        });
-
-
-
-
-    }*/
-
-
 
 
 
@@ -2201,7 +2132,7 @@ exoPlayer.stop();
                                     userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
                                     userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
                                     userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                                    userDataModel.setTotalPoints(obj.getString("totalPoints"));
+                                    userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
                                     userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
                                     userDataModel.setCollageClub(obj.getString("collageClub"));
                                     userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
@@ -2213,7 +2144,8 @@ exoPlayer.stop();
                                     userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
                                     userDataModel.setPosition(obj.getString("position"));
                                     userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
-                                    userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
+
+                                    userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
                                     userDataModel.setTopFinishes(obj.getString("topFinishes"));
                                     userDataModel.setCollage(obj.getString("collage"));
                                     userDataModel.setDescription(obj.getString("description"));
@@ -2338,8 +2270,10 @@ exoPlayer.stop();
     private void updateAllUserDetails(JSONObject object) {
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
-            progress.setMessage("Please wait until process is complete...");
-            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
+
+            progress.setMessage("Please wait while we save your data");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             progress.show();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE + user_id, object,
@@ -2348,9 +2282,14 @@ exoPlayer.stop();
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             if (getActivity() != null) {
-                                uploadImgFiles(imageUri,videoUri,user_id);
 
-                                uploadImgFiles(imageUri,videoUri,user_id);
+                                if(imageUri!=null || videoUri!=null) {
+                                    uploadImgFiles(imageUri, videoUri, user_id);
+                                }else{
+                                    progress.dismiss();
+                                    Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+
+                                }
 
 
                             }else{
@@ -2361,14 +2300,15 @@ exoPlayer.stop();
                                     imgProfile.setImageResource(R.drawable.ic_person);
                                 }
                                 if (userDataModel.getVideoUrl() != null) {
-                                    playVideo(userDataModel.getVideoUrl());
+                                   // playVideo(userDataModel.getVideoUrl());
                                 }
 
                                 progress.dismiss();
-                                Toast.makeText(getActivity(),"User details updated successfully",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                             }
                         }else {
                             progress.dismiss();
+                            Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -2377,7 +2317,7 @@ exoPlayer.stop();
             @Override
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
-                Toast.makeText(getActivity(),"User details updation failed",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -2652,9 +2592,9 @@ exoPlayer.stop();
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
-                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 320);
-                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 240);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,1);
+                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 480);
+                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 720);
 
 
                 //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
@@ -2672,7 +2612,7 @@ exoPlayer.stop();
             takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
             intentList = addIntentsToList(context, intentList, pickIntent);
             intentList = addIntentsToList(context, intentList, takePictureIntent);
         /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
@@ -2916,7 +2856,17 @@ exoPlayer.stop();
 
     }
 
-
+public String isEmptyOrNull(String stringToCheck){
+       String stringValue = " ";
+    if(stringToCheck != null && !stringToCheck.isEmpty()){
+        if(stringToCheck.equalsIgnoreCase("null")){
+            stringValue = " ";
+        }
+    }else{
+        stringValue = stringToCheck;
+    }
+    return stringValue;
+}
 
 
 
@@ -3005,6 +2955,7 @@ exoPlayer.stop();
                     reqEntity.addPart("profileVideo", videoFile);
 
                 }else{
+                    progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
                 }
 
@@ -3080,7 +3031,79 @@ exoPlayer.stop();
         }
     }
 
+   /* private void prepareExoPlayerFromFileUri(Uri uri){
+        exoPlayer = ExoPlayerFactory.newSimpleInstance(this, new DefaultTrackSelector(), new DefaultLoadControl());
+        exoPlayer.addListener(new Player.EventListener() {
+            @Override
+            public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
 
+            }
+
+            @Override
+            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+            }
+
+            @Override
+            public void onLoadingChanged(boolean isLoading) {
+
+            }
+
+            @Override
+            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
+            }
+
+            @Override
+            public void onRepeatModeChanged(int repeatMode) {
+
+            }
+
+            @Override
+            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+            }
+
+            @Override
+            public void onPlayerError(ExoPlaybackException error) {
+
+            }
+
+            @Override
+            public void onPositionDiscontinuity(int reason) {
+
+            }
+
+            @Override
+            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+            }
+
+            @Override
+            public void onSeekProcessed() {
+
+            }
+        });
+
+        DataSpec dataSpec = new DataSpec(uri);
+        final FileDataSource fileDataSource = new FileDataSource();
+        try {
+            fileDataSource.open(dataSpec);
+        } catch (FileDataSource.FileDataSourceException e) {
+            e.printStackTrace();
+        }
+
+        DataSource.Factory factory = new DataSource.Factory() {
+            @Override
+            public DataSource createDataSource() {
+                return fileDataSource;
+            }
+        };
+        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
+                factory, new DefaultExtractorsFactory(), null, null);
+
+        exoPlayer.prepare(audioSource);
+    }*/
 
 
 

@@ -23,7 +23,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -49,6 +48,7 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +76,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     ProfileAdapter profileAdapter;
     private TabActivity tabActivity;
     private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
-    private ProgressBar progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
+    private AVLoadingIndicatorView progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
     private String user_id,user_token,userType,no_likes_count;
     private PrefManager prefManager;
     private LinearLayout ucoming_next,message_next,request_next;
@@ -121,7 +121,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         userType    =  prefManager.getUserType();
         //getBlueBP profes
 
-
         return view;
     }
 
@@ -138,6 +137,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getBluebpProfiles();
         getMyTournaments();
         getConnections();
+        //getNumberLike();
         //setUpMessage();
 
         /*getRequests();
@@ -155,10 +155,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         message_next    =   (LinearLayout)view.findViewById(R.id.mess_next_button);
         request_next    =   (LinearLayout)view.findViewById(R.id.req_next_button);
 
-        progressBar     =   (ProgressBar)view.findViewById(R.id.progress);
-        progressBar_tour=   (ProgressBar)view.findViewById(R.id.progress_tournament);
-        progressBar_msg =   (ProgressBar)view.findViewById(R.id.progress_msg);
-        progressBar_rqsts=  (ProgressBar)view.findViewById(R.id.progress_request);
+        progressBar     =   (AVLoadingIndicatorView)view.findViewById(R.id.progress);
+        progressBar_tour=   (AVLoadingIndicatorView)view.findViewById(R.id.progress_tournament);
+        progressBar_msg =   (AVLoadingIndicatorView)view.findViewById(R.id.progress_msg);
+        progressBar_rqsts=  (AVLoadingIndicatorView)view.findViewById(R.id.progress_request);
 
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
@@ -230,12 +230,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         //setting the no. of likes inside the card
 
-        if(no_likes_count==null){
-            txtv_likes.setText("No");
-        }
-        else{
-            txtv_likes.setText(no_likes_count);
-        }
 
     }
 
@@ -256,7 +250,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.no_of_likes_card:
                 //likesDisplay();
-                getNumberLike();
+                //getNumberLike();
+                //moveToCard();
                 break;
             case R.id.upcome_next_button:
                 //Toast.makeText(getActivity(), "Clicked Tour", Toast.LENGTH_SHORT).show();
@@ -577,7 +572,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     //Get 20+ Likes
-    private void getNumberLike() {
+    /*private void getNumberLike() {
         noLikes.clear();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONArray>() {
             @Override
@@ -610,7 +605,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                    moveToCard();
+                    if(no_likes_count==null || no_likes_count.equals("0")){
+                        txtv_likes.setText("No");
+                    }
+                    else{
+                        txtv_likes.setText(no_likes_count);
+                    }
+
                 }
 
             }
@@ -624,12 +625,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
-                            json = trimMessage(json, "detail");
+                            json = trimMessage(json, "title");
                             if (json != null) {
                                 Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
-
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -651,7 +658,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             requestQueue.add(arrayRequest);
         }
 
-    }
+    }*/
 
 
 
