@@ -140,10 +140,10 @@
 
 
     <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile)will also be notified</string>
-    <string name="reg_success_msg">Thanks for registering. To complete registration please check your email and click on the link (It may take up to 10 minutes). </string>
+    <string name="reg_success_msg">To complete registration, please check your email and click on the activation link. </string>
     <string name="reg_success_return">Return to Log in</string>
     <string name="reg_success_never">I never got the email</string>
-    <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact us. So we can help you."</string>
+    <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
     <string name="title_activity_application">ApplicationActivity</string>
 
 </resources>

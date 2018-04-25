@@ -60,6 +60,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -120,6 +121,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -184,11 +186,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private int videoDuration;
     private static ProgressDialog progress;
     private PlayerView playerView;
+    private String selectedTours;
     Bitmap profilePhoto = null;
     SimpleExoPlayer exoPlayer;
     private PhotoAsyncTask asyncTask;
+    private String location_change="profile";
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
+    private ScrollView scrollview_profile;
 
 
     private Handler mUiHandler = new Handler();
@@ -216,6 +221,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         getActivity().getActionBar();
 
+        //to show focus on location field when clicking on location icon in bp
+
+            Bundle arguments = getArguments();
+
+                try{
+                    location_change=arguments.getString("prime_card");
+                    if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
+                        editCity.setEnabled(true);
+                        editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+                        btnsBottom.setVisibility(View.VISIBLE);
+                        llMenuMore.setClickable(false);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
@@ -240,6 +263,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void initActivity(final View view) {
 
+        scrollview_profile      =   (ScrollView) view.findViewById(R.id.scrollview_profile);
         btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
         more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
         imgEdit                 = (ImageView) view.findViewById(R.id.edit);
@@ -472,7 +496,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     spinnerExpValue = spinnerExp.getSelectedItem().toString();
                 }
                 else{
-                    int spinnerExpPos=expAdapter.getPosition(spinnerPosValue);
+                    int spinnerExpPos=expAdapter.getPosition(spinnerExpValue);
                     spinnerExp.setSelection(spinnerExpPos);
                     spinnerExpValue="";
                 }
@@ -503,7 +527,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     spinnerPrefValue = spinnerPref.getSelectedItem().toString();
                 }
                 else{
-                    int spinnerpref=prefAdapter.getPosition(spinnerPosValue);
+                    int spinnerpref=prefAdapter.getPosition(spinnerPrefValue);
                     spinnerPref.setSelection(spinnerpref);
                     spinnerPrefValue="";
                 }
@@ -697,7 +721,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     editHeightValue = editHeight.getSelectedItem().toString();
                 }
                 else{
-                    int editHeightValuePos=distanceAdapter.getPosition(editHeightValue);
+                    int editHeightValuePos=heightAdapter.getPosition(editHeightValue);
                     editHeight.setSelection(editHeightValuePos);
                     editHeightValue="";
                 }
@@ -1345,27 +1369,33 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public void toursPlayed() {
         final CharSequence[] items = {" AVP Next ", " AVP First ", " CBVA Adult ", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","VolleyOC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
+
         final ArrayList seletedItems = new ArrayList();
+        final boolean[] checkedColors = new boolean[]{
+
+        };
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
-                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(items,null, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
                             seletedItems.add(indexSelected);
+
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             seletedItems.remove(Integer.valueOf(indexSelected));
+
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String selectedTours = null;
+
                         for (int i = 0; i < seletedItems.size(); i++) {
-                            selectedTours = (String) (items[(int) seletedItems.get(i)]);
+                            selectedTours = (String) items[(int) seletedItems.get(i)];
                         }
                         editPlayed.setText(selectedTours);
 

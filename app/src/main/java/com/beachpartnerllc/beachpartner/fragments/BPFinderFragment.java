@@ -16,6 +16,8 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -1396,31 +1398,39 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     // user_subscription = null show the payment dialogue  ,once the user paid then show the location
 
     private void getLocation() {
-        String user_subcription = "";
-        if (user_subcription.equals("Prime")) {
-
-            Dialog filterDialogue = new Dialog(getContext());
-            //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-            filterDialogue.setContentView(R.layout.popup_locations);
-            filterDialogue.setCanceledOnTouchOutside(true);
-            Window window = filterDialogue.getWindow();
-            WindowManager.LayoutParams wlp = window.getAttributes();
-            wlp.gravity = Gravity.CENTER;
-            wlp.y = 80;
-            wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-            window.setAttributes(wlp);
-            filterDialogue
-                    .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-
-            filterDialogue.show();
-            initView(filterDialogue);
-
-        } else if (user_subcription.equals("BlueBP")) {
-            likesDisplay();
-        }else {
-            likesDisplay();
-        }
-
+//        String user_subcription = "";
+//        if (user_subcription.equals("Prime")) {
+//
+//            Dialog filterDialogue = new Dialog(getContext());
+//            //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
+//            filterDialogue.setContentView(R.layout.popup_locations);
+//            filterDialogue.setCanceledOnTouchOutside(true);
+//            Window window = filterDialogue.getWindow();
+//            WindowManager.LayoutParams wlp = window.getAttributes();
+//            wlp.gravity = Gravity.CENTER;
+//            wlp.y = 80;
+//            wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+//            window.setAttributes(wlp);
+//            filterDialogue
+//                    .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+//
+//            filterDialogue.show();
+//            initView(filterDialogue);
+//
+//        } else if (user_subcription.equals("BlueBP")) {
+//            likesDisplay();
+//        }else {
+//            likesDisplay();
+//        }
+        ProfileFragment pf = new ProfileFragment();
+        getActivity().setTitle("My Profile");
+        Bundle arguments = new Bundle();
+        arguments.putString( "prime_card","location");
+        pf.setArguments(arguments);
+        FragmentManager mang = getActivity().getSupportFragmentManager();
+        FragmentTransaction trans = mang.beginTransaction();
+        trans.replace(R.id.container, pf);
+        trans.commit();
     }
 
     private void initView(final Dialog filterDialogue) {
