@@ -145,12 +145,19 @@ public class SettingsFragment extends Fragment {
 
                 if (thumbIndex == 0) {
                     if (value < 5) {
-                        tvMin.setText(String.valueOf(5));
+                        tvMin.setText("5");
+
                     }else {
                         tvMin.setText(String.valueOf(value));
                     }
                 } else {
-                    tvMax.setText(String.valueOf(value));
+                    if (5 > value) {
+                        thumb.setValue(30);
+                        tvMax.setText("30");
+                    }else {
+                        tvMax.setText(String.valueOf(value));
+                    }
+
                 }
 
             }

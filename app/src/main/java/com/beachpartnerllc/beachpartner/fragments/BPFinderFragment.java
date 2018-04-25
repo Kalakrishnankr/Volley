@@ -208,9 +208,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 for (int j = 0; j <allCardList.size() ; j++) {
                                     adapter.addAll(allCardList);
                                 }
-                            }else {
+                            }/*else {
                                 getAllCards(location, sgender, isCoach, minAge, maxAge);
-                            }
+                            }*/
                         }
                     }
 
@@ -385,11 +385,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         tvMin.setText(String.valueOf(value));
                     }
                 } else {
-                    if(value < 5){
-                        tvMax.setText("5");
+                    if (5 > value) {
+                        thumb.setValue(30);
+                        tvMax.setText("30");
                     }else {
                         tvMax.setText(String.valueOf(value));
                     }
+
                 }
 
             }
@@ -517,7 +519,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         }
 
                     }
-
+                    progressBar.setVisibility(View.VISIBLE);
                     getAllCards(location, sgender, isCoach, minAge, maxAge);
 
             }
@@ -723,8 +725,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                             }
                             if(allCardList.size()>0){
+                                progressBar.setVisibility(View.INVISIBLE);
                                 paginate();
                             }else {
+                                progressBar.setVisibility(View.INVISIBLE);
                                 noCrads();
                             }
 
