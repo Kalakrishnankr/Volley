@@ -244,79 +244,62 @@ public class SettingsFragment extends Fragment {
     }
 
     public void addLocation() {
-        stateList.add("Alabama (AL)");
-        stateList.add("Alaska (AK)");
-        stateList.add("Alberta (AB)");
-        stateList.add("American Samoa (AS)");
-        stateList.add("Arizona (AZ)");
-        stateList.add("Arkansas (AR)");
-        stateList.add("Armed Forces (AE)");
-        stateList.add("Armed Forces Americas (AA)");
-        stateList.add("Armed Forces Pacific (AP)");
-        stateList.add("British Columbia (BC)");
-        stateList.add("California (CA)");
-        stateList.add("Colorado (CO)");
-        stateList.add("Connecticut (CT)");
-        stateList.add("Delaware (DE)");
-        stateList.add("District Of Columbia (DC)");
-        stateList.add("Florida (FL)");
-        stateList.add("Georgia (GA)");
-        stateList.add("Guam (GU)");
-        stateList.add("Hawaii (HI)");
-        stateList.add("Idaho (ID)");
-        stateList.add("Illinois (IL)");
-        stateList.add("Indiana (IN)");
-        stateList.add("Iowa (IA)");
-        stateList.add("Kansas (KS)");
-        stateList.add("Kentucky (KY)");
-        stateList.add("Louisiana (LA)");
-        stateList.add("Maine (ME)");
-        stateList.add("Manitoba (MB)");
-        stateList.add("Maryland (MD)");
-        stateList.add("Massachusetts (MA)");
-        stateList.add("Michigan (MI)");
-        stateList.add("Minnesota (MN)");
-        stateList.add("Mississippi (MS)");
-        stateList.add("Missouri (MO)");
-        stateList.add("Montana (MT)");
-        stateList.add("Nebraska (NE)");
-        stateList.add("Nevada (NV)");
-        stateList.add("New Brunswick (NB)");
-        stateList.add("New Hampshire (NH)");
-        stateList.add("New Jersey (NJ)");
-        stateList.add("New Mexico (NM)");
-        stateList.add("New York (NY)");
-        stateList.add("Newfoundland (NF)");
-        stateList.add("North Carolina (NC)");
-        stateList.add("North Dakota (ND)");
-        stateList.add("Northwest Territories (NT)");
-        stateList.add("Nova Scotia (NS)");
-        stateList.add("Nunavut (NU)");
-        stateList.add("Ohio (OH)");
-        stateList.add("Oklahoma (OK)");
-        stateList.add("Ontario (ON)");
-        stateList.add("Oregon (OR)");
-        stateList.add("Pennsylvania (PA)");
-        stateList.add("Prince Edward Island (PE)");
-        stateList.add("Puerto Rico (PR)");
-        stateList.add("Quebec (QC)");
-        stateList.add("Rhode Island (RI)");
-        stateList.add("Saskatchewan (SK)");
-        stateList.add("South Carolina (SC)");
-        stateList.add("South Dakota (SD)");
-        stateList.add("Tennessee (TN)");
-        stateList.add("Texas (TX)");
-        stateList.add("Utah (UT)");
-        stateList.add("Vermont (VT)");
-        stateList.add("Virgin Islands (VI)");
-        stateList.add("Virginia (VA)");
-        stateList.add("Washington (WA)");
-        stateList.add("West Virginia (WV)");
-        stateList.add("Wisconsin (WI)");
-        stateList.add("Wyoming (WY)");
-        stateList.add("Yukon Territory (YT)");
-
+        stateList.add("Alabama");
+        stateList.add("Alaska");
+        stateList.add("Arizona");
+        stateList.add("Arkansas");
+        stateList.add("California");
+        stateList.add("Colorado");
+        stateList.add("Connecticut");
+        stateList.add("Delaware");
+        stateList.add("Florida");
+        stateList.add("Georgia");
+        stateList.add("Hawaii");
+        stateList.add("Idaho");
+        stateList.add("Illinois");
+        stateList.add("Indiana");
+        stateList.add("Iowa");
+        stateList.add("Kansas");
+        stateList.add("Kentucky");
+        stateList.add("Louisiana");
+        stateList.add("Maine");
+        stateList.add("Maryland");
+        stateList.add("Massachusetts");
+        stateList.add("Michigan");
+        stateList.add("Minnesota");
+        stateList.add("Mississippi");
+        stateList.add("Missouri");
+        stateList.add("Montana");
+        stateList.add("Nebraska");
+        stateList.add("Nevada");
+        stateList.add("New Hampshire");
+        stateList.add("New Jersey");
+        stateList.add("New Mexico");
+        stateList.add("New York");
+        stateList.add("North Carolina");
+        stateList.add("North Dakota");
+        stateList.add("Ohio");
+        stateList.add("Oklahoma");
+        stateList.add("Oregon");
+        stateList.add("Pennsylvania");
+        stateList.add("Rhode Island");
+        stateList.add("South Carolina");
+        stateList.add("South Dakota");
+        stateList.add("Tennessee");
+        stateList.add("Texas");
+        stateList.add("Utah");
+        stateList.add("Vermont");
+        stateList.add("Virginia");
+        stateList.add("Washington");
+        stateList.add("West Virginia");
+        stateList.add("Wisconsin WI");
+        stateList.add("Wyoming WY");
     }
+
+
+
+
+
 
     /**
      * This interface must be implemented by activities that contain this

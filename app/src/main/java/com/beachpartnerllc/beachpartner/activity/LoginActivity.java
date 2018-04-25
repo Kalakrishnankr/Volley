@@ -458,7 +458,7 @@ public class LoginActivity extends AppCompatActivity {
                                     else{
                                         //Whether user want to update his/her profile o
                                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-                                        builder.setMessage("Please take a moment to complete your profile. Your profile will remain private and hidden from the world until you complete it.");
+                                        builder.setMessage(getString(R.string.complete_profile));
                                         builder.setCancelable(true);
 
                                         builder.setPositiveButton(
@@ -538,7 +538,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if(json.contains("not activated")){
                                             new PrefManager(LoginActivity.this).saveRegistrationStatus("pending");
                                             registrationSuccessful=  new PrefManager(LoginActivity.this).getRegistrationStatus();
-//                                            Toast.makeText(LoginActivity.this, " "+registrationSuccessful, Toast.LENGTH_LONG).show();
+                                            Toast.makeText(LoginActivity.this, getString(R.string.not_activated), Toast.LENGTH_LONG).show();
                                         }
 //                                        Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
 //                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
