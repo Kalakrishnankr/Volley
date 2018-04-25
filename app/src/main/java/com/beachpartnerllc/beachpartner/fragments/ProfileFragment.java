@@ -2068,7 +2068,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onPhotoAsyncTaskFinished(HttpEntity value) {
                 if(value!=null){
-
+                    videoUri=null;
+                    imageUri=null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                 }
@@ -2317,6 +2318,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
+
+                videoUri=null;
+                imageUri=null;
                 Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                 String json = null;
                 Log.d("error--", error.toString());

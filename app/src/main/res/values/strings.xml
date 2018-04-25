@@ -25,6 +25,8 @@
     <string name="hint_confirmpwd">Confirm Password</string>
     <string name="ChooseVideo">Choose Cover Video</string>
     <string name="Invalid">Invalid Username or Password</string>
+    <string name="not_activated">Your account is not activated.</string>
+    <string name="complete_profile">Please take a moment to complete your profile.</string>
 
 
     <!--Tab Icons-->
