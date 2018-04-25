@@ -121,7 +121,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         userType    =  prefManager.getUserType();
         //getBlueBP profes
 
-
         return view;
     }
 
@@ -138,6 +137,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getBluebpProfiles();
         getMyTournaments();
         getConnections();
+        //getNumberLike();
         //setUpMessage();
 
         /*getRequests();
@@ -230,12 +230,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
         //setting the no. of likes inside the card
 
-        if(no_likes_count==null){
-            txtv_likes.setText("No");
-        }
-        else{
-            txtv_likes.setText(no_likes_count);
-        }
 
     }
 
@@ -256,7 +250,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.no_of_likes_card:
                 //likesDisplay();
-                getNumberLike();
+                //getNumberLike();
+                //moveToCard();
                 break;
             case R.id.upcome_next_button:
                 //Toast.makeText(getActivity(), "Clicked Tour", Toast.LENGTH_SHORT).show();
@@ -577,7 +572,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     //Get 20+ Likes
-    private void getNumberLike() {
+    /*private void getNumberLike() {
         noLikes.clear();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONArray>() {
             @Override
@@ -610,7 +605,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             e.printStackTrace();
                         }
                     }
-                    moveToCard();
+                    if(no_likes_count==null || no_likes_count.equals("0")){
+                        txtv_likes.setText("No");
+                    }
+                    else{
+                        txtv_likes.setText(no_likes_count);
+                    }
+
                 }
 
             }
@@ -624,12 +625,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
-                            json = trimMessage(json, "detail");
+                            json = trimMessage(json, "title");
                             if (json != null) {
                                 Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
-
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
                         default:
                             break;
                     }
@@ -651,7 +658,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             requestQueue.add(arrayRequest);
         }
 
-    }
+    }*/
 
 
 

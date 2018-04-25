@@ -79,7 +79,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
-import com.beachpartnerllc.beachpartner.utils.FormValidator;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
@@ -123,8 +122,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -135,7 +132,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -2014,6 +2010,7 @@ exoPlayer.stop();
             progress.setTitle("Loading");
             progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             progress.show();
         }
 
@@ -2340,8 +2337,10 @@ exoPlayer.stop();
     private void updateAllUserDetails(JSONObject object) {
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
+
             progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
             progress.show();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE + user_id, object,
@@ -2475,37 +2474,37 @@ exoPlayer.stop();
                 editDob.setText(dft.format(date_dob));
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
-                if(userDataModel.getCbvaFirstName()!=null){
+                if(userDataModel.getCbvaFirstName()!=null ||userDataModel.getCbvaFirstName()!="null"){
                     editCBVAFName.setText(userDataModel.getCbvaFirstName());
                 }
-                if(userDataModel.getCbvaLastName()!=null){
+                if(userDataModel.getCbvaLastName()!="null"|userDataModel.getCbvaLastName()!=null){
                     editCBVALName.setText(userDataModel.getCbvaLastName());
                 }
-                if(userDataModel.getCbvaPlayerNumber()!=null){
+                if(userDataModel.getCbvaPlayerNumber()!="null"||userDataModel.getCbvaPlayerNumber()!=null){
                     editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
                 }
-                if(userDataModel.getCollageClub()!=null){
+                if(userDataModel.getCollageClub()!="null"||userDataModel.getCollageClub()!=null){
                     editColgClub.setText(userDataModel.getCollageClub());
                 }
-                if(userDataModel.getCollegeBeach()!=null){
+                if(userDataModel.getCollegeBeach()!="null"||userDataModel.getCollegeBeach()!=null){
                     editColgBeach.setText(userDataModel.getCollegeBeach());
                 }
-                if(userDataModel.getCollegeIndoor()!=null){
+                if(userDataModel.getCollegeIndoor()!="null"||userDataModel.getCollegeIndoor()!=null){
                     editColgIndoor.setText(userDataModel.getCollegeIndoor());
                 }
-                if(userDataModel.getHighSchoolAttended()!=null){
+                if(userDataModel.getHighSchoolAttended()!="null"||userDataModel.getHighSchoolAttended()!=null){
                     editHighschool.setText(userDataModel.getHighSchoolAttended());
                 }
-                if(userDataModel.getIndoorClubPlayed()!=null){
+                if(userDataModel.getIndoorClubPlayed()!="null"||userDataModel.getIndoorClubPlayed()!=null){
                     editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
                 }
-                if(!userDataModel.getTotalPoints().equalsIgnoreCase("null")){
+                if(userDataModel.getTotalPoints()!="null"||userDataModel.getTotalPoints()!=null){
                     editPoints.setText(userDataModel.getTotalPoints());
                 }
-                if(!userDataModel.getToursPlayedIn().equalsIgnoreCase("null")){
+                if(userDataModel.getToursPlayedIn()!="null"||userDataModel.getToursPlayedIn()!=null){
                     editPlayed.setText(userDataModel.getToursPlayedIn());
                 }
-                if(userDataModel.getUsaVolleyballRanking()!=null){
+                if(userDataModel.getUsaVolleyballRanking()!="null"||userDataModel.getUsaVolleyballRanking()!=null){
                     edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
                 }
 

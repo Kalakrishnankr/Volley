@@ -202,12 +202,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
                 if (bluebpList.size()>0) {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
-                        adapter.addAll(bluebpList.get(i));
+                         adapter.addAll(bluebpList.get(i));
+                        if (i == bluebpList.size()) {
+                            if (allCardList.size() > 0 && allCardList !=null) {
+                                for (int j = 0; j <allCardList.size() ; j++) {
+                                    adapter.addAll(allCardList);
+                                }
+                            }else {
+                                getAllCards(location, sgender, isCoach, minAge, maxAge);
+                            }
+                        }
                     }
 
                 }
             }
-
             //From 20+ Likes
             if (noLikes !=null && noLikes.size() > 0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
@@ -226,7 +234,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     }
                 }
             }
-            getAllCards(location, sgender, isCoach, minAge, maxAge);
+            //getAllCards(location, sgender, isCoach, minAge, maxAge);
 
         }
 

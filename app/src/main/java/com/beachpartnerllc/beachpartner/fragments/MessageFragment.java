@@ -206,9 +206,9 @@ public class MessageFragment extends Fragment  {
                                 tv_nomsgs.setVisibility(View.VISIBLE);
                             }
 
-                        }else {
+                        }/*else {
                             tv_nomsgs.setVisibility(View.VISIBLE);
-                        }
+                        }*/
                     }
                     progressBar.setVisibility(View.GONE);
                     chatListAdapter = new ChatListAdapter(MessageFragment.this,getContext(), userList);

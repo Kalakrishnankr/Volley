@@ -106,11 +106,11 @@
     <string name="hint_CBVAFName">CBVA First Name</string>
     <string name="hint_CBVALName">CBVA Last Name</string>
     <string name="hint_WtoTravel">Willingness To Travel</string>
-    <string name="hint_highschool">High school attended</string>
+    <string name="hint_highschool">High School attended</string>
     <string name="hint_indoorclub">Indoor Club played at</string>
     <string name="hint_collgeclub">College (Club)</string>
     <string name="hint_collgebeach">College (Beach)</string>
-    <string name="hint_colgindoor">College (indoor)</string>
+    <string name="hint_colgindoor">College (Indoor)</string>
     <string name="hint_points">Points</string>
     <string name="hint_youlink">YouTube Link</string>
     <string name="hint_biolink">Bio Link</string>

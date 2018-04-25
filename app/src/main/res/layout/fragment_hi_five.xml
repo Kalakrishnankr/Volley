@@ -14,8 +14,8 @@
         android:id="@+id/no_hiFives_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No High Fives Today"
-        android:textSize="20sp"
+        android:text="No new High Fives for you"
+        android:textSize="16sp"
         android:gravity="center"
         android:visibility="gone" />
 </LinearLayout>

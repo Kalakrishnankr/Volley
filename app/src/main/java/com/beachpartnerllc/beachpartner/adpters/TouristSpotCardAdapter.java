@@ -84,7 +84,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         holder.image.setVisibility(View.VISIBLE);
 
         if (spot.getBpf_age() != null) {
-            holder.name.setText(spot.getBpf_firstName()+" , "+spot.getBpf_age());
+            holder.name.setText(spot.getBpf_firstName()+","+spot.getBpf_age());
         }else {
             String dobToage = spot.getBpf_dob();
             if (!dobToage.isEmpty() && !dobToage.equals(null)) {
