@@ -827,6 +827,7 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:inputType="text"
+                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
                         android:nextFocusDown="@+id/topfinishes_txt_1"
                         android:paddingLeft="5dp"

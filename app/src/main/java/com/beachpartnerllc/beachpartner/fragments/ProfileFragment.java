@@ -2437,37 +2437,37 @@ exoPlayer.stop();
                 editDob.setText(dft.format(date_dob));
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
-                if(userDataModel.getCbvaFirstName()!=null){
+                if(userDataModel.getCbvaFirstName()!=null ||userDataModel.getCbvaFirstName()!="null"){
                     editCBVAFName.setText(userDataModel.getCbvaFirstName());
                 }
-                if(userDataModel.getCbvaLastName()!=null){
+                if(userDataModel.getCbvaLastName()!="null"|userDataModel.getCbvaLastName()!=null){
                     editCBVALName.setText(userDataModel.getCbvaLastName());
                 }
-                if(userDataModel.getCbvaPlayerNumber()!=null){
+                if(userDataModel.getCbvaPlayerNumber()!="null"||userDataModel.getCbvaPlayerNumber()!=null){
                     editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
                 }
-                if(userDataModel.getCollageClub()!=null){
+                if(userDataModel.getCollageClub()!="null"||userDataModel.getCollageClub()!=null){
                     editColgClub.setText(userDataModel.getCollageClub());
                 }
-                if(userDataModel.getCollegeBeach()!=null){
+                if(userDataModel.getCollegeBeach()!="null"||userDataModel.getCollegeBeach()!=null){
                     editColgBeach.setText(userDataModel.getCollegeBeach());
                 }
-                if(userDataModel.getCollegeIndoor()!=null){
+                if(userDataModel.getCollegeIndoor()!="null"||userDataModel.getCollegeIndoor()!=null){
                     editColgIndoor.setText(userDataModel.getCollegeIndoor());
                 }
-                if(userDataModel.getHighSchoolAttended()!=null){
+                if(userDataModel.getHighSchoolAttended()!="null"||userDataModel.getHighSchoolAttended()!=null){
                     editHighschool.setText(userDataModel.getHighSchoolAttended());
                 }
-                if(userDataModel.getIndoorClubPlayed()!=null){
+                if(userDataModel.getIndoorClubPlayed()!="null"||userDataModel.getIndoorClubPlayed()!=null){
                     editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
                 }
-                if(!userDataModel.getTotalPoints().equalsIgnoreCase("null")){
+                if(userDataModel.getTotalPoints()!="null"||userDataModel.getTotalPoints()!=null){
                     editPoints.setText(userDataModel.getTotalPoints());
                 }
-                if(!userDataModel.getToursPlayedIn().equalsIgnoreCase("null")){
+                if(userDataModel.getToursPlayedIn()!="null"||userDataModel.getToursPlayedIn()!=null){
                     editPlayed.setText(userDataModel.getToursPlayedIn());
                 }
-                if(userDataModel.getUsaVolleyballRanking()!=null){
+                if(userDataModel.getUsaVolleyballRanking()!="null"||userDataModel.getUsaVolleyballRanking()!=null){
                     edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
                 }
 
