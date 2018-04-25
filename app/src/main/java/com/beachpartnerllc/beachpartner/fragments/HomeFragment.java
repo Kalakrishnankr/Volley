@@ -241,7 +241,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         switch(view.getId()){
             case R.id.imgview_send:
                 txt_head.setText("Tournament Requests Sent");
-                txtv_noreqsts.setText("No requests send");
+                txtv_noreqsts.setText("No requests sent");
                 break;
 
             case R.id.imgview_received:

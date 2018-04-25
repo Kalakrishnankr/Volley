@@ -72,16 +72,16 @@ public class SettingsFragment extends Fragment {
 
     private void initView(View view) {
 
-        tvMin = (TextView) view.findViewById(R.id.txtv_minAge);
-        tvMax = (TextView) view.findViewById(R.id.txtv_maxAge);
-        age_bar = (MultiSlider) view.findViewById(R.id.rangebar);
+        tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
+        tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
+        age_bar     = (MultiSlider) view.findViewById(R.id.rangebar);
         spinner_location = (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
 
-        btnMale = (ToggleButton) view.findViewById(R.id.btnMen);
-        btnFemale = (ToggleButton) view.findViewById(R.id.btnWomen);
-        btnSave = (Button) view.findViewById(R.id.saveSettings);
+        btnMale     = (ToggleButton) view.findViewById(R.id.btnMen);
+        btnFemale   = (ToggleButton) view.findViewById(R.id.btnWomen);
+        btnSave     = (Button) view.findViewById(R.id.saveSettings);
 
         btnFemale.setText("Women");
         btnMale.setText("Men");
@@ -115,13 +115,13 @@ public class SettingsFragment extends Fragment {
             spinner_location.setText(location);
 
             if (sgender != null) {
-                if (sgender.equals("Men")) {
-                    txtv_gender.setText("Men");
+                if (sgender.equals("Male")) {
+                    txtv_gender.setText("Male");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setChecked(true);
-                } else if (sgender.equals("Women")) {
-                    txtv_gender.setText("Women");
+                } else if (sgender.equals("Female")) {
+                    txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setChecked(true);
@@ -178,11 +178,11 @@ public class SettingsFragment extends Fragment {
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 } else if (isChecked) {
-                    txtv_gender.setText("Men");
+                    txtv_gender.setText("Male");
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 } else if (!isChecked) {
-                    txtv_gender.setText("Women");
+                    txtv_gender.setText("Female");
                     btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnMale.setTextColor(getResources().getColor(R.color.black));
                     btnFemale.setChecked(true);
@@ -205,11 +205,11 @@ public class SettingsFragment extends Fragment {
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                 } else if (isChecked) {
-                    txtv_gender.setText("Women");
+                    txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                 } else if (!isChecked) {
-                    txtv_gender.setText("Men");
+                    txtv_gender.setText("Male");
                     btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
                     btnFemale.setTextColor(getResources().getColor(R.color.black));
                     btnMale.setChecked(true);

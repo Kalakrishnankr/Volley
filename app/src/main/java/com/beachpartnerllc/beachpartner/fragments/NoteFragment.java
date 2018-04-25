@@ -231,6 +231,12 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
                 Log.d("respone",response.toString());
                 if (response != null) {
                     Toast.makeText(getActivity(), "Note Created", Toast.LENGTH_SHORT).show();
+                    try {
+                        NoteDataModel noteDataModel = new NoteDataModel();
+                        noteDataModel.setNote_id(response.getString("id"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
 
             }
