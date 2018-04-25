@@ -28,6 +28,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     Context mContext;
     private ArrayList<NoteDataModel> dataList;
     private SaveNoteInterface noteInterface;
+    public static boolean isEditable=false;
+    private String text,noteId;
 
     public NotesAdapter(Context context, ArrayList<NoteDataModel> allSampleData, NoteFragment noteFragment) {
         this.mContext = context;
@@ -89,21 +91,22 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         holder.noteDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // holder.edit_notes.setEnabled(false);
-                String text = holder.edit_notes.getText().toString();
-                String noteId = model.getNote_id();
+                noteId = model.getNote_id();
                 if (noteId != null && !noteId.isEmpty()) {
+                    holder.edit_notes.setFocusable(true);
+                    holder.edit_notes.setEnabled(true);
+                    text = holder.edit_notes.getText().toString();
                     if (!text.isEmpty()) {
                         noteInterface.update(text,noteId);
-                        holder.noteDisabled.setImageResource(R.drawable.ic_edit_active);
                     }
-                } else {
+                }else{
                     if (!text.isEmpty()) {
                         noteInterface.save(text);
                         holder.edit_notes.setFocusable(false);
                         holder.noteDisabled.setImageResource(R.drawable.ic_edit_active);
                     }
                 }
+
             }
         });
 
@@ -111,6 +114,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
     }
+
 
     @Override
     public int getItemCount() {

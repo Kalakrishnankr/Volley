@@ -74,7 +74,7 @@ public class SettingsFragment extends Fragment {
 
         tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
         tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
-        age_bar     = (MultiSlider) view.findViewById(R.id.rangebar);
+        age_bar     = (MultiSlider) view.findViewById(R.id.rangebarOne);
         spinner_location = (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
@@ -100,7 +100,7 @@ public class SettingsFragment extends Fragment {
         //check shared prefvalue
         prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
 
-        if (prefs != null) {
+        if (prefs!=null) {
 
             String location = prefs.getString("location", null);
             String sgender = prefs.getString("gender", null);

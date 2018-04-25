@@ -109,7 +109,7 @@
                             app:mrb_tickInterval="2"
                             app:mrb_tickStart="5"/>-->
                         <io.apptik.widget.MultiSlider
-                            android:id="@+id/rangebar"
+                            android:id="@+id/rangebarOne"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2.4"
