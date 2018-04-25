@@ -14,7 +14,7 @@
         android:id="@+id/no_hiFives_tv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="No New High Fives for you"
+        android:text="No new High Fives for you"
         android:textSize="16sp"
         android:gravity="center"
         android:visibility="gone" />
