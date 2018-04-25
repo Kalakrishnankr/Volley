@@ -60,6 +60,7 @@ import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -108,6 +109,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.zxing.common.StringUtils;
 
 
 import org.apache.http.HttpEntity;
@@ -130,6 +132,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -196,11 +199,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private int videoDuration;
     private static ProgressDialog progress;
     private PlayerView playerView;
+    private String selectedTours;
     Bitmap profilePhoto = null;
     SimpleExoPlayer exoPlayer;
+    private String location_change="profile";
     private static PhotoAsyncTask asyncTask;
+
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
+    private ScrollView scrollview_profile;
 
 
     private Handler mUiHandler = new Handler();
@@ -228,6 +235,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         getActivity().getActionBar();
 
+        //to show focus on location field when clicking on location icon in bp
+
+            Bundle arguments = getArguments();
+
+                try{
+                    location_change=arguments.getString("prime_card");
+                    if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
+                        editCity.setEnabled(true);
+                        editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
+                        btnsBottom.setVisibility(View.VISIBLE);
+                        llMenuMore.setClickable(false);
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
@@ -239,6 +264,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         progress = new ProgressDialog(getContext());
 
+        playerView.setUseArtwork(true);
+        playerView.setResizeMode(exoPlayer.getVideoScalingMode());
 
         return view;
     }
@@ -265,6 +292,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void initActivity(final View view) {
 
+        scrollview_profile      =   (ScrollView) view.findViewById(R.id.scrollview_profile);
         btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
         more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
         imgEdit                 = (ImageView) view.findViewById(R.id.edit);
@@ -497,7 +525,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     spinnerExpValue = spinnerExp.getSelectedItem().toString();
                 }
                 else{
-                    int spinnerExpPos=expAdapter.getPosition(spinnerPosValue);
+                    int spinnerExpPos=expAdapter.getPosition(spinnerExpValue);
                     spinnerExp.setSelection(spinnerExpPos);
                     spinnerExpValue="";
                 }
@@ -528,7 +556,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     spinnerPrefValue = spinnerPref.getSelectedItem().toString();
                 }
                 else{
-                    int spinnerpref=prefAdapter.getPosition(spinnerPosValue);
+                    int spinnerpref=prefAdapter.getPosition(spinnerPrefValue);
                     spinnerPref.setSelection(spinnerpref);
                     spinnerPrefValue="";
                 }
@@ -722,7 +750,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     editHeightValue = editHeight.getSelectedItem().toString();
                 }
                 else{
-                    int editHeightValuePos=distanceAdapter.getPosition(editHeightValue);
+                    int editHeightValuePos=heightAdapter.getPosition(editHeightValue);
                     editHeight.setSelection(editHeightValuePos);
                     editHeightValue="";
                 }
@@ -1159,33 +1187,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void playVideo(String videoURL) {
-       /* videoView.start();
-        progressbar.setVisibility(View.VISIBLE);
-        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-            @Override
-            public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                    progressbar.setVisibility(View.GONE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                    progressbar.setVisibility(View.VISIBLE);
-                }
-                if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                    videoView.setVisibility(View.GONE);
-                    progressbar.setVisibility(View.GONE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                }
-                return false;
-            }
-        });
-        videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-            @Override
-            public void onCompletion(MediaPlayer mediaPlayer) {
-                videoView.setVisibility(View.GONE);
-                imgPlay.setVisibility(View.VISIBLE);
 
-            }
-        });*/
 
 
         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
@@ -1193,6 +1195,39 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         playerView.setPlayer(exoPlayer);
         exoPlayer.prepare(mediaSource);
+        exoPlayer.setPlayWhenReady(true);
+        exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+        playerView.setUseController(false);
+        exoPlayer.setVolume(0);
+    }
+
+
+    private void playVideoFromFile(Uri fileURL){
+
+
+
+        DataSpec dataSpec = new DataSpec(fileURL);
+        final FileDataSource fileDataSource = new FileDataSource();
+        try {
+            fileDataSource.open(dataSpec);
+        } catch (FileDataSource.FileDataSourceException e) {
+            e.printStackTrace();
+        }
+
+        DataSource.Factory factory = new DataSource.Factory() {
+            @Override
+            public DataSource createDataSource() {
+                return fileDataSource;
+            }
+        };
+        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
+                factory, new DefaultExtractorsFactory(), null, null);
+
+        exoPlayer.prepare(audioSource);
+
+
+        playerView.setPlayer(exoPlayer);
+        exoPlayer.prepare(audioSource);
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         playerView.setUseController(false);
@@ -1370,27 +1405,33 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public void toursPlayed() {
         final CharSequence[] items = {" AVP Next ", " AVP First ", " CBVA Adult ", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","VolleyOC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
+
         final ArrayList seletedItems = new ArrayList();
+        final boolean[] checkedColors = new boolean[]{
+
+        };
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
-                .setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(items,null, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
                             seletedItems.add(indexSelected);
+
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             seletedItems.remove(Integer.valueOf(indexSelected));
+
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        String selectedTours = null;
+
                         for (int i = 0; i < seletedItems.size(); i++) {
-                            selectedTours = (String) (items[(int) seletedItems.get(i)]);
+                            selectedTours = (String) items[(int) seletedItems.get(i)];
                         }
                         editPlayed.setText(selectedTours);
 
@@ -1975,12 +2016,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
                     exoPlayer.stop();
                     Uri uri = Uri.fromFile(file);    //Uri.parse(getPath(selectedVideoUri));
+                    playVideoFromFile(uri);
 
-                    playVideo(String.valueOf(uri));
-                    /*MediaSource mediaSource = buildMediaSource(uri);
-                    exoPlayer.prepare(mediaSource, true, false);
-                    exoPlayer.setPlayWhenReady(true);
-                    exoPlayer.setRepeatMode(1);*/
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         //imgVideo.setVisibility(View.VISIBLE);
@@ -2095,7 +2132,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
                                     userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
                                     userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                                    userDataModel.setTotalPoints(obj.getString("totalPoints"));
+                                    userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
                                     userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
                                     userDataModel.setCollageClub(obj.getString("collageClub"));
                                     userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
@@ -2107,7 +2144,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
                                     userDataModel.setPosition(obj.getString("position"));
                                     userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
-                                    userDataModel.setUsaVolleyballRanking(obj.getString("usaVolleyballRanking"));
+
+                                    userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
                                     userDataModel.setTopFinishes(obj.getString("topFinishes"));
                                     userDataModel.setCollage(obj.getString("collage"));
                                     userDataModel.setDescription(obj.getString("description"));
@@ -2262,7 +2300,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                     imgProfile.setImageResource(R.drawable.ic_person);
                                 }
                                 if (userDataModel.getVideoUrl() != null) {
-                                    playVideo(userDataModel.getVideoUrl());
+                                   // playVideo(userDataModel.getVideoUrl());
                                 }
 
                                 progress.dismiss();
@@ -2818,7 +2856,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     }
 
-
+public String isEmptyOrNull(String stringToCheck){
+       String stringValue = " ";
+    if(stringToCheck != null && !stringToCheck.isEmpty()){
+        if(stringToCheck.equalsIgnoreCase("null")){
+            stringValue = " ";
+        }
+    }else{
+        stringValue = stringToCheck;
+    }
+    return stringValue;
+}
 
 
 

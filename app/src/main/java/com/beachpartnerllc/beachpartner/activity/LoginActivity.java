@@ -445,55 +445,59 @@ public class LoginActivity extends AppCompatActivity {
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
-                                   // if(uProfileStatus!=null && !uProfileStatus.equalsIgnoreCase("null")){
-                                        //already user updated the profile
+
+                                    if(uProfileStatus!=null && !uProfileStatus.equalsIgnoreCase("null")){
+//                                        already user updated the profile
+
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                         intent.putExtra("reDirectPage","home");
                                         startActivity(intent);
                                         finish();
-                                   // }
-//                                    else{
-//                                        //Whether user want to update his/her profile o
-//                                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
-//                                        builder.setMessage("Please take a moment to complete your profile. Your profile will remain private and hidden from the world until you complete it.");
-//                                        builder.setCancelable(true);
-//
-//                                        builder.setPositiveButton(
-//                                                "OK",
-//                                                new DialogInterface.OnClickListener() {
-//                                                    public void onClick(DialogInterface dialog, int id) {
-//                                                        dialog.cancel();
-//                                                        //Goto profile fragment
-//                                                        /*ProfileFragment pfragment = new ProfileFragment();
-//                                                        FragmentManager mang = getSupportFragmentManager();
-//                                                        FragmentTransaction transaction = mang.beginTransaction();
-//                                                        transaction.add(R.id.container,pfragment);
-//                                                        transaction.commit();*/
-//                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-//                                                        intent.putExtra("reDirectPage","profile");
-//                                                        startActivity(intent);
-//                                                        finish();
-//
-//                                                    }
-//                                                });
-//
-//                                        builder.setNegativeButton(
-//                                                "Later",
-//                                                new DialogInterface.OnClickListener() {
-//                                                    public void onClick(DialogInterface dialog, int id) {
-//                                                        dialog.cancel();
-//                                                        //Goto home fragment
-//                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
-//                                                        intent.putExtra("reDirectPage","home");
-//                                                        startActivity(intent);
-//                                                        finish();
-//                                                    }
-//                                                });
-//
-//                                        AlertDialog alert = builder.create();
-//                                        alert.show();
-//
-//                                    }
+
+                                    }
+                                    else{
+                                        //Whether user want to update his/her profile o
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
+                                        builder.setMessage("Please take a moment to complete your profile. Your profile will remain private and hidden from the world until you complete it.");
+                                        builder.setCancelable(true);
+
+                                        builder.setPositiveButton(
+                                                "OK",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                        //Goto profile fragment
+                                                        /*ProfileFragment pfragment = new ProfileFragment();
+                                                        FragmentManager mang = getSupportFragmentManager();
+                                                        FragmentTransaction transaction = mang.beginTransaction();
+                                                        transaction.add(R.id.container,pfragment);
+                                                        transaction.commit();*/
+                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                                        intent.putExtra("reDirectPage","profile");
+                                                        startActivity(intent);
+                                                        finish();
+
+                                                    }
+                                                });
+
+                                        builder.setNegativeButton(
+                                                "Later",
+                                                new DialogInterface.OnClickListener() {
+                                                    public void onClick(DialogInterface dialog, int id) {
+                                                        dialog.cancel();
+                                                        //Goto home fragment
+                                                        Intent intent = new Intent(LoginActivity.this,TabActivity.class);
+                                                        intent.putExtra("reDirectPage","home");
+                                                        startActivity(intent);
+                                                        finish();
+                                                    }
+                                                });
+
+                                        AlertDialog alert = builder.create();
+                                        alert.show();
+
+                                    }
+
 
 
 
@@ -534,7 +538,7 @@ public class LoginActivity extends AppCompatActivity {
                                         if(json.contains("not activated")){
                                             new PrefManager(LoginActivity.this).saveRegistrationStatus("pending");
                                             registrationSuccessful=  new PrefManager(LoginActivity.this).getRegistrationStatus();
-                                            Toast.makeText(LoginActivity.this, " "+registrationSuccessful, Toast.LENGTH_LONG).show();
+//                                            Toast.makeText(LoginActivity.this, " "+registrationSuccessful, Toast.LENGTH_LONG).show();
                                         }
 //                                        Toast toast = Toast.makeText(LoginActivity.this, " "+json, Toast.LENGTH_LONG);
 //                                        toast.setGravity(Gravity.BOTTOM, 0, 0);
@@ -630,7 +634,7 @@ private void neverGotEmailAlertTextUnderline(){
             ds.setUnderlineText(true);
         }
     };
-    ss.setSpan(clickableSpan, 95, 105, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+    ss.setSpan(clickableSpan, 103, 124, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
     never_got_email_tv.setText(ss);

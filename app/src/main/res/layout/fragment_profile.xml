@@ -1,4 +1,5 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/scrollview_profile"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -48,6 +49,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_marginTop="2dp"
+                    app:resize_mode="fill"
                     android:clickable="false"
                     app:use_controller="false"
                     android:focusable="true" />
