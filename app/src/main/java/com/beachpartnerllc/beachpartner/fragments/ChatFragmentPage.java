@@ -226,7 +226,14 @@ public class ChatFragmentPage extends Fragment {
             }
             textView.setLayoutParams(lp2);
             rootview.addView(textView);
-            scrollview.fullScroll(View.FOCUS_DOWN);
+            //scrollview.fullScroll(View.FOCUS_DOWN);
+            scrollview.post(new Runnable()
+            {
+                public void run()
+                {
+                    scrollview.fullScroll(View.FOCUS_DOWN);
+                }
+            });
         }
 
     }

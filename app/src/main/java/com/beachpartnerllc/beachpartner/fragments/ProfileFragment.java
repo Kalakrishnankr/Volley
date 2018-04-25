@@ -79,7 +79,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
-import com.beachpartnerllc.beachpartner.utils.FormValidator;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
@@ -122,9 +121,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -133,7 +129,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -1986,7 +1981,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait until uploading is complete...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
 
@@ -2314,7 +2309,7 @@ exoPlayer.stop();
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait until process is complete...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE + user_id, object,
