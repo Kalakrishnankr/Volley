@@ -101,6 +101,7 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -128,6 +129,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -191,7 +193,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private PlayerView playerView;
     Bitmap profilePhoto = null;
     SimpleExoPlayer exoPlayer;
-    private PhotoAsyncTask asyncTask;
+    private static PhotoAsyncTask asyncTask;
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
 
@@ -241,6 +243,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         super.onViewCreated(view, savedInstanceState);
 
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        if (exoPlayer != null) {
+
+            exoPlayer.release();
+            exoPlayer = null;
+        }
+
+//        asyncTask.setListener(null);
     }
 
     private void initActivity(final View view) {
@@ -1629,37 +1644,44 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             topfinishes_txt_3.setEnabled(false);
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
-            String dateOb = editDob.getText().toString().trim();
+            String dateOb = editDob.getText().toString();
+
+           // Log.d("date--",c);
 
             //long date = Long.parseLong(dateOb);
+           // DateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy",
+           //         Locale.ENGLISH);
 
-            /*Date date = null;
-            DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy'T'HH:mm:ss'Z'",Locale.US);
-            try
-            {
-                date = dateFormat.parse(dateOb);
-            }
-            catch(Exception e)
-            {
+          //  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+            Date date=null;
+            Date dateLong=null;
+            String stringDate = null;
+            try {
+
+                date = new SimpleDateFormat("MM-dd-yyyy").parse(dateOb);
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
+                stringDate = dateFormat.format(date);
+
+                dateLong = dateFormat.parse(stringDate);
+
+
+            } catch (ParseException e) {
+
                 e.printStackTrace();
+
             }
-            long milliseconds = date.getTime();*/
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
 
 
-//            Date dateDOB = new Date(dateOb);
-//            try {
-//                dateDOB = (Date) dateFormat.parse(dateOb);
-//            } catch (ParseException e) {
-//                e.printStackTrace();
-//            }
             JSONObject object = new JSONObject();
             try {
                 //object.put("activated",true);
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("dob","2018-02-20T17:09:49.544Z");
+                object.put("dob",stringDate);
                 object.put("city", editCity.getText().toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
@@ -1946,16 +1968,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     // File file = new File(String.valueOf(getPath(selectedVideoUri)));
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
+exoPlayer.stop();
+                    Uri uri = Uri.parse(getPath(selectedVideoUri));
+                    MediaSource mediaSource = buildMediaSource(uri);
+                    exoPlayer.prepare(mediaSource, true, false);
+                    exoPlayer.setPlayWhenReady(true);
+                    exoPlayer.setRepeatMode(1);
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
-                        imgVideo.setVisibility(View.VISIBLE);
-                        imgPlay.setVisibility(View.VISIBLE);
-                        //exoPlayer.stop();
+                        //imgVideo.setVisibility(View.VISIBLE);
+                        //imgPlay.setVisibility(View.VISIBLE);
+                       // exoPlayer.stop();
 
                         //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
                         Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
-                        Toast.makeText(getContext(), "duration"+videoDuration, Toast.LENGTH_SHORT).show();
                     }
                 }
 
@@ -1985,7 +2012,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
-            progress.setMessage("Please wait until uploading is complete...");
+            progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
@@ -1998,7 +2025,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if(value!=null){
 
                     progress.dismiss();
-                    Toast.makeText(getActivity(),"User details updated successfully",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -2313,7 +2340,7 @@ exoPlayer.stop();
     private void updateAllUserDetails(JSONObject object) {
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
-            progress.setMessage("Please wait until process is complete...");
+            progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
@@ -2323,9 +2350,14 @@ exoPlayer.stop();
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             if (getActivity() != null) {
-                                uploadImgFiles(imageUri,videoUri,user_id);
 
-                                uploadImgFiles(imageUri,videoUri,user_id);
+                                if(imageUri!=null || videoUri!=null) {
+                                    uploadImgFiles(imageUri, videoUri, user_id);
+                                }else{
+                                    progress.dismiss();
+                                    Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+
+                                }
 
 
                             }else{
@@ -2340,10 +2372,11 @@ exoPlayer.stop();
                                 }
 
                                 progress.dismiss();
-                                Toast.makeText(getActivity(),"User details updated successfully",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                             }
                         }else {
                             progress.dismiss();
+                            Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -2352,7 +2385,7 @@ exoPlayer.stop();
             @Override
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
-                Toast.makeText(getActivity(),"User details updation failed",Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -2980,6 +3013,7 @@ exoPlayer.stop();
                     reqEntity.addPart("profileVideo", videoFile);
 
                 }else{
+                    progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
                 }
 
