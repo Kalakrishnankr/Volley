@@ -57,7 +57,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
     }
 
-    @SuppressLint("ClickableViewAccessibility")
+
     @Override
     public View getView(int position, View contentView, ViewGroup parent) {
         final ViewHolder holder;
@@ -113,8 +113,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
         }else {
             holder.spinnerView.stop();
-            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
-            Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
+            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
+            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
+              holder.image.setBackground(getContext().getDrawable(R.drawable.user_img));
+              holder.frameImage.setBackground(getContext().getDrawable(R.drawable.user_img));
         }
 
         if (spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().isEmpty() && !spot.getBpf_deviceId().equalsIgnoreCase("null")) {
@@ -144,6 +146,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         final ExtractorsFactory extractorsFactory = new DefaultExtractorsFactory();
         holder.exoPlayerView.hideController();
         holder.exoPlayerView.setControllerAutoShow(false);
+        holder.exoPlayerView.setMinimumWidth(1000);
+        holder.exoPlayerView.setMinimumHeight(1000);
 
       //  holder.exoPlayerView
 
@@ -183,6 +187,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                     });
 
                     // playvideo(holder);
+                }else {
+                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
+                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
                 }
                 // dialog.setMessage("Please wait");
                /* if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().equals("") ) {

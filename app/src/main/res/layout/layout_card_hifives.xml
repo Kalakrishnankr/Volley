@@ -27,7 +27,7 @@
                 android:textColor="@color/black"
                 android:textStyle="bold"
                 android:layout_toRightOf="@+id/hifiveImg"
-                android:text="Sent you a high five"/>
+                android:text="sent you a high five"/>
             <com.github.curioustechizen.ago.RelativeTimeTextView
                 android:layout_marginTop="10dp"
                 android:layout_marginLeft="5dp"

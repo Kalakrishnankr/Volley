@@ -12,14 +12,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.NoteFragment;
+import com.beachpartnerllc.beachpartner.models.NoteDataModel;
 import com.beachpartnerllc.beachpartner.utils.SaveNoteInterface;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
-import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.models.NoteDataModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by Owner on 3/12/2018.
@@ -63,7 +62,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
             }
         });
-        holder.timeStamp.setReferenceTime(new Date().getTime());
+        //holder.timeStamp.setReferenceTime(new Date().getTime());
 
         holder.edit_notes.addTextChangedListener(new TextWatcher() {
             @Override

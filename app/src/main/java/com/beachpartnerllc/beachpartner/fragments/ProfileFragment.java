@@ -19,10 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
-import android.hardware.Camera;
 import android.media.ExifInterface;
-import android.media.MediaCodec;
-import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -49,7 +46,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -67,7 +63,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.VideoView;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
@@ -84,7 +79,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
-import com.beachpartnerllc.beachpartner.utils.FormValidator;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
@@ -102,7 +96,6 @@ import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
-import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
@@ -115,7 +108,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -129,9 +121,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
-
-import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -140,11 +129,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.HttpsURLConnection;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
@@ -201,8 +187,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     Bitmap profilePhoto = null;
     SimpleExoPlayer exoPlayer;
     private PhotoAsyncTask asyncTask;
-     DefaultHttpDataSourceFactory dataSourceFactory = null;
-     ExtractorsFactory extractorsFactory = null;
+    DefaultHttpDataSourceFactory dataSourceFactory = null;
+    ExtractorsFactory extractorsFactory = null;
+
 
     private Handler mUiHandler = new Handler();
 
@@ -1095,7 +1082,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 }
                 break;
             case R.id.imgPlay:
-               // videoView.setVisibility(View.VISIBLE);
+                // videoView.setVisibility(View.VISIBLE);
                 //playVideo();
                 // videoView.start();
                 break;
@@ -1184,7 +1171,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         exoPlayer.setPlayWhenReady(true);
         exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
         playerView.setUseController(false);
-      //  exoPlayer.setVideoScalingMode(100);
         exoPlayer.setVolume(0);
     }
 
@@ -1924,20 +1910,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     //Uri picUri = data.getData();
                     selectedImageUri = data.getData();
                 }
-                    if (selectedImageUri != null) {
+                if (selectedImageUri != null) {
 
-                        File imgfile = new File(getRealPathFromURI(selectedImageUri));
-                        //File imgfile = new File(String.valueOf(selectedImageUri));
-                        // Get length of file in bytes
+                    File imgfile = new File(getRealPathFromURI(selectedImageUri));
+                    //File imgfile = new File(String.valueOf(selectedImageUri));
+                    // Get length of file in bytes
 
-                        if (fileSize(imgfile.length()) <= 4) {
-                            imageUri = getRealPathFromURI(selectedImageUri);
-                            Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
+                    if (fileSize(imgfile.length()) <= 4) {
+                        imageUri = getRealPathFromURI(selectedImageUri);
+                        Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
 
-                        } else {
-                            Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
-                        }
+                    } else {
+                        Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
                     }
+                }
             }
             else if(requestCode == PICK_VIDEO_REQUEST){
                 Intent intent = new Intent();
@@ -1953,14 +1939,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 if (selectedVideoUri != null) {
 
-                   // File file = new File(String.valueOf(getPath(selectedVideoUri)));
+                    // File file = new File(String.valueOf(getPath(selectedVideoUri)));
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
                         imgVideo.setVisibility(View.VISIBLE);
                         imgPlay.setVisibility(View.VISIBLE);
                         //exoPlayer.stop();
-                       // playVideo(String.valueOf(getPath(selectedVideoUri)));
 
                         //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
@@ -1972,10 +1957,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
 
+            }
+
+
         }
-
-
-    }
     }
 
     //Method for check the size of the selected file
@@ -1996,7 +1981,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait until uploading is complete...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
 
@@ -2130,6 +2115,7 @@ exoPlayer.stop();
 
 
     }*/
+
 
 
 
@@ -2323,7 +2309,7 @@ exoPlayer.stop();
         if(!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait until process is complete...");
-            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+            progress.setCancelable(true); // disable dismiss by tapping outside of the dialog
             progress.show();
         }
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE + user_id, object,
@@ -2332,6 +2318,8 @@ exoPlayer.stop();
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             if (getActivity() != null) {
+                                uploadImgFiles(imageUri,videoUri,user_id);
+
                                 uploadImgFiles(imageUri,videoUri,user_id);
 
 
@@ -2349,6 +2337,8 @@ exoPlayer.stop();
                                 progress.dismiss();
                                 Toast.makeText(getActivity(),"User details updated successfully",Toast.LENGTH_LONG).show();
                             }
+                        }else {
+                            progress.dismiss();
                         }
 
                     }
@@ -2406,7 +2396,7 @@ exoPlayer.stop();
                     imgProfile.setImageResource(R.drawable.ic_person);
                 }
                 if (userDataModel.getVideoUrl() != null) {
-                   playVideo(userDataModel.getVideoUrl());
+                    playVideo(userDataModel.getVideoUrl());
                 }
                  /*   videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
                         @Override
@@ -2618,43 +2608,43 @@ exoPlayer.stop();
 
 
 
-            if (type.equals("videoIntent")){
-                Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-                takeVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+        if (type.equals("videoIntent")){
+            Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+            takeVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Video.Media.INTERNAL_CONTENT_URI);
-
-
-                if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                    // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-
-                    // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
-                    // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                    takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
-                    takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                    takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 320);
-                    takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 240);
+            Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Video.Media.INTERNAL_CONTENT_URI);
 
 
-                    //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+            if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+                // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
-                }
-                intentList = addIntentsToList(context, intentList, pickIntent);
-                intentList = addIntentsToList(context, intentList, takeVideoIntent);
+                // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
+                // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
+                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 320);
+                takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 240);
 
-            }else if(type.equals("imageIntent")){
+
+                //startActivityForResult(takeVideoIntent, REQUEST_VIDEO_CAPTURE);
+
+            }
+            intentList = addIntentsToList(context, intentList, pickIntent);
+            intentList = addIntentsToList(context, intentList, takeVideoIntent);
+
+        }else if(type.equals("imageIntent")){
 
 
 
 
-                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.INTERNAL_CONTENT_URI);
-                intentList = addIntentsToList(context, intentList, pickIntent);
-                intentList = addIntentsToList(context, intentList, takePictureIntent);
+            Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.INTERNAL_CONTENT_URI);
+            intentList = addIntentsToList(context, intentList, pickIntent);
+            intentList = addIntentsToList(context, intentList, takePictureIntent);
         /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
 
@@ -2954,58 +2944,59 @@ exoPlayer.stop();
 
         @Override
         protected HttpEntity doInBackground(String... voids)
-            {
-                try {
-                    FileBody imageFile, videoFile;
-                    MultipartEntity reqEntity = new MultipartEntity();
-                    StringBody user_Id = new StringBody(userId);
-                    reqEntity.addPart("userId", user_Id);
+        {
+            try {
+                FileBody imageFile, videoFile;
+                MultipartEntity reqEntity = new MultipartEntity();
+                StringBody user_Id = new StringBody(userId);
+                reqEntity.addPart("userId", user_Id);
 
-                    if (imagePath != null && videoPath != null) {
+                if (imagePath != null && videoPath != null) {
 
-                        imageFile = new FileBody(new File(imagePath));
-                        videoFile = new FileBody(new File(videoPath));
-
-
-                        reqEntity.addPart("profileImg", imageFile);
+                    imageFile = new FileBody(new File(imagePath));
+                    videoFile = new FileBody(new File(videoPath));
 
 
-                        reqEntity.addPart("profileVideo", videoFile);
-
-                    }
-                    else if(imagePath!=null && videoPath==null) {
-                        imageFile = new FileBody(new File(imagePath));
-
-                        reqEntity.addPart("profileImg", imageFile);
+                    reqEntity.addPart("profileImg", imageFile);
 
 
-                    }else if(imagePath==null && videoPath!=null) {
-                        videoFile = new FileBody(new File(videoPath));
-
-                        reqEntity.addPart("profileVideo", videoFile);
-
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
-                    }
-
-
-
-
-
-
-                    HttpEntity result = uploadToServer(reqEntity);
-                    return result;
-
-
+                    reqEntity.addPart("profileVideo", videoFile);
 
                 }
-                catch (Exception ex) {
-                    ex.printStackTrace();
-                    //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+                else if(imagePath!=null && videoPath==null) {
+                    imageFile = new FileBody(new File(imagePath));
 
+                    reqEntity.addPart("profileImg", imageFile);
+
+
+                }else if(imagePath==null && videoPath!=null) {
+                    videoFile = new FileBody(new File(videoPath));
+
+                    reqEntity.addPart("profileVideo", videoFile);
+
+                }else{
+                    Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
                 }
-                return null;
+
+
+
+
+
+
+
+                HttpEntity result = uploadToServer(reqEntity);
+                return result;
+
+
+
             }
+            catch (Exception ex) {
+                ex.printStackTrace();
+                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+
+            }
+            return null;
+        }
 
         @Override
         protected void onPostExecute(HttpEntity result) {
@@ -3048,22 +3039,25 @@ exoPlayer.stop();
 
 
 
-                listener.onPhotoAsyncTaskFinished(result);
-            }
+            listener.onPhotoAsyncTaskFinished(result);
+        }
+
         public void setListener(PhotoAsyncTaskListener listener) {
             this.listener = listener;
         }
         public interface PhotoAsyncTaskListener {
             void onPhotoAsyncTaskFinished(HttpEntity value);
         }
-        }
+    }
 
 
 
 
 
 
-   public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
+
+    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
+
         HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
         try {
             SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
@@ -3101,6 +3095,6 @@ exoPlayer.stop();
         }
         return null;
     }
-    }
+}
 
 

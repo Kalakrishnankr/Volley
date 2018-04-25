@@ -104,7 +104,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
             single_item =   (LinearLayout) itemView.findViewById(R.id.item);
             txv_name    =   (TextView)     itemView.findViewById(R.id.pname);
             //txtv_msg    =   (TextView)     itemView.findViewById(R.id.pmessage);
-            txtv_activeStatus=(TextView)   itemView.findViewById(R.id.pactive_status);
+            //txtv_activeStatus=(TextView)   itemView.findViewById(R.id.pactive_status);
             txtv_time   =   (TextView)     itemView.findViewById(R.id.txtv_time);
             person_pic  =   (CircularImageView)    itemView.findViewById(R.id.chatPic);
         }

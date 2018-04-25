@@ -23,7 +23,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 
 /**
@@ -98,9 +97,9 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
         cardView            =  convertView.findViewById(R.id.highfiveCard);
         usersImg            =  convertView.findViewById(R.id.hifiveImg);
 
-        tvContact.setText(hiFiveList.get(position).getBpf_firstName()+" Sent you a high five");
+        tvContact.setText(hiFiveList.get(position).getBpf_firstName()+" sent you a high five");
         Glide.with(getContext()).load(hiFiveList.get(position).getBpf_imageUrl()).into(usersImg);
-        timeStamp.setReferenceTime(new Date().getTime());
+        //timeStamp.setReferenceTime(new Date().getTime());
 
 
 

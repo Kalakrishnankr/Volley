@@ -69,7 +69,7 @@
                         android:gravity="center"
                         android:visibility="gone"
                         android:layout_gravity="center_vertical"
-                        android:text="No BlueBP Profiles Found " />
+                        android:text="No BlueBP profiles found " />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rrv_topProfile"

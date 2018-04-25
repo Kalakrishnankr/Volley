@@ -1,387 +1,387 @@
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
-    xmlns:app="http://schemas.android.com/apk/tools"
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/tools"
+        xmlns:fab="http://schemas.android.com/apk/res-auto"
 
-    <RelativeLayout
-        android:id="@+id/rrTop"
         android:layout_width="match_parent"
-        android:layout_height="280dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <FrameLayout
-            android:id="@+id/header_cover_video"
+        <RelativeLayout
+            android:id="@+id/rrTop"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/frame_layout_profileVide_height"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:background="#000">
-
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center"
-                android:visibility="gone"/>
-
-
-            <ImageView
-                android:id="@+id/imgPlay"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical|center_horizontal"
-                android:background="@drawable/ic_play"
-                android:visibility="gone" />
-
-            <com.google.android.exoplayer2.ui.PlayerView
-                android:id="@+id/exoplayer_profile"
-                android:focusable="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="2dp" />
+            android:layout_height="280dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true">
 
 
             <FrameLayout
-                android:id="@+id/placeholder"
-                android:layout_width="fill_parent"
-                android:foregroundGravity="center"
-                android:visibility="gone"
-                android:layout_height="fill_parent">
+                android:id="@+id/header_cover_video"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/frame_layout_profileVide_height"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="#000">
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+
 
                 <ImageView
-                    android:id="@+id/frameimg_view"
-                    android:scaleType="fitXY"
+                    android:id="@+id/imgPlay"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:background="@drawable/ic_play"
+                    android:visibility="gone" />
+
+                <com.google.android.exoplayer2.ui.PlayerView
+                    android:id="@+id/exoplayer_profile"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="2dp"
+                    android:clickable="false"
+                    app:use_controller="false"
+                    android:focusable="true" />
 
-                <com.beachpartnerllc.beachpartner.utils.RotateLoading
-                    android:id="@+id/my_spinner"
-                    android:layout_width="65dp"
-                    android:layout_height="65dp"
-                    app:loading_width="5dp"
-                    app:loading_color="#ffffff"
-                    android:layout_gravity="center"/>
+
+                <FrameLayout
+                    android:id="@+id/placeholder"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:foregroundGravity="center"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/frameimg_view"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:scaleType="fitXY" />
+
+                    <com.beachpartnerllc.beachpartner.utils.RotateLoading
+                        android:id="@+id/my_spinner"
+                        android:layout_width="65dp"
+                        android:layout_height="65dp"
+                        android:layout_gravity="center"
+                        app:loading_color="#ffffff"
+                        app:loading_width="5dp" />
+                </FrameLayout>
+
+                <ImageView
+                    android:id="@+id/imgVideo"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom|end"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_edit_profile"
+                    android:scaleType="centerCrop"
+                    android:visibility="gone" />
+
+
             </FrameLayout>
-<ImageView
-                android:id="@+id/imgVideo"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="bottom|end"
-                android:layout_margin="10dp"
-                android:scaleType="centerCrop"
-                android:background="@drawable/ic_edit_profile"
-                android:visibility="gone" />
 
-
-        </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/profileMainPic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:elevation="10dp">
-
-            <com.beachpartnerllc.beachpartner.CircularImageView
-                android:id="@+id/row_icon"
-                android:layout_width="@dimen/circular_img_width"
-                android:layout_height="@dimen/circular_img_height"
-                android:layout_below="@+id/header_cover_video"
-                android:layout_marginTop="@dimen/circular_img_marginTop"
-                android:contentDescription="@string/app_name"
-                android:elevation="10dp"
-                android:padding="10dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_person"
-                app:civ_border_width="10dp" />
-
-            <ImageView
-                android:id="@+id/edit_profile_img_vid"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="65dp"
-                android:elevation="10dp"
-                android:src="@drawable/ic_edit_profile"
-                android:visibility="gone" />
-
-        </FrameLayout>
-
-
-        <!--Layout for Share Button-->
-
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="25dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="@dimen/floatingMenuMarginTop"
-            android:elevation="10dp">
-
-            <com.beachpartnerllc.beachpartner.utils.FloatingActionMenu
-                android:id="@+id/menu_blue"
+            <FrameLayout
+                android:id="@+id/profileMainPic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                fab:menu_colorNormal="@color/white"
-                fab:menu_colorPressed="#2272CD"
-                fab:menu_colorRipple="#62B2FF"
-                fab:menu_fab_size="normal"
-                fab:menu_labels_ellipsize="middle"
-                fab:menu_labels_position="right"
-                fab:menu_labels_singleLine="true"
-                fab:menu_labels_style="@dimen/text_size"
-                fab:menu_showShadow="false">
+                android:layout_centerHorizontal="true"
+                android:elevation="10dp">
 
-                <com.beachpartnerllc.beachpartner.utils.FloatingActionButton
-                    android:id="@+id/fab_image"
-                    style="@style/MenuButtonsSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_share_img"
-                    fab:fab_label="Image"
-                    fab:fab_size="normal" />
+                <com.beachpartnerllc.beachpartner.CircularImageView
+                    android:id="@+id/row_icon"
+                    android:layout_width="@dimen/circular_img_width"
+                    android:layout_height="@dimen/circular_img_height"
+                    android:layout_below="@+id/header_cover_video"
+                    android:layout_marginTop="@dimen/circular_img_marginTop"
+                    android:contentDescription="@string/app_name"
+                    android:elevation="10dp"
+                    android:padding="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_person"
+                    app:civ_border_width="10dp" />
 
-                <com.beachpartnerllc.beachpartner.utils.FloatingActionButton
-                    android:id="@+id/fab_video"
-                    style="@style/MenuButtonsSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_share_video"
-                    fab:fab_label="Video"
-                    fab:fab_size="normal" />
+                <ImageView
+                    android:id="@+id/edit_profile_img_vid"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="65dp"
+                    android:elevation="10dp"
+                    android:src="@drawable/ic_edit_profile"
+                    android:visibility="gone" />
 
-
-            </com.beachpartnerllc.beachpartner.utils.FloatingActionMenu>
+            </FrameLayout>
 
 
-        </RelativeLayout>
+            <!--Layout for Share Button-->
 
-
-        <RelativeLayout
-            android:id="@+id/profile_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/header_cover_video"
-            android:background="@color/white">
-
-            <ImageView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="30dp"
-                android:clickable="true"
-                android:src="@drawable/ic_edit" />
-
-            <!--<ImageView
-                android:id="@+id/share"
+            <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="16dp"
-                android:layout_marginTop="30dp"
-                android:clickable="true"
-                android:src="@drawable/ic_edit" />-->
+                android:layout_marginTop="@dimen/floatingMenuMarginTop"
+                android:elevation="10dp">
+
+                <com.beachpartnerllc.beachpartner.utils.FloatingActionMenu
+                    android:id="@+id/menu_blue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    fab:menu_colorNormal="@color/white"
+                    fab:menu_colorPressed="#2272CD"
+                    fab:menu_colorRipple="#62B2FF"
+                    fab:menu_fab_size="normal"
+                    fab:menu_labels_ellipsize="middle"
+                    fab:menu_labels_position="right"
+                    fab:menu_labels_singleLine="true"
+                    fab:menu_labels_style="@dimen/text_size"
+                    fab:menu_showShadow="false">
+
+                    <com.beachpartnerllc.beachpartner.utils.FloatingActionButton
+                        android:id="@+id/fab_image"
+                        style="@style/MenuButtonsSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_share_img"
+                        fab:fab_label="Image"
+                        fab:fab_size="normal" />
+
+                    <com.beachpartnerllc.beachpartner.utils.FloatingActionButton
+                        android:id="@+id/fab_video"
+                        style="@style/MenuButtonsSmall"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/ic_share_video"
+                        fab:fab_label="Video"
+                        fab:fab_size="normal" />
 
 
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/edit_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/edit"
-                android:layout_marginRight="10dp"
-                android:text="@string/editProfile"
-                android:textColor="@color/imgBacgnd"
-                android:textSize="12sp" />
-
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/profile_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="@dimen/margin_top_text_under_circularImage"
-                android:capitalize="words"
-                android:inputType="textCapWords"
-                android:textColor="@color/black"
-                android:textStyle="bold" />
+                </com.beachpartnerllc.beachpartner.utils.FloatingActionMenu>
 
 
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/profile_designation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/profile_name"
-                android:layout_centerHorizontal="true"
-                android:drawableLeft="@drawable/ic_athlete_indicator"
-                android:gravity="center"
-                android:textColor="#696969" />
+            </RelativeLayout>
 
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/share"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/profile_name"
-                android:layout_marginLeft="28dp"
-                android:layout_marginStart="28dp"
-                android:text="@string/share"
-                android:textAlignment="center"
-                android:textColor="@color/imgBacgnd"
-                android:textSize="12sp" />
+
+            <RelativeLayout
+                android:id="@+id/profile_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/header_cover_video"
+                android:background="@color/white">
+
+                <ImageView
+                    android:id="@+id/edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="30dp"
+                    android:clickable="true"
+                    android:src="@drawable/ic_edit" />
+
+                <!--<ImageView
+                    android:id="@+id/share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="30dp"
+                    android:clickable="true"
+                    android:src="@drawable/ic_edit" />-->
+
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/edit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/edit"
+                    android:layout_marginRight="10dp"
+                    android:text="@string/editProfile"
+                    android:textColor="@color/imgBacgnd"
+                    android:textSize="12sp" />
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/profile_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/margin_top_text_under_circularImage"
+                    android:capitalize="words"
+                    android:inputType="textCapWords"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/profile_designation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/profile_name"
+                    android:layout_centerHorizontal="true"
+                    android:drawableLeft="@drawable/ic_athlete_indicator"
+                    android:gravity="center"
+                    android:textColor="#696969" />
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/share"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignTop="@+id/profile_name"
+                    android:layout_marginLeft="28dp"
+                    android:layout_marginStart="28dp"
+                    android:text="@string/share"
+                    android:textAlignment="center"
+                    android:textColor="@color/imgBacgnd"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
-    </RelativeLayout>
+        <!--kkr-->
 
-    <!--kkr-->
-
-    <!--<View-->
-    <!--android:id="@+id/viewOne"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="0dp"-->
-    <!--android:background="@color/imgBacgnd"-->
-    <!--android:layout_below="@+id/rrTop"/>-->
-
-
-    <LinearLayout
-        android:id="@+id/tab"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:weightSum="10"
-        android:orientation="vertical"
-        android:paddingTop="5dp">
-        <!--<view-->
+        <!--<View-->
+        <!--android:id="@+id/viewOne"-->
         <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="1dp"/>-->
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:orientation="horizontal"
-            android:background="#eeeeee"
-            android:weightSum="1">
-
-            <!--BAsic Info-->
-
-            <LinearLayout
-                android:id="@+id/llMenuBasic"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:weightSum="1"
-                android:orientation="vertical">
-
-                <com.beachpartnerllc.beachpartner.CustomTextView
-                    android:id="@+id/basic_info_tab"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:gravity="center"
-                    android:text="Basic Information"
-                    android:textSize="16sp"
-                    android:textColor="@color/darkGrey"
-                    android:textStyle="bold"
-                    android:layout_weight="0.8" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.2"
-                    android:background="@drawable/shadow_profile_page">
-
-                    <View
-                        android:id="@+id/viewBasic"
-                        android:layout_width="match_parent"
-                        android:layout_height="4dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@color/btnColor" />
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-
-            <!--More Info-->
-
-            <LinearLayout
-                android:id="@+id/llMenuMore"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5"
-                android:weightSum="1"
-                android:orientation="vertical">
-
-                <com.beachpartnerllc.beachpartner.CustomTextView
-                    android:id="@+id/more_info_tab"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:gravity="center"
-                    android:text="More Information"
-                    android:textSize="16sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/darkGrey"
-                    android:layout_weight="0.8"/>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="0.2"
-                    android:background="@drawable/shadow_profile_page">
-                    <View
-                        android:id="@+id/viewMore"
-                        android:layout_width="match_parent"
-                        android:layout_height="4dp"
-                        android:layout_marginLeft="20dp"
-                        android:layout_marginRight="20dp"
-                        android:background="@color/white"/>
-                </LinearLayout>
-
-
-
-            </LinearLayout>
-
-
-
-        </LinearLayout>
+        <!--android:layout_height="0dp"-->
+        <!--android:background="@color/imgBacgnd"-->
+        <!--android:layout_below="@+id/rrTop"/>-->
 
 
         <LinearLayout
+            android:id="@+id/tab"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingTop="5dp"
+            android:weightSum="10">
+            <!--<view-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="1dp"/>-->
 
             <LinearLayout
-                android:id="@+id/llBasicDetails"
                 android:layout_width="match_parent"
-                android:layout_height="400dp"
+                android:layout_height="50dp"
+                android:background="#eeeeee"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <!--BAsic Info-->
+
+                <LinearLayout
+                    android:id="@+id/llMenuBasic"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <com.beachpartnerllc.beachpartner.CustomTextView
+                        android:id="@+id/basic_info_tab"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.8"
+                        android:gravity="center"
+                        android:text="Basic Information"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.2"
+                        android:background="@drawable/shadow_profile_page">
+
+                        <View
+                            android:id="@+id/viewBasic"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:background="@color/btnColor" />
+
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+                <!--More Info-->
+
+                <LinearLayout
+                    android:id="@+id/llMenuMore"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5"
+                    android:orientation="vertical"
+                    android:weightSum="1">
+
+                    <com.beachpartnerllc.beachpartner.CustomTextView
+                        android:id="@+id/more_info_tab"
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.8"
+                        android:gravity="center"
+                        android:text="More Information"
+                        android:textColor="@color/darkGrey"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="0.2"
+                        android:background="@drawable/shadow_profile_page">
+
+                        <View
+                            android:id="@+id/viewMore"
+                            android:layout_width="match_parent"
+                            android:layout_height="4dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginRight="20dp"
+                            android:background="@color/white" />
+                    </LinearLayout>
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+
+                <LinearLayout
+                    android:id="@+id/llBasicDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="400dp"
+                    android:orientation="vertical">
 
 
                     <RelativeLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:padding="5dp"
-                        android:background="#efeff1"
                         android:layout_marginLeft="15dp"
-                        android:layout_marginRight="15dp">
+                        android:layout_marginRight="15dp"
+                        android:background="#efeff1"
+                        android:orientation="vertical"
+                        android:padding="5dp">
 
                         <!-- First Name-->
 
@@ -404,18 +404,18 @@
 
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/txtvFname"
-                                android:enabled="false"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:maxLines="1"
+                                android:background="@android:color/transparent"
                                 android:digits="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
-                                android:textSize="@dimen/text_size"
+                                android:enabled="false"
                                 android:inputType="text"
+                                android:maxLines="1"
                                 android:nextFocusDown="@+id/txtvLname"
-                                android:background="@android:color/transparent"/>
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -424,17 +424,18 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#A9A9A9"
-                            android:layout_below="@+id/firstname"/>
+                            android:layout_below="@+id/firstname"
+                            android:background="#A9A9A9" />
+
                         <LinearLayout
                             android:id="@+id/lastname"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
+                            android:layout_below="@+id/firstname"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2"
-                            android:layout_below="@+id/firstname">
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="0dp"
@@ -448,15 +449,15 @@
                                 android:id="@+id/txtvLname"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:enabled="false"
                                 android:layout_weight="1"
-                                android:maxLines="1"
-                                android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
-                                android:textSize="@dimen/text_size"
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
                                 android:inputType="text"
+                                android:maxLines="1"
                                 android:nextFocusDown="@+id/gender_lt"
-                                android:background="@android:color/transparent"/>
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -466,24 +467,24 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#A9A9A9"
-                            android:layout_below="@+id/lastname"/>
+                            android:layout_below="@+id/lastname"
+                            android:background="#A9A9A9" />
 
                         <LinearLayout
                             android:id="@+id/gender_lt"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
+                            android:layout_below="@+id/lastname"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2"
-                            android:layout_below="@+id/lastname">
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:gravity="center_vertical"
                                 android:layout_weight="1"
+                                android:gravity="center_vertical"
                                 android:text="Gender"
                                 android:textStyle="bold" />
 
@@ -491,15 +492,15 @@
                                 android:id="@+id/txtv_gender"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:enabled="false"
                                 android:layout_weight="1"
-                                android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
+                                android:background="@android:color/transparent"
                                 android:clickable="true"
-                                android:textSize="@dimen/text_size"
+                                android:enabled="false"
                                 android:focusable="false"
                                 android:nextFocusDown="@+id/txtv_dob"
-                                android:background="@android:color/transparent"/>
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -508,38 +509,39 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#A9A9A9"
-                            android:layout_below="@+id/gender_lt"/>
+                            android:layout_below="@+id/gender_lt"
+                            android:background="#A9A9A9" />
+
                         <LinearLayout
                             android:id="@+id/birth_date_lt"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
-                            android:orientation="horizontal"
+                            android:layout_below="@+id/gender_lt"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
-                            android:weightSum="2"
-                            android:layout_below="@+id/gender_lt">
+                            android:orientation="horizontal"
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="Birth Date"
                                 android:gravity="center_vertical"
+                                android:text="Birth Date"
                                 android:textStyle="bold" />
 
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/txtv_dob"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:focusable="false"
-                                android:layout_weight="1"
-                                android:paddingStart="5dp"
-                                android:textSize="@dimen/text_size"
-                                android:paddingLeft="5dp"
                                 android:nextFocusDown="@+id/txtv_city"
-                                android:background="@android:color/transparent"/>
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -548,41 +550,42 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#A9A9A9"
-                            android:layout_below="@+id/birth_date_lt"/>
+                            android:layout_below="@+id/birth_date_lt"
+                            android:background="#A9A9A9" />
+
                         <LinearLayout
                             android:id="@+id/city_lt"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
+                            android:layout_below="@+id/birth_date_lt"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2"
-                            android:layout_below="@+id/birth_date_lt">
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="@string/hintLocation"
                                 android:gravity="center_vertical"
+                                android:text="@string/hintLocation"
                                 android:textStyle="bold" />
 
                             <AutoCompleteTextView
                                 android:id="@+id/txtv_city"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
-                                android:enabled="false"
-                                android:maxLines="1"
-                                android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
-                                android:inputType="text"
-                                android:completionThreshold="1"
-                                android:textSize="@dimen/text_size"
-                                android:textColor="@color/blueDark"
-                                android:nextFocusDown="@+id/txtv_mobileno"
+                                android:layout_weight="1"
                                 android:background="@android:color/transparent"
-                                android:layout_weight="1" />
+                                android:completionThreshold="1"
+                                android:enabled="false"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:nextFocusDown="@+id/txtv_mobileno"
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:textColor="@color/blueDark"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -591,40 +594,41 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
-                            android:background="#A9A9A9"
-                            android:layout_below="@+id/city_lt"/>
+                            android:layout_below="@+id/city_lt"
+                            android:background="#A9A9A9" />
+
                         <LinearLayout
                             android:id="@+id/phone_lt"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
+                            android:layout_below="@+id/city_lt"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2"
-                            android:layout_below="@+id/city_lt">
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomTextView
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:text="Phone"
                                 android:gravity="center_vertical"
+                                android:text="Phone"
                                 android:textStyle="bold" />
 
                             <com.beachpartnerllc.beachpartner.CustomEditText
                                 android:id="@+id/txtv_mobileno"
                                 android:layout_width="0dp"
-                                android:enabled="false"
                                 android:layout_height="match_parent"
-                                android:maxLines="1"
-                                android:inputType="number"
-                                android:singleLine="true"
-                                android:paddingStart="5dp"
-                                android:paddingLeft="5dp"
-                                android:textSize="@dimen/text_size"
-                                android:gravity="center_vertical"
                                 android:layout_weight="1"
-                                android:background="@android:color/transparent"/>
+                                android:background="@android:color/transparent"
+                                android:enabled="false"
+                                android:gravity="center_vertical"
+                                android:inputType="number"
+                                android:maxLines="1"
+                                android:paddingLeft="5dp"
+                                android:paddingStart="5dp"
+                                android:singleLine="true"
+                                android:textSize="@dimen/text_size" />
 
 
                         </LinearLayout>
@@ -666,22 +670,22 @@
                             android:id="@+id/btns_at_bottom"
                             android:layout_width="match_parent"
                             android:layout_height="30dp"
-                            android:visibility="gone"
+                            android:layout_below="@+id/phone_lt"
                             android:layout_margin="10dp"
                             android:orientation="horizontal"
-                            android:weightSum="2"
-                            android:layout_below="@+id/phone_lt">
+                            android:visibility="gone"
+                            android:weightSum="2">
 
                             <com.beachpartnerllc.beachpartner.CustomButton
                                 android:id="@+id/btncancel"
                                 android:layout_width="0dp"
                                 android:layout_height="wrap_content"
                                 android:layout_weight="1"
-                                android:textColor="@color/white"
-                                android:text="CANCEL"
-                                android:textAlignment="center"
                                 android:background="@color/btnColor"
                                 android:gravity="center_vertical"
+                                android:text="CANCEL"
+                                android:textAlignment="center"
+                                android:textColor="@color/white"
                                 android:textStyle="bold" />
 
                             <Space
@@ -691,13 +695,13 @@
                             <com.beachpartnerllc.beachpartner.CustomButton
                                 android:id="@+id/btnsave"
                                 android:layout_width="0dp"
-                                android:textAlignment="center"
-                                android:text="Save"
-                                android:textColor="@color/white"
-                                android:background="@color/btnColor"
                                 android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:background="@color/btnColor"
                                 android:gravity="center_vertical"
-                                android:layout_weight="1" />
+                                android:text="Save"
+                                android:textAlignment="center"
+                                android:textColor="@color/white" />
 
 
                         </LinearLayout>
@@ -706,37 +710,29 @@
                     </RelativeLayout>
 
 
+                </LinearLayout>
+                <!--Base Info end-->
+
+                <!--<include
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    layout="@layout/fragment_more_info"/>-->
+
+                <!--More info-->
+
+                <include layout="@layout/fragment_more_info" />
+
+
+                <!--More info End here-->
+
 
             </LinearLayout>
-            <!--Base Info end-->
-
-            <!--<include
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                layout="@layout/fragment_more_info"/>-->
-
-            <!--More info-->
-
-            <include layout="@layout/fragment_more_info"/>
-
-
-
-
-
-            <!--More info End here-->
 
 
         </LinearLayout>
 
-
+        <!--kkr ends-->
 
 
     </LinearLayout>
-
-    <!--kkr ends-->
-
-
-
-
-</LinearLayout>
 </ScrollView>
