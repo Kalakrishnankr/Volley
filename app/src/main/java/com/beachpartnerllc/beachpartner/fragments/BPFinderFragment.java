@@ -39,6 +39,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -106,7 +107,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TextView tvmonth,tvMin,tvMax,txtv_gender;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
-    private AutoCompleteTextView spinner_location;
+    private Spinner spinner_location;
     private MultiSlider age_bar;
     public static final MediaType JSON
             = MediaType.parse("application/json; charset=utf-8");
@@ -259,7 +260,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             tvMax.setText(String.valueOf(maxAge));
             age_bar.getThumb(0).setValue(minAge).setEnabled(true);
             age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
-            spinner_location.setText(location);
+            if (location != null){
+                int positions = dataAdapter.getPosition(location);
+                spinner_location.setSelection(positions);
+            }
             sCoach.setChecked(isCoach);
 
             if(sgender!=null){
@@ -311,7 +315,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         tvMin               =   (TextView) view.findViewById(R.id.txtv_minAge);
         tvMax               =   (TextView) view.findViewById(R.id.txtv_maxAge);
         age_bar             =   (MultiSlider)  view.findViewById(R.id.rangebar);
-        spinner_location    =   (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
+        spinner_location    =   (Spinner) view.findViewById(R.id.spinner_location);
 
         txtv_gender         =   (TextView) view.findViewById(R.id.txtv_gender);
 
@@ -365,12 +369,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         if(getActivity()!=null) {
             dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
 
-            Typeface font = Typeface.createFromAsset(getContext().getAssets(),
-                    "fonts/SanFranciscoTextRegular.ttf");
-            spinner_location.setTypeface(font);
+
             spinner_location.setAdapter(dataAdapter);
         }
+            spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
+                    location = spinner_location.getSelectedItem().toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
 
 
@@ -481,7 +495,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     getBpProfiles();
                 }
 
-                location    =   spinner_location.getText().toString().trim();
+
+
+
                 sgender     =   txtv_gender.getText().toString();
                 isCoach     =   sCoach.isChecked();
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
@@ -491,7 +507,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         sgender = "";
                     }
                     SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                    preferences.putString("location", spinner_location.getText().toString().trim());
+                    preferences.putString("location", location.toString().trim());
                     preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
                     preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
                     preferences.putString("gender", sgender);

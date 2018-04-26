@@ -204,7 +204,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="1"/>-->
-                    <AutoCompleteTextView
+                    <Spinner
                         android:id="@+id/spinner_location"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
@@ -213,7 +213,6 @@
                         android:layout_gravity="center"
                         android:hint="Select"
                         android:background="@color/white"
-                        android:completionThreshold="1"
                         android:textSize="16sp"
                         android:inputType="text"
                         android:maxLines="1"

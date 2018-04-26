@@ -19,6 +19,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -28,6 +29,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -47,6 +49,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -181,7 +185,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
     private EditText editFname, editLname, editGender, editDob, editPhone;
-    private AutoCompleteTextView editCity;
+    private Spinner editCity;
     private EditText  editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
@@ -190,6 +194,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private int finishCount = 0;
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel,editHeight;
     private AwesomeValidation awesomeValidation;
+    ArrayList selectedItems;
     private boolean saveFile;
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter,heightAdapter;
@@ -204,6 +209,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     SimpleExoPlayer exoPlayer;
     private String location_change="profile";
     private static PhotoAsyncTask asyncTask;
+    private String location;
 
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
@@ -243,6 +249,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     location_change=arguments.getString("prime_card");
                     if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
                         editCity.setEnabled(true);
+                        scrollview_profile.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                scrollview_profile.fullScroll(View.FOCUS_DOWN);
+
+                                    blink();
+
+
+                            }
+                        });
                         editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
                         btnsBottom.setVisibility(View.VISIBLE);
                         llMenuMore.setClickable(false);
@@ -275,6 +291,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         super.onViewCreated(view, savedInstanceState);
 
 
+    }
+
+    private void blink() {
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(50); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(30);
+        editCity.setBackgroundColor(getResources().getColor(R.color.light_blue));
+        editCity.startAnimation(anim);
     }
 
     @Override
@@ -329,7 +355,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editLname   = (EditText) view.findViewById(R.id.txtvLname);
         editGender  = (EditText) view.findViewById(R.id.txtv_gender);
         editDob     = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity    = (AutoCompleteTextView) view.findViewById(R.id.txtv_city);
+        editCity    = (Spinner) view.findViewById(R.id.txtv_city_profile);
         editPhone   = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
@@ -346,7 +372,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
         spinnerWtoTravel  = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
-        editHeight      = (Spinner) view.findViewById(R.id.txtvHeight);
+        editHeight      =   (Spinner) view.findViewById(R.id.txtvHeight);
 
 
         spinnerExp.setEnabled(false);
@@ -356,6 +382,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         spinnerTourRating.setEnabled(false);
         spinnerWtoTravel.setEnabled(false);
         editHeight.setEnabled(false);
+        editCity.setEnabled(false);
 
 
 
@@ -393,12 +420,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //autocomplete textview fp
         addLocation();
 
-        dataAdapter     = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, stateList);
-
-        Typeface font   = Typeface.createFromAsset(getContext().getAssets(),
-                "fonts/SanFranciscoTextRegular.ttf");
-        editCity.setTypeface(font);
-        editCity.setAdapter(dataAdapter);
+//        dataAdapter     = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, stateList);
+//        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//
+//        editCity.setAdapter(dataAdapter);
 
         imgShare.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
@@ -764,6 +789,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
+        dataAdapter     = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, stateList);
+        dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        editCity.setAdapter(dataAdapter);
+        editCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+                location = editCity.getSelectedItem().toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
 
 //        Buttons click action for saving
         basicBtnSave.setOnClickListener(new View.OnClickListener() {
@@ -821,7 +863,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         });
 
 
-        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+            final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -1402,6 +1444,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
+
     public void toursPlayed() {
         final CharSequence[] items = {" AVP Next ", " AVP First ", " CBVA Adult ", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","VolleyOC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
@@ -1455,7 +1498,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         dialog.show();
 
     }
-
 
     private void editBasicInfo() {
 
@@ -1728,7 +1770,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
                 object.put("dob",stringDate);
-                object.put("city", editCity.getText().toString().trim());
+                object.put("city", location.toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl",userDataModel.getImageUrl().trim());
                 object.put("videoUrl",userDataModel.getVideoUrl().trim());
@@ -1808,8 +1850,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         } else if (editGender.getText().toString().trim().matches("")) {
             editGender.setError("Please Choose Gender");
             isValidate = true;
-        } else if (editCity.getText().toString().trim().matches("")) {
-            editCity.setError("Please enter your city");
+        } else if (location.toString().trim().matches("")) {
             isValidate = true;
         } else if (editPhone.getText().toString().trim().matches("")) {
             editPhone.setError("Please enter your Mobile no");
@@ -2399,7 +2440,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 editLname.setText(userDataModel.getLastName().trim());
                 editFname.setText(userDataModel.getFirstName().trim());
                 editGender.setText(userDataModel.getGender().trim());
-                editCity.setText(userDataModel.getCity().trim());
+                location=userDataModel.getCity().trim();
+                if (location != null){
+                    int positions = dataAdapter.getPosition(location);
+                    editCity.setSelection(positions);
+                }
                 //Long value to date conversion
                 SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
                 long dob       = Long.parseLong(userDataModel.getDob());
@@ -2549,8 +2594,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         stateList.add("Virginia");
         stateList.add("Washington");
         stateList.add("West Virginia");
-        stateList.add("Wisconsin WI");
-        stateList.add("Wyoming WY");
+        stateList.add("Wisconsin ");
+        stateList.add("Wyoming ");
 
     }
 
@@ -2592,7 +2637,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                 takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
-                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,1);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
                 takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 480);
                 takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 720);
 

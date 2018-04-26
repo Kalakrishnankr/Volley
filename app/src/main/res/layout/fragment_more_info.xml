@@ -113,7 +113,6 @@
                         android:text="@string/hint_position"
                         android:textStyle="bold" />
 
-
                     <Spinner
                         android:id="@+id/spinner_positon"
                         android:layout_width="0dp"

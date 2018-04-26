@@ -16,6 +16,7 @@
     <dimen name="circular_img_height">110dp</dimen>
     <dimen name="circular_img_width">110dp</dimen>
     <dimen name="circular_img_marginTop">150dp</dimen>
+    <dimen name="share_text_margin_top">0dp</dimen>
 
     <!--marginTop of text under circular image view-->
     <dimen name="margin_top_text_under_circularImage">80dp</dimen>
