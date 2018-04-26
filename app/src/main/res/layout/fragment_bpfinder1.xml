@@ -70,7 +70,7 @@
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"
+                            android:layout_weight="0.8"
                             android:layout_marginLeft="5dp"
                             android:gravity="center_vertical"
                             android:textColor="@color/menubar"
@@ -78,31 +78,31 @@
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_minAge"
-                            android:textAlignment="viewEnd"
+                            android:textAlignment="viewStart"
                             android:layout_width="0dp"
                             android:textColor="@color/menubar"
                             android:gravity="center_vertical"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.4"/>
+                            android:layout_weight="0.2"/>
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:text="-"
+                            android:textAlignment="center"
                             android:textSize="20sp"
                             android:gravity="center_vertical|center"
                             android:layout_weight="0.2"/>
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_maxAge"
                             android:layout_width="0dp"
-                            android:textAlignment="viewStart"
+                            android:textAlignment="viewEnd"
                             android:textColor="@color/menubar"
                             android:gravity="center_vertical"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.4"/>
+                            android:layout_weight="0.2"/>
 
 
                     </LinearLayout>
-
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -193,8 +193,9 @@
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:layout_weight="0.7"
+                        android:gravity="left"
+                        android:layout_weight="0.8"
+                        android:layout_marginLeft="20dp"
                         android:textColor="@color/menubar"
                         android:text="State"/>
 
@@ -210,13 +211,13 @@
                         android:layout_height="match_parent"
                         android:layout_marginRight="15dp"
                         android:textAlignment="textStart"
-                        android:layout_gravity="center"
+                        android:layout_gravity="start"
                         android:hint="Select"
                         android:background="@color/white"
                         android:textSize="16sp"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:layout_weight="1.3" />
+                        android:layout_weight="1" />
 
                 </LinearLayout>
 
@@ -265,15 +266,16 @@
                             android:gravity="center_vertical"
                             android:layout_marginLeft="5dp"
                             android:textColor="@color/menubar"
-                            android:layout_weight="1"
+                            android:layout_weight="0.8"
                             android:text="Show me"/>
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_gender"
                             android:layout_width="0dp"
                             android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
                             android:layout_height="match_parent"
-                            android:layout_weight="1"/>
+                            android:layout_weight="1.2"/>
 
 
                     </LinearLayout>
@@ -340,7 +342,8 @@
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="center"
+                        android:gravity="left|center"
+                        android:layout_marginLeft="20dp"
                         android:layout_weight="1"
                         android:textColor="@color/menubar"
                         android:text="Include Coaches"/>
@@ -357,7 +360,7 @@
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_weight="0.5"
-                        android:gravity="center"
+                        android:gravity="left"
                         android:layout_gravity="center"/>
 
                 </LinearLayout>

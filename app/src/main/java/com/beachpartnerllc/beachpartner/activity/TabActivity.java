@@ -22,7 +22,6 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.AboutUsFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
-import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
@@ -100,17 +99,17 @@ public class TabActivity extends AppCompatActivity  {
                     trans.commit();
                     disableFloatButtons();
                     return true;
-
-                case R.id.navigation_calendar:
-
-                    CalendarFragment calendarFragment = new CalendarFragment();
-                    getSupportActionBar().setTitle("Calendar");
-                    FragmentManager cmngr = getSupportFragmentManager();
-                    FragmentTransaction ctrans = cmngr.beginTransaction();
-                    ctrans.replace(R.id.container, calendarFragment, YOUR_FRAGMENT_STRING_TAG);
-                    ctrans.commit();
-                    disableFloatButtons();
-                    return true;
+//
+//                case R.id.navigation_calendar:
+//
+//                    CalendarFragment calendarFragment = new CalendarFragment();
+//                    getSupportActionBar().setTitle("Calendar");
+//                    FragmentManager cmngr = getSupportFragmentManager();
+//                    FragmentTransaction ctrans = cmngr.beginTransaction();
+//                    ctrans.replace(R.id.container, calendarFragment, YOUR_FRAGMENT_STRING_TAG);
+//                    ctrans.commit();
+//                    disableFloatButtons();
+//                    return true;
 
 
                 case R.id.navigation_more:

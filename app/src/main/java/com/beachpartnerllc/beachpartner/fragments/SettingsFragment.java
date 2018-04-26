@@ -2,7 +2,6 @@ package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -18,12 +17,11 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
 import java.util.ArrayList;
 
 import io.apptik.widget.MultiSlider;
-
-import static android.content.Context.MODE_PRIVATE;
 
 
 public class SettingsFragment extends Fragment {
@@ -36,19 +34,21 @@ public class SettingsFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private OnFragmentInteractionListener mListener;
 
     private TextView tvMin,tvMax,txtv_gender;
     private MultiSlider age_bar;
     private Spinner spinner_location;
     private ToggleButton btnMale,btnFemale;
     private Button btnSave;
-    public static final String MY_PREFS_FILTER = "MyPrefsFile";
     ArrayAdapter<String> dataAdapter;
     ArrayList<String> stateList = new ArrayList<>();
     private SharedPreferences prefs;
     private String location,sgender;
     private int minAge,maxAge;
+<<<<<<< HEAD
+=======
+
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -77,8 +77,13 @@ public class SettingsFragment extends Fragment {
 
         tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
         tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
+<<<<<<< HEAD
         age_bar     = (MultiSlider) view.findViewById(R.id.rangebar);
         spinner_location = (Spinner) view.findViewById(R.id.spinner_location_settings);
+=======
+        age_bar     = (MultiSlider) view.findViewById(R.id.rangebarOne);
+        spinner_location = (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
 
@@ -114,10 +119,10 @@ public class SettingsFragment extends Fragment {
 
 
         //check shared prefvalue
-        prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
-
+        prefs = new PrefManager(getActivity()).getSettingsData();
         if (prefs != null) {
 
+<<<<<<< HEAD
             location = prefs.getString("location", null);
             sgender = prefs.getString("gender", null);
             minAge = prefs.getInt("minAge", 0);
@@ -132,6 +137,28 @@ public class SettingsFragment extends Fragment {
                 int positions = dataAdapter.getPosition(location);
                 spinner_location.setSelection(positions);
             }
+=======
+            String location = prefs.getString("location", null);
+            String sgender = prefs.getString("gender", null);
+            int minAge = prefs.getInt("minAge", 0);
+            int maxAge = prefs.getInt("maxAge", 0);
+            if (minAge == 0 && maxAge == 0) {
+                minAge=5;
+                maxAge=30;
+                age_bar.getThumb(0).setValue(5).setEnabled(true);
+                age_bar.getThumb(1).setValue(30).setEnabled(true);
+                tvMin.setText(String.valueOf(minAge));
+                tvMax.setText(String.valueOf(maxAge));
+
+
+            }else {
+                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+                age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
+                tvMin.setText(String.valueOf(minAge));
+                tvMax.setText(String.valueOf(maxAge));
+            }
+            spinner_location.setText(location);
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
 
             if (sgender != null) {
                 if (sgender.equals("Male")) {
@@ -249,15 +276,25 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
+                location    =   spinner_location.getText().toString().trim();
+                sgender     =   txtv_gender.getText().toString();
+                minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
+                maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
+<<<<<<< HEAD
                 SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
                 preferences.putString("location", location.toString().trim());
+=======
+                new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
+                getActivity().onBackPressed();
+                /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                preferences.putString("location", spinner_location.getText().toString().trim());
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
                 preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
                 preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
                 preferences.putString("gender", txtv_gender.getText().toString());
                 preferences.apply();
-                getActivity().onBackPressed();
-                preferences.commit();
+                preferences.commit();*/
 
             }
 
@@ -317,23 +354,4 @@ public class SettingsFragment extends Fragment {
         stateList.add("Wyoming WY");
     }
 
-
-
-
-
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
-    public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
-    }
 }

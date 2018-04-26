@@ -36,7 +36,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,6 +51,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     private String personId,myID,personName,myToken;
     private ProgressBar progressBar;
     private TextView txtv_nonotes;
+    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -85,10 +85,9 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         addNewBtn   = view.findViewById(R.id.addNew);
         progressBar = view.findViewById(R.id.progress_note);
         txtv_nonotes = view.findViewById(R.id.txtv_nonotes);
-        noteList = new ArrayList<NoteDataModel>();
 
-        adapter     =   new NotesAdapter(getContext(),noteList,this);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getContext(),1);
+       // adapter     =   new NotesAdapter(getContext(),noteList,this);
+        layoutManager = new GridLayoutManager(getContext(),1);
         rcVNotes.setLayoutManager(layoutManager);
         rcVNotes.addItemDecoration(new NoteFragment.GridSpacingItemDecoration(1, dpToPx(10), true));
         rcVNotes.setItemAnimator(new DefaultItemAnimator());
@@ -97,11 +96,10 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
             @Override
             public void onClick(View v) {
                 noteList.clear();
-                getNotes();
-                txtv_nonotes.setVisibility(View.GONE);
+                createNote();
+
                 //Toast.makeText(getActivity(), "List"+noteList.size(), Toast.LENGTH_SHORT).show();
-                createDummyData();
-                rcVNotes.setAdapter(adapter);
+                //createDummyData();
 
 
 
@@ -109,8 +107,20 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         });
     }
 
+    private void createNote() {
+        JSONObject object = new JSONObject();
+        try {
+            object.put("note"," ");
+            object.put("toUserId",personId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-    private void createDummyData() {
+        postNote(object);
+    }
+
+
+    /*private void createDummyData() {
 
         long currentTime;
         NoteDataModel dm = new NoteDataModel();
@@ -119,10 +129,11 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         currentTime  = System.currentTimeMillis();
         dm.setTimestamp(new Date().getTime());
         noteList.add(dm);
-    }
+    }*/
 
     //Api for get all notes
     private void getNotes() {
+        noteList.clear();
         progressBar.setVisibility(View.VISIBLE);
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GETALL_NOTE_FROM + myID + "/to/" + personId, null,
                 new Response.Listener<JSONArray>() {
@@ -132,6 +143,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
                         if (response != null ) {
                             for(int i=0;i<response.length();i++){
                                 try {
+                                    txtv_nonotes.setVisibility(View.GONE);
                                     JSONObject object = response.getJSONObject(i);
                                     NoteDataModel noteDataModel = new NoteDataModel();
                                     noteDataModel.setNote_id(object.getString("id"));
@@ -193,6 +205,8 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         if(noteList.size()>0){
             adapter     =   new NotesAdapter(getContext(),noteList,this);
             rcVNotes.setAdapter(adapter);
+            rcVNotes.setLayoutManager(layoutManager);
+            adapter.notifyDataSetChanged();
         }else {
             txtv_nonotes.setVisibility(View.VISIBLE);
         }
@@ -209,34 +223,22 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     @Override
     public void save(String text) {
 
-        JSONObject object = new JSONObject();
-        try {
-            object.put("note",text);
-            object.put("toUserId",personId);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
 
-        postNote(object);
     }
 
 
 
     //Method for post note
     private void postNote(JSONObject object) {
-
+        noteList.clear();
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.CREATE_NOTE, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 Log.d("respone",response.toString());
                 if (response != null) {
+                    getNotes();
                     Toast.makeText(getActivity(), "Note Created", Toast.LENGTH_SHORT).show();
-                    try {
-                        NoteDataModel noteDataModel = new NoteDataModel();
-                        noteDataModel.setNote_id(response.getString("id"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+
                 }
 
             }

@@ -90,21 +90,15 @@ import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
-import com.google.android.exoplayer2.DefaultLoadControl;
-import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.ExoPlayerFactory;
-import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
-import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
-import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
@@ -113,8 +107,6 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
-import com.google.zxing.common.StringUtils;
-
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -136,13 +128,11 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.URI;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -2109,7 +2099,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onPhotoAsyncTaskFinished(HttpEntity value) {
                 if(value!=null){
-
+                    videoUri=null;
+                    imageUri=null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
                 }
@@ -2358,6 +2349,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
+
+                videoUri=null;
+                imageUri=null;
                 Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
                 String json = null;
                 Log.d("error--", error.toString());
@@ -2775,7 +2769,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
             Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
             i++;
-        } while (bm.getWidth() < 500 && i < sampleSizes.length);
+        } while (bm.getWidth() < 1024 && i < sampleSizes.length);
         return bm;
     }
 
