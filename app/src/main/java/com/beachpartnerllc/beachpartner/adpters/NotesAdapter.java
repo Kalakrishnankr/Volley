@@ -28,7 +28,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     Context mContext;
     private ArrayList<NoteDataModel> dataList;
     private SaveNoteInterface noteInterface;
-    public static boolean isEditable=false;
+    private static boolean isEditable=false;
+
     private String text,noteId;
 
     public NotesAdapter(Context context, ArrayList<NoteDataModel> allSampleData, NoteFragment noteFragment) {
@@ -88,24 +89,21 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             }
         });
 
+        holder.noteDisabled.setFocusable(true);
+
         holder.noteDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 noteId = model.getNote_id();
-                if (noteId != null && !noteId.isEmpty()) {
-                    holder.edit_notes.setFocusable(true);
-                    holder.edit_notes.setEnabled(true);
-                    text = holder.edit_notes.getText().toString();
-                    if (!text.isEmpty()) {
-                        noteInterface.update(text,noteId);
-                    }
-                }else{
-                    if (!text.isEmpty()) {
-                        noteInterface.save(text);
-                        holder.edit_notes.setFocusable(false);
-                        holder.noteDisabled.setImageResource(R.drawable.ic_edit_active);
-                    }
+                text = holder.edit_notes.getText().toString();
+                if (noteId != null && text.length() != 0) {
+                    noteInterface.update(text,noteId);
+                    holder.noteDisabled.setImageResource(R.drawable.ic_edit);
+                    holder.noteDisabled.setClickable(false);
+                    isEditable =true;
                 }
+
 
             }
         });
@@ -157,6 +155,9 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, dataList.size());
         }
+
+
+
     }
 
 }

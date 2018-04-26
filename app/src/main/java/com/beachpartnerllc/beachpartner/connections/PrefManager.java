@@ -48,6 +48,23 @@ public class PrefManager {
         editor.commit();
     }
 
+    public void saveSettingData(String location,String gender,Boolean isCoach, int minAge,int maxAge){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("location",location);
+        editor.putInt("minAge",minAge);
+        //editor.putString("subscriptions",subscriptions);
+        editor.putInt("maxAge",maxAge);
+        editor.putString("gender",gender);
+        editor.putBoolean("isCoachActive",isCoach);
+        editor.commit();
+    }
+
+    public SharedPreferences getSettingsData(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
+        return sharedPreferences;
+    }
+
 
     public Boolean getTips(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("WelcomeTips", Context.MODE_PRIVATE);

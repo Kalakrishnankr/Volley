@@ -53,7 +53,7 @@
                     android:layout_weight="1"
                     android:clickable="true"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/ic_edit_active" />
+                    android:src="@drawable/ic_edit" />
 
             </LinearLayout>
 
@@ -66,6 +66,9 @@
                 android:layout_height="match_parent"
                 android:paddingRight="25dp"
                 android:paddingLeft="75dp"
+                android:clickable="true"
+                android:editable="true"
+                android:focusable="true"
                 android:layout_below="@+id/button_row"
                 android:background="@android:color/transparent"
                 android:textSize="@dimen/album_title" />

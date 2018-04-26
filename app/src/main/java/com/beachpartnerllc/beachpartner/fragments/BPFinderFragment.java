@@ -27,8 +27,6 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -91,8 +89,6 @@ import java.util.Map;
 
 import io.apptik.widget.MultiSlider;
 
-import static android.content.Context.MODE_PRIVATE;
-
 
 public class BPFinderFragment extends Fragment implements MyInterface {
 
@@ -118,8 +114,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ImageButton showPreviousMonthButton,showNextMonthButton;
     private Switch sCoach;
     private LinearLayout topFrameLayout;
-
-    public static final String MY_PREFS_FILTER = "MyPrefsFile";
     private ArrayList<String>stateList = new ArrayList<>();
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
@@ -246,7 +240,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private void getPreferences() {
         //check shared prefvalue
-        prefs = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE);
+        prefs = new PrefManager(getActivity()).getSettingsData();
         if(prefs!=null){
 
             location  =   prefs.getString("location",null);
@@ -490,14 +484,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     if (sgender.equals("Both")) {
                         sgender = "";
                     }
-                    SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                    /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
                     preferences.putString("location", spinner_location.getText().toString().trim());
                     preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
                     preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
                     preferences.putString("gender", sgender);
                     preferences.putBoolean("isCoachActive", sCoach.isChecked());
                     preferences.apply();
-                    preferences.commit();
+                    preferences.commit();*/
+                    new PrefManager(getActivity()).saveSettingData(location,sgender,isCoach,minAge,maxAge);
                     llvFilter.setVisibility(View.GONE);
                     rr.setVisibility(View.VISIBLE);
                     rrvBottom.setVisibility(View.VISIBLE);
