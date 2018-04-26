@@ -379,6 +379,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onNothingSelected(AdapterView<?> arg0) {
                 // TODO Auto-generated method stub
 
+
             }
         });
 
