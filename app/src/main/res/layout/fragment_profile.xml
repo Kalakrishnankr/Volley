@@ -241,6 +241,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/profile_name"
+                    android:layout_marginTop="@dimen/share_text_margin_top"
                     android:layout_marginLeft="28dp"
                     android:layout_marginStart="28dp"
                     android:text="@string/share"
@@ -558,7 +559,7 @@
                         <LinearLayout
                             android:id="@+id/city_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="30dp"
+                            android:layout_height="33dp"
                             android:layout_below="@+id/birth_date_lt"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
@@ -573,21 +574,14 @@
                                 android:text="@string/hintLocation"
                                 android:textStyle="bold" />
 
-                            <AutoCompleteTextView
-                                android:id="@+id/txtv_city"
+                            <Spinner
+                                android:id="@+id/txtv_city_profile"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
-                                android:background="@android:color/transparent"
-                                android:completionThreshold="1"
                                 android:enabled="false"
-                                android:inputType="text"
-                                android:maxLines="1"
-                                android:nextFocusDown="@+id/txtv_mobileno"
                                 android:paddingLeft="5dp"
-                                android:paddingStart="5dp"
-                                android:textColor="@color/blueDark"
-                                android:textSize="@dimen/text_size" />
+                                android:paddingStart="5dp"/>
 
 
                         </LinearLayout>
@@ -625,8 +619,9 @@
                                 android:background="@android:color/transparent"
                                 android:enabled="false"
                                 android:gravity="center_vertical"
-                                android:inputType="number"
+                                android:inputType="phone"
                                 android:maxLines="1"
+                                android:maxLength="10"
                                 android:paddingLeft="5dp"
                                 android:paddingStart="5dp"
                                 android:singleLine="true"

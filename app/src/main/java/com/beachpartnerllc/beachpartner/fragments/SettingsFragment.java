@@ -7,10 +7,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -35,7 +37,7 @@ public class SettingsFragment extends Fragment {
 
     private TextView tvMin,tvMax,txtv_gender;
     private MultiSlider age_bar;
-    private AutoCompleteTextView spinner_location;
+    private Spinner spinner_location;
     private ToggleButton btnMale,btnFemale;
     private Button btnSave;
     ArrayAdapter<String> dataAdapter;
@@ -43,7 +45,10 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
     private String location,sgender;
     private int minAge,maxAge;
+<<<<<<< HEAD
+=======
 
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -72,8 +77,13 @@ public class SettingsFragment extends Fragment {
 
         tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
         tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
+<<<<<<< HEAD
+        age_bar     = (MultiSlider) view.findViewById(R.id.rangebar);
+        spinner_location = (Spinner) view.findViewById(R.id.spinner_location_settings);
+=======
         age_bar     = (MultiSlider) view.findViewById(R.id.rangebarOne);
         spinner_location = (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
 
@@ -89,16 +99,45 @@ public class SettingsFragment extends Fragment {
         btnMale.setTextOn("Men");
 
         addLocation();
+
+
         dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
-                "fonts/SanFranciscoTextRegular.ttf");
-        spinner_location.setTypeface(font);
         spinner_location.setAdapter(dataAdapter);
+        spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+
+                location = spinner_location.getSelectedItem().toString();
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
 
         //check shared prefvalue
         prefs = new PrefManager(getActivity()).getSettingsData();
         if (prefs != null) {
 
+<<<<<<< HEAD
+            location = prefs.getString("location", null);
+            sgender = prefs.getString("gender", null);
+            minAge = prefs.getInt("minAge", 0);
+            maxAge = prefs.getInt("maxAge", 0);
+
+
+            tvMin.setText(String.valueOf(minAge));
+            tvMax.setText(String.valueOf(maxAge));
+            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+            age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
+            if (location != null){
+                int positions = dataAdapter.getPosition(location);
+                spinner_location.setSelection(positions);
+            }
+=======
             String location = prefs.getString("location", null);
             String sgender = prefs.getString("gender", null);
             int minAge = prefs.getInt("minAge", 0);
@@ -119,6 +158,7 @@ public class SettingsFragment extends Fragment {
                 tvMax.setText(String.valueOf(maxAge));
             }
             spinner_location.setText(location);
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
 
             if (sgender != null) {
                 if (sgender.equals("Male")) {
@@ -228,6 +268,8 @@ public class SettingsFragment extends Fragment {
         });
 
 
+
+
         //add data to shared preference
         //play button
         btnSave.setOnClickListener(new View.OnClickListener() {
@@ -239,10 +281,15 @@ public class SettingsFragment extends Fragment {
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
+<<<<<<< HEAD
+                SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                preferences.putString("location", location.toString().trim());
+=======
                 new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
                 getActivity().onBackPressed();
                 /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
                 preferences.putString("location", spinner_location.getText().toString().trim());
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
                 preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
                 preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
                 preferences.putString("gender", txtv_gender.getText().toString());
