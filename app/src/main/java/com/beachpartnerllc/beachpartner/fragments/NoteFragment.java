@@ -206,6 +206,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
             adapter     =   new NotesAdapter(getContext(),noteList,this);
             rcVNotes.setAdapter(adapter);
             rcVNotes.setLayoutManager(layoutManager);
+            rcVNotes.getLayoutManager().scrollToPosition(noteList.size()+1);
             adapter.notifyDataSetChanged();
         }else {
             txtv_nonotes.setVisibility(View.VISIBLE);

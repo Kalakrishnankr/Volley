@@ -5,6 +5,7 @@ import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -16,6 +17,7 @@ import android.os.Handler;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -865,6 +867,29 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 if(status.equals("New")){
                                     Log.d("request send",status);
                                 }
+                                if (status.equalsIgnoreCase("Active")) {
+
+                                    JSONObject object = new JSONObject(response.getString("user"));
+
+                                    BpFinderModel finderModel =  new BpFinderModel();
+                                    finderModel.setBpf_id(object.getString("id"));
+                                    finderModel.setBpf_firstName(object.getString("firstName"));
+                                    finderModel.setBpf_lastName(object.getString("lastName"));
+                                    finderModel.setBpf_email(object.getString("email"));
+                                    finderModel.setBpf_imageUrl(object.getString("imageUrl"));
+                                    finderModel.setBpf_videoUrl(object.getString("videoUrl"));
+                                    finderModel.setBpf_dob(object.getString("dob"));
+                                    finderModel.setBpf_gender(object.getString("gender"));
+                                    finderModel.setBpf_loginType(object.getString("loginType"));
+                                    finderModel.setBpf_city(object.getString("city"));
+                                    finderModel.setBpf_phoneNumber(object.getString("phoneNumber"));
+                                    finderModel.setBpf_deviceId(object.getString("deviceId"));
+                                    finderModel.setBpf_userType(object.getString("userType"));
+                                    finderModel.setBpf_age(object.getString("age"));
+                                    finderModel.setBpf_fcmToken(object.getString("fcmToken"));
+
+                                    showAlertDialog();
+                                }
 
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -927,6 +952,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     }
+
+
 
     //Method for card left swiped
     private void cardLeftSwiped(String reqPersonId) {
@@ -1606,5 +1633,59 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         return response.body().string();
     }
 
+    private void showAlertDialog() {
+
+        AlertDialog.Builder alert   = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater     = this.getLayoutInflater();
+        View layout                 = inflater.inflate(R.layout.swipe_matchfound_layout,null);
+
+        final Button btnMsg  =  layout.findViewById(R.id.sendMsg);
+        final Button btnFind =  layout.findViewById(R.id.findBtn);
+        final Button btnSwipe=  layout.findViewById(R.id.btnKeep);
+
+
+        alert.setView(layout);
+
+
+
+        final AlertDialog alertDialog = alert.create();
+
+        //Button Send Message
+        btnMsg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //alertDialog.dismiss();
+
+
+            }
+        });
+
+        //Button Find partner
+        btnFind.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               // alertDialog.dismiss();
+                //Moving to Calendar Fragment
+                CalendarFragment calendarFragment = new CalendarFragment();
+                FragmentManager manager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+                FragmentTransaction ctrans = manager.beginTransaction();
+                //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                ctrans.replace(R.id.container,calendarFragment);
+                //ctrans.addToBackStack(null);
+                ctrans.commit();
+            }
+        });
+
+        //Button Swipe
+        btnSwipe.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+
+        alertDialog.show();
+
+    }
 
 }

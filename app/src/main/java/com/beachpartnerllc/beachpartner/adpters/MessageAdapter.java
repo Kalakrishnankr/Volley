@@ -79,7 +79,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
                 Bundle bundle = new Bundle();
                 bundle.putString("personId", dataList.get(position).getConnected_uId());
                 bundle.putString("personName",dataList.get(position).getConnected_firstName());
-                bundle.putString("myName",uName);
+                bundle.putString("myName",new PrefManager(mContext).getUserName());
+                bundle.putString("personPic",dataList.get(position).getConnected_imageUrl());
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();
