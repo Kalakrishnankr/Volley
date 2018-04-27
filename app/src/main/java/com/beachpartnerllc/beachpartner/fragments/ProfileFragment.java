@@ -18,8 +18,6 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.graphics.Typeface;
-import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -29,7 +27,6 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -53,7 +50,6 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -79,6 +75,7 @@ import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
@@ -200,6 +197,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private String location_change="profile";
     private static PhotoAsyncTask asyncTask;
     private String location;
+    private TabActivity tabActivity;
 
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
@@ -280,6 +278,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Profile");
+        }
 
     }
 

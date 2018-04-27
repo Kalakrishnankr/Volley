@@ -14,6 +14,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -57,6 +59,7 @@ import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
 import com.beachpartnerllc.beachpartner.adpters.TouristSpotCardAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView;
@@ -141,6 +144,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel>noLikes  = new ArrayList<BpFinderModel>();
     private String item_location;
     private List<Event>personEventList = new ArrayList<Event>();
+    private TabActivity tabActivity;
 
 
     public BPFinderFragment() {
@@ -240,6 +244,26 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Beach Partner");
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getPreferences();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferences();
+    }
 
     private void getPreferences() {
         //check shared prefvalue
@@ -268,11 +292,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setChecked(true);
+                    btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnFemale.setTextColor(getResources().getColor(R.color.black));
                 }else if(sgender.equals("Female")){
                     txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setChecked(true);
+                    btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnMale.setTextColor(getResources().getColor(R.color.black));
                 }else {
                     btnMale.setChecked(true);
                     btnFemale.setChecked(true);
@@ -1427,6 +1455,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         return trimmedString;
     }
+
+
 
     public long DatetoMilli(Date dateClicked) {
         Date givenDateString = dateClicked;

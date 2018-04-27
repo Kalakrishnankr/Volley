@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.HiFiveAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
@@ -48,6 +51,7 @@ public class HiFiveFragment extends Fragment {
     private String user_id,user_token,userType;
     private PrefManager prefManager;
     private TextView noHiFiveImage;
+    private TabActivity tabActivity;
 
 
     private ArrayList<BpFinderModel> hiFiveList = new ArrayList<BpFinderModel>();
@@ -57,31 +61,12 @@ public class HiFiveFragment extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment HiFiveFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static HiFiveFragment newInstance(String param1, String param2) {
-        HiFiveFragment fragment = new HiFiveFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
@@ -99,6 +84,16 @@ public class HiFiveFragment extends Fragment {
 
         return view;
     }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("High Fives");
+        }
+    }
+
     private void initList(View view) {
         noHiFiveImage = view.findViewById(R.id.no_hiFives_tv);
         getHiFiList();
