@@ -1,12 +1,19 @@
 package com.beachpartnerllc.beachpartner.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -60,6 +67,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -105,6 +113,15 @@ public class LoginActivity extends AppCompatActivity {
             registrationSuccessful=new PrefManager(getApplicationContext()).getRegistrationStatus();
         }
 
+        String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+
+        if (!hasPermissions(LoginActivity.this, PERMISSIONS)) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(PERMISSIONS, 30);
+            }
+        } else {
+            createAppDirectory();
+        }
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
         // Callback registration
@@ -162,6 +179,24 @@ public class LoginActivity extends AppCompatActivity {
         initActivity();
     }
 
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case 30: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    createAppDirectory();
+
+                }
+                return;
+
+            }
+        }
+    }
 
     AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
         @Override
@@ -983,7 +1018,30 @@ private void neverGotEmailAlertTextUnderline(){
         awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_confirmPassword,R.id.edittxt_newPassword,R.string.hint_didnotmatch);
     }
 
-    //Check whether the app installed or not
+
+
+    private void createAppDirectory() {
+
+
+        File myDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+
+        if (!myDirectory.exists()) {
+            myDirectory.mkdirs();
+        }
+
+    }
+
+    public boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
 
 }
