@@ -237,32 +237,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         getActivity().getActionBar();
 
-        //to show focus on location field when clicking on location icon in bp
-
-            Bundle arguments = getArguments();
-
-                try{
-                    location_change=arguments.getString("prime_card");
-                    if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
-                        editCity.setEnabled(true);
-                        scrollview_profile.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scrollview_profile.fullScroll(View.FOCUS_DOWN);
-
-                                    blink();
-
-
-                            }
-                        });
-                        editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-                        btnsBottom.setVisibility(View.VISIBLE);
-                        llMenuMore.setClickable(false);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-
 
 
 

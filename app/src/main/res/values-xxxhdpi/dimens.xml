@@ -15,6 +15,9 @@
 	<dimen name="circular_img_width">90dp</dimen>
 	<dimen name="circular_img_marginTop">150dp</dimen>
 
+	<!--blue bp circles margin left for progress bar-->
+	<dimen name="margin_left_blueBp">130dp</dimen>
+
 	<!--marginTop of text under circular image view-->
 	<dimen name="margin_top_text_under_circularImage">60dp</dimen>
 	<dimen name="filter_criteria_gender_margin">20dp</dimen>

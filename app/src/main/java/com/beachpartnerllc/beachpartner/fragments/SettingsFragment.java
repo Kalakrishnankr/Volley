@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.SharedPreferences;
+
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +10,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -48,6 +52,9 @@ public class SettingsFragment extends Fragment {
     private int minAge,maxAge;
     private TabActivity tabActivity;
 
+    private String location_change;
+
+
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -68,6 +75,27 @@ public class SettingsFragment extends Fragment {
         View view= inflater.inflate(R.layout.fragment_settings, container, false);
         initView(view);
 
+        //to show focus on location field when clicking on location icon in bp
+
+        Bundle arguments = getArguments();
+
+        try{
+            location_change=arguments.getString("prime_card");
+            if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
+                spinner_location.setEnabled(true);
+
+
+                        blink();
+
+                dataAdapter.setDropDownViewResource(R.layout.spinner_style);
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
         return view;
     }
 
@@ -80,8 +108,6 @@ public class SettingsFragment extends Fragment {
             tabActivity.setActionBarTitle("Settings");
         }
     }
-
-
 
     private void initView(View view) {
 
@@ -150,7 +176,7 @@ public class SettingsFragment extends Fragment {
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
             }
-           // spinner_location.setText(location);
+
 
             if (sgender != null) {
                 if (sgender.equals("Male")) {
@@ -281,11 +307,22 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    private void blink() {
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(50); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(30);
+        spinner_location.startAnimation(anim);
+    }
+
+
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
     }
+
 
     public void addLocation() {
         stateList.add("Alabama");

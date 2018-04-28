@@ -497,6 +497,16 @@ public class CardStackView extends FrameLayout {
                 }
             });
         }
+        else{
+            ViewGroup parent = containers.getLast();
+            View prevView = adapter.getView(state.topIndex, null, parent);
+            performReverse(state.lastPoint, prevView, new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animator) {
+                    executePostReverseTask();
+                }
+            });
+        }
     }
 
     public CardContainerView getTopView() {
