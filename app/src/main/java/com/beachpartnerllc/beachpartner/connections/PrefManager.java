@@ -24,7 +24,7 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id,String userType,String userName,String userPic){
+    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
@@ -32,6 +32,7 @@ public class PrefManager {
         //editor.putString("subscriptions",subscriptions);
         editor.putString("userName",userName);
         editor.putString("userProfilePic",userPic);
+        editor.putString("userLocation",userLocation);
         editor.commit();
     }
 
@@ -59,10 +60,28 @@ public class PrefManager {
         editor.putBoolean("isCoachActive",isCoach);
         editor.commit();
     }
+    //saveStripValue is "true" at first time bluebp strip loading //it remains false at filter procedure search
+    public void saveStripsValue(Boolean isStatus){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("StripStatus", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean("isStripStatus",isStatus);
+        editor.commit();
+    }
+
+    public Boolean getStripValue(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("StripStatus", Context.MODE_PRIVATE);
+        return sharedPreferences.getBoolean("isStripStatus",false);
+    }
+
 
     public SharedPreferences getSettingsData(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
         return sharedPreferences;
+    }
+
+    public String getLocation(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("userLocation", "");
     }
 
 

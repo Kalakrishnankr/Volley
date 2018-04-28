@@ -107,11 +107,11 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
             @Override
             public void onClick(View v) {
                 //do something
-                hifiveSeen.setBackgroundResource(R.drawable.ic_highfive_seen);
-                isHifi = true;
-                isblueBP=true;
-                AppCompatActivity activity = (AppCompatActivity) v.getContext();
-                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
+                  hifiveSeen.setBackgroundResource(R.drawable.ic_highfive_seen);
+                  isHifi = true;
+                  isblueBP=true;
+                  AppCompatActivity activity = (AppCompatActivity) v.getContext();
+                  BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                   Bundle bundle = new Bundle();
                 //cPosition is the current positon
                   bundle.putInt("itemPosition", position);

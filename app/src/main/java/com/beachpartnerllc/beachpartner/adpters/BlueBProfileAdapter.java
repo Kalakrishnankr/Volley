@@ -39,7 +39,7 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         BpFinderModel model = dataList.get(position);
         Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imv_profile);
@@ -55,6 +55,8 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
                 bundle.putSerializable("bluebplist", dataList);
                 bpFinderFragment.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+               // holder.removeAt(position);
+
             }
         });
     }
@@ -75,5 +77,13 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
             imv_profile =   (CircularImageView)view.findViewById(R.id.imgBp);
 
         }
+
+        public void removeAt(int position) {
+            dataList.remove(position);
+            notifyItemRemoved(position);
+            notifyItemRangeChanged(position, dataList.size());
+        }
     }
+
 }
+

@@ -275,14 +275,6 @@ public class SettingsFragment extends Fragment {
 
                 new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
                 getActivity().onBackPressed();
-                /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                preferences.putString("location", spinner_location.getText().toString().trim());
->>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
-                preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
-                preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
-                preferences.putString("gender", txtv_gender.getText().toString());
-                preferences.apply();
-                preferences.commit();*/
 
             }
 
