@@ -51,6 +51,12 @@
                 android:layout_weight="1.2"/>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/txt_keyError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dot_dark_screen1"
+            android:visibility="gone"/>
 
         <!--new PAssword feild-->
         <LinearLayout
@@ -78,6 +84,13 @@
                 android:layout_weight="1.2"/>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/txt_pwdError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dot_dark_screen1"
+            android:visibility="gone"/>
+
 
        <!-- confirm password feild-->
 
@@ -106,6 +119,12 @@
                 android:layout_weight="1.2"/>
 
         </LinearLayout>
+        <TextView
+            android:id="@+id/txt_confPwdError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/dot_dark_screen1"
+            android:visibility="gone"/>
 
         <!--action buttons-->
         <Space

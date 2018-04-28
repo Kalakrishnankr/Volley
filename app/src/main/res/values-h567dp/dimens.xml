@@ -25,6 +25,8 @@
     <dimen name="floatingMenuMarginTop">90dp</dimen>
     <dimen name="share_text_margin_top">0dp</dimen>
 
+    <!--blue bp circles margin left for progress bar-->
+    <dimen name="margin_left_blueBp">130dp</dimen>
 
     <dimen name="pop_up_card_ht">300dp</dimen>
 

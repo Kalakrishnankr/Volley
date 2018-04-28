@@ -66,11 +66,11 @@ import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText userName;
+    private EditText userName,editText_key,editText_pass,editText_confm_pass;
     private CustomEditText password;
     private Button btnLogin,approve,cancel;
     private ImageView loginButton,instaLogin;
-    private TextView tsignUp,txt_forgotPass,result;
+    private TextView tsignUp,txt_forgotPass,result,txt_keyError,txt_pwdError,txt_confPwdError;
     private CallbackManager callbackManager;
     private static final String EMAIL = "email";
     private InstagramSession mInstagramSession;
@@ -206,6 +206,7 @@ public class LoginActivity extends AppCompatActivity {
         tsignUp         =   (TextView) findViewById(R.id.tSignUp);
         loginButton     =   (ImageView)findViewById(R.id.login_button);
         txt_forgotPass  =   (TextView) findViewById(R.id.forgotPass);
+
 
         password_inputText = (TextInputLayout) findViewById(R.id.float_label_password);
 
@@ -862,26 +863,35 @@ private void neverGotEmailAlertTextUnderline(){
         LayoutInflater inflater   = LoginActivity.this.getLayoutInflater();
         View view     = inflater.inflate(R.layout.alert_dialog_box,null);
         alerts.setView(view);
-        alerts.setCancelable(true);
-        final AlertDialog alertDialog  = alerts.create();
-        final  EditText editText_key =  (EditText) view.findViewById(R.id.edittxt_key);
-        final  EditText editText_pass=  (EditText) view.findViewById(R.id.edittxt_newPassword);
-        final  EditText editText_confm_pass = (EditText) view.findViewById(R.id.edittxt_confirmPassword);
+        alerts.setCancelable(false);
+
+        editText_key =  (EditText) view.findViewById(R.id.edittxt_key);
+        editText_pass=  (EditText) view.findViewById(R.id.edittxt_newPassword);
+        editText_confm_pass = (EditText) view.findViewById(R.id.edittxt_confirmPassword);
+
+        txt_keyError       = (TextView)view.findViewById(R.id.txt_keyError);
+        txt_pwdError       = (TextView)view.findViewById(R.id.txt_pwdError);
+        txt_confPwdError   = (TextView) view.findViewById(R.id.txt_confPwdError);
+
 
         Button   btn_confirm =   (Button) view.findViewById(R.id.btn_resetOk);
         Button   btn_cancel  =   (Button) view.findViewById(R.id.btn_resetCancel);
 
+        final AlertDialog alertDialog  = alerts.create();
+        alertDialog.show();
         btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                validateResetForm();
-                if(awesomeValidation.validate()){
-
+               boolean validated =validateResetForm();
+                if(validated){
                     String keyValue = editText_key.getText().toString().trim();
                     String passWord = editText_confm_pass.getText().toString().trim();
-                    alertDialog.cancel();
                     //Api for reset password
                     changePassword(keyValue,passWord);
+                    alertDialog.dismiss();
+                }
+                else{
+                    validateResetForm();
                 }
 
             }
@@ -889,11 +899,10 @@ private void neverGotEmailAlertTextUnderline(){
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertDialog.cancel();
+
             }
         });
 
-        alertDialog.show();
     }
 
     private void changePassword(String keyValue, String passWord) {
@@ -911,7 +920,7 @@ private void neverGotEmailAlertTextUnderline(){
                     @Override
                     public void onResponse(JSONObject response) {
                         //Log.d("Success Response", response.toString());
-                        Toast.makeText(LoginActivity.this, "Successfully reset your password", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Your password has been reset succesfully", Toast.LENGTH_SHORT).show();
 
                     }
 
@@ -975,12 +984,52 @@ private void neverGotEmailAlertTextUnderline(){
 
     }
 
-    private void validateResetForm() {
-        String regx_key = ".{4,}";
-        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_key,regx_key,R.string.invalid_key);
-        String regx_pass= ".{8,}";
-        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_newPassword,regx_pass,R.string.hint_passord_size);
-        awesomeValidation.addValidation(LoginActivity.this,R.id.edittxt_confirmPassword,R.id.edittxt_newPassword,R.string.hint_didnotmatch);
+    private boolean validateResetForm() {
+
+
+        boolean validation =true;
+        if(editText_pass.getText().toString().trim().length()==0){
+            txt_pwdError.setVisibility(View.VISIBLE);
+            txt_pwdError.setText("Please enter your new password");
+            validation=false;
+        }
+        else if(editText_pass.getText().toString().length()<=8){
+            txt_pwdError.setVisibility(View.VISIBLE);
+            txt_pwdError.setText(getString(R.string.invalid_password));
+            validation=false;
+        }
+        else{
+            txt_pwdError.setVisibility(View.GONE);
+        }
+
+        if(!editText_confm_pass.getText().toString().trim().equals(editText_pass.getText().toString().trim())){
+            txt_confPwdError.setVisibility(View.VISIBLE);
+            txt_confPwdError.setText(getString(R.string.invalid_confirmpassword));
+            validation=false;
+        }
+        else if(editText_confm_pass.getText().toString().trim().length()==0){
+            txt_confPwdError.setVisibility(View.VISIBLE);
+            txt_confPwdError.setText(getString(R.string.enter_confirm_pwd));
+            validation=false;
+        }
+        else if(editText_confm_pass.getText().toString().trim().length()<=8){
+                txt_confPwdError.setVisibility(View.VISIBLE);
+                txt_confPwdError.setText(R.string.invalid_password);
+        }
+        else{
+            txt_confPwdError.setVisibility(View.GONE);
+        }
+
+        if(editText_key.getText().toString().length()!=4){
+            txt_keyError.setVisibility(View.VISIBLE);
+            txt_keyError.setText(getString(R.string.invalid_key));
+            validation=false;
+        }
+        else{
+            txt_keyError.setVisibility(View.GONE);
+        }
+
+        return validation;
     }
 
     //Check whether the app installed or not

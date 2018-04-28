@@ -1,15 +1,18 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
@@ -17,6 +20,7 @@ import android.widget.TextView;
 import android.widget.ToggleButton;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
 import java.util.ArrayList;
@@ -45,10 +49,9 @@ public class SettingsFragment extends Fragment {
     private SharedPreferences prefs;
     private String location,sgender;
     private int minAge,maxAge;
-<<<<<<< HEAD
-=======
+    private TabActivity tabActivity;
+    private String location_change;
 
->>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -70,20 +73,47 @@ public class SettingsFragment extends Fragment {
 
         initView(view);
 
+        //to show focus on location field when clicking on location icon in bp
+
+        Bundle arguments = getArguments();
+
+        try{
+            location_change=arguments.getString("prime_card");
+            if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
+                spinner_location.setEnabled(true);
+
+
+                        blink();
+
+                dataAdapter.setDropDownViewResource(R.layout.spinner_style);
+
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+
+
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Settings");
+        }
     }
 
     private void initView(View view) {
 
         tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
         tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
-<<<<<<< HEAD
-        age_bar     = (MultiSlider) view.findViewById(R.id.rangebar);
-        spinner_location = (Spinner) view.findViewById(R.id.spinner_location_settings);
-=======
         age_bar     = (MultiSlider) view.findViewById(R.id.rangebarOne);
-        spinner_location = (AutoCompleteTextView) view.findViewById(R.id.spinner_location);
->>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
+        spinner_location = (Spinner) view.findViewById(R.id.spinner_location_settings);
+
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
 
@@ -121,32 +151,19 @@ public class SettingsFragment extends Fragment {
         //check shared prefvalue
         prefs = new PrefManager(getActivity()).getSettingsData();
         if (prefs != null) {
-
-<<<<<<< HEAD
             location = prefs.getString("location", null);
-            sgender = prefs.getString("gender", null);
-            minAge = prefs.getInt("minAge", 0);
-            maxAge = prefs.getInt("maxAge", 0);
-
-
-            tvMin.setText(String.valueOf(minAge));
-            tvMax.setText(String.valueOf(maxAge));
-            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
-            age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
             if (location != null){
                 int positions = dataAdapter.getPosition(location);
                 spinner_location.setSelection(positions);
             }
-=======
-            String location = prefs.getString("location", null);
-            String sgender = prefs.getString("gender", null);
-            int minAge = prefs.getInt("minAge", 0);
-            int maxAge = prefs.getInt("maxAge", 0);
+            sgender = prefs.getString("gender", null);
+            minAge = prefs.getInt("minAge", 0);
+            maxAge = prefs.getInt("maxAge", 0);
             if (minAge == 0 && maxAge == 0) {
                 minAge=5;
                 maxAge=30;
-                age_bar.getThumb(0).setValue(5).setEnabled(true);
-                age_bar.getThumb(1).setValue(30).setEnabled(true);
+                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+                age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
 
@@ -157,8 +174,7 @@ public class SettingsFragment extends Fragment {
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
             }
-            spinner_location.setText(location);
->>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
+            // spinner_location.setText(location);
 
             if (sgender != null) {
                 if (sgender.equals("Male")) {
@@ -276,15 +292,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onClick(View view) {
 
-                location    =   spinner_location.getText().toString().trim();
+                //location    =   spinner_location.getText().toString().trim();
                 sgender     =   txtv_gender.getText().toString();
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
-<<<<<<< HEAD
-                SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                preferences.putString("location", location.toString().trim());
-=======
                 new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
                 getActivity().onBackPressed();
                 /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
@@ -300,7 +312,14 @@ public class SettingsFragment extends Fragment {
 
         });
     }
-
+    private void blink() {
+        Animation anim = new AlphaAnimation(0.0f, 1.0f);
+        anim.setDuration(50); //You can manage the blinking time with this parameter
+        anim.setStartOffset(20);
+        anim.setRepeatMode(Animation.REVERSE);
+        anim.setRepeatCount(30);
+        spinner_location.startAnimation(anim);
+    }
     public void addLocation() {
         stateList.add("Alabama");
         stateList.add("Alaska");
