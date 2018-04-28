@@ -1,6 +1,7 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.SharedPreferences;
+
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -50,7 +51,9 @@ public class SettingsFragment extends Fragment {
     private String location,sgender;
     private int minAge,maxAge;
     private TabActivity tabActivity;
+
     private String location_change;
+
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -70,7 +73,6 @@ public class SettingsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_settings, container, false);
-
         initView(view);
 
         //to show focus on location field when clicking on location icon in bp
@@ -174,7 +176,7 @@ public class SettingsFragment extends Fragment {
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
             }
-            // spinner_location.setText(location);
+
 
             if (sgender != null) {
                 if (sgender.equals("Male")) {
@@ -299,19 +301,12 @@ public class SettingsFragment extends Fragment {
 
                 new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
                 getActivity().onBackPressed();
-                /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
-                preferences.putString("location", spinner_location.getText().toString().trim());
->>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
-                preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
-                preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
-                preferences.putString("gender", txtv_gender.getText().toString());
-                preferences.apply();
-                preferences.commit();*/
 
             }
 
         });
     }
+
     private void blink() {
         Animation anim = new AlphaAnimation(0.0f, 1.0f);
         anim.setDuration(50); //You can manage the blinking time with this parameter
@@ -320,6 +315,15 @@ public class SettingsFragment extends Fragment {
         anim.setRepeatCount(30);
         spinner_location.startAnimation(anim);
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
+    }
+
+
     public void addLocation() {
         stateList.add("Alabama");
         stateList.add("Alaska");

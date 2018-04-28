@@ -99,9 +99,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 text = holder.edit_notes.getText().toString();
                 if (noteId != null && text.length() != 0) {
                     noteInterface.update(text,noteId);
-                    holder.noteDisabled.setImageResource(R.drawable.ic_edit);
-                    holder.noteDisabled.setClickable(false);
-                    isEditable =true;
+                    holder.noteDisabled.setImageResource(R.drawable.ic__note);
                 }
 
 

@@ -14,6 +14,8 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
@@ -57,6 +59,7 @@ import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
 import com.beachpartnerllc.beachpartner.adpters.TouristSpotCardAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView;
@@ -139,8 +142,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel>bluebpListSecond = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>hifiList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel>noLikes  = new ArrayList<BpFinderModel>();
+    private ArrayList<BpFinderModel>connectionList = new ArrayList<BpFinderModel>();//Connected people list
     private String item_location;
     private List<Event>personEventList = new ArrayList<Event>();
+    private TabActivity tabActivity;
+    private BpFinderModel cModel;
 
 
     public BPFinderFragment() {
@@ -201,10 +207,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             hifiList   = (ArrayList<BpFinderModel>) data.getSerializable("hifiList");
             bluebpList = (ArrayList<BpFinderModel>) data.getSerializable("bluebplist");
             noLikes    = (ArrayList<BpFinderModel>) data.getSerializable("noLikeslist");
-            int cPosition = data.getInt("cPosition");
+            int cPosition   = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                if (bluebpList.size()>0) {
+                adapter.addAll(bluebpList.get(cPosition));
+
+                //adapter.notifyDataSetChanged();
+                //adapter.notifyDataSetInvalidated();
+                //here location = null,gender = null, isCoach = false ,minage 5 and maxage=30
+                getAllCards(null, "", false, 5, 30);
+                //getAllCards(location, sgender, isCoach, minAge, maxAge);
+                /*if (bluebpList.size()>0) {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
                         adapter.addAll(bluebpList.get(i));
                         if (i == bluebpList.size()) {
@@ -212,13 +225,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 for (int j = 0; j <allCardList.size() ; j++) {
                                     adapter.addAll(allCardList);
                                 }
-                            }/*else {
+                            }else {
                                 getAllCards(location, sgender, isCoach, minAge, maxAge);
-                            }*/
+                            }
                         }
                     }
 
-                }
+                }*/
             }
             //From 20+ Likes
             if (noLikes !=null && noLikes.size() > 0) {
@@ -232,11 +245,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             int item_position= data.getInt("itemPosition");
             if (hifiList != null && hifiList.size() > 0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                if (hifiList.size()>0) {
+                adapter.addAll(hifiList.get(item_position));
+                getAllCards(null, "", false, 5, 30);
+               // getAllCards(location, sgender, isCoach, minAge, maxAge);
+
+
+               /* if (hifiList.size()>0) {
                     for (int j =item_position; j < hifiList.size(); j++) {
                         adapter.addAll(hifiList.get(j));
                     }
-                }
+                }*/
             }
             //getAllCards(location, sgender, isCoach, minAge, maxAge);
 
@@ -245,6 +263,26 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         return view;
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Beach Partner");
+        }
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getPreferences();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        getPreferences();
+    }
 
     private void getPreferences() {
         //check shared prefvalue
@@ -273,11 +311,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     btnMale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnMale.setTextColor(getResources().getColor(R.color.white));
                     btnMale.setChecked(true);
+                    btnFemale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnFemale.setTextColor(getResources().getColor(R.color.black));
                 }else if(sgender.equals("Female")){
                     txtv_gender.setText("Female");
                     btnFemale.setBackground(getResources().getDrawable(R.color.menubar));
                     btnFemale.setTextColor(getResources().getColor(R.color.white));
                     btnFemale.setChecked(true);
+                    btnMale.setBackground(getResources().getDrawable(R.color.imgBacgnd));
+                    btnMale.setTextColor(getResources().getColor(R.color.black));
                 }else {
                     btnMale.setChecked(true);
                     btnFemale.setChecked(true);
@@ -496,10 +538,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     //new PrefManager(getContext()).savePageno(-1);
                     getBpProfiles();
                 }
-
-
-
-
                 sgender     =   txtv_gender.getText().toString();
                 isCoach     =   sCoach.isChecked();
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
@@ -528,6 +566,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
                 if (isbpActive) {
                     topFrameLayout.setVisibility(View.GONE);
+
+                    new PrefManager(getActivity()).saveSettingData(location,sgender,isCoach,minAge,maxAge);
+                    llvFilter.setVisibility(View.GONE);
+                    rr.setVisibility(View.VISIBLE);
+
 
                 } else {
                     if (isPartner) {
@@ -562,11 +605,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onCardSwiped(SwipeDirection direction) {
                 //abraham 08-03-2018
+
                 reverseCount=true;
                 imgv_rvsecard.setBackground(BPFinderFragment.this.getResources().getDrawable(R.drawable.ic_backcard));
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
-
                 //Methods for swipe card kalakrishnan 06/04/2018
                 if(direction.toString().equalsIgnoreCase("Right")){
                     //Toast.makeText(getActivity(), "You right swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
@@ -599,6 +642,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     noCrads();
                     // paginate();
                 }
+
             }
 
             @Override
@@ -889,6 +933,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     public void onResponse(JSONObject response) {
                         if(response!=null){
                             try {
+                                getBpProfiles();
                                 String status = response.getString("status").toString().trim();
                                 if(status.equals("New")){
                                     Log.d("request send",status);
@@ -897,22 +942,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                                     JSONObject object = new JSONObject(response.getString("user"));
 
-                                    BpFinderModel finderModel =  new BpFinderModel();
-                                    finderModel.setBpf_id(object.getString("id"));
-                                    finderModel.setBpf_firstName(object.getString("firstName"));
-                                    finderModel.setBpf_lastName(object.getString("lastName"));
-                                    finderModel.setBpf_email(object.getString("email"));
-                                    finderModel.setBpf_imageUrl(object.getString("imageUrl"));
-                                    finderModel.setBpf_videoUrl(object.getString("videoUrl"));
-                                    finderModel.setBpf_dob(object.getString("dob"));
-                                    finderModel.setBpf_gender(object.getString("gender"));
-                                    finderModel.setBpf_loginType(object.getString("loginType"));
-                                    finderModel.setBpf_city(object.getString("city"));
-                                    finderModel.setBpf_phoneNumber(object.getString("phoneNumber"));
-                                    finderModel.setBpf_deviceId(object.getString("deviceId"));
-                                    finderModel.setBpf_userType(object.getString("userType"));
-                                    finderModel.setBpf_age(object.getString("age"));
-                                    finderModel.setBpf_fcmToken(object.getString("fcmToken"));
+                                    cModel =  new BpFinderModel();
+                                    cModel.setBpf_id(object.getString("id"));
+                                    cModel.setBpf_firstName(object.getString("firstName"));
+                                    cModel.setBpf_lastName(object.getString("lastName"));
+                                    cModel.setBpf_email(object.getString("email"));
+                                    cModel.setBpf_imageUrl(object.getString("imageUrl"));
+                                    cModel.setBpf_videoUrl(object.getString("videoUrl"));
+                                    cModel.setBpf_dob(object.getString("dob"));
+                                    cModel.setBpf_gender(object.getString("gender"));
+                                    cModel.setBpf_loginType(object.getString("loginType"));
+                                    cModel.setBpf_city(object.getString("city"));
+                                    cModel.setBpf_phoneNumber(object.getString("phoneNumber"));
+                                    cModel.setBpf_deviceId(object.getString("deviceId"));
+                                    cModel.setBpf_userType(object.getString("userType"));
+                                    cModel.setBpf_age(object.getString("age"));
+                                    cModel.setBpf_fcmToken(object.getString("fcmToken"));
 
                                     showAlertDialog();
                                 }
@@ -988,6 +1033,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    getBpProfiles();
                     String status = response.getString("status").toString().trim();
                     if(status.equals("New")){
                         Log.d("request send",status);
@@ -1060,6 +1106,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         if(response!=null){
+                            getBpProfiles();
                             try {
                                 String status = response.getString("status").toString().trim();
                                 if(status.equals("New")){
@@ -1218,6 +1265,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for getting bluebpstrips
     private void getBpProfiles() {
+        bluebpListSecond.clear();
         JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
                 Response.Listener<JSONArray>() {
                     @Override
@@ -1244,17 +1292,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     e.printStackTrace();
                                 }
                             }
-
-                            if(bluebpListSecond!=null && bluebpListSecond.size()>0){
-                                if(getActivity()!=null){
-                                    //new PrefManager(getContext()).savePageno(pageno);
-                                    blueBProfileAdapter = new BlueBProfileAdapter(getActivity(),bluebpListSecond);
-                                    rcv_bpProfiles.setAdapter(blueBProfileAdapter);
-                                }
-                            }
-                        }else {
-                            //new PrefManager(getContext()).savePageno(-1);
-                            //getBpProfiles();
+                            setUpBlueBPStrips();
                         }
 
 
@@ -1301,6 +1339,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    private void setUpBlueBPStrips() {
+        if(bluebpListSecond!=null && bluebpListSecond.size()>0){
+            if(getActivity()!=null){
+                blueBProfileAdapter = new BlueBProfileAdapter(getActivity(),bluebpListSecond);
+                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                blueBProfileAdapter.notifyDataSetChanged();
+            }
+        }
+    }
 
 
     /* private void reload() {
@@ -1432,6 +1479,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         return trimmedString;
     }
+
+
 
     public long DatetoMilli(Date dateClicked) {
         Date givenDateString = dateClicked;
@@ -1684,7 +1733,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onClick(View v) {
                 //alertDialog.dismiss();
-
+                if (getActivity() != null) {
+                    ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("personId",cModel.getBpf_id());
+                    bundle.putString("personName",cModel.getBpf_firstName());
+                    bundle.putString("myName",new PrefManager(getActivity()).getUserName());
+                    bundle.putString("personPic",cModel.getBpf_imageUrl());
+                    chatFragmentPage.setArguments(bundle);
+                    FragmentManager manager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+                    FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    ctrans.replace(R.id.container,chatFragmentPage);
+                    ctrans.commit();
+                }
 
             }
         });
@@ -1695,13 +1757,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onClick(View v) {
                 // alertDialog.dismiss();
                 //Moving to Calendar Fragment
-                CalendarFragment calendarFragment = new CalendarFragment();
-                FragmentManager manager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
-                FragmentTransaction ctrans = manager.beginTransaction();
-                //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                ctrans.replace(R.id.container,calendarFragment);
-                //ctrans.addToBackStack(null);
-                ctrans.commit();
+                if (getActivity() != null) {
+                    CalendarFragment calendarFragment = new CalendarFragment();
+                    FragmentManager manager = ((FragmentActivity)getActivity()).getSupportFragmentManager();
+                    FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    ctrans.replace(R.id.container,calendarFragment);
+                    //ctrans.addToBackStack(null);
+                    ctrans.commit();
+                }
+
             }
         });
 

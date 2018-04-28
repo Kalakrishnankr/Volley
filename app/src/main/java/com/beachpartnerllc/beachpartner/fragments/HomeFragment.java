@@ -565,6 +565,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         if(bpList!=null && bpList.size()>0){
             profileAdapter = new ProfileAdapter(getContext(),bpList);
             pRecyclerview.setAdapter(profileAdapter);
+            profileAdapter.notifyDataSetChanged();
         }else {
             txtv_nobp.setVisibility(View.VISIBLE);
         }

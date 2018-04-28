@@ -14,6 +14,7 @@ import android.webkit.WebViewClient;
 import android.widget.ProgressBar;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 
 
@@ -21,6 +22,7 @@ public class AboutUsFragment extends Fragment {
 
     private WebView webview;
     private ProgressBar progressBar;
+    private TabActivity  tabActivity;
 
     public AboutUsFragment() {
         // Required empty public constructor
@@ -56,6 +58,10 @@ public class AboutUsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getActivity() instanceof TabActivity) {
+            tabActivity= (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("About Us");
+        }
 
         webview.getSettings().setJavaScriptEnabled(true);
         webview.getSettings().setSupportZoom(true);
