@@ -31,6 +31,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
@@ -77,7 +78,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TabActivity tabActivity;
     private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
     private AVLoadingIndicatorView progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
-    private String user_id,user_token,userType,no_likes_count;
+    private String user_id,user_token,userType,no_likes_count,subScriptions;
     private PrefManager prefManager;
     private LinearLayout ucoming_next,message_next,request_next;
     private LinearLayoutManager layoutManagerBluebp,layoutManagerUp,layoutManagerMsg,layoutmngerReqst;
@@ -88,7 +89,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatList = new ArrayList<>();
-    private ArrayList<ConnectionModel> likesList = new ArrayList<>();
+    private ArrayList<BpFinderModel> likesList = new ArrayList<>();
     private ArrayList<ConnectionModel> userList = new ArrayList<>();
 
 
@@ -119,6 +120,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         user_id     =  prefManager.getUserId();
         user_token  =  prefManager.getToken();
         userType    =  prefManager.getUserType();
+        subScriptions = prefManager.getSubscriptionType();
         //getBlueBP profes
 
         return view;
@@ -137,7 +139,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getBluebpProfiles();
         getMyTournaments();
         getConnections();
-        //getNumberLike();
+        getNumberLike();
         //setUpMessage();
 
         /*getRequests();
@@ -249,9 +251,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 txtv_noreqsts.setText("No requests received");
                 break;
             case R.id.no_of_likes_card:
-                //likesDisplay();
+                  likesDisplay();
                 //getNumberLike();
-                //moveToCard();
                 break;
             case R.id.upcome_next_button:
                 //Toast.makeText(getActivity(), "Clicked Tour", Toast.LENGTH_SHORT).show();
@@ -273,43 +274,50 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     private void likesDisplay() {
 
-        LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
+        if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
+            //Api for getting
+            getPeopleWhoLiked();
+
+        }else {
+            LayoutInflater inflater = getLayoutInflater();
+            View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
 
 
-        final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
+            final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
 
-        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-
-
-        // Initialize a new foreground color span instance
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
 
 
-        alert.setView(alertLayout);
-        alert.setCancelable(true);
+            // Initialize a new foreground color span instance
+            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+            alert.setView(alertLayout);
+            alert.setCancelable(true);
 
 
 
-        final android.app.AlertDialog dialog = alert.create();
+            final android.app.AlertDialog dialog = alert.create();
 
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-            @Override
-            public void onShow(DialogInterface arg0) {
+            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+                @Override
+                public void onShow(DialogInterface arg0) {
 
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
-            }
-        });
-        dialog.show();
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+                }
+            });
+            dialog.show();
 
-        save_btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            save_btn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
+
+        }
 
        /* if(userType=="Athlete"){
 
@@ -324,6 +332,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
         }*/
     }
+
+
 
 
    /* Grid item spacing and padding */
@@ -573,45 +583,26 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     //Get 20+ Likes
-    /*private void getNumberLike() {
+    private void getNumberLike() {
         noLikes.clear();
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONArray>() {
+        JsonObjectRequest arrayRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_LIKES + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONObject>() {
             @Override
-            public void onResponse(JSONArray response) {
+            public void onResponse(JSONObject response) {
                 if (response != null) {
-                    no_likes_count= String.valueOf(response.length());
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
-                            JSONObject object = response.getJSONObject(i);
-                            JSONObject obj = object.getJSONObject("connectedUser");
-                            BpFinderModel finderModel = new BpFinderModel();
-                            finderModel.setBpf_id(obj.getString("id"));
-                            finderModel.setBpf_firstName(obj.getString("firstName"));
-                            finderModel.setBpf_lastName(obj.getString("lastName"));
-                            finderModel.setBpf_userType(obj.getString("userType"));
-                            finderModel.setBpf_imageUrl(obj.getString("imageUrl"));
-                            finderModel.setBpf_videoUrl(obj.getString("videoUrl"));
-                            finderModel.setBpf_dob(obj.getString("dob"));
-                            finderModel.setBpf_gender(obj.getString("gender"));
-                            finderModel.setBpf_city(obj.getString("city"));
-                            finderModel.setBpf_phoneNumber(obj.getString("phoneNumber"));
-                            finderModel.setBpf_deviceId(obj.getString("deviceId"));
-                            finderModel.setBpf_location(obj.getString("location"));
-                            finderModel.setBpf_age(obj.getString("age"));
-                            finderModel.setBpf_fcmToken(obj.getString("fcmToken"));
-                            finderModel.setBpf_email(obj.getString("email"));
-                            noLikes.add(finderModel);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    try {
+                        no_likes_count= response.getString("list_count");
+                        if(no_likes_count==null || no_likes_count.equals("0")){
+                            txtv_likes.setText("No");
                         }
+                        else{
+                            txtv_likes.setText(no_likes_count);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
-                    if(no_likes_count==null || no_likes_count.equals("0")){
-                        txtv_likes.setText("No");
-                    }
-                    else{
-                        txtv_likes.setText(no_likes_count);
-                    }
+
+
 
                 }
 
@@ -659,7 +650,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             requestQueue.add(arrayRequest);
         }
 
-    }*/
+    }
 
 
 
@@ -739,36 +730,41 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     }
 
     //Get connections
-   /* private void getPeopleWhoLiked() {
-
-        String user_id = new PrefManager(getContext()).getUserId();
-        final String token = new PrefManager(getContext()).getToken();
-
+    private void getPeopleWhoLiked() {
+        likesList.clear();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
                 if (response != null) {
-                    no_likes_count= String.valueOf(response.length());
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel model = new ConnectionModel();
-                            model.setConnected_uId(obj.getString("id"));
-                            model.setConnected_login(obj.getString("login"));
-                            model.setConnected_firstName(obj.getString("firstName"));
-                            model.setConnected_lastName(obj.getString("lastName"));
-                            model.setConnected_email(obj.getString("email"));
-                            model.setConnected_userType(obj.getString("userType"));
-                            model.setConnected_imageUrl(obj.getString("imageUrl"));
-                            likesList.add(model);
+                            BpFinderModel findModel = new BpFinderModel();
+                            findModel.setBpf_id(obj.getString("id"));
+                            findModel.setBpf_firstName(obj.getString("firstName"));
+                            findModel.setBpf_imageUrl(obj.getString("imageUrl"));
+                            findModel.setBpf_videoUrl(obj.getString("videoUrl"));
+                            findModel.setBpf_userType(obj.getString("userType"));
+                            findModel.setBpf_age(obj.getString("age"));
+                            findModel.setBpf_dob(obj.getString("dob"));
+                            findModel.setBpf_fcmToken(obj.getString("fcmToken"));
+                            findModel.setBpf_deviceId(obj.getString("deviceId"));
+                            //findModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
+                           // findModel.setBpf_effectiveDate(object.getString("effectiveDate"));
+                            //findModel.setBpf_termDate(object.getString("termDate"));
+                           // findModel.setBpf_subscriptionType(object.getString("subscriptionType"));
+
+                            likesList.add(findModel);
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
+                    //Goto BP FinderPage
+                    moveToCard();
                 }
 
 
@@ -782,19 +778,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + token);
+                headers.put("Authorization", "Bearer " + user_token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
 
             }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", arrayRequest.toString());
-        requestQueue.add(arrayRequest);
-
-
-    }*/
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+        }
+    }
 
 
     private void setUpMessage() {
@@ -863,14 +859,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
 
     }
 
-    //
+    // GOTO BP FINDER PAGE
     private void moveToCard() {
-        if (noLikes.size() > 0) {
+        if (likesList.size() > 0) {
             if (getActivity() != null) {
                 isblueBP = true;
                 BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("noLikeslist", noLikes);
+                bundle.putSerializable("noLikeslist", likesList);
                 bpFinderFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
             }

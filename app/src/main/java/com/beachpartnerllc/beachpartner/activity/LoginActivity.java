@@ -416,7 +416,7 @@ public class LoginActivity extends AppCompatActivity {
 
 
     //Method for login
-    private void startLoginProcess(JSONObject object,String status) {
+    private void startLoginProcess(JSONObject object, final String status) {
 
         if (status.equals("FB") || status.equals("IN")) {
             login_url = ApiService.BASE_URL+"authenticate-with-token";
@@ -469,6 +469,7 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
 
+                                    String subscribe = userDataModel.getSubscriptionType();
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
                                    // String subScription=userObj.getString("subscriptions");
@@ -476,9 +477,12 @@ public class LoginActivity extends AppCompatActivity {
                                     String userName = userObj.getString("firstName");
                                     String userPic  = userObj.getString("imageUrl");
                                     String userLocation = userObj.getString("location");
+                                    if (status.equals("FB") || status.equals("IN")) {
+                                        userType = "Athlete";
+                                    }
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation,subscribe);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
@@ -935,7 +939,7 @@ private void neverGotEmailAlertTextUnderline(){
         btn_cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                    alertDialog.dismiss();
             }
         });
 
@@ -1029,7 +1033,7 @@ private void neverGotEmailAlertTextUnderline(){
             txt_pwdError.setText("Please enter your new password");
             validation=false;
         }
-        else if(editText_pass.getText().toString().length()<=8){
+        else if(editText_pass.getText().toString().length()<8){
             txt_pwdError.setVisibility(View.VISIBLE);
             txt_pwdError.setText(getString(R.string.invalid_password));
             validation=false;
@@ -1048,9 +1052,9 @@ private void neverGotEmailAlertTextUnderline(){
             txt_confPwdError.setText(getString(R.string.enter_confirm_pwd));
             validation=false;
         }
-        else if(editText_confm_pass.getText().toString().trim().length()<=8){
-                txt_confPwdError.setVisibility(View.VISIBLE);
-                txt_confPwdError.setText(R.string.invalid_password);
+        else if(editText_confm_pass.getText().toString().trim().length()<8){
+            txt_confPwdError.setVisibility(View.VISIBLE);
+            txt_confPwdError.setText(R.string.invalid_password);
         }
         else{
             txt_confPwdError.setVisibility(View.GONE);

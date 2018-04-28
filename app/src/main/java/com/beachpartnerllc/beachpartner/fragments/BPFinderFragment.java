@@ -185,7 +185,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
         token   =   new PrefManager(getContext()).getToken();
         user_id =   new PrefManager(getContext()).getUserId();
-        user_subscription = new PrefManager(getContext()).getSubscription();
+        user_subscription = new PrefManager(getContext()).getSubscriptionType();
 
         allCardList.clear();
         //
@@ -384,9 +384,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
         showPreviousMonthButton = (ImageButton) view.findViewById(R.id.prev_button);
-        showNextMonthButton = (ImageButton) view.findViewById(R.id.next_button);
+        showNextMonthButton     = (ImageButton) view.findViewById(R.id.next_button);
 
-        sCoach              =   (Switch) view.findViewById(R.id.swich_coach);
+        sCoach                  =  (Switch) view.findViewById(R.id.swich_coach);
 
         compactCalendar = (CompactCalendarView) view.findViewById(R.id.compactcalendar_view);
         compactCalendar.setFirstDayOfWeek(Calendar.SUNDAY);
@@ -732,7 +732,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_rvsecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String id = new PrefManager(getActivity()).getReverseCardID();
+                //Toast.makeText(getActivity(), "person id"+id, Toast.LENGTH_SHORT).show();
                 reverse();
+               cardReverse(id);
             }
         });
 
@@ -755,6 +758,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+
+
     private void noCrads() {
         if (getActivity() != null) {
             cardStackView.setVisibility(View.INVISIBLE);
@@ -763,6 +768,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
 
     }
+
 
 
 
@@ -814,16 +820,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 }
 
                             }
-                            if(allCardList.size()>0){
-                                progressBar.setVisibility(View.INVISIBLE);
-                                paginate();
-                            }else {
-                                progressBar.setVisibility(View.INVISIBLE);
-                                if (adapter == null) {
-                                    noCrads();
-                                }
 
-                            }
+                            addCards();
 
                         }
                     }
@@ -872,6 +870,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
 
 
+    }
+
+    private void addCards() {
+        if (allCardList.size() > 0) {
+            progressBar.setVisibility(View.INVISIBLE);
+            paginate();
+        } else {
+            if (bluebpList.size() > 0 || noLikes.size() > 0 || hifiList.size() > 0) {
+                progressBar.setVisibility(View.INVISIBLE);
+            } else {
+                progressBar.setVisibility(View.INVISIBLE);
+                noCrads();
+            }
+
+        }
     }
 
 
@@ -958,6 +971,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         if(response!=null){
                             try {
                                 getBpProfiles();
+                                Toast.makeText(getActivity(), "ID:"+response.getString("id"), Toast.LENGTH_SHORT).show();
+                                new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                                 String status = response.getString("status").toString().trim();
                                 if(status.equals("New")){
                                     Log.d("request send",status);
@@ -967,6 +982,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     JSONObject object = new JSONObject(response.getString("user"));
 
                                     cModel =  new BpFinderModel();
+                                    cModel.setBpf_tableId(response.getString("id"));
                                     cModel.setBpf_id(object.getString("id"));
                                     cModel.setBpf_firstName(object.getString("firstName"));
                                     cModel.setBpf_lastName(object.getString("lastName"));
@@ -1058,6 +1074,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onResponse(JSONObject response) {
                 try {
                     getBpProfiles();
+                    Toast.makeText(getActivity(), "ID :"+response.getString("id"), Toast.LENGTH_SHORT).show();
+                    new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                     String status = response.getString("status").toString().trim();
                     if(status.equals("New")){
                         Log.d("request send",status);
@@ -1132,13 +1150,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         if(response!=null){
                             getBpProfiles();
                             try {
+                                Toast.makeText(getActivity(), "ID :"+response.getString("id"), Toast.LENGTH_SHORT).show();
+                                new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                                 String status = response.getString("status").toString().trim();
                                 if(status.equals("New")){
                                     Log.d("request send",status);
-
-
                                 }
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -1198,6 +1215,99 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             requestQueue.add(requests);
         }
 
+
+    }
+
+
+
+    //Card Reverse Api
+    private void cardReverse(String id) {
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.REVERSE_SWIPE_CARD + id, null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if(response!=null){
+                            try {
+                                getBpProfiles();
+                                String status = response.getString("status").toString().trim();
+
+                                JSONObject object = new JSONObject(response.getString("user"));
+                                cModel =  new BpFinderModel();
+                                cModel.setBpf_id(object.getString("id"));
+                                cModel.setBpf_firstName(object.getString("firstName"));
+                                cModel.setBpf_lastName(object.getString("lastName"));
+                                cModel.setBpf_email(object.getString("email"));
+                                cModel.setBpf_imageUrl(object.getString("imageUrl"));
+                                cModel.setBpf_videoUrl(object.getString("videoUrl"));
+                                cModel.setBpf_dob(object.getString("dob"));
+                                cModel.setBpf_gender(object.getString("gender"));
+                                cModel.setBpf_loginType(object.getString("loginType"));
+                                cModel.setBpf_city(object.getString("city"));
+                                cModel.setBpf_phoneNumber(object.getString("phoneNumber"));
+                                cModel.setBpf_deviceId(object.getString("deviceId"));
+                                cModel.setBpf_userType(object.getString("userType"));
+                                cModel.setBpf_age(object.getString("age"));
+                                cModel.setBpf_fcmToken(object.getString("fcmToken"));
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders()  {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("RequestSend", request.toString());
+            requestQueue.add(request);
+        }
 
     }
 
@@ -1804,6 +1914,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ctrans.replace(R.id.container,chatFragmentPage);
                     ctrans.commit();
+                    alertDialog.dismiss();
                 }
 
             }
@@ -1823,6 +1934,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     ctrans.replace(R.id.container,calendarFragment);
                     //ctrans.addToBackStack(null);
                     ctrans.commit();
+                    alertDialog.dismiss();
                 }
 
             }
