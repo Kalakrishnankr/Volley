@@ -391,6 +391,15 @@ public class TabActivity extends AppCompatActivity  {
         return super.onOptionsItemSelected(item);
     }
 
+    public void loadProfileFragment(){
+        ProfileFragment pf = new ProfileFragment();
+        getSupportActionBar().setTitle("Profile");
+        FragmentManager mang = getSupportFragmentManager();
+        FragmentTransaction trans = mang.beginTransaction();
+        trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
+        trans.commit();
+        disableFloatButtons();
+    }
     private void alertLogout() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Logout")

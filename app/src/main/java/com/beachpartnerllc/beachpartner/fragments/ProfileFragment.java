@@ -11,6 +11,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.AssetFileDescriptor;
@@ -80,6 +81,7 @@ import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
@@ -137,12 +139,17 @@ import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -190,6 +197,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel,editHeight;
     private AwesomeValidation awesomeValidation;
     ArrayList selectedItems;
+    ArrayList<String> mToursPlayed;
+    List<String> mToursSelectedfromServer;
     private boolean saveFile;
     private List<FloatingActionMenu> menus = new ArrayList<>();
     private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter,heightAdapter;
@@ -637,6 +646,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         });
 
         /*Tourrating Spinner*/
+        mToursPlayed = new ArrayList<>(); // for setting multiple tour data
+        mToursSelectedfromServer = new ArrayList<>(); // for auto check data
         spinnerTourRating.setOnItemSelectedListener(this);
         List<String> rating = new ArrayList<>();
         rating.add("Please Select");
@@ -1417,19 +1428,53 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     }
 
 
-
+    private int getIndex(CharSequence[] items, CharSequence sequence){
+        for (int i=0;i<items.length;i++){
+            if (items[i].equals(sequence))
+                return i;
+        }
+        return -1;
+    }
+    // set the selected values from server int List
+    boolean[] checkedItem = new boolean[0];
+    final static CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
+    private void setSelectedToursFromServer(String selectedTours){
+        mToursSelectedfromServer = new ArrayList<>(Arrays.asList(selectedTours.split("\\s*,\\s*")));
+        mToursSelectedfromServer.removeAll(Arrays.asList(null,""));
+        Log.e("size", String.valueOf(mToursSelectedfromServer.size()));
+        Set<String> mToursSelectedfromServerHash = new HashSet<>();
+        mToursSelectedfromServerHash.addAll(mToursSelectedfromServer);
+        mToursSelectedfromServer.clear();
+        mToursSelectedfromServer.addAll(mToursSelectedfromServerHash);
+        Log.e("size hash", String.valueOf(mToursSelectedfromServer.size()));
+        checkedItem = new boolean[items.length];
+        ListIterator<String> iterator = mToursSelectedfromServer.listIterator();
+        while(iterator.hasNext()){
+            int position = getIndex(items,iterator.next());
+            if(position != -1)
+                checkedItem[position] = true;
+            Log.e("Position", String.valueOf(position));
+        }
+    }
+    private void removeAlreadySelectedTourFromServerList(String tour){
+        Log.e("selected",tour);
+        for(int i=0;i<mToursSelectedfromServer.size();i++){
+            if (mToursSelectedfromServer.get(i).equals(tour)){
+                mToursSelectedfromServer.remove(i);
+                Log.e("selected", String.valueOf(mToursSelectedfromServer.size()));
+            }
+        }
+    }
+    boolean unchecked = false;
     public void toursPlayed() {
-        final CharSequence[] items = {" AVP Next ", " AVP First ", " CBVA Adult ", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","VolleyOC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
+       // final CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
 
         final ArrayList seletedItems = new ArrayList();
-        final boolean[] checkedColors = new boolean[]{
-
-        };
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
-                .setMultiChoiceItems(items,null, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(items,checkedItem, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
@@ -1439,17 +1484,51 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             seletedItems.remove(Integer.valueOf(indexSelected));
-
+                            Log.e("removed_selected","seletedItems");
+                        }else {
+                            removeAlreadySelectedTourFromServerList(items[indexSelected].toString());
+                            unchecked = true;
+                            Log.e("removed_selected","serverItemsCalled");
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
 
+                        // Edit Text and array list should be cleared on every Tour selection
+                       // mToursPlayed.clear()
+
+                        if(seletedItems.size() == 0){
+                            if (!unchecked)
+                            return;
+                        }
+                        editPlayed.setText("");
+                        Set<String> mToursPlayedHash = new HashSet<>();
+                        for(int i = 0;i<mToursSelectedfromServer.size();i++){
+                            mToursPlayed.add(mToursSelectedfromServer.get(i));
+                            Log.e("mTourServerSize", String.valueOf(mToursSelectedfromServer.size()));
+                        }
                         for (int i = 0; i < seletedItems.size(); i++) {
                             selectedTours = (String) items[(int) seletedItems.get(i)];
+                            mToursPlayed.add(selectedTours);
+                            Log.e("selectedTours", String.valueOf(mToursPlayed.size()));
                         }
-                        editPlayed.setText(selectedTours);
+                        mToursPlayedHash.addAll(mToursPlayed);
+                          //  mToursPlayed.addAll(mToursSelectedfromServer);
+                        // For setting the multiple value in editPlayed set Text
+                        mToursPlayed.clear();
+                        mToursPlayed.addAll(mToursPlayedHash);
+                        Log.e("selectedToursHash", String.valueOf(mToursPlayed.size()));
+                        if (mToursPlayed.size()!=0){
+                            for(int i = 0;i<mToursPlayed.size();i++){
+                                editPlayed.append(mToursPlayed.get(i)+",");
+                                /*if (i != mToursPlayed.size()-1)
+                                    editPlayed.append(mToursPlayed.get(i)+",");
+                                else
+                                    editPlayed.append(mToursPlayed.get(i)+"");*/
+                            }
+                        }
+                        //editPlayed.setText(selectedTours);
 
                         //  Your code when user clicked on OK
                         //  You can write the code  to save the selected item here
@@ -1469,9 +1548,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         });
 
         dialog.show();
+        unchecked =false;
 
     }
 
+    private void reloadFragment(){
+        if(getActivity() instanceof TabActivity){
+            TabActivity tabActivity = (TabActivity)getActivity();
+            tabActivity.loadProfileFragment();
+        }
+    }
     private void editBasicInfo() {
 
         //Profile image edit icon active
@@ -1825,15 +1911,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             isValidate = true;
         } else if (location.toString().trim().matches("")) {
             isValidate = true;
-        } else if (editPhone.getText().toString().trim().matches("")) {
+        } else if (editPhone.getText().toString().trim().isEmpty()) {
             editPhone.setError("Please enter your Mobile no");
             isValidate = true;
         } else if (editDob.getText().toString().trim().matches("")) {
             editDob.setError("Please enter your dob");
             isValidate = true;
-        } else if (editPhone.getText().toString().trim().length()!=10){
-            editPhone.setError(getString(R.string.mobilerror));
-            isValidate = true;
+        } else if (!editPhone.getText().toString().trim().isEmpty()){
+            String mobile = editPhone.getText().toString();
+            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mobile)){
+                editPhone.setError(getString(R.string.mobilerror));
+                isValidate = true;
+            }
         }
 //        else if(selectedImageUri == null){
 //            Toast.makeText(getActivity(), "Please upload a picture", Toast.LENGTH_SHORT).show();
@@ -2094,6 +2183,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     imageUri=null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+                    reloadFragment();
                 }
             }
         });
@@ -2311,7 +2401,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                 }else{
                                     progress.dismiss();
                                     Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-
+                                    reloadFragment();
                                 }
 
 
@@ -2338,6 +2428,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                                 progress.dismiss();
                                 Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+                                reloadFragment();
                             }
                         }else {
                             progress.dismiss();
@@ -2436,6 +2527,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                             }
                         }
+                    }
+                    if (userDataModel.getToursPlayedIn() != null || !userDataModel.getToursPlayedIn().isEmpty()){
+                        setSelectedToursFromServer(userDataModel.getToursPlayedIn());
                     }
                     profileName.setText(userDataModel.getFirstName().trim());
                     profileDesig.setText(userDataModel.getUserType().trim());
@@ -2564,6 +2658,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     }
                 }
+
                 }
             }
         }
@@ -2655,7 +2750,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
             if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                // takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                 takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
@@ -3379,6 +3474,7 @@ public String isEmptyOrNull(String stringToCheck){
         }
 
     }
+
 
 
 

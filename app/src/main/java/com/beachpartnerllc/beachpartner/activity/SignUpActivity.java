@@ -45,6 +45,7 @@ import com.beachpartnerllc.beachpartner.CustomEditText;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.DrawableClickListener;
 import com.beachpartnerllc.beachpartner.utils.FormValidator;
 
@@ -58,6 +59,7 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * Created by seq-kala on 7/2/18.
@@ -538,12 +540,10 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_mobileError.setVisibility(View.VISIBLE);
                         txt_mobileError.setText(getResources().getString(R.string.mobile_blank));
                     }
-                    else if(mobileno.length()<10){
-                        txt_mobileError.setText(getResources().getString(R.string.mobilerror));
-                    }
-                    else if(mobileno.length()==10){
-                        txt_mobileError.setVisibility(View.GONE);
-                    }
+
+
+
+
 
                     if(location == null || location.length()==0){
                       txt_cityError.setVisibility(View.VISIBLE);
@@ -575,7 +575,11 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_genderError.setVisibility(View.VISIBLE);
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
                     }
-
+                if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mobileno)){
+                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
+                    txt_mobileError.setVisibility(View.VISIBLE);
+                    return;
+                }
                     if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==10 &&(locationSelectedStatus!=null)) {
                             submitForm();
                     }

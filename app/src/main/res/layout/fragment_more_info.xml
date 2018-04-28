@@ -7,7 +7,7 @@
         android:id="@+id/llMoreInfoDetails"
         android:layout_width="match_parent"
         android:layout_height="1150dp"
-        android:visibility="gone">
+        android:visibility="visible">
 
             <RelativeLayout
                 android:id="@+id/scroll_more"
@@ -45,7 +45,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -83,7 +84,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -120,7 +122,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -157,7 +160,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -194,7 +198,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -232,12 +237,14 @@
                         android:background="@android:color/transparent"
                         android:enabled="false"
                         android:focusable="false"
-                        android:textSize="@dimen/text_size"
                         android:maxLines="1"
+                        android:ellipsize="end"
                         android:nextFocusDown="@+id/txtvHighest"
                         android:paddingLeft="5dp"
                         android:paddingStart="5dp"
-                        android:singleLine="true" />
+                        android:singleLine="true"
+                        android:textSize="@dimen/text_size"
+                        />
 
 
                 </LinearLayout>
@@ -276,7 +283,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>
@@ -444,7 +452,8 @@
                         android:layout_weight="1"
                         android:enabled="false"
                         android:paddingLeft="5dp"
-                        android:paddingStart="5dp" />
+                        android:paddingStart="5dp"
+                        android:background="@null"/>
 
 
                 </LinearLayout>

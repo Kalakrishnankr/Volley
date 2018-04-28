@@ -581,7 +581,8 @@
                                 android:layout_weight="1"
                                 android:enabled="false"
                                 android:paddingLeft="5dp"
-                                android:paddingStart="5dp"/>
+                                android:paddingStart="5dp"
+                                android:background="@null"/>
 
 
                         </LinearLayout>

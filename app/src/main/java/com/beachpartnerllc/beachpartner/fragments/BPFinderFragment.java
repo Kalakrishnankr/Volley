@@ -819,7 +819,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 paginate();
                             }else {
                                 progressBar.setVisibility(View.INVISIBLE);
-                                noCrads();
+                                if (adapter == null) {
+                                    noCrads();
+                                }
+
                             }
 
                         }
