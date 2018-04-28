@@ -16,6 +16,16 @@ public class ConnectionModel {
     public String Connected_authToken;
     public String Connected_location;
 
+    public String getConnected_fcmToken() {
+        return Connected_fcmToken;
+    }
+
+    public void setConnected_fcmToken(String connected_fcmToken) {
+        Connected_fcmToken = connected_fcmToken;
+    }
+
+    public String Connected_fcmToken;
+
     public String getConnected_status() {
         return Connected_status;
     }

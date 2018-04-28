@@ -469,6 +469,7 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
 
+                                    String subscribe = userDataModel.getSubscriptionType();
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
                                    // String subScription=userObj.getString("subscriptions");
@@ -481,7 +482,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation,subscribe);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation

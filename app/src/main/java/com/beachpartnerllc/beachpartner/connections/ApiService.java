@@ -37,6 +37,7 @@ public class ApiService {
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
 
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
+    public static String GET_ALL_LIKES           =  BASE_URL+"users/connected-count/";
     public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
 
     public static String  SEARCH_USER_CARD        =  BASE_URL+"users/search";

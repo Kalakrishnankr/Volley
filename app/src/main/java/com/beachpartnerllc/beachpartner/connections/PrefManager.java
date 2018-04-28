@@ -24,12 +24,12 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation){
+    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation,String subscriptions ){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
         editor.putString("userType",userType);
-        //editor.putString("subscriptions",subscriptions);
+        editor.putString("subscriptions",subscriptions);
         editor.putString("userName",userName);
         editor.putString("userProfilePic",userPic);
         editor.putString("userLocation",userLocation);
@@ -49,6 +49,10 @@ public class PrefManager {
         editor.commit();
     }
 
+    public String getSubscriptionType(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("subscriptions", "");
+    }
     public void saveSettingData(String location,String gender,Boolean isCoach, int minAge,int maxAge){
         SharedPreferences sharedPreferences = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -60,6 +64,18 @@ public class PrefManager {
         editor.putBoolean("isCoachActive",isCoach);
         editor.commit();
     }
+    public void saveReverseCardId(String rvcId){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ReverseCardID", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("cardID",rvcId);
+        editor.commit();
+    }
+
+    public String getReverseCardID(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("ReverseCardID", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("cardID", "");
+    }
+
     //saveStripValue is "true" at first time bluebp strip loading //it remains false at filter procedure search
     public void saveStripsValue(Boolean isStatus){
         SharedPreferences sharedPreferences = context.getSharedPreferences("StripStatus", Context.MODE_PRIVATE);

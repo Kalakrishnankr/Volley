@@ -7,6 +7,8 @@ import java.io.Serializable;
  */
 
 public class BpFinderModel implements Serializable {
+
+    private String bpf_tableId;
     private String bpf_id;
     private String bpf_login;
     private String bpf_userProfile;
@@ -42,6 +44,14 @@ public class BpFinderModel implements Serializable {
     }
 
     private String bpf_topfinishes;
+
+    public String getBpf_tableId() {
+        return bpf_tableId;
+    }
+
+    public void setBpf_tableId(String bpf_tableId) {
+        this.bpf_tableId = bpf_tableId;
+    }
 
 
     public String getBpf_effectiveDate() {
