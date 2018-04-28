@@ -8,11 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 

@@ -439,9 +439,10 @@ public class LoginActivity extends AppCompatActivity {
                                     String uProfileStatus = userObj.getString("userProfile");
                                     String userName = userObj.getString("firstName");
                                     String userPic  = userObj.getString("imageUrl");
+                                    String userLocation = userObj.getString("location");
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation);
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
