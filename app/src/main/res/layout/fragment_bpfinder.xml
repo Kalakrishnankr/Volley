@@ -683,20 +683,20 @@
                                     android:weightSum="3">
 
                                     <com.beachpartnerllc.beachpartner.CustomTextView
-                                        android:text="EVP indoor Volleyball"
+                                        android:id="@+id/topOne_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
                                     <com.beachpartnerllc.beachpartner.CustomTextView
-                                        android:text="JVP indoor Volleyball"
+                                        android:id="@+id/topTwo_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
 
                                     <com.beachpartnerllc.beachpartner.CustomTextView
-                                        android:text="EVP indoor Volleyball "
+                                        android:id="@+id/topThree_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
                                         android:gravity="center"

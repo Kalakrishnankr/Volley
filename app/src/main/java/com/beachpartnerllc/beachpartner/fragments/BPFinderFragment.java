@@ -57,6 +57,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
+import com.beachpartnerllc.beachpartner.CustomTextView;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
@@ -147,6 +148,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private List<Event>personEventList = new ArrayList<Event>();
     private TabActivity tabActivity;
     private BpFinderModel cModel;
+    private CustomTextView topFinishes_One,topFinishes_Two,topFinishes_Three;
 
 
     public BPFinderFragment() {
@@ -380,6 +382,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         imgv_rvsecard   =   (ImageView) view.findViewById(R.id.ic_rvsecard);
         imgv_highfi     =   (ImageView) view.findViewById(R.id.ic_high);
         imgv_location   =   (ImageView) view.findViewById(R.id.ic_location);
+
+        topFinishes_One     =   (CustomTextView)view.findViewById(R.id.topOne_finishes);
+        topFinishes_Two     =   (CustomTextView)view.findViewById(R.id.topTwo_finishes);
+        topFinishes_Three   =   (CustomTextView)view.findViewById(R.id.topThree_finishes);
+
 
         rcv_bpProfiles  =   (RecyclerView) view.findViewById(R.id.rrv_topbpProfiles);
         //recycler for top bp profiles
@@ -1329,6 +1336,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
 
+
     /* private void reload() {
          cardStackView.setVisibility(View.GONE);
          progressBar.setVisibility(View.VISIBLE);
@@ -1394,6 +1402,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         reqPersonId = bpf_id;
         deviceId    = bpf_deviceId;
         fcmToken    = bpf_fcmToken;
+
+        topFinishes_One.setText("One");
+        topFinishes_Two.setText("Two");
+        topFinishes_Three.setText("Three");
         getIndividualEvents(reqPersonId);
     }
 
