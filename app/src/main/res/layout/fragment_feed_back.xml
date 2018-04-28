@@ -12,14 +12,14 @@
         android:layout_margin="10dp">
 
         <WebView
-            android:id="@+id/webview"
+            android:id="@+id/webviews"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
         </WebView>
 
         <ProgressBar
-            android:id="@+id/pgbar"
+            android:id="@+id/pgbars"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_centerInParent="true"

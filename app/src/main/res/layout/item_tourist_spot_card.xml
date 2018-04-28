@@ -53,6 +53,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content">
 
+
             <com.google.android.exoplayer2.ui.SimpleExoPlayerView
                 android:layout_width="fill_parent"
                 android:layout_height="500dp"
@@ -66,16 +67,28 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true">
+
+
                 <FrameLayout
                     android:id="@+id/ffImg"
                     android:layout_width="fill_parent"
                     android:layout_height="500dp"
                     android:visibility="invisible">
+
                     <ImageView
                         android:id="@+id/img_profile"
                         android:scaleType="fitXY"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent" />
+
+                    <com.wang.avi.AVLoadingIndicatorView
+                        android:id="@+id/progBar"
+                        android:layout_width="75dp"
+                        android:layout_height="75dp"
+                        android:layout_gravity="center"
+                        style="@style/AVLoadingIndicatorView"
+                        app:indicatorName="LineScaleIndicator"
+                        app:indicatorColor="@android:color/holo_green_light"/>
 
                 </FrameLayout>
 

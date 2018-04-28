@@ -129,7 +129,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private boolean isPartner = false;
     private View view;
     private SharedPreferences prefs;
-    private String location,sgender,profileImage;
+    private String location,sgender,profileImage,topThreeFinish;
     private Boolean isCoach;
     private int minAge,maxAge;
     private CompactCalendarView compactCalendar;
@@ -166,6 +166,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         isPartner = isPartnerFinder;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        getPreferences();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -207,16 +212,21 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             int cPosition   = data.getInt("cPosition");
             if(bluebpList!=null && bluebpList.size()>0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                adapter.addAll(bluebpList.get(cPosition));
+                adapter.add(bluebpList.get(cPosition));
+                adapter.notifyDataSetInvalidated();
 
                 //adapter.notifyDataSetChanged();
                 //adapter.notifyDataSetInvalidated();
                 //here location = null,gender = null, isCoach = false ,minage 5 and maxage=30
-                getAllCards(null, "", false, 5, 30);
-                //getAllCards(location, sgender, isCoach, minAge, maxAge);
+               // getAllCards(null, "", false, 5, 35);//This is commented here
+                if (minAge == 0 && maxAge ==0) {
+                    getAllCards(null, "", false, 5, 35);//This is commented here
+                }else {
+                    getAllCards(location, sgender, isCoach, minAge, maxAge);
+                }
                 /*if (bluebpList.size()>0) {
                     for (int i = cPosition; i < bluebpList.size(); i++) {
-                         adapter.addAll(bluebpList.get(i));
+                        adapter.addAll(bluebpList.get(i));
                         if (i == bluebpList.size()) {
                             if (allCardList.size() > 0 && allCardList !=null) {
                                 for (int j = 0; j <allCardList.size() ; j++) {
@@ -233,17 +243,23 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             //From 20+ Likes
             if (noLikes !=null && noLikes.size() > 0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                for (int k = 0; k < noLikes.size() ; k++) {
+                adapter.addAll(noLikes);
+                /*for (int k = 0; k < noLikes.size() ; k++) {
                     adapter.addAll(noLikes.get(k));
-                }
+                }*/
             }
 
             //From hifi fragment page
             int item_position= data.getInt("itemPosition");
             if (hifiList != null && hifiList.size() > 0) {
                 adapter = new TouristSpotCardAdapter(getActivity(), this);
-                adapter.addAll(hifiList.get(item_position));
-                getAllCards(null, "", false, 5, 30);
+                adapter.add(hifiList.get(item_position));
+                adapter.notifyDataSetInvalidated();
+                if (minAge == 0 && maxAge ==0) {
+                    getAllCards(null, "", false, 5, 35);//This is commented here
+                }else {
+                    getAllCards(location, sgender, isCoach, minAge, maxAge);
+                }
                // getAllCards(location, sgender, isCoach, minAge, maxAge);
 
 
@@ -417,10 +433,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             spinner_location.setAdapter(dataAdapter);
         }
-            spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-                    location = spinner_location.getSelectedItem().toString();
+                location = spinner_location.getSelectedItem().toString();
 
             }
 
@@ -545,36 +561,52 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
 
-                    if (sgender.equals("Both")) {
-                        sgender = "";
-                    }
+                if (sgender.equals("Both")) {
+                    sgender = "";
+                }
+
+
+
+                    /*SharedPreferences.Editor preferences = getActivity().getSharedPreferences(MY_PREFS_FILTER, MODE_PRIVATE).edit();
+                    preferences.putString("location", spinner_location.getText().toString().trim());
+>>>>>>> 86077b96c1cac24873d38c9325bd4dce2409bea1
+                    preferences.putInt("minAge", Integer.parseInt(tvMin.getText().toString().trim()));
+                    preferences.putInt("maxAge", Integer.parseInt(tvMax.getText().toString().trim()));
+                    preferences.putString("gender", sgender);
+                    preferences.putBoolean("isCoachActive", sCoach.isChecked());
+                    preferences.apply();
+                    preferences.commit();*/
+                new PrefManager(getActivity()).saveSettingData(location,sgender,isCoach,minAge,maxAge);
+                llvFilter.setVisibility(View.GONE);
+                rr.setVisibility(View.VISIBLE);
+                rrvBottom.setVisibility(View.VISIBLE);
+
+                //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
+                if (isbpActive) {
+                    topFrameLayout.setVisibility(View.GONE);
 
                     new PrefManager(getActivity()).saveSettingData(location,sgender,isCoach,minAge,maxAge);
                     llvFilter.setVisibility(View.GONE);
                     rr.setVisibility(View.VISIBLE);
-                    rrvBottom.setVisibility(View.VISIBLE);
 
-                    //check top bp strip **if its active only in bpfinder page(ie,BPFinder Fragment),it's disabled on calendar find Partner page
-                    if (isbpActive) {
+
+                } else {
+                    if (isPartner) {
                         topFrameLayout.setVisibility(View.GONE);
 
                     } else {
-                        if (isPartner) {
-                            topFrameLayout.setVisibility(View.GONE);
-
-                        } else {
-                            topFrameLayout.setVisibility(View.VISIBLE);
-                            if (bluebpList.size()!= 0) {
-                                if(getActivity()!=null) {
-                                    blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpList);
-                                    rcv_bpProfiles.setAdapter(blueBProfileAdapter);
-                                }
+                        topFrameLayout.setVisibility(View.VISIBLE);
+                        if (bluebpList.size()!= 0) {
+                            if(getActivity()!=null) {
+                                blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpList);
+                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
                             }
                         }
-
                     }
-                    progressBar.setVisibility(View.VISIBLE);
-                    getAllCards(location, sgender, isCoach, minAge, maxAge);
+
+                }
+                progressBar.setVisibility(View.VISIBLE);
+                getAllCards(location, sgender, isCoach, minAge, maxAge);
 
             }
         });
@@ -626,7 +658,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (cardStackView.getTopIndex() == adapter.getCount() /*- 5*/) {
                     Log.d("CardStackView", "Paginate: " + cardStackView.getTopIndex());
                     noCrads();
-                   // paginate();
+                    // paginate();
                 }
 
             }
@@ -771,6 +803,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     finderModel.setBpf_userType(jsonObject.getString("userType"));
 
                                     finderModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
+
+                                    JSONObject profileObject = jsonObject.getJSONObject("userProfile");
+                                    finderModel.setBpf_topfinishes(profileObject.getString("topFinishes"));
                                     //finderModel.setBpf_age(jsonObject.getString("age"));
                                     allCardList.add(finderModel);
 
@@ -1048,7 +1083,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                               // Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 404:
@@ -1134,7 +1169,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                               // Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1361,7 +1396,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         adapter = createTouristSpotCardAdapter();
                     }
                     cardStackView.setAdapter(adapter);
-                  //  adapter.notifyDataSetChanged();
+                    //  adapter.notifyDataSetChanged();
                     cardStackView.setVisibility(View.VISIBLE);
                     progressBar.setVisibility(View.GONE);
                 }
@@ -1398,15 +1433,44 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     }
 
     @Override
-    public void onClick(String bpf_id,String bpf_deviceId,String bpf_fcmToken) {
+    public void onClick(String bpf_id,String bpf_deviceId,String bpf_fcmToken,String bpf_topFinishes) {
         reqPersonId = bpf_id;
         deviceId    = bpf_deviceId;
         fcmToken    = bpf_fcmToken;
-
-        topFinishes_One.setText("One");
-        topFinishes_Two.setText("Two");
-        topFinishes_Three.setText("Three");
+        topThreeFinish = bpf_topFinishes;
         getIndividualEvents(reqPersonId);
+
+        if (topThreeFinish != null && !topThreeFinish.equalsIgnoreCase("") && !topThreeFinish.equalsIgnoreCase("null")) {
+            String[] values = topThreeFinish.split(",");
+            if(values.length == 1){
+                if (values[0] != null) {
+                    topFinishes_One.setText(values[0].trim());
+                }
+            }
+            if(values.length == 2){
+                if (values[0] != null) {
+                    topFinishes_One.setText(values[0].trim());
+                }
+                if (values[1] != null) {
+                    topFinishes_Two.setText(values[1].trim());
+                }
+            }
+            if (values.length == 3) {
+                if (values[0] != null) {
+                    topFinishes_One.setText(values[0].trim());
+                }
+                if (values[1] != null) {
+                    topFinishes_Two.setText(values[1].trim());
+                }
+                if (values[2] != null) {
+                    topFinishes_Three.setText(values[2].trim());
+                }
+            }
+
+
+            //
+            //topFinishes_Three.setText(values[2].trim());
+        }
     }
 
     //Method for card reverse
@@ -1498,9 +1562,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     // user_subscription = null show the payment dialogue  ,once the user paid then show the location
 
     private void getLocation() {
-//        String user_subcription = "";
-//        if (user_subcription.equals("Prime")) {
-//
+        String user_subcription = "";
+        if (!user_subcription.equals("Prime")) {
+
+
+            SettingsFragment sf = new SettingsFragment();
+//            getActivity().setTitle("Settings");
+            Bundle arguments = new Bundle();
+            arguments.putString( "prime_card","location");
+            sf.setArguments(arguments);
+            FragmentManager mang = getActivity().getSupportFragmentManager();
+            FragmentTransaction trans = mang.beginTransaction().addToBackStack(null);
+            trans.replace(R.id.container, sf);
+            trans.commit();
+
 //            Dialog filterDialogue = new Dialog(getContext());
 //            //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
 //            filterDialogue.setContentView(R.layout.popup_locations);
@@ -1516,21 +1591,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 //
 //            filterDialogue.show();
 //            initView(filterDialogue);
-//
-//        } else if (user_subcription.equals("BlueBP")) {
-//            likesDisplay();
-//        }else {
-//            likesDisplay();
-//        }
-        ProfileFragment pf = new ProfileFragment();
-        getActivity().setTitle("My Profile");
-        Bundle arguments = new Bundle();
-        arguments.putString( "prime_card","location");
-        pf.setArguments(arguments);
-        FragmentManager mang = getActivity().getSupportFragmentManager();
-        FragmentTransaction trans = mang.beginTransaction();
-        trans.replace(R.id.container, pf);
-        trans.commit();
+
+        } else if (user_subcription.equals("BlueBP")) {
+            likesDisplay();
+        }else {
+            likesDisplay();
+        }
+
     }
 
     private void initView(final Dialog filterDialogue) {
@@ -1743,7 +1810,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               // alertDialog.dismiss();
+                // alertDialog.dismiss();
                 //Moving to Calendar Fragment
                 if (getActivity() != null) {
                     CalendarFragment calendarFragment = new CalendarFragment();

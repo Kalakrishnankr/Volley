@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
@@ -105,6 +106,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -121,11 +123,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -228,32 +236,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         initActivity(view);
 
         getActivity().getActionBar();
-
-        //to show focus on location field when clicking on location icon in bp
-
-            Bundle arguments = getArguments();
-
-                try{
-                    location_change=arguments.getString("prime_card");
-                    if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
-                        editCity.setEnabled(true);
-                        scrollview_profile.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                scrollview_profile.fullScroll(View.FOCUS_DOWN);
-
-                                    blink();
-
-
-                            }
-                        });
-                        editCity.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-                        btnsBottom.setVisibility(View.VISIBLE);
-                        llMenuMore.setClickable(false);
-                    }
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
 
 
 
@@ -1223,7 +1205,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private void playVideo(String videoURL) {
 
 
-
         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
 
 
@@ -1850,6 +1831,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         } else if (editDob.getText().toString().trim().matches("")) {
             editDob.setError("Please enter your dob");
             isValidate = true;
+        } else if (editPhone.getText().toString().trim().length()!=10){
+            editPhone.setError(getString(R.string.mobilerror));
+            isValidate = true;
         }
 //        else if(selectedImageUri == null){
 //            Toast.makeText(getActivity(), "Please upload a picture", Toast.LENGTH_SHORT).show();
@@ -2004,6 +1988,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                 if (data.hasExtra("data")) {
                     profilePhoto= (Bitmap) data.getExtras().get("data");
+
                     selectedImageUri = getImageUri(getApplicationContext(), profilePhoto);
                 } else {
                     // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
@@ -2025,6 +2010,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     if (fileSize(imgfile.length()) <= 4) {
                         imageUri = getRealPathFromURI(selectedImageUri);
                         Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
+
+                        createDirectoryAndSaveFile(selectedImageUri, imgfile.getName(),"image");
 
                     } else {
                         Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
@@ -2053,9 +2040,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
+                        createDirectoryAndSaveFile(selectedVideoUri,file.getName(),"video");
+
                         //imgVideo.setVisibility(View.VISIBLE);
                         //imgPlay.setVisibility(View.VISIBLE);
-                       // exoPlayer.stop();
+                        // exoPlayer.stop();
 
                         //videoView.setVideoURI(Uri.parse(String.valueOf(selectedVideoUri)));
                     } else {
@@ -2329,7 +2318,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             }else{
 
                                 if (userDataModel.getImageUrl() != null) {
-                                    Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                                    File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+getString(R.string.app_name)+"/"+userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
+
+                                    if(myFile.exists()){
+                                        Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+
+
+                                    }
+                                   // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
+
+                                  //  }
+                                  //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
                                 }else {
                                     imgProfile.setImageResource(R.drawable.ic_person);
                                 }
@@ -2397,149 +2396,177 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if (getActivity() != null) {
             if (userDataModel != null) {
                 //set basic informations of user
-                if (userDataModel.getImageUrl() != null) {
-                    Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
-                }else {
-                    imgProfile.setImageResource(R.drawable.ic_person);
-                }
-                if (userDataModel.getVideoUrl() != null) {
-                    playVideo(userDataModel.getVideoUrl());
-                }
-                 /*   videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                        @Override
-                        public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                            if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                                progressbar.setVisibility(View.GONE);
-                            }
-                            if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                                progressbar.setVisibility(View.VISIBLE);
-                            }
-                            if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                                videoView.setVisibility(View.GONE);
-                                progressbar.setVisibility(View.GONE);
-                                imgPlay.setVisibility(View.VISIBLE);
-                            }
-                            return false;
+                if (userDataModel.getImageUrl() != null && !userDataModel.getImageUrl().equalsIgnoreCase("null")) {
+                    String imageName = userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1);
+                    String[] imagePathArray = imageName.split("-");
+                    if (imagePathArray != null && imagePathArray.length >= 0) {
+                        String exactImageName = imagePathArray[1];
+
+                        Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
+                        File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "profile_image"+"/" +exactImageName);
+
+                        if (myFile.exists()) {
+                            Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+                        } else {
+                            Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+
+                            new DownloadFileFromURL(exactImageName,"image").execute(userDataModel.getImageUrl());
+
+
                         }
-                    });
-                }
-                videoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                    @Override
-                    public void onCompletion(MediaPlayer mediaPlayer) {
-                        videoView.setVisibility(View.GONE);
-                        progressbar.setVisibility(View.GONE);
-                        imgPlay.setVisibility(View.VISIBLE);
                     }
-                });*/
-                profileName.setText(userDataModel.getFirstName().trim());
-                profileDesig.setText(userDataModel.getUserType().trim());
-                editLname.setText(userDataModel.getLastName().trim());
-                editFname.setText(userDataModel.getFirstName().trim());
-                editGender.setText(userDataModel.getGender().trim());
-                location=userDataModel.getCity().trim();
-                if (location != null){
-                    int positions = dataAdapter.getPosition(location);
-                    editCity.setSelection(positions);
-                }
-                //Long value to date conversion
-                SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
-                long dob       = Long.parseLong(userDataModel.getDob());
-                Date date_dob  = new Date(dob);
-                editDob.setText(dft.format(date_dob));
-                editPhone.setText(userDataModel.getPhoneNumber());
-                //set More information
-                if(userDataModel.getCbvaFirstName()!=null ||userDataModel.getCbvaFirstName()!="null"){
-                    editCBVAFName.setText(userDataModel.getCbvaFirstName());
-                }
-                if(userDataModel.getCbvaLastName()!="null"|userDataModel.getCbvaLastName()!=null){
-                    editCBVALName.setText(userDataModel.getCbvaLastName());
-                }
-                if(userDataModel.getCbvaPlayerNumber()!="null"||userDataModel.getCbvaPlayerNumber()!=null){
-                    editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
-                }
-                if(userDataModel.getCollageClub()!="null"||userDataModel.getCollageClub()!=null){
-                    editColgClub.setText(userDataModel.getCollageClub());
-                }
-                if(userDataModel.getCollegeBeach()!="null"||userDataModel.getCollegeBeach()!=null){
-                    editColgBeach.setText(userDataModel.getCollegeBeach());
-                }
-                if(userDataModel.getCollegeIndoor()!="null"||userDataModel.getCollegeIndoor()!=null){
-                    editColgIndoor.setText(userDataModel.getCollegeIndoor());
-                }
-                if(userDataModel.getHighSchoolAttended()!="null"||userDataModel.getHighSchoolAttended()!=null){
-                    editHighschool.setText(userDataModel.getHighSchoolAttended());
-                }
-                if(userDataModel.getIndoorClubPlayed()!="null"||userDataModel.getIndoorClubPlayed()!=null){
-                    editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
-                }
-                if(userDataModel.getTotalPoints()!="null"||userDataModel.getTotalPoints()!=null){
-                    editPoints.setText(userDataModel.getTotalPoints());
-                }
-                if(userDataModel.getToursPlayedIn()!="null"||userDataModel.getToursPlayedIn()!=null){
-                    editPlayed.setText(userDataModel.getToursPlayedIn());
-                }
-                if(userDataModel.getUsaVolleyballRanking()!="null"||userDataModel.getUsaVolleyballRanking()!=null){
-                    edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
-                }
+
+                    } else {
+                        imgProfile.setImageResource(R.drawable.ic_person);
+                    }
+                    if (userDataModel.getVideoUrl() != null && !userDataModel.getVideoUrl().equalsIgnoreCase("null")) {
+                        String videoName = userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1);
+                        String[] videoPathArray = videoName.split("-");
+                        if (videoPathArray != null && videoPathArray.length >= 0) {
+                            String exactVideoName = videoPathArray[1];
+
+                            Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
+                            File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + exactVideoName);
+
+                            if (myFile.exists()) {
+                                playVideoFromFile(Uri.parse(myFile.getPath()));
+                            } else {
+                                playVideo(userDataModel.getVideoUrl());
+                                new DownloadFileFromURL(exactVideoName,"video").execute(userDataModel.getVideoUrl());
+
+                            }
+                        }
+                    }
+                    profileName.setText(userDataModel.getFirstName().trim());
+                    profileDesig.setText(userDataModel.getUserType().trim());
+                    editLname.setText(userDataModel.getLastName().trim());
+                    editFname.setText(userDataModel.getFirstName().trim());
+                    editGender.setText(userDataModel.getGender().trim());
+                    location = userDataModel.getCity().trim();
+                    if (location != null) {
+                        int positions = dataAdapter.getPosition(location);
+                        editCity.setSelection(positions);
+                    }
+                    //Long value to date conversion
+                    SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+                    long dob = Long.parseLong(userDataModel.getDob());
+                    Date date_dob = new Date(dob);
+                    editDob.setText(dft.format(date_dob));
+                    editPhone.setText(userDataModel.getPhoneNumber());
+                    //set More information
+                    if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {
+                        editCBVAFName.setText(userDataModel.getCbvaFirstName());
+                    }
+                    if (userDataModel.getCbvaLastName() != "null" | userDataModel.getCbvaLastName() != null) {
+                        editCBVALName.setText(userDataModel.getCbvaLastName());
+                    }
+                    if (userDataModel.getCbvaPlayerNumber() != "null" || userDataModel.getCbvaPlayerNumber() != null) {
+                        editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
+                    }
+                    if (userDataModel.getCollageClub() != "null" || userDataModel.getCollageClub() != null) {
+                        editColgClub.setText(userDataModel.getCollageClub());
+                    }
+                    if (userDataModel.getCollegeBeach() != "null" || userDataModel.getCollegeBeach() != null) {
+                        editColgBeach.setText(userDataModel.getCollegeBeach());
+                    }
+                    if (userDataModel.getCollegeIndoor() != "null" || userDataModel.getCollegeIndoor() != null) {
+                        editColgIndoor.setText(userDataModel.getCollegeIndoor());
+                    }
+                    if (userDataModel.getHighSchoolAttended() != "null" || userDataModel.getHighSchoolAttended() != null) {
+                        editHighschool.setText(userDataModel.getHighSchoolAttended());
+                    }
+                    if (userDataModel.getIndoorClubPlayed() != "null" || userDataModel.getIndoorClubPlayed() != null) {
+                        editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+                    }
+                    if (userDataModel.getTotalPoints() != "null" || userDataModel.getTotalPoints() != null) {
+                        editPoints.setText(userDataModel.getTotalPoints());
+                    }
+                    if (userDataModel.getToursPlayedIn() != "null" || userDataModel.getToursPlayedIn() != null) {
+                        editPlayed.setText(userDataModel.getToursPlayedIn());
+                    }
+                    if (userDataModel.getUsaVolleyballRanking() != "null" || userDataModel.getUsaVolleyballRanking() != null) {
+                        edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+                    }
 
 
+                    String topFinishes = userDataModel.getTopFinishes();
 
 
+                    String courSidePref = userDataModel.getCourtSidePreference();
+                    if (courSidePref != null) {
+                        int courtPos = prefAdapter.getPosition(courSidePref);
+                        spinnerPref.setSelection(courtPos);
+                    }
+                    String exp = userDataModel.getExperience();
+                    if (exp != null) {
+                        int exper = expAdapter.getPosition(exp);
+                        spinnerExp.setSelection(exper);
+                    }
+                    String highestTER = userDataModel.getHighestTourRatingEarned();
+                    if (highestTER != null) {
+                        int hter = highestRatingAdapter.getPosition(highestTER);
+                        spinnerTourRating.setSelection(hter);
+                    }
+                    String tourIntrest = userDataModel.getTournamentLevelInterest();
+                    if (tourIntrest != null) {
+                        int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
+                        spinnerTLInterest.setSelection(tIL);
+                    }
+                    String pos = userDataModel.getPosition();
+                    if (pos != null) {
+                        int positions = positionAdapter.getPosition(pos);
+                        spinnerPositon.setSelection(positions);
+                    }
+                    String wTot = userDataModel.getWillingToTravel();
+                    if (wTot != null) {
+                        int willingTotravel = distanceAdapter.getPosition(wTot);
+                        spinnerWtoTravel.setSelection(willingTotravel);
+                    }
+                    String height = userDataModel.getHeight();
+                    if (height != null) {
+                        int heightVal = heightAdapter.getPosition(height);
+                        editHeight.setSelection(heightVal);
+                    }
+                if(userDataModel.getTopFinishes()!=null){
 
+                    String[] values = userDataModel.getTopFinishes().split(",");
+                    if(values.length == 1){
+                        if (values[0] != null) {
+                            topfinishes_txt_1.setText(values[0].trim());
+                        }
+                    }
+                    if(values.length == 2){
+                        imageView2.setVisibility(View.GONE);
+                        imageView3.setVisibility(View.GONE);
+                        if (values[0] != null) {
+                            topfinishes_txt_1.setText(values[0].trim());
+                        }
+                        if (values[1] != null) {
+                            topfinishes_txt_2.setText(values[1].trim());
+                            topFinishes2_lt.setVisibility(View.VISIBLE);
+                        }
+                    }
+                    if (values.length == 3) {
+                        imageView2.setVisibility(View.GONE);
+                        imageView3.setVisibility(View.GONE);
+                        if (values[0] != null) {
+                            topfinishes_txt_1.setText(values[0].trim());
 
+                        }
+                        if (values[1] != null) {
+                            topfinishes_txt_2.setText(values[1].trim());
+                            topFinishes2_lt.setVisibility(View.VISIBLE);
+                        }
+                        if (values[2] != null) {
+                            topfinishes_txt_3.setText(values[2].trim());
+                            topFinishes3_lt.setVisibility(View.VISIBLE);
+                        }
 
-
-                String topFinishes = userDataModel.getTopFinishes();
-           /* if (!topFinishes.equals("null")) {
-                List<String> finishes = Arrays.asList(topFinishes.split(","));
-                if(finishes.size()>0){
-                    topfinishes_txt_1.setText(finishes.get(0));
-                    topfinishes_txt_2.setText(finishes.get(1));
-                    topfinishes_txt_3.setText(finishes.get(2));
+                    }
                 }
-            }*/
-
-                String courSidePref = userDataModel.getCourtSidePreference();
-                if(courSidePref != null){
-                    int courtPos = prefAdapter.getPosition(courSidePref);
-                    spinnerPref.setSelection(courtPos);
                 }
-                String exp = userDataModel.getExperience();
-                if(exp != null){
-                    int exper = expAdapter.getPosition(exp);
-                    spinnerExp.setSelection(exper);
-                }
-                String highestTER  = userDataModel.getHighestTourRatingEarned();
-                if(highestTER != null){
-                    int hter = highestRatingAdapter.getPosition(highestTER);
-                    spinnerTourRating.setSelection(hter);
-                }
-                String tourIntrest = userDataModel.getTournamentLevelInterest();
-                if(tourIntrest != null){
-                    int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
-                    spinnerTLInterest.setSelection(tIL);
-                }
-                String pos = userDataModel.getPosition();
-                if (pos != null){
-                    int positions = positionAdapter.getPosition(pos);
-                    spinnerPositon.setSelection(positions);
-                }
-                String wTot = userDataModel.getWillingToTravel();
-                if (wTot != null) {
-                    int willingTotravel = distanceAdapter.getPosition(wTot);
-                    spinnerWtoTravel.setSelection(willingTotravel);
-                }
-                String height =userDataModel.getHeight();
-                if (height != null) {
-                    int heightVal = heightAdapter.getPosition(wTot);
-                    editHeight.setSelection(heightVal);
-                }
-
-
             }
         }
-
-    }
 
     public void addLocation() {
         stateList.add("Alabama");
@@ -2899,12 +2926,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 public String isEmptyOrNull(String stringToCheck){
        String stringValue = " ";
-    if(stringToCheck != null && !stringToCheck.isEmpty()){
+    if(stringToCheck == null && stringToCheck.isEmpty()){
+        stringValue = " ";
+    }else{
         if(stringToCheck.equalsIgnoreCase("null")){
             stringValue = " ";
+        }else {
+            stringValue = stringToCheck;
         }
-    }else{
-        stringValue = stringToCheck;
     }
     return stringValue;
 }
@@ -2943,8 +2972,108 @@ public String isEmptyOrNull(String stringToCheck){
     }
 
 
+    //method to write profile image and video into a local file
+    private void createDirectoryAndSaveFile(Uri uri, String fileName,String fileType) {
 
 
+
+        File direct = new File(Environment.getExternalStorageDirectory()+"/"+ getString(R.string.app_name));
+
+
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+            wallpaperDirectory.mkdirs();
+        }
+        if(fileType.equals("image")) {
+            File profileImageDir = new File(Environment.getExternalStorageDirectory()+"/" + getString(R.string.app_name)+"/"+"image");
+            //File imageDirectory=null;
+            if(!profileImageDir.exists()){
+                new File(direct, "image").mkdir();
+
+                writeImageToDirectory(fileName,uri);
+            }
+           else{
+                String[] children = profileImageDir.list();
+                for (int i = 0; i < children.length; i++)
+                {
+                    new File(profileImageDir, children[i]).delete();
+                }
+
+                writeImageToDirectory(fileName,uri);
+
+            }
+
+        }else {
+            InputStream inStream = null;
+            OutputStream outStream = null;
+
+            String sourcePath = SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri);
+            File source = new File(sourcePath);
+
+            File profileVideoDir = new File(Environment.getExternalStorageDirectory()+"/" + getString(R.string.app_name)+"/"+"video");
+            //File imageDirectory=null;
+            if(!profileVideoDir.exists()){
+                new File(direct, "video").mkdir();
+
+                writeVideoToDirectory(fileName,source);
+            }
+            else{
+                String[] children = profileVideoDir.list();
+                for (int i = 0; i < children.length; i++)
+                {
+                    new File(profileVideoDir, children[i]).delete();
+                }
+
+                writeVideoToDirectory(fileName,source);
+
+            }
+
+        }
+    }
+
+    private void writeVideoToDirectory(String fileName, File source) {
+
+
+        String destinationPath = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+"video"+"/"+fileName;
+        File destination = new File(destinationPath);
+
+        try
+        {
+            destination.createNewFile();
+
+            FileUtils.copyFile(source, destination);
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeImageToDirectory(String fileName,Uri uri) {
+        Bitmap  mBitmap = null;
+        File file=null;
+
+        try {
+            mBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        file = new File(new File(Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+"image"), fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     public static class PhotoAsyncTask extends AsyncTask<String, String, HttpEntity> {
@@ -3072,84 +3201,6 @@ public String isEmptyOrNull(String stringToCheck){
         }
     }
 
-   /* private void prepareExoPlayerFromFileUri(Uri uri){
-        exoPlayer = ExoPlayerFactory.newSimpleInstance(this, new DefaultTrackSelector(), new DefaultLoadControl());
-        exoPlayer.addListener(new Player.EventListener() {
-            @Override
-            public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
-
-            }
-
-            @Override
-            public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
-
-            }
-
-            @Override
-            public void onLoadingChanged(boolean isLoading) {
-
-            }
-
-            @Override
-            public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
-
-            }
-
-            @Override
-            public void onRepeatModeChanged(int repeatMode) {
-
-            }
-
-            @Override
-            public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
-
-            }
-
-            @Override
-            public void onPlayerError(ExoPlaybackException error) {
-
-            }
-
-            @Override
-            public void onPositionDiscontinuity(int reason) {
-
-            }
-
-            @Override
-            public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
-
-            }
-
-            @Override
-            public void onSeekProcessed() {
-
-            }
-        });
-
-        DataSpec dataSpec = new DataSpec(uri);
-        final FileDataSource fileDataSource = new FileDataSource();
-        try {
-            fileDataSource.open(dataSpec);
-        } catch (FileDataSource.FileDataSourceException e) {
-            e.printStackTrace();
-        }
-
-        DataSource.Factory factory = new DataSource.Factory() {
-            @Override
-            public DataSource createDataSource() {
-                return fileDataSource;
-            }
-        };
-        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
-                factory, new DefaultExtractorsFactory(), null, null);
-
-        exoPlayer.prepare(audioSource);
-    }*/
-
-
-
-
-
     public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
 
         HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
@@ -3189,6 +3240,149 @@ public String isEmptyOrNull(String stringToCheck){
         }
         return null;
     }
+
+
+    /***
+     * Download profile file from the server when the local file directory is empty
+     */
+
+
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        private String fileName;
+        private String fileType;
+
+
+        public DownloadFileFromURL(String fileName,String fileType){
+           this.fileName=fileName;
+           this.fileType=fileType;
+        }
+
+        /**
+         * Before starting background thread
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            System.out.println("Starting download");
+
+           /* pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading... Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+        }
+
+        /**
+         * Downloading file in background thread
+         * */
+        @Override
+        protected String doInBackground(String... f_url) {
+            File parentDirectory = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+
+            if (!parentDirectory.exists()) {
+                File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+                wallpaperDirectory.mkdirs();
+            }
+            if (fileType.equals("image")) {
+
+
+                File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
+                //File imageDirectory=null;
+                if (!profileImageDir.exists()) {
+                    new File(parentDirectory, "image").mkdir();
+
+                    downloadProfileImageAndVideo(fileName, fileType, f_url);
+
+                } else {
+                    String[] children = profileImageDir.list();
+                    for (int i = 0; i < children.length; i++) {
+                        new File(profileImageDir, children[i]).delete();
+                    }
+
+
+                }
+
+
+            } else {
+                File profileVideoDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
+                //File imageDirectory=null;
+                if (!profileVideoDir.exists()) {
+                    new File(parentDirectory, "video").mkdir();
+
+                    downloadProfileImageAndVideo(fileName, fileType, f_url);
+
+                } else {
+                    String[] children = profileVideoDir.list();
+                    for (int i = 0; i < children.length; i++) {
+                        new File(profileVideoDir, children[i]).delete();
+                    }
+
+                }
+
+            }
+
+                return null;
+            }
+
+        private void downloadProfileImageAndVideo(String fileName, String fileType,String... f_url) {
+            int count;
+
+            try {
+                String root = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+fileType+"/";
+
+                System.out.println("Downloading");
+                URL url = new URL(f_url[0]);
+
+                URLConnection conection = url.openConnection();
+                conection.connect();
+                // getting file length
+                int lenghtOfFile = conection.getContentLength();
+
+                // input stream to read file - with 8k buffer
+                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                // Output stream to write file
+
+                OutputStream output = new FileOutputStream(root+fileName);
+                byte data[] = new byte[1024];
+
+                long total = 0;
+                while ((count = input.read(data)) != -1) {
+                    total += count;
+
+                    // writing data to file
+                    output.write(data, 0, count);
+
+                }
+
+                // flushing output
+                output.flush();
+
+                // closing streams
+                output.close();
+                input.close();
+
+            } catch (Exception e) {
+                Log.e("Error: ", e.getMessage());
+            }
+        }
+
+
+        /**
+         * After completing background task
+         * **/
+        @Override
+        protected void onPostExecute(String file_url) {
+            System.out.println("Downloaded");
+
+            //pDialog.dismiss();
+        }
+
+    }
+
+
+
+
 }
 
 

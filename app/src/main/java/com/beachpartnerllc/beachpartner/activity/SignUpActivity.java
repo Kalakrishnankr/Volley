@@ -232,6 +232,9 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_emailError.setVisibility(View.VISIBLE);
                     txt_emailError.setText(getResources().getString(R.string.emailerror));
 
+                }
+                else if(!hasFocus && new FormValidator().emailValidator(user_email)){
+                    txt_emailError.setVisibility(View.GONE);
                 }else if(hasFocus){
 
                     txt_emailError.setVisibility(View.GONE);

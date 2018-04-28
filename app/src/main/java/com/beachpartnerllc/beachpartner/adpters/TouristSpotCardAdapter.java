@@ -1,10 +1,8 @@
 package com.beachpartnerllc.beachpartner.adpters;
 
-import android.app.Fragment;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v7.widget.CardView;
-import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +12,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.beachpartnerllc.beachpartner.MyInterface;
@@ -37,6 +34,7 @@ import com.google.android.exoplayer2.ui.SimpleExoPlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -158,13 +156,14 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
 
             @Override
             public void onSingleClick(View v) {
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken(),spot.getBpf_topfinishes());
 
             }
 
             @Override
             public void onDoubleClick(View v) {
                 //  holder.image.setVisibility(View.VISIBLE);
+                //holder.progress.setVisibility(View.VISIBLE);
                 holder.frameLayoutOne.setVisibility(View.VISIBLE);
                 Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.img_profile);
                 //holder.progressBar.setVisibility(View.VISIBLE);
@@ -196,7 +195,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             public void onClick(View view) {
                 holder.exoPlayer.stop();
                 myInterface.addView(spot.getBpf_imageUrl(),spot.getBpf_firstName());
-                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken());
+                myInterface.onClick(spot.getBpf_id(),spot.getBpf_deviceId(),spot.getBpf_fcmToken(),spot.getBpf_topfinishes());
             }
         });
 
@@ -208,6 +207,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
     }
 
     private void playVideo(final ViewHolder holder) {
+        holder.progress.setVisibility(View.VISIBLE);
         holder.frameLayoutOne.setVisibility(View.VISIBLE);
         holder.exoPlayerView.setVisibility(View.VISIBLE);
         holder.exoPlayerView.setPlayer(holder.exoPlayer );
@@ -217,6 +217,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 if (playWhenReady && playbackState == Player.STATE_READY) {
+                    //holder.progress.setVisibility(View.GONE);
                     holder.frameLayoutOne.setVisibility(View.GONE);
                     // media actually playing
                 }
@@ -280,6 +281,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
         public RelativeLayout relativeLayout;
         SimpleExoPlayerView exoPlayerView;
         SimpleExoPlayer exoPlayer;
+        AVLoadingIndicatorView  progress;
 
         public ViewHolder(View view) {
             name        =   (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
@@ -298,6 +300,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
             exoPlayerView       = (SimpleExoPlayerView)view.findViewById(R.id.exo_player_view);
             frameLayoutOne      = (FrameLayout) view.findViewById(R.id.ffImg);
             img_profile         = (ImageView)view.findViewById(R.id.img_profile);
+
+            progress     =   (AVLoadingIndicatorView)view.findViewById(R.id.progBar);
            /* exoPlayerView.hideController();
             exoPlayerView.setControllerAutoShow(false);*/
             ;

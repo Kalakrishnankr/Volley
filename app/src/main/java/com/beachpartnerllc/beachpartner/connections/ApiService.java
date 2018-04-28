@@ -61,5 +61,7 @@ public class ApiService {
 
     public static String ABOUT_US_PAGE             =   "https://www.beachpartner.com/about_us.html";
 
+    public static String FEEDBACK_PAGE             =   "https://www.beachpartner.com/feedback.html";
+
 
 }

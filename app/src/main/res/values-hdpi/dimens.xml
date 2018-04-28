@@ -16,10 +16,13 @@
 	<dimen name="circular_img_width">80dp</dimen>
 	<dimen name="circular_img_marginTop">110dp</dimen>
 
+	<!--blue bp circles margin left for progress bar-->
+	<dimen name="margin_left_blueBp">100dp</dimen>
 
 	<!--marginTop of text under circular image view-->
 	<dimen name="margin_top_text_under_circularImage">50dp</dimen>
 	<dimen name="filter_criteria_gender_margin">10dp</dimen>
+	<dimen name="calendarTargetHt">150dp</dimen>
 
 	<dimen name="pop_up_card_ht">300dp</dimen>
 	<dimen name="share_text_margin_top">12dp</dimen>

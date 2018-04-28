@@ -33,6 +33,16 @@ public class BpFinderModel implements Serializable {
     private String bpf_termDate;
     private String bpf_fcmToken;
 
+    public String getBpf_topfinishes() {
+        return bpf_topfinishes;
+    }
+
+    public void setBpf_topfinishes(String bpf_topfinishes) {
+        this.bpf_topfinishes = bpf_topfinishes;
+    }
+
+    private String bpf_topfinishes;
+
 
     public String getBpf_effectiveDate() {
         return bpf_effectiveDate;

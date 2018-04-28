@@ -22,9 +22,11 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.AboutUsFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
+import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
+import com.beachpartnerllc.beachpartner.fragments.FeedBackFragment;
 import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
 import com.beachpartnerllc.beachpartner.fragments.HomeFragment;
 import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
@@ -99,17 +101,17 @@ public class TabActivity extends AppCompatActivity  {
                     trans.commit();
                     disableFloatButtons();
                     return true;
-//
-//                case R.id.navigation_calendar:
-//
-//                    CalendarFragment calendarFragment = new CalendarFragment();
-//                    getSupportActionBar().setTitle("Calendar");
-//                    FragmentManager cmngr = getSupportFragmentManager();
-//                    FragmentTransaction ctrans = cmngr.beginTransaction();
-//                    ctrans.replace(R.id.container, calendarFragment, YOUR_FRAGMENT_STRING_TAG);
-//                    ctrans.commit();
-//                    disableFloatButtons();
-//                    return true;
+
+                case R.id.navigation_calendar:
+
+                    CalendarFragment calendarFragment = new CalendarFragment();
+                    getSupportActionBar().setTitle("Calendar");
+                    FragmentManager cmngr = getSupportFragmentManager();
+                    FragmentTransaction ctrans = cmngr.beginTransaction();
+                    ctrans.replace(R.id.container, calendarFragment, YOUR_FRAGMENT_STRING_TAG);
+                    ctrans.commit();
+                    disableFloatButtons();
+                    return true;
 
 
                 case R.id.navigation_more:
@@ -353,6 +355,13 @@ public class TabActivity extends AppCompatActivity  {
                 break;
             case R.id.feedback:
                 //Toast.makeText(this, "Clicked Feedback", Toast.LENGTH_SHORT).show();
+                FeedBackFragment feedBackFragment = new FeedBackFragment();
+                getSupportActionBar().setTitle("FeedBack");
+                FragmentManager mangFeed = getSupportFragmentManager();
+                FragmentTransaction transFeed = mangFeed.beginTransaction();
+                transFeed.replace(R.id.container, feedBackFragment, YOUR_FRAGMENT_STRING_TAG);
+                transFeed.commit();
+                disableFloatButtons();
                 break;
             case R.id.settings:
                 SettingsFragment sf = new SettingsFragment();

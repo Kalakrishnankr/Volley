@@ -136,7 +136,7 @@
     <string name="hint_confirm_pwd">Confirm Password</string>
     <string name="hint_ok">OK</string>
     <string name="hint_cancel">CANCEL</string>
-    <string name="invalid_key">Invalid Key</string>
+    <string name="invalid_key">The key you entered is not valid</string>
     <string name="hint_passord_size">Please enter password</string>
     <string name="hint_didnotmatch">Password does not match</string>
 
