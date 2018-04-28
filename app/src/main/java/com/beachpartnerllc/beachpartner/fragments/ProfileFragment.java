@@ -3288,17 +3288,17 @@ public String isEmptyOrNull(String stringToCheck){
 
 
             } else {
-                File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
+                File profileVideoDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
                 //File imageDirectory=null;
-                if (!profileImageDir.exists()) {
+                if (!profileVideoDir.exists()) {
                     new File(parentDirectory, "video").mkdir();
 
                     downloadProfileImageAndVideo(fileName, fileType, f_url);
 
                 } else {
-                    String[] children = profileImageDir.list();
+                    String[] children = profileVideoDir.list();
                     for (int i = 0; i < children.length; i++) {
-                        new File(profileImageDir, children[i]).delete();
+                        new File(profileVideoDir, children[i]).delete();
                     }
 
                 }
