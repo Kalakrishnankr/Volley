@@ -184,14 +184,14 @@ public class CompactCalendarTab extends Fragment {
 
         showPreviousMonthBut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v) {
                 compactCalendarView.showPreviousMonth();
             }
         });
 
         showNextMonthBut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v) {
                 compactCalendarView.showNextMonth();
             }
         });
@@ -216,7 +216,7 @@ public class CompactCalendarTab extends Fragment {
 //
 //        removeAllEventsBut.setOnClickListener(new View.OnClickListener() {
 //            @Override
-//            public void onClick(View v) {
+//            public void onItemClick(View v) {
 //                compactCalendarView.removeAllEvents();
 //            }
 //        });
@@ -235,7 +235,7 @@ public class CompactCalendarTab extends Fragment {
     private View.OnClickListener getCalendarShowLis() {
         return new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v) {
                 if (!compactCalendarView.isAnimating()) {
                     if (shouldShow) {
                         compactCalendarView.showCalendar();
@@ -252,7 +252,7 @@ public class CompactCalendarTab extends Fragment {
     private View.OnClickListener getCalendarExposeLis() {
         return new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v) {
                 if (!compactCalendarView.isAnimating()) {
                     if (shouldShow) {
                         compactCalendarView.showCalendarWithAnimation();

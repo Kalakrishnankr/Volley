@@ -1,12 +1,15 @@
 package com.beachpartnerllc.beachpartner.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.io.Serializable;
 
 /**
  * Created by seq-kala on 3/4/18.
  */
 
-public class BpFinderModel implements Serializable {
+public class BpFinderModel implements Parcelable {
 
     private String bpf_tableId;
     private String bpf_id;
@@ -34,6 +37,53 @@ public class BpFinderModel implements Serializable {
     private String bpf_effectiveDate;
     private String bpf_termDate;
     private String bpf_fcmToken;
+
+
+    public BpFinderModel(){}
+
+    protected BpFinderModel(Parcel in) {
+        bpf_tableId = in.readString();
+        bpf_id = in.readString();
+        bpf_login = in.readString();
+        bpf_userProfile = in.readString();
+        bpf_subscriptions = in.readString();
+        bpf_firstName = in.readString();
+        bpf_lastName = in.readString();
+        bpf_email = in.readString();
+        bpf_activated = in.readString();
+        bpf_langKey = in.readString();
+        bpf_imageUrl = in.readString();
+        bpf_videoUrl = in.readString();
+        bpf_resetDate = in.readString();
+        bpf_dob = in.readString();
+        bpf_gender = in.readString();
+        bpf_loginType = in.readString();
+        bpf_city = in.readString();
+        bpf_phoneNumber = in.readString();
+        bpf_deviceId = in.readString();
+        bpf_authToken = in.readString();
+        bpf_location = in.readString();
+        bpf_userType = in.readString();
+        bpf_age = in.readString();
+        bpf_effectiveDate = in.readString();
+        bpf_termDate = in.readString();
+        bpf_fcmToken = in.readString();
+        bpf_topfinishes = in.readString();
+        bpf_subscriptionType = in.readString();
+        bpf_daysToExpireSubscription = in.readString();
+    }
+
+    public static final Creator<BpFinderModel> CREATOR = new Creator<BpFinderModel>() {
+        @Override
+        public BpFinderModel createFromParcel(Parcel in) {
+            return new BpFinderModel(in);
+        }
+
+        @Override
+        public BpFinderModel[] newArray(int size) {
+            return new BpFinderModel[size];
+        }
+    };
 
     public String getBpf_topfinishes() {
         return bpf_topfinishes;
@@ -271,5 +321,43 @@ public class BpFinderModel implements Serializable {
     }
     public String  getBpf_fcmToken() {
         return bpf_fcmToken;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(bpf_tableId);
+        parcel.writeString(bpf_id);
+        parcel.writeString(bpf_login);
+        parcel.writeString(bpf_userProfile);
+        parcel.writeString(bpf_subscriptions);
+        parcel.writeString(bpf_firstName);
+        parcel.writeString(bpf_lastName);
+        parcel.writeString(bpf_email);
+        parcel.writeString(bpf_activated);
+        parcel.writeString(bpf_langKey);
+        parcel.writeString(bpf_imageUrl);
+        parcel.writeString(bpf_videoUrl);
+        parcel.writeString(bpf_resetDate);
+        parcel.writeString(bpf_dob);
+        parcel.writeString(bpf_gender);
+        parcel.writeString(bpf_loginType);
+        parcel.writeString(bpf_city);
+        parcel.writeString(bpf_phoneNumber);
+        parcel.writeString(bpf_deviceId);
+        parcel.writeString(bpf_authToken);
+        parcel.writeString(bpf_location);
+        parcel.writeString(bpf_userType);
+        parcel.writeString(bpf_age);
+        parcel.writeString(bpf_effectiveDate);
+        parcel.writeString(bpf_termDate);
+        parcel.writeString(bpf_fcmToken);
+        parcel.writeString(bpf_topfinishes);
+        parcel.writeString(bpf_subscriptionType);
+        parcel.writeString(bpf_daysToExpireSubscription);
     }
 }

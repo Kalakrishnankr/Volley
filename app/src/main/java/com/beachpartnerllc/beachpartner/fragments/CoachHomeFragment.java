@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -448,7 +449,7 @@ public class CoachHomeFragment extends Fragment {
             AppCompatActivity activity = (AppCompatActivity) getContext();
             BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("bluebplist", premiumLikesList);
+            bundle.putParcelableArrayList(AppConstants.BLUE_BP_LIST, premiumLikesList);
             bpFinderFragment.setArguments(bundle);
             activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
         }

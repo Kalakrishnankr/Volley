@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
@@ -113,9 +114,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
                   AppCompatActivity activity = (AppCompatActivity) v.getContext();
                   BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                   Bundle bundle = new Bundle();
-                //cPosition is the current positon
-                  bundle.putInt("itemPosition", position);
-                  bundle.putSerializable("hifiList", hiFiveList);
+                  bundle.putParcelable(AppConstants.BP_PROFILE, hiFiveList.get(position));
                   bpFinderFragment.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
             }

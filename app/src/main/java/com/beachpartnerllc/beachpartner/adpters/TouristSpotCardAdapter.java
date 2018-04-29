@@ -184,7 +184,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel>  {
                 }
                 // dialog.setMessage("Please wait");
                /* if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().equals("") ) {
-                    myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
+                    myInterface.onItemClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
                 }*/
             }
         });

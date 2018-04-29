@@ -140,7 +140,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         }
 
 //
-//        public void onClick(View v) {
+//        public void onItemClick(View v) {
 //            if(v.equals(noteDisabled)){
 //                removeAt(getAdapterPosition());
 //                Toast.makeText(mContext, "Hi removed at" +getAdapterPosition(), Toast.LENGTH_SHORT).show();

@@ -969,7 +969,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
 
                 Intent intent= new Intent();
                 intent.setType("video*//*");
@@ -982,7 +982,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //browse profile picture from  gallery
         /*imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
                 Intent intent = new Intent();
                 intent.setType("image*//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -993,7 +993,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //play video
        /* imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
                 videoView.start();
             }
         });
@@ -1105,7 +1105,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         menuRed.setOnMenuButtonClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onItemClick(View v) {
                 if (menuRed.isOpened()) {
                     Toast.makeText(getActivity(), menuRed.getMenuButtonLabelText(), Toast.LENGTH_SHORT).show();
                 }

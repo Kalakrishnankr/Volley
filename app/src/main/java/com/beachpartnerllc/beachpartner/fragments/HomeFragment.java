@@ -45,6 +45,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -866,7 +867,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 isblueBP = true;
                 BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
                 Bundle bundle = new Bundle();
-                bundle.putSerializable("noLikeslist", likesList);
+                bundle.putParcelableArrayList(AppConstants.NO_LIKES_LIST, likesList);
                 bpFinderFragment.setArguments(bundle);
                 getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
             }
