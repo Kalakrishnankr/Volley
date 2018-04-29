@@ -44,7 +44,6 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -802,7 +801,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -931,7 +930,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         if (response != null) {
                             try {
                                 getBpProfiles();
-                                Toast.makeText(getActivity(), "ID:" + response.getString("id"), Toast.LENGTH_SHORT).show();
+                               // Toast.makeText(getActivity(), "ID:" + response.getString("id"), Toast.LENGTH_SHORT).show();
                                 new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                                 String status = response.getString("status").toString().trim();
                                 if (status.equals("New")) {
@@ -1033,7 +1032,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onResponse(JSONObject response) {
                 try {
                     getBpProfiles();
-                    Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
+                 //   Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
                     new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                     String status = response.getString("status").toString().trim();
                     if (status.equals("New")) {
@@ -1109,7 +1108,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         if (response != null) {
                             getBpProfiles();
                             try {
-                                Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
+                              //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
                                 new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                                 String status = response.getString("status").toString().trim();
                                 if (status.equals("New")) {
@@ -1317,7 +1316,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                             //   Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1403,7 +1402,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                              //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 

@@ -808,14 +808,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View v) {
                 InfoSave();
-                editStatus = !editStatus;
+               // editStatus = !editStatus;
             }
         });
         moreBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoSave();
-                editStatus = !editStatus;
+                //editStatus = !editStatus;
             }
         });
 
@@ -823,14 +823,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus = !editStatus;
+                editStatus = true;
             }
         });
         moreBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus = !editStatus;
+                editStatus = true;
             }
         });
 
@@ -839,27 +839,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             @Override
             public void onClick(View v) {
-                editStatus = !editStatus;
-
-
-                if (editStatus) {
+                if (!editStatus) {
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
-                    //imgVideo.setVisibility(View.VISIBLE);
-                    //profile_img_editIcon.setVisibility(View.VISIBLE);
+
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
                     edit_tag.setText("Save Profile");
-                    Log.d("edit","edit status side");
-                } else {
+                    editStatus = !editStatus;
+                }
 
-                    InfoCancelChange();
-                    InfoSave();
-                    imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
-                    edit_tag.setText("Edit Profile");
-                    Log.d("edit","info canel side");
+                else {
+                        InfoCancelChange();
+                        InfoSave();
 
+                        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+                        edit_tag.setText("Edit Profile");
+
+                    editStatus=false;
                 }
             }
         });
@@ -1712,7 +1710,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         if (!validate()) {
 
-            imgProfile.setClickable(false);
+           // imgProfile.setClickable(false);
           //  profile_img_editIcon.setVisibility(View.GONE);
           //  imgVideo.setVisibility(View.GONE);
             btnsBottom.setVisibility(View.GONE);
@@ -1922,6 +1920,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             updateAllUserDetails(jsonallobj);
 
+
+        }else{
+
+
+                editStatus=false;
 
         }
 
@@ -2185,6 +2188,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
             if(imageUri!=null || videoUri!=null) {
                 uploadImgFiles(imageUri, videoUri, user_id);
+
             }
         }
     }
@@ -2222,7 +2226,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     imageUri=null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-                    reloadFragment();
+                   // reloadFragment();
+
                 }
             }
         });
@@ -2256,71 +2261,73 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response get account--", response.toString());
-                        try {
-                            userDataModel = new UserDataModel();
-                            userDataModel.setId(response.getString("id"));
-                            userDataModel.setFirstName(response.getString("firstName"));
-                            userDataModel.setLastName(response.getString("lastName"));
-                            userDataModel.setGender(response.getString("gender"));
-                            userDataModel.setDob(response.getString("dob"));
-                            userDataModel.setCity(response.getString("city"));
-                            userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-                            userDataModel.setLangKey(response.getString("langKey"));
-                            userDataModel.setLocation(response.getString("city"));
-                            //userDataModel.setSubscriptions(response.getString("subscriptions"));
-                            userDataModel.setImageUrl(response.getString("imageUrl"));
-                            userDataModel.setVideoUrl(response.getString("videoUrl"));
-                            userDataModel.setUserType(response.getString("userType"));
-                            userDataModel.setFcmToken(response.getString("fcmToken"));
-                            userDataModel.setAuthToken(response.getString("authToken"));
-                            userDataModel.setDeviceId(response.getString("deviceId"));
-                            userDataModel.setEmail(response.getString("email"));
-                            if (!response.getString("userProfile").equals(null) && !response.getString("userProfile").equals("null") ) {
+                        if(response!=null) {
+                            try {
+                                userDataModel = new UserDataModel();
+                                userDataModel.setId(response.getString("id"));
+                                userDataModel.setFirstName(response.getString("firstName"));
+                                userDataModel.setLastName(response.getString("lastName"));
+                                userDataModel.setGender(response.getString("gender"));
+if(response.getString("dob")!=null) {
+    userDataModel.setDob(response.getString("dob"));
+}
+                                userDataModel.setCity(response.getString("city"));
+                                userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+                                userDataModel.setLangKey(response.getString("langKey"));
+                                userDataModel.setLocation(response.getString("city"));
+                                //userDataModel.setSubscriptions(response.getString("subscriptions"));
+                                userDataModel.setImageUrl(response.getString("imageUrl"));
+                                userDataModel.setVideoUrl(response.getString("videoUrl"));
+                                userDataModel.setUserType(response.getString("userType"));
+                                userDataModel.setFcmToken(response.getString("fcmToken"));
+                                userDataModel.setAuthToken(response.getString("authToken"));
+                                userDataModel.setDeviceId(response.getString("deviceId"));
+                                userDataModel.setEmail(response.getString("email"));
+                                if (!response.getString("userProfile").equals(null) && !response.getString("userProfile").equals("null")) {
 
-                                JSONObject obj = new JSONObject(response.getString("userProfile"));
-                                if (obj != null && obj.length() != 0) {
-                                    userDataModel.setHeight(obj.getString("height"));
-                                    userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
-                                    userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
-                                    userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
-                                    userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                                    userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
-                                    userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
-                                    userDataModel.setCollageClub(obj.getString("collageClub"));
-                                    userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
-                                    userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
-                                    userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
-                                    userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
-                                    userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
-                                    userDataModel.setExperience(obj.getString("experience"));
-                                    userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
-                                    userDataModel.setPosition(obj.getString("position"));
-                                    userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
+                                    JSONObject obj = new JSONObject(response.getString("userProfile"));
+                                    if (obj != null && obj.length() != 0) {
+                                        userDataModel.setHeight(obj.getString("height"));
+                                        userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
+                                        userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
+                                        userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
+                                        userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
+                                        userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
+                                        userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
+                                        userDataModel.setCollageClub(obj.getString("collageClub"));
+                                        userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
+                                        userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
+                                        userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
+                                        userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
+                                        userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
+                                        userDataModel.setExperience(obj.getString("experience"));
+                                        userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
+                                        userDataModel.setPosition(obj.getString("position"));
+                                        userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
 
-                                    userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
-                                    userDataModel.setTopFinishes(obj.getString("topFinishes"));
-                                    userDataModel.setCollage(obj.getString("collage"));
-                                    userDataModel.setDescription(obj.getString("description"));
-                                    userDataModel.setYearsRunning(obj.getString("yearsRunning"));
-                                    userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
-                                    userDataModel.setProgramsOffered(obj.getString("programsOffered"));
-                                    userDataModel.setDivision(obj.getString("division"));
-                                    userDataModel.setFundingStatus(obj.getString("fundingStatus"));
-                                    userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+                                        userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
+                                        userDataModel.setTopFinishes(obj.getString("topFinishes"));
+                                        userDataModel.setCollage(obj.getString("collage"));
+                                        userDataModel.setDescription(obj.getString("description"));
+                                        userDataModel.setYearsRunning(obj.getString("yearsRunning"));
+                                        userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
+                                        userDataModel.setProgramsOffered(obj.getString("programsOffered"));
+                                        userDataModel.setDivision(obj.getString("division"));
+                                        userDataModel.setFundingStatus(obj.getString("fundingStatus"));
+                                        userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+                                    }
                                 }
+
+
+                                //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
+                                setViews();
+
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-
-                            //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
-                            setViews();
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
-
-
                     }
                 },
                 new Response.ErrorListener() {
@@ -2435,17 +2442,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         if (response != null) {
                             if (getActivity() != null) {
 
-                                if(imageUri!=null || videoUri!=null) {
-                                    uploadImgFiles(imageUri, videoUri, user_id);
-                                }else{
-                                    progress.dismiss();
-                                    Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-                                    reloadFragment();
-                                }
-
-
-                            }else{
-
+                                edit_tag.setText("Edit Profile");
+                                editStatus=false;
                                 if (userDataModel.getImageUrl() != null) {
                                     File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+getString(R.string.app_name)+"/"+userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
 
@@ -2467,7 +2465,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                                 progress.dismiss();
                                 Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-                                reloadFragment();
+                               // reloadFragment();
                             }
                         }else {
                             progress.dismiss();
@@ -2581,10 +2579,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         editCity.setSelection(positions);
                     }
                     //Long value to date conversion
+                if(userDataModel.getDob().trim()!=null && !userDataModel.getDob().equals("null")) {
                     SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
                     long dob = Long.parseLong(userDataModel.getDob());
                     Date date_dob = new Date(dob);
                     editDob.setText(dft.format(date_dob));
+                }
                     editPhone.setText(userDataModel.getPhoneNumber());
                     //set More information
                     if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {

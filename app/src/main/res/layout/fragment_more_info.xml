@@ -7,7 +7,7 @@
         android:id="@+id/llMoreInfoDetails"
         android:layout_width="match_parent"
         android:layout_height="1150dp"
-        android:visibility="visible">
+        android:visibility="gone">
 
             <RelativeLayout
                 android:id="@+id/scroll_more"
