@@ -215,7 +215,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private static PhotoAsyncTask asyncTask;
     private String location;
     private TabActivity tabActivity;
-
+    List<String> courtPref;
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
     private ScrollView scrollview_profile;
@@ -265,15 +265,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         return view;
     }
 
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity() instanceof TabActivity) {
+        /*if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Profile");
-        }
-
+        }*/
+setViews();
     }
 
     private void blink() {
@@ -535,6 +537,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
         expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerExp.setAdapter(expAdapter);
+        spinnerExp.invalidate();
 
         spinnerExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -559,7 +562,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         /*Court Preference spinner*/
         spinnerPref.setOnItemSelectedListener(this);
-        List<String> courtPref = new ArrayList<>();
+        courtPref = new ArrayList<>();
         courtPref.add("Please Select");
         courtPref.add("Left side");
         courtPref.add("Right Side");
@@ -567,6 +570,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
         prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPref.setAdapter(prefAdapter);
+        spinnerPref.invalidate();
         spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
@@ -598,6 +602,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
         positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerPositon.setAdapter(positionAdapter);
+        spinnerPositon.invalidate();
         spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
@@ -634,7 +639,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
         tournamentInterestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTLInterest.setAdapter(tournamentInterestAdapter);
-
+        spinnerTLInterest.invalidate();
         spinnerTLInterest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
@@ -673,7 +678,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
         highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerTourRating.setAdapter(highestRatingAdapter);
-
+        spinnerTourRating.invalidate();
 
         spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
@@ -710,7 +715,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
         distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerWtoTravel.setAdapter(distanceAdapter);
-
+        spinnerWtoTravel.invalidate();
         spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
@@ -763,7 +768,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         heightAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, height);
         heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         editHeight.setAdapter(heightAdapter);
-
+        editHeight.invalidate();
         editHeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
@@ -789,6 +794,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         editCity.setAdapter(dataAdapter);
+        editCity.invalidate();
         editCity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
@@ -1418,13 +1424,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             // permissions this app might request.
         }
     }
-    ////
-
-
-
-
-
-
 
 
 
@@ -1925,6 +1924,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
 
                 editStatus=false;
+            imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
+            edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+            edit_tag.setText("Save Profile");
+            editCustomView();
+            editBasicInfo();
+            editMoreInfo();
 
         }
 
@@ -2226,7 +2231,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     imageUri=null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-                   // reloadFragment();
+                    reloadFragment();
 
                 }
             }
@@ -2465,7 +2470,7 @@ if(response.getString("dob")!=null) {
 
                                 progress.dismiss();
                                 Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
-                               // reloadFragment();
+                                reloadFragment();
                             }
                         }else {
                             progress.dismiss();
@@ -2580,7 +2585,7 @@ if(response.getString("dob")!=null) {
                     }
                     //Long value to date conversion
                 if(userDataModel.getDob().trim()!=null && !userDataModel.getDob().equals("null")) {
-                    SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+                    SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
                     long dob = Long.parseLong(userDataModel.getDob());
                     Date date_dob = new Date(dob);
                     editDob.setText(dft.format(date_dob));
@@ -2628,7 +2633,9 @@ if(response.getString("dob")!=null) {
                     String courSidePref = userDataModel.getCourtSidePreference();
                     if (courSidePref != null) {
                         int courtPos = prefAdapter.getPosition(courSidePref);
-                        spinnerPref.setSelection(courtPos);
+                       // spinnerPref.setSelection(courtPos);
+                        spinnerPref.setSelection ( courtPref.indexOf(courSidePref) );
+                        spinnerPref.invalidate();
                     }
                     String exp = userDataModel.getExperience();
                     if (exp != null) {
