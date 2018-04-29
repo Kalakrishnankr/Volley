@@ -175,7 +175,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private TabLayout tabs;
     private ProgressBar progressbar;
     private ViewPager viewPager;
-    private FrameLayout videoFrame;
+    private FrameLayout videoFrameLayout;
     private ImageView imgEdit, imgVideo, imgPlay, profile_img_editIcon, imageView1, imageView2, imageView3;
     private FloatingActionMenu imgShare;
     private FloatingActionButton fabImage, fabVideo;
@@ -312,7 +312,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         profileDesig= (TextView) view.findViewById(R.id.profile_designation);
         edit_tag    = (TextView) view.findViewById(R.id.edit_text);
         progressbar = (ProgressBar)view.findViewById(R.id.progressBar);
-
+        videoFrameLayout = view.findViewById(R.id.header_cover_video);
         imgVideo    = (ImageView) view.findViewById(R.id.imgVideo);
         //videoView   = (VideoView) view.findViewById(R.id.videoView);
         playerView       = (PlayerView) view.findViewById(R.id.exoplayer_profile);
@@ -487,6 +487,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
                         ShareDialog.show(ProfileFragment.this,contentvideo);
+/*
+                        SharePhoto photo = new SharePhoto.Builder()
+                                .setImageUrl(Uri.parse("http://pmio.mk/wp-content/uploads/2012/04/sample-1.jpg"))
+                                .setCaption("Hi This Imahe")
+                                .build();
+                        SharePhotoContent content = new SharePhotoContent.Builder()
+                                .addPhoto(photo)
+                                .build();*/
+                       // ShareDialog shareDialog = new ShareDialog(ProfileFragment.this);
+                      //  shareDialog.show(contentvideo, ShareDialog.Mode.AUTOMATIC);
                     }
 
 
@@ -507,7 +517,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         // tabs.setupWithViewPager(viewPager);
 
 //        imgEdit.setOnClickListener(this);
-        imgVideo.setOnClickListener(this);
+     //   imgVideo.setOnClickListener(this);
+        videoFrameLayout.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
 
@@ -839,9 +850,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     //profile_img_editIcon.setVisibility(View.VISIBLE);
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                    edit_tag.setText("Save Profile");
+                    Log.d("edit","edit status side");
                 } else {
 
                     InfoCancelChange();
+                    InfoSave();
+                    imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
+                    edit_tag.setText("Edit Profile");
+                    Log.d("edit","info canel side");
 
                 }
             }
@@ -1012,6 +1029,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             public void onClick(View v) {
                 finishCount -= 1;
                 topFinishes2_lt.setVisibility(View.GONE);
+                topfinishes_txt_2.setText(null);
                 if (finishCount < 1) {
                     imageView1.setVisibility(View.VISIBLE);
                 }
@@ -1023,6 +1041,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             public void onClick(View v) {
                 finishCount -= 1;
                 topFinishes3_lt.setVisibility(View.GONE);
+                topfinishes_txt_3.setText(null);
                 if (finishCount < 2) {
                     imageView1.setVisibility(View.VISIBLE);
                 }
@@ -1137,7 +1156,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         switch (view.getId()) {
 
-            case R.id.imgVideo:
+           // case R.id.imgVideo:
+            case R.id.header_cover_video:
 
                 if(!hasPermissions(getActivity(),PERMISSIONS)){
                     requestPermissions(PERMISSIONS, 20);
@@ -1149,7 +1169,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 }
                 break;
             case R.id.row_icon:
-                if (editStatus) {
+                //if (editStatus) {
                     if(!hasPermissions(getActivity(),PERMISSIONS)){
                         requestPermissions(PERMISSIONS, 21);
                     }else {
@@ -1159,7 +1179,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
                     }
 
-                }
+                //}
                 break;
             case R.id.imgPlay:
                 // videoView.setVisibility(View.VISIBLE);
@@ -1414,8 +1434,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     private void editCustomView() {
 
-        imgVideo.setVisibility(View.VISIBLE);
-        profile_img_editIcon.setVisibility(View.VISIBLE);
+      //  imgVideo.setVisibility(View.VISIBLE);
+        //profile_img_editIcon.setVisibility(View.VISIBLE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
         edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
     }
@@ -1441,27 +1461,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private void setSelectedToursFromServer(String selectedTours){
         mToursSelectedfromServer = new ArrayList<>(Arrays.asList(selectedTours.split("\\s*,\\s*")));
         mToursSelectedfromServer.removeAll(Arrays.asList(null,""));
-        Log.e("size", String.valueOf(mToursSelectedfromServer.size()));
+        Log.d("size", String.valueOf(mToursSelectedfromServer.size()));
         Set<String> mToursSelectedfromServerHash = new HashSet<>();
         mToursSelectedfromServerHash.addAll(mToursSelectedfromServer);
         mToursSelectedfromServer.clear();
         mToursSelectedfromServer.addAll(mToursSelectedfromServerHash);
-        Log.e("size hash", String.valueOf(mToursSelectedfromServer.size()));
+        Log.d("size hash", String.valueOf(mToursSelectedfromServer.size()));
         checkedItem = new boolean[items.length];
         ListIterator<String> iterator = mToursSelectedfromServer.listIterator();
         while(iterator.hasNext()){
             int position = getIndex(items,iterator.next());
             if(position != -1)
                 checkedItem[position] = true;
-            Log.e("Position", String.valueOf(position));
+            Log.d("Position", String.valueOf(position));
         }
     }
     private void removeAlreadySelectedTourFromServerList(String tour){
-        Log.e("selected",tour);
+        Log.d("selected",tour);
         for(int i=0;i<mToursSelectedfromServer.size();i++){
             if (mToursSelectedfromServer.get(i).equals(tour)){
                 mToursSelectedfromServer.remove(i);
-                Log.e("selected", String.valueOf(mToursSelectedfromServer.size()));
+                Log.d("selected", String.valueOf(mToursSelectedfromServer.size()));
             }
         }
     }
@@ -1484,11 +1504,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             seletedItems.remove(Integer.valueOf(indexSelected));
-                            Log.e("removed_selected","seletedItems");
+                            Log.d("removed_selected","seletedItems");
                         }else {
                             removeAlreadySelectedTourFromServerList(items[indexSelected].toString());
                             unchecked = true;
-                            Log.e("removed_selected","serverItemsCalled");
+                            Log.d("removed_selected","serverItemsCalled");
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -1506,19 +1526,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         Set<String> mToursPlayedHash = new HashSet<>();
                         for(int i = 0;i<mToursSelectedfromServer.size();i++){
                             mToursPlayed.add(mToursSelectedfromServer.get(i));
-                            Log.e("mTourServerSize", String.valueOf(mToursSelectedfromServer.size()));
+                            Log.d("mTourServerSize", String.valueOf(mToursSelectedfromServer.size()));
                         }
                         for (int i = 0; i < seletedItems.size(); i++) {
                             selectedTours = (String) items[(int) seletedItems.get(i)];
                             mToursPlayed.add(selectedTours);
-                            Log.e("selectedTours", String.valueOf(mToursPlayed.size()));
+                            Log.d("selectedTours", String.valueOf(mToursPlayed.size()));
                         }
                         mToursPlayedHash.addAll(mToursPlayed);
                           //  mToursPlayed.addAll(mToursSelectedfromServer);
                         // For setting the multiple value in editPlayed set Text
                         mToursPlayed.clear();
                         mToursPlayed.addAll(mToursPlayedHash);
-                        Log.e("selectedToursHash", String.valueOf(mToursPlayed.size()));
+                        Log.d("selectedToursHash", String.valueOf(mToursPlayed.size()));
                         if (mToursPlayed.size()!=0){
                             for(int i = 0;i<mToursPlayed.size();i++){
                                 editPlayed.append(mToursPlayed.get(i)+",");
@@ -1563,10 +1583,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         //Profile image edit icon active
 
         imgProfile.setClickable(true);
-        imgVideo.setClickable(true);
+      //  imgVideo.setClickable(true);
         btnsBottom.setVisibility(View.VISIBLE);
         more_info_btns_bottom.setVisibility(View.VISIBLE);
-        profile_img_editIcon.setVisibility(View.VISIBLE);
+    //    profile_img_editIcon.setVisibility(View.VISIBLE);
 
 
         editFname.setEnabled(true);
@@ -1693,8 +1713,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         if (!validate()) {
 
             imgProfile.setClickable(false);
-            profile_img_editIcon.setVisibility(View.GONE);
-            imgVideo.setVisibility(View.GONE);
+          //  profile_img_editIcon.setVisibility(View.GONE);
+          //  imgVideo.setVisibility(View.GONE);
             btnsBottom.setVisibility(View.GONE);
             imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
             edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
@@ -1868,14 +1888,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 jsonObjectMore.put("position", spinnerPosValue);
                 jsonObjectMore.put("programsOffered",0);
                 jsonObjectMore.put("shareAthlets",0);
-                jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+","+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
+                StringBuffer topFinishes = new StringBuffer();
+               // jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+",
+                // "+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
+                if(!topfinishes_txt_1.getText().toString().trim().isEmpty()){
+                    topFinishes.append(topfinishes_txt_1.getText().toString().trim()+",");
+                }
+                if (!topfinishes_txt_2.getText().toString().trim().isEmpty()){
+                    topFinishes.append(topfinishes_txt_2.getText().toString().trim()+",");
+                }
+                if (!topfinishes_txt_3.getText().toString().trim().isEmpty()){
+                    topFinishes.append(topfinishes_txt_3.getText().toString().trim());
+                }
+                jsonObjectMore.put("topFinishes",topFinishes.toString());
                 jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
                 jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue);
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
                 jsonObjectMore.put("willingToTravel", spinnerWTValue);
                 jsonObjectMore.put("yearsRunning",0);
-
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -1950,11 +1981,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
     public void InfoCancelChange() {
 
-        profile_img_editIcon.setVisibility(View.GONE);
-        imgVideo.setVisibility(View.GONE);
+      //  profile_img_editIcon.setVisibility(View.GONE);
+      //  imgVideo.setVisibility(View.GONE);
         btnsBottom.setVisibility(View.GONE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+        edit_tag.setText("Edit Profile");
         more_info_btns_bottom.setVisibility(View.GONE);
         //BasicInfo
 
@@ -2106,6 +2138,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
                     }
                 }
+                if(imageUri!=null || videoUri!=null) {
+                    uploadImgFiles(imageUri, videoUri, user_id);
+                }
             }
             else if(requestCode == PICK_VIDEO_REQUEST){
                 Intent intent = new Intent();
@@ -2140,13 +2175,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                         Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
                     }
                 }
-
+                if(imageUri!=null || videoUri!=null) {
+                    uploadImgFiles(imageUri, videoUri, user_id);
+                }
 
 
 
             }
 
-
+            if(imageUri!=null || videoUri!=null) {
+                uploadImgFiles(imageUri, videoUri, user_id);
+            }
         }
     }
 
