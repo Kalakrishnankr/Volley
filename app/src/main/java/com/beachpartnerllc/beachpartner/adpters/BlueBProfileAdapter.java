@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.OnRecyclerOnClickListener;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -25,42 +27,30 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
     private ArrayList<BpFinderModel> dataList;
     private static boolean isPartner = false;
 
+
+    private OnRecyclerOnClickListener onRecyclerOnClickListener;
+
     public BlueBProfileAdapter(Context context, ArrayList<BpFinderModel> dataList) {
-        this.dataList=dataList;
-        this.mContext=context;
+        this.dataList = dataList;
+        this.mContext = context;
     }
 
+    public void setOnRecyclerOnClickListener(OnRecyclerOnClickListener onRecyclerOnClickListener) {
+        this.onRecyclerOnClickListener = onRecyclerOnClickListener;
+    }
 
     @Override
     public BlueBProfileAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view= LayoutInflater.from(parent.getContext()).inflate(R.layout.bp_item_profile,parent,false);
-        BlueBProfileAdapter.ViewHolder viewHolder = new BlueBProfileAdapter.ViewHolder(view);
-        return viewHolder;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.bp_item_profile, parent, false);
+        return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
 
         BpFinderModel model = dataList.get(position);
-        Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imv_profile);
-        holder.imv_profile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                boolean isblueBP = true;
-                AppCompatActivity activity = (AppCompatActivity) view.getContext();
-                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
-                Bundle bundle = new Bundle();
-                //cPosition is the current positon
-                bundle.putInt("cPosition", holder.getAdapterPosition());
-                bundle.putSerializable("bluebplist", dataList);
-                bpFinderFragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
-               // holder.removeAt(position);
-
-            }
-        });
+        Glide.with(mContext).load(model.getBpf_imageUrl()).into(holder.imv_profile);
     }
-
 
 
     @Override
@@ -68,14 +58,15 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
         return dataList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder{
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public CircularImageView imv_profile;
+
         public ViewHolder(View view) {
             super(view);
 
-            imv_profile =   (CircularImageView)view.findViewById(R.id.imgBp);
-
+            imv_profile = (CircularImageView) view.findViewById(R.id.imgBp);
+            itemView.setOnClickListener(this);
         }
 
         public void removeAt(int position) {
@@ -83,7 +74,23 @@ public class BlueBProfileAdapter extends RecyclerView.Adapter<BlueBProfileAdapte
             notifyItemRemoved(position);
             notifyItemRangeChanged(position, dataList.size());
         }
-    }
 
+        @Override
+        public void onClick(View view) {
+            BpFinderModel bpFinderModel = dataList.get(getAdapterPosition());
+            if (onRecyclerOnClickListener != null) {
+
+                onRecyclerOnClickListener.onItemClick(bpFinderModel, getAdapterPosition());
+            } else {
+                boolean isblueBP = true;
+                AppCompatActivity activity = (AppCompatActivity) view.getContext();
+                BPFinderFragment bpFinderFragment = new BPFinderFragment(isblueBP, isPartner);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(AppConstants.BP_PROFILE, bpFinderModel);
+                bpFinderFragment.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+            }
+        }
+    }
 }
 

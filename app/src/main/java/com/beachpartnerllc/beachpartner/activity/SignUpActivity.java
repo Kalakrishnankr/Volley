@@ -409,7 +409,7 @@ public class SignUpActivity extends AppCompatActivity{
         //Browse video from gallery
         /*imgVideo.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
 
                 Intent intent= new Intent();
                 intent.setType("video*//*");
@@ -422,7 +422,7 @@ public class SignUpActivity extends AppCompatActivity{
         //browse profile picture from  gallery
         /*imgProfile.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
                 Intent intent = new Intent();
                 intent.setType("image*//*");
                 intent.setAction(Intent.ACTION_GET_CONTENT);
@@ -433,7 +433,7 @@ public class SignUpActivity extends AppCompatActivity{
         //play video
         /*imgPlay.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {
+            public void onItemClick(View view) {
                 videoView.start();
             }
         });*/
@@ -905,13 +905,13 @@ public class SignUpActivity extends AppCompatActivity{
 //        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 //
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onItemClick(DialogInterface dialog, int which) {
 //
 //            }
 //        });
 //        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
 //            @Override
-//            public void onClick(DialogInterface dialog, int which) {
+//            public void onItemClick(DialogInterface dialog, int which) {
 //
 //            }
 //
