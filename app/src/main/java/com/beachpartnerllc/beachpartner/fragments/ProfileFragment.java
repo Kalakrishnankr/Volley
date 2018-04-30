@@ -89,6 +89,8 @@ import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.model.SharePhoto;
+import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -427,31 +429,16 @@ setViews();
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
-                if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
-                    if (selectedImageUri != null) {
-                        screenshotUri = Uri.parse(String.valueOf(selectedImageUri));
-                        ShareLinkContent content = new ShareLinkContent.Builder()
-                                .setQuote("BeachPartner")
-                                .setContentTitle("BeachPartner")
-                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
-                                .setContentUrl(screenshotUri)
-                                .build();
-                        ShareDialog.show(ProfileFragment.this,content);
-                        /*Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
-                        intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        intent.setType("image*//*");
-                        startActivity(Intent.createChooser(intent, "Share image via..."));*/
-                    } else if (userDataModel.getImageUrl() != null) {
-                        screenshotUri = Uri.parse(userDataModel.getImageUrl());
-                        ShareLinkContent content = new ShareLinkContent.Builder()
-                                .setQuote("BeachPartner")
-                                .setContentTitle("BeachPartner")
-                                .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
-                                .setContentUrl(screenshotUri)
-                                .build();
-                        ShareDialog.show(ProfileFragment.this,content);
-                    }
+              //  if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
+                    if (myProfileImageFile != null) {
+
+                        Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
+                        intent.putExtra(Intent.EXTRA_SUBJECT,"BeachPartner App");
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileImageFile));
+                        intent.setType("image/*");
+                        startActivity(Intent.createChooser(intent, "Share image via..."));
+
 
                 } else {
                     Toast.makeText(getActivity(), "Please upload Image and share it", Toast.LENGTH_SHORT).show();
@@ -465,41 +452,53 @@ setViews();
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Video", Toast.LENGTH_SHORT).show();
-                if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
-                    if (selectedVideoUri != null) {
-                        screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
-                        /*Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this Video");
-                        intent.putExtra(Intent.EXTRA_STREAM, screenshotUri);
-                        intent.setType("video*//*");
-                        startActivity(Intent.createChooser(intent, "Share video via..."));*/
-                        ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+               // if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
+                   if (myProfileVideFile != null) {
+                 //       screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
+
+
+                       Intent intent = new Intent(Intent.ACTION_SEND);
+                       intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
+                       intent.putExtra(Intent.EXTRA_SUBJECT,"BeachPartner App");
+                       intent.setType("video/*");
+                       intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile));
+                       startActivity(Intent.createChooser(intent, "Share image via..."));
+
+
+                       /* ShareLinkContent contentvideo = new ShareLinkContent.Builder()
                                 .setQuote("BeachPartner")
                                 .setContentTitle("BeachPartner")
                                 .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
-                        ShareDialog.show(ProfileFragment.this,contentvideo);
-                    } else if (userDataModel.getVideoUrl() != null) {
+                        ShareDialog.show(ProfileFragment.this,contentvideo);*/
+                   /* } else if (userDataModel.getVideoUrl() != null) {
+
+
                         screenshotVideoUri = Uri.parse(userDataModel.getVideoUrl());
-                        ShareLinkContent contentvideo = new ShareLinkContent.Builder()
+                     *//*   Intent intent = new Intent(Intent.ACTION_SEND);
+                        intent.putExtra(Intent.EXTRA_TEXT, "Hey view/download this image");
+                        intent.putExtra(Intent.EXTRA_SUBJECT, "Hey view/download this image");
+                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile));
+                        intent.setType("video*//**//*");*//*
+                     //   startActivity(Intent.createChooser(intent, "Share image via..."));
+                       *//* ShareLinkContent contentvideo = new ShareLinkContent.Builder()
                                 .setQuote("BeachPartner")
                                 .setContentTitle("BeachPartner")
                                 .setImageUrl(Uri.parse("https://beachpartner.com/preregistration/"))
                                 .setContentUrl(screenshotVideoUri)
                                 .build();
-                        ShareDialog.show(ProfileFragment.this,contentvideo);
-/*
+                        ShareDialog.show(ProfileFragment.this,contentvideo);*//*
                         SharePhoto photo = new SharePhoto.Builder()
-                                .setImageUrl(Uri.parse("http://pmio.mk/wp-content/uploads/2012/04/sample-1.jpg"))
+                                .setImageUrl(Uri.fromFile(myProfileImageFile))
                                 .setCaption("Hi This Imahe")
                                 .build();
                         SharePhotoContent content = new SharePhotoContent.Builder()
-                                .addPhoto(photo)
-                                .build();*/
-                       // ShareDialog shareDialog = new ShareDialog(ProfileFragment.this);
-                      //  shareDialog.show(contentvideo, ShareDialog.Mode.AUTOMATIC);
-                    }
+                                .addPhoto(photo).setRef("gghfgfgh")
+                                .build();
+                        ShareDialog shareDialog = new ShareDialog(ProfileFragment.this);
+                        shareDialog.show(content, ShareDialog.Mode.AUTOMATIC);
+                    }*/
 
 
                 } else {
@@ -2520,7 +2519,8 @@ if(response.getString("dob")!=null) {
         requestQueue.add(jsonObjectRequest);
 
     }
-
+    File myProfileImageFile;
+    File myProfileVideFile;
     @SuppressLint("NewApi")
     private void setViews() {
         if (getActivity() != null) {
@@ -2533,10 +2533,10 @@ if(response.getString("dob")!=null) {
                         String exactImageName = imagePathArray[1];
 
                         Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
-                        File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image"+"/" +exactImageName);
+                         myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image"+"/" +exactImageName);
 
-                        if (myFile.exists()) {
-                            Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+                        if (myProfileImageFile.exists()) {
+                            Glide.with(ProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
                         } else {
                             Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
 
@@ -2556,10 +2556,10 @@ if(response.getString("dob")!=null) {
                             String exactVideoName = videoPathArray[1];
 
                             Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
-                            File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video"+"/"+exactVideoName);
+                            myProfileVideFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video"+"/"+exactVideoName);
 
-                            if (myFile.exists()) {
-                                playVideoFromFile(Uri.parse(myFile.getPath()));
+                            if (myProfileVideFile.exists()) {
+                                playVideoFromFile(Uri.parse(myProfileVideFile.getPath()));
                             } else {
                                 playVideo(userDataModel.getVideoUrl());
                                 new DownloadFileFromURL(exactVideoName,"video").execute(userDataModel.getVideoUrl());

@@ -1060,7 +1060,7 @@ private void neverGotEmailAlertTextUnderline(){
             txt_confPwdError.setVisibility(View.GONE);
         }
 
-        if(editText_key.getText().toString().length()!=4){
+        if(editText_key.getText().toString().length()!=6){
             txt_keyError.setVisibility(View.VISIBLE);
             txt_keyError.setText(getString(R.string.invalid_key));
             validation=false;

@@ -733,7 +733,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     //Get connections
     private void getPeopleWhoLiked() {
         likesList.clear();
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New", null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
