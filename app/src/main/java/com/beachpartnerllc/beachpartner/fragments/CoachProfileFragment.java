@@ -20,6 +20,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
+import android.text.TextUtils;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -40,10 +41,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
@@ -51,6 +54,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 
@@ -81,6 +85,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -94,33 +99,44 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    private static final int REQUEST_SAVEIMGTODRIVE = 3;
+    private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
+    private static final int PICK_IMAGE_REQUEST = 0;
+    private static final String TAG = "CoachProfile";
+    private static boolean editStatus = false;
+    public UserDataModel userDataModel;
+    Calendar myCalendar = Calendar.getInstance();
+    String mFirstName;
+    String mLastName;
+    String mGender;
+    String mDob;
+    String mCity;
+    String mPhone;
+    String mCollege;
+    String mDescription;
+    String mYearsRunning;
+    String mNoOfAthletes;
+    String mProgramsOffered;
+    String mDivision;
+    String mProgramFunding;
+    String mProgramShareAthletes;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-    private static final int REQUEST_SAVEIMGTODRIVE = 3;
-    private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
-    private static final int PICK_IMAGE_REQUEST =0 ;
-    public UserDataModel userDataModel;
-    private static boolean editStatus = false;
     private RelativeLayout profileImgLayout;
     private CircularImageView imgProfile;
-    private LinearLayout llMenuBasic,llMenuMore,llBasicDetails,llMoreDetails, coachBtnsBottom,coachMore_infoBtnsBottom;
-    private TextView basic_info_tab,more_info_tab,edit_tag,profileName;
-    private View viewBasic,viewMore;
-    private EditText editFname,editLname,editGender,editDob,editPhone,description,years_running,no_athletes,prog_offered,division,editCollege;
+    private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails, coachBtnsBottom, coachMore_infoBtnsBottom;
+    private TextView basic_info_tab, more_info_tab, edit_tag, profileName;
+    private View viewBasic, viewMore;
+    private EditText editFname, editLname, editGender, editDob, editPhone, description, years_running, no_athletes, prog_offered, division, editCollege;
     private AutoCompleteTextView editCity;
-    private Spinner program_funding,program_share_athletes;
-    private Button basicBtnSave,basicBtnCancel,moreBtnSave,moreBtnCancel;
-    private ImageView imgEdit,profile_img_editIcon;
-    private String token,user_id,program_funding_value,program_share_athletes_value,imgUri;
-    private ArrayList<String>stateList = new ArrayList<>();
+    private Spinner program_funding, program_share_athletes;
+    private Button basicBtnSave, basicBtnCancel, moreBtnSave, moreBtnCancel;
+    private ImageView imgEdit, profile_img_editIcon;
+    private String token, user_id, program_funding_value, program_share_athletes_value, imgUri;
+    private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
     private Uri selectedImageUri;
-
-    Calendar myCalendar = Calendar.getInstance();
-
     public CoachProfileFragment() {
         // Required empty public constructor
     }
@@ -146,6 +162,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        VolleyLog.DEBUG = true;
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -158,7 +175,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         // Inflate the layout for this fragment
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
-        View view=inflater.inflate(R.layout.fragment_coach_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_coach_profile, container, false);
         initView(view);
         setUp();
 
@@ -168,61 +185,61 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     }
 
-    private void initView(final View view){
-        profileImgLayout        = (RelativeLayout) view.findViewById(R.id.profile_img_layout);
-        llMenuBasic             = (LinearLayout) view.findViewById(R.id.llCoachMenuBasic);
-        llMenuMore              = (LinearLayout) view.findViewById(R.id.llCoachMenuMore);
+    private void initView(final View view) {
+        profileImgLayout = (RelativeLayout) view.findViewById(R.id.profile_img_layout);
+        llMenuBasic = (LinearLayout) view.findViewById(R.id.llCoachMenuBasic);
+        llMenuMore = (LinearLayout) view.findViewById(R.id.llCoachMenuMore);
 
-        basic_info_tab          = (TextView) view.findViewById(R.id.coach_basic_info_tab);
-        more_info_tab           = (TextView) view.findViewById(R.id.coach_more_info_tab);
+        basic_info_tab = (TextView) view.findViewById(R.id.coach_basic_info_tab);
+        more_info_tab = (TextView) view.findViewById(R.id.coach_more_info_tab);
 
-        llBasicDetails          = (LinearLayout) view.findViewById(R.id.llCoachBasicDetails);
-        llMoreDetails           = (LinearLayout) view.findViewById(R.id.llCoachMoreInfoDetails);
+        llBasicDetails = (LinearLayout) view.findViewById(R.id.llCoachBasicDetails);
+        llMoreDetails = (LinearLayout) view.findViewById(R.id.llCoachMoreInfoDetails);
 
-        viewBasic               = (View) view.findViewById(R.id.viewCoachBasic);
-        viewMore                = (View) view.findViewById(R.id.viewCoachMore);
-        imgProfile              = (CircularImageView) view.findViewById(R.id.row_icon);
-        profileName             = (TextView) view.findViewById(R.id.coachName);
+        viewBasic = (View) view.findViewById(R.id.viewCoachBasic);
+        viewMore = (View) view.findViewById(R.id.viewCoachMore);
+        imgProfile = (CircularImageView) view.findViewById(R.id.row_icon);
+        profileName = (TextView) view.findViewById(R.id.coachName);
 
         //For Basic Details
 
-        editFname               = (EditText) view.findViewById(R.id.txtvFname);
-        editLname               = (EditText) view.findViewById(R.id.txtvLname);
-        editGender              = (EditText) view.findViewById(R.id.txtv_gender);
-        editDob                 = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity                = (AutoCompleteTextView) view.findViewById(R.id.txtv_city);
-        editPhone               = (EditText) view.findViewById(R.id.txtv_mobileno);
+        editFname = (EditText) view.findViewById(R.id.txtvFname);
+        editLname = (EditText) view.findViewById(R.id.txtvLname);
+        editGender = (EditText) view.findViewById(R.id.txtv_gender);
+        editDob = (EditText) view.findViewById(R.id.txtv_dob);
+        editCity = (AutoCompleteTextView) view.findViewById(R.id.txtv_city);
+        editPhone = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave            = (Button) view.findViewById(R.id.btnsave);
-        basicBtnCancel          = (Button) view.findViewById(R.id.btncancel);
+        basicBtnSave = (Button) view.findViewById(R.id.btnsave);
+        basicBtnCancel = (Button) view.findViewById(R.id.btncancel);
 
         //Fore More Deatails
 
-        editCollege          = (EditText) view.findViewById(R.id.txtv_college);
+        editCollege = (EditText) view.findViewById(R.id.txtv_college);
         editCollege.setEnabled(false);
-        description             = (EditText) view.findViewById(R.id.txtv_description);
-        years_running           = (EditText) view.findViewById(R.id.txtv_years_running);
-        no_athletes             = (EditText) view.findViewById(R.id.txtv_no_athletes);
-        prog_offered            = (EditText) view.findViewById(R.id.txtv_prog_offered);
-        division                = (EditText) view.findViewById(R.id.txtv_division);
+        description = (EditText) view.findViewById(R.id.txtv_description);
+        years_running = (EditText) view.findViewById(R.id.txtv_years_running);
+        no_athletes = (EditText) view.findViewById(R.id.txtv_no_athletes);
+        prog_offered = (EditText) view.findViewById(R.id.txtv_prog_offered);
+        division = (EditText) view.findViewById(R.id.txtv_division);
 
-        program_funding         = (Spinner) view.findViewById(R.id.spinner_program_funding);
+        program_funding = (Spinner) view.findViewById(R.id.spinner_program_funding);
 
-        program_share_athletes   = (Spinner) view.findViewById(R.id.spinner_program_share_athletes);
-
-
-        imgEdit                    =   (ImageView) view.findViewById(R.id.edit);
-        edit_tag                   =   (TextView) view.findViewById(R.id.edit_text);
-        profile_img_editIcon       =   (ImageView) view.findViewById(R.id.edit_profile_imgCoach);
+        program_share_athletes = (Spinner) view.findViewById(R.id.spinner_program_share_athletes);
 
 
-        coachBtnsBottom         = (LinearLayout) view.findViewById(R.id.coach_btns_at_bottom);
+        imgEdit = (ImageView) view.findViewById(R.id.edit);
+        edit_tag = (TextView) view.findViewById(R.id.edit_text);
+        profile_img_editIcon = (ImageView) view.findViewById(R.id.edit_profile_imgCoach);
+
+
+        coachBtnsBottom = (LinearLayout) view.findViewById(R.id.coach_btns_at_bottom);
 
         coachMore_infoBtnsBottom = (LinearLayout) view.findViewById(R.id.coach_more_info_btns_bottom);
 
-        moreBtnSave              = (Button) view.findViewById(R.id.btn_save);
-        moreBtnCancel            = (Button) view.findViewById(R.id.btn_cancel);
+        moreBtnSave = (Button) view.findViewById(R.id.btn_save);
+        moreBtnCancel = (Button) view.findViewById(R.id.btn_cancel);
 
         llMenuBasic.setOnClickListener(this);
         llMenuMore.setOnClickListener(this);
@@ -330,14 +347,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         });
 
-        dataAdapter     = new ArrayAdapter<String>(getContext(),android.R.layout.simple_spinner_item, stateList);
+        dataAdapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item, stateList);
 
-        Typeface font   = Typeface.createFromAsset(getContext().getAssets(),
+        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
                 "fonts/SanFranciscoTextRegular.ttf");
         editCity.setTypeface(font);
         editCity.setAdapter(dataAdapter);
-
-
 
 
 //        funding spinner
@@ -350,7 +365,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_funding.setAdapter(fundingAdapter);
         program_funding.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                program_funding_value   =  program_funding.getSelectedItem().toString();
+                program_funding_value = program_funding.getSelectedItem().toString();
             }
 
             @Override
@@ -382,13 +397,11 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     }
 
-
     public void updateLabel() {
         String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         editDob.setText(sdf.format(myCalendar.getTime()));
     }
-
 
     public void addLocation() {
         stateList.add("Alabama");
@@ -476,7 +489,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 //        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
     }
-    private void editMoreInfo(){
+
+    private void editMoreInfo() {
         editCollege.setEnabled(true);
         editCollege.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
@@ -510,7 +524,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
     }
 
-    private void InfoSave(){
+    private void InfoSave() {
+        Log.d(TAG, "SAVE CLICKED");
+
+        if (!validateForms()){
+            Log.e(TAG, "Input Invalid");
+            return;
+        }
         imgProfile.setClickable(false);
         profile_img_editIcon.setVisibility(View.GONE);
         coachBtnsBottom.setVisibility(View.GONE);
@@ -570,51 +590,124 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setBackground(null);
 
 
-
-
         JSONObject jsonObjectMore = new JSONObject();
         try {
-            jsonObjectMore.put("cbvaFirstName", null);
-            jsonObjectMore.put("cbvaLastName", null);
-            jsonObjectMore.put("cbvaPlayerNumber",null);
-            jsonObjectMore.put("collage",editCollege.toString().trim());
-            jsonObjectMore.put("collageClub",null);
-            jsonObjectMore.put("collegeBeach", null);
-            jsonObjectMore.put("collegeIndoor", null);
-            jsonObjectMore.put("courtSidePreference", null);
-            jsonObjectMore.put("description",description.getText().toString().trim());
-            jsonObjectMore.put("division",division.getText().toString().trim());
-            jsonObjectMore.put("experience", null);
-            jsonObjectMore.put("fundingStatus",null);
-            jsonObjectMore.put("height", null);
-            jsonObjectMore.put("highSchoolAttended", null);
-            jsonObjectMore.put("highestTourRatingEarned", null);
-            jsonObjectMore.put("indoorClubPlayed", null);
-            jsonObjectMore.put("numOfAthlets",no_athletes.getText().toString().trim());
-            jsonObjectMore.put("position", null);
-            jsonObjectMore.put("programsOffered",prog_offered.getText().toString().trim());
-            jsonObjectMore.put("shareAthlets",program_share_athletes_value.toString().trim());
-            jsonObjectMore.put("topFinishes", null);
-            jsonObjectMore.put("totalPoints", null);
-            jsonObjectMore.put("tournamentLevelInterest",null);
-            jsonObjectMore.put("toursPlayedIn", null);
-            jsonObjectMore.put("usaVolleyballRanking", null);
-            jsonObjectMore.put("willingToTravel", null);
-            jsonObjectMore.put("yearsRunning",years_running.getText().toString().trim());
+            jsonObjectMore.put("cbvaFirstName", mFirstName);
+            jsonObjectMore.put("cbvaLastName", mLastName);
+            jsonObjectMore.put("cbvaPlayerNumber", "");
+            jsonObjectMore.put("collage", mCollege);
+            jsonObjectMore.put("collageClub", "");
+            jsonObjectMore.put("collegeBeach", "");
+            jsonObjectMore.put("collegeIndoor", "");
+            jsonObjectMore.put("courtSidePreference", "");
+            jsonObjectMore.put("description", mDescription);
+            jsonObjectMore.put("division", mDivision);
+            jsonObjectMore.put("experience", "");
+            jsonObjectMore.put("fundingStatus", "");
+            jsonObjectMore.put("height", "");
+            jsonObjectMore.put("highSchoolAttended", "");
+            jsonObjectMore.put("highestTourRatingEarned", "");
+            jsonObjectMore.put("indoorClubPlayed", "");
+            jsonObjectMore.put("numOfAthlets", mNoOfAthletes);
+            jsonObjectMore.put("position", "");
+            jsonObjectMore.put("programsOffered", mProgramsOffered);
+            jsonObjectMore.put("shareAthlets",  mProgramShareAthletes);
+            jsonObjectMore.put("topFinishes", "");
+            jsonObjectMore.put("totalPoints", "");
+            jsonObjectMore.put("tournamentLevelInterest", "");
+            jsonObjectMore.put("toursPlayedIn", "");
+            jsonObjectMore.put("usaVolleyballRanking", "");
+            jsonObjectMore.put("willingToTravel", "");
+            jsonObjectMore.put("yearsRunning",mYearsRunning);
 
 
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-       //postUserMoreDetails(jsonObjectMore);
+        Log.i(TAG,jsonObjectMore.toString());
+        Log.d(TAG,token);
+        postUserMoreDetails(jsonObjectMore);
 
 
     }
 
-   /* private void postUserMoreDetails(JSONObject jsonObjectMore) {
+    private boolean validateForms() {
+        boolean mFormValidation = AppCommon.FORM_VALID;
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.POST_USER_MORE_INFO+"/"+user_id, jsonObjectMore,
+
+        mFirstName = getValue(editFname);
+        mLastName = getValue(editLname);
+        mGender = getValue(editGender);
+        mDob = getValue(editDob);
+        mCity = getValue(editCity);
+        mPhone = getValue(editPhone);
+
+        mCollege = getValue(editCollege);
+        mDescription = getValue(description);
+        mYearsRunning = getValue(years_running);
+        mNoOfAthletes = getValue(no_athletes);
+        mProgramsOffered = getValue(prog_offered);
+        mDivision = getValue(division);
+        mProgramFunding = program_funding.getSelectedItem().toString();
+        mProgramShareAthletes = program_share_athletes.getSelectedItem().toString();
+
+        if (TextUtils.isEmpty(mFirstName)){
+            editFname.setError("Please enter your first name");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }else {
+            if (!Pattern.matches(AppCommon.VALID_STRING,mFirstName)){
+                editFname.setError("Please enter valid first name");
+                mFormValidation = AppCommon.FORM_INVALID;
+            }
+        }
+        if (TextUtils.isEmpty(mLastName)){
+            editLname.setError("Please enter your last name");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }else {
+            if (!Pattern.matches(AppCommon.VALID_STRING,mLastName)){
+                editLname.setError("Please enter valid last name");
+                mFormValidation = AppCommon.FORM_INVALID;
+            }
+        }
+        if (TextUtils.isEmpty(mGender)){
+            editGender.setError("Please enter valid last name");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }
+        if (TextUtils.isEmpty(mDob)){
+            editGender.setError("Please choose date of birth");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }
+        if (TextUtils.isEmpty(mCity)){
+            editCity.setError("Please enter your city");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }else {
+            if (!Pattern.matches(AppCommon.VALID_STRING,mCity)){
+                editCity.setError("Please enter valid city name");
+                mFormValidation = AppCommon.FORM_INVALID;
+            }
+        }
+        if (TextUtils.isEmpty(mPhone)){
+            editPhone.setError("Please enter your phone number");
+            mFormValidation = AppCommon.FORM_INVALID;
+        }else {
+            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mPhone)){
+                editPhone.setError("Please enter valid phone number");
+                mFormValidation = AppCommon.FORM_INVALID;
+            }
+        }
+
+
+
+        return mFormValidation;
+    }
+
+    private String getValue(EditText view) {
+        return view.getText().toString().trim();
+    }
+    private void postUserMoreDetails(JSONObject jsonObjectMore) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE +""+user_id, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -661,9 +754,9 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Log.d("Request", jsonObjectRequest.toString());
         requestQueue.add(jsonObjectRequest);
 
-    }*/
+    }
 
-    private void InfoCancelChange(){
+    private void InfoCancelChange() {
         imgProfile.setClickable(false);
         profile_img_editIcon.setVisibility(View.GONE);
         coachBtnsBottom.setVisibility(View.GONE);
@@ -723,6 +816,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setBackground(null);
 
     }
+
     private void setUp() {
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ACCOUNT_DETAILS, null,
                 new Response.Listener<JSONObject>() {
@@ -776,7 +870,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     }
                 }) {
             @Override
-            public Map<String, String> getHeaders()  {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
@@ -790,9 +884,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         requestQueue.add(objectRequest);
 
     }
+
     private void setView() {
         if (userDataModel != null) {
-            profileName.setText(userDataModel.getFirstName()+userDataModel.getLastName());
+            profileName.setText(userDataModel.getFirstName() + userDataModel.getLastName());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
             editGender.setText(userDataModel.getGender());
@@ -800,13 +895,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             if (userDataModel.getImageUrl() != null) {
                 Glide.with(CoachProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
-            }else {
+            } else {
                 imgProfile.setImageResource(R.drawable.ic_person);
             }
             //Long value to date conversion
             SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
-            long dob       = Long.parseLong(userDataModel.getDob());
-            Date date_dob  = new Date(dob);
+            long dob = Long.parseLong(userDataModel.getDob());
+            Date date_dob = new Date(dob);
             editDob.setText(dft.format(date_dob));
             editPhone.setText(userDataModel.getPhoneNumber());
         }
@@ -815,7 +910,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK) {
 
-            if(requestCode == PICK_IMAGE_REQUEST){
+            if (requestCode == PICK_IMAGE_REQUEST) {
                 Uri picUri = data.getData();
 
                 selectedImageUri = data.getData();
@@ -835,7 +930,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             }
 
 
-
         }
 
         if (imgUri != null) {
@@ -845,14 +939,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         }
     }
 
-    private boolean checkExternalDrivePermission(final int type){
+    private boolean checkExternalDrivePermission(final int type) {
 
         int currentAPIVersion = Build.VERSION.SDK_INT;
-        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
-        {
-            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ||(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
-            {
-                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                     alertBuilder.setCancelable(true);
                     alertBuilder.setTitle("Permission necessary");
@@ -860,13 +952,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         public void onClick(DialogInterface dialog, int which) {
-                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                         }
                     });
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                 }
                 return false;
             } else {
@@ -908,7 +1000,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 }
                 return;
             }
-            case REQUEST_SAVEIMGTODRIVE:{
+            case REQUEST_SAVEIMGTODRIVE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -934,7 +1026,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 }
                 return;
             }
-            default:{
+            default: {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                 return;
             }
@@ -949,6 +1041,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent, PICK_IMAGE_REQUEST);
     }
+
     // UPDATED!
     public String getPath(Uri uri) {
         String[] projection = {MediaStore.Video.Media.DATA};
@@ -965,7 +1058,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
     //Method for check the size of the selected file
-    private float fileSize(long fileLength){
+    private float fileSize(long fileLength) {
         long fileSizeInBytes = fileLength;
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
@@ -977,7 +1070,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     //Api for upload profile image and video
     private void uploadFiles(final String imagePath, final String userId) {
-        new Thread(new Runnable(){
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -1003,31 +1096,27 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
                     registry.register(new Scheme("https", sslFactory, 443));
                     // DEBUG
-                    System.out.println( "executing request " + httppost.getRequestLine( ) );
+                    System.out.println("executing request " + httppost.getRequestLine());
                     HttpResponse response = httpclient.execute(httppost);
-                    HttpEntity resEntity = response.getEntity( );
+                    HttpEntity resEntity = response.getEntity();
 
                     // DEBUG
-                    System.out.println( response.getStatusLine( ) );
+                    System.out.println(response.getStatusLine());
                     if (resEntity != null) {
-                        System.out.println( EntityUtils.toString( resEntity ) );
+                        System.out.println(EntityUtils.toString(resEntity));
                     } // end if
 
                     if (resEntity != null) {
-                        resEntity.consumeContent( );
+                        resEntity.consumeContent();
                     } // end if
 
-                  //  httpclient.getConnectionManager( ).getSchemeRegistry().register(new Scheme("SSLSocketFactory", SSLSocketFactory.getSocketFactory(), 443));
-                    httpclient.getConnectionManager( ).shutdown( );
-                }
-                catch (Exception ex) {
+                    //  httpclient.getConnectionManager( ).getSchemeRegistry().register(new Scheme("SSLSocketFactory", SSLSocketFactory.getSocketFactory(), 443));
+                    httpclient.getConnectionManager().shutdown();
+                } catch (Exception ex) {
                     ex.printStackTrace();
                 }
             }
         }).start();
-
-
-
 
 
     }
@@ -1128,7 +1217,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     }
 
                 }
-
 
 
             default:

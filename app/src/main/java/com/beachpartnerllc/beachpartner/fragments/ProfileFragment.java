@@ -88,9 +88,6 @@ import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
-import com.facebook.share.model.ShareLinkContent;
-import com.facebook.share.model.SharePhoto;
-import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.Player;
@@ -163,17 +160,36 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 
 public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
 
+    final static CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA", "Relentless", "BVNE", "LC", "USAV", "Volley America", "Beach Elite", "United States Association of Volleyball (USAV)", "Amateur Athletic Union (AAU)", "Association of Volleyball Professionals (AVP)", "Extreme Volleyball Professionals (EVP)", "National Volleyball League (NVL)", "VolleyAmerica", "Beach Volleyball National Events (BVNE)", "Rox Volleyball Series", "California Beach Volleyball Association", "Volley OC", "Northern California Volleyball Association", "Beach Elite/Endless Summer", "Beach Volleyball Clubs of American (BVCA)", "Junior Volleyball Association (JVA)", "Beach Volleyball San Diego", "Gulf coast Volleyball Association (GCVA)", "tArizona Tournaments", "The Island Volleyball", "Florida Tournaments", "Northeast Volleyball Qualifier", "North East Beach Volleyball", "Precision Sand Volleyball", "AVA", "Wasatch Beach Volleyball", "Ohio Valley Region", "Wisconsin Juniors", "AlohaRegionJuniors", "Ohio Valley Region", "Wisconsin Juniors", "AlohaRegionJuniors"};
     private static final int REQUEST_SAVEIMGTODRIVE = 3;
     private static final int REQUEST_TAKE_GALLERY_IMAGE = 2;
-    private static final int PICK_IMAGE_REQUEST =0 ;
-    private static final int PICK_VIDEO_REQUEST =1;
-    private static final String TAG = "ProfileFragment" ;
+    private static final int PICK_IMAGE_REQUEST = 0;
+    private static final int PICK_VIDEO_REQUEST = 1;
+    private static final String TAG = "ProfileFragment";
     public static boolean isValidate = false;
     private static boolean moreUploadStatus = false;
     private static boolean editStatus = false;
+    private static ProgressDialog progress;
+    private static PhotoAsyncTask asyncTask;
     public UserDataModel userDataModel;
-    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue,editHeightValue,imageUri,videoUri;
+    public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue, editHeightValue, imageUri, videoUri;
     Calendar myCalendar = Calendar.getInstance();
+    ArrayList selectedItems;
+    ArrayList<String> mToursPlayed;
+    List<String> mToursSelectedfromServer;
+    CallbackManager callbackManager;
+    ShareDialog shareDialog;
+    Context mContext;
+    Bitmap profilePhoto = null;
+    SimpleExoPlayer exoPlayer;
+    List<String> courtPref;
+    DefaultHttpDataSourceFactory dataSourceFactory = null;
+    ExtractorsFactory extractorsFactory = null;
+    // set the selected values from server int List
+    boolean[] checkedItem = new boolean[0];
+    boolean unchecked = false;
+    File myProfileImageFile;
+    File myProfileVideFile;
     private TabLayout tabs;
     private ProgressBar progressbar;
     private ViewPager viewPager;
@@ -184,49 +200,218 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private CircularImageView imgProfile;
     private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
     //private VideoView videoView;
-    private Uri selectedImageUri, selectedVideoUri, screenshotUri,screenshotVideoUri;
+    private Uri selectedImageUri, selectedVideoUri, screenshotUri, screenshotVideoUri;
     private byte[] multipartBody;
     private LinearLayout llMenuBasic, llMenuMore, llBasicDetails, llMoreDetails;//This menu bar only for demo purpose
     private View viewBasic, viewMore;
     private EditText editFname, editLname, editGender, editDob, editPhone;
     private Spinner editCity;
-    private EditText  editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
+    private EditText editPlayed, editCBVANo, editCBVAFName, editCBVALName, editHighschool, editIndoorClub, editColgClub, editColgBeach, editColgIndoor, editPoints, topfinishes_txt_2, topfinishes_txt_1, topfinishes_txt_3, edit_volleyRanking;
     private Button moreBtnSave, moreBtnCancel, basicBtnSave, basicBtnCancel;
     private LinearLayout btnsBottom, more_info_btns_bottom;
     private LinearLayout topFinishes1_lt, topFinishes2_lt, topFinishes3_lt;
     private RelativeLayout containingLt;
     private int finishCount = 0;
-    private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel,editHeight;
+    private Spinner spinnerExp, spinnerPref, spinnerPositon, spinnerTLInterest, spinnerTourRating, spinnerWtoTravel, editHeight;
     private AwesomeValidation awesomeValidation;
-    ArrayList selectedItems;
-    ArrayList<String> mToursPlayed;
-    List<String> mToursSelectedfromServer;
     private boolean saveFile;
     private List<FloatingActionMenu> menus = new ArrayList<>();
-    private ArrayAdapter<String> expAdapter,prefAdapter,positionAdapter,highestRatingAdapter,tournamentInterestAdapter,distanceAdapter,heightAdapter;
-    CallbackManager callbackManager;
-    ShareDialog shareDialog;
-    Context mContext;
+    private ArrayAdapter<String> expAdapter, prefAdapter, positionAdapter, highestRatingAdapter, tournamentInterestAdapter, distanceAdapter, heightAdapter;
     private int videoDuration;
-    private static ProgressDialog progress;
     private PlayerView playerView;
     private String selectedTours;
-    Bitmap profilePhoto = null;
-    SimpleExoPlayer exoPlayer;
-    private String location_change="profile";
-    private static PhotoAsyncTask asyncTask;
+    private String location_change = "profile";
     private String location;
     private TabActivity tabActivity;
-    List<String> courtPref;
-    DefaultHttpDataSourceFactory dataSourceFactory = null;
-    ExtractorsFactory extractorsFactory = null;
     private ScrollView scrollview_profile;
-
-
     private Handler mUiHandler = new Handler();
-
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
+
+    // method for add intent to arraylist
+    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
+        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
+        for (ResolveInfo resolveInfo : resInfo) {
+            String packageName = resolveInfo.activityInfo.packageName;
+            Intent targetedIntent = new Intent(intent);
+            targetedIntent.setPackage(packageName);
+            list.add(targetedIntent);
+            //Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
+        }
+        return list;
+    }
+
+    public static Bitmap getImageFromResult(Context context, int resultCode,
+                                            Intent imageReturnedIntent) {
+        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
+        Bitmap bm = null;
+        File imageFile = getTempFile(context);
+        if (resultCode == Activity.RESULT_OK) {
+            Uri selectedImage;
+            boolean isCamera = (imageReturnedIntent == null ||
+                    imageReturnedIntent.getData() == null ||
+                    imageReturnedIntent.getData().toString().contains(imageFile.toString()));
+            if (isCamera) {     /** CAMERA **/
+                selectedImage = Uri.fromFile(imageFile);
+            } else {            /** ALBUM **/
+                selectedImage = imageReturnedIntent.getData();
+            }
+            Log.d(TAG, "selectedImage: " + selectedImage);
+
+            bm = getImageResized(context, selectedImage);
+            int rotation = getRotation(context, selectedImage, isCamera);
+            bm = rotate(bm, rotation);
+        }
+        return bm;
+    }
+
+    private static File getTempFile(Context context) {
+        File imageFile = new File(context.getExternalCacheDir(), "BpProfileImage");
+        imageFile.getParentFile().mkdirs();
+        return imageFile;
+    }
+
+    private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = sampleSize;
+
+        AssetFileDescriptor fileDescriptor = null;
+        try {
+            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(theUri, "r");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
+                fileDescriptor.getFileDescriptor(), null, options);
+
+        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
+                actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
+
+        return actuallyUsableBitmap;
+    }
+
+    /**
+     * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
+     **/
+    private static Bitmap getImageResized(Context context, Uri selectedImage) {
+        Bitmap bm = null;
+        int[] sampleSizes = new int[]{5, 3, 2, 1};
+        int i = 0;
+        do {
+            bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
+            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
+            i++;
+        } while (bm.getWidth() < 1024 && i < sampleSizes.length);
+        return bm;
+    }
+
+    private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
+        int rotation;
+        if (isCamera) {
+            rotation = getRotationFromCamera(context, imageUri);
+        } else {
+            rotation = getRotationFromGallery(context, imageUri);
+        }
+        Log.d(TAG, "Image rotation: " + rotation);
+        return rotation;
+    }
+
+    private static int getRotationFromCamera(Context context, Uri imageFile) {
+        int rotate = 0;
+        try {
+
+            context.getContentResolver().notifyChange(imageFile, null);
+            ExifInterface exif = new ExifInterface(imageFile.getPath());
+            int orientation = exif.getAttributeInt(
+                    ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_NORMAL);
+
+            switch (orientation) {
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotate = 270;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotate = 180;
+                    break;
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotate = 90;
+                    break;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rotate;
+    }
+
+    public static int getRotationFromGallery(Context context, Uri imageUri) {
+        int result = 0;
+        String[] columns = {MediaStore.Images.Media.ORIENTATION};
+        Cursor cursor = null;
+        try {
+            cursor = context.getContentResolver().query(imageUri, columns, null, null, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int orientationColumnIndex = cursor.getColumnIndex(columns[0]);
+                result = cursor.getInt(orientationColumnIndex);
+            }
+        } catch (Exception e) {
+            //Do nothing
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }//End of try-catch block
+        return result;
+    }
+
+    private static Bitmap rotate(Bitmap bm, int rotation) {
+        if (rotation != 0) {
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotation);
+            Bitmap bmOut = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
+            return bmOut;
+        }
+        return bm;
+    }
+
+    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
+
+        HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        try {
+            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            //throws ParseException, IOException
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(new URI("https://www.beachpartner.com/api/storage/uploadProfileData"));
+//            sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sslFactory, 443));
+
+            httppost.setEntity(reqEntity);
+
+
+            // DEBUG
+            System.out.println("executing request " + httppost.getRequestLine());
+            HttpResponse response = httpclient.execute(httppost);
+
+
+            HttpEntity resEntity = response.getEntity();
+            while (resEntity == null) {
+                progress.dismiss();
+                Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
+            }
+            return resEntity;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            progress.dismiss();
+            Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
+        }
+        return null;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -240,15 +425,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        token   = new PrefManager(getContext()).getToken();
+        token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         setUp();
 
         initActivity(view);
 
         getActivity().getActionBar();
-
-
 
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -267,8 +450,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         return view;
     }
 
-
-
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -277,7 +458,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Profile");
         }*/
-setViews();
+        setViews();
     }
 
     private void blink() {
@@ -305,61 +486,60 @@ setViews();
 
     private void initActivity(final View view) {
 
-        scrollview_profile      =   (ScrollView) view.findViewById(R.id.scrollview_profile);
-        btnsBottom              = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
-        more_info_btns_bottom   = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
-        imgEdit                 = (ImageView) view.findViewById(R.id.edit);
-        profile_img_editIcon    = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
+        scrollview_profile = (ScrollView) view.findViewById(R.id.scrollview_profile);
+        btnsBottom = (LinearLayout) view.findViewById(R.id.btns_at_bottom);
+        more_info_btns_bottom = (LinearLayout) view.findViewById(R.id.more_info_btns_bottom);
+        imgEdit = (ImageView) view.findViewById(R.id.edit);
+        profile_img_editIcon = (ImageView) view.findViewById(R.id.edit_profile_img_vid);
 
-        imgProfile  = (CircularImageView) view.findViewById(R.id.row_icon);
+        imgProfile = (CircularImageView) view.findViewById(R.id.row_icon);
         profileName = (TextView) view.findViewById(R.id.profile_name);
-        profileDesig= (TextView) view.findViewById(R.id.profile_designation);
-        edit_tag    = (TextView) view.findViewById(R.id.edit_text);
-        progressbar = (ProgressBar)view.findViewById(R.id.progressBar);
+        profileDesig = (TextView) view.findViewById(R.id.profile_designation);
+        edit_tag = (TextView) view.findViewById(R.id.edit_text);
+        progressbar = (ProgressBar) view.findViewById(R.id.progressBar);
         videoFrameLayout = view.findViewById(R.id.header_cover_video);
-        imgVideo    = (ImageView) view.findViewById(R.id.imgVideo);
+        imgVideo = (ImageView) view.findViewById(R.id.imgVideo);
         //videoView   = (VideoView) view.findViewById(R.id.videoView);
-        playerView       = (PlayerView) view.findViewById(R.id.exoplayer_profile);
+        playerView = (PlayerView) view.findViewById(R.id.exoplayer_profile);
 
-        imgPlay     = (ImageView) view.findViewById(R.id.imgPlay);
-        imgShare    = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
-        fabImage    = (FloatingActionButton) view.findViewById(R.id.fab_image);
-        fabVideo    = (FloatingActionButton) view.findViewById(R.id.fab_video);
+        imgPlay = (ImageView) view.findViewById(R.id.imgPlay);
+        imgShare = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
+        fabImage = (FloatingActionButton) view.findViewById(R.id.fab_image);
+        fabVideo = (FloatingActionButton) view.findViewById(R.id.fab_video);
 
         llMenuBasic = (LinearLayout) view.findViewById(R.id.llMenuBasic);
-        llMenuMore  = (LinearLayout) view.findViewById(R.id.llMenuMore);
+        llMenuMore = (LinearLayout) view.findViewById(R.id.llMenuMore);
 
-        basic_info_tab  = (TextView) view.findViewById(R.id.basic_info_tab);
-        more_info_tab   = (TextView) view.findViewById(R.id.more_info_tab);
-        llBasicDetails  = (LinearLayout) view.findViewById(R.id.llBasicDetails);
-        llMoreDetails   = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
-        viewBasic       = (View) view.findViewById(R.id.viewBasic);
-        viewMore        = (View) view.findViewById(R.id.viewMore);
+        basic_info_tab = (TextView) view.findViewById(R.id.basic_info_tab);
+        more_info_tab = (TextView) view.findViewById(R.id.more_info_tab);
+        llBasicDetails = (LinearLayout) view.findViewById(R.id.llBasicDetails);
+        llMoreDetails = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
+        viewBasic = (View) view.findViewById(R.id.viewBasic);
+        viewMore = (View) view.findViewById(R.id.viewMore);
 
         //For Basic Details
 
-        editFname   = (EditText) view.findViewById(R.id.txtvFname);
-        editLname   = (EditText) view.findViewById(R.id.txtvLname);
-        editGender  = (EditText) view.findViewById(R.id.txtv_gender);
-        editDob     = (EditText) view.findViewById(R.id.txtv_dob);
-        editCity    = (Spinner) view.findViewById(R.id.txtv_city_profile);
-        editPhone   = (EditText) view.findViewById(R.id.txtv_mobileno);
+        editFname = (EditText) view.findViewById(R.id.txtvFname);
+        editLname = (EditText) view.findViewById(R.id.txtvLname);
+        editGender = (EditText) view.findViewById(R.id.txtv_gender);
+        editDob = (EditText) view.findViewById(R.id.txtv_dob);
+        editCity = (Spinner) view.findViewById(R.id.txtv_city_profile);
+        editPhone = (EditText) view.findViewById(R.id.txtv_mobileno);
 //        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
 
-        basicBtnSave    = (Button) view.findViewById(R.id.btnsave);
-        basicBtnCancel  = (Button) view.findViewById(R.id.btncancel);
-
+        basicBtnSave = (Button) view.findViewById(R.id.btnsave);
+        basicBtnCancel = (Button) view.findViewById(R.id.btncancel);
 
 
         //Fore More Deatsils
 
-        spinnerExp        = (Spinner) view.findViewById(R.id.spinner_exp);
-        spinnerPref       = (Spinner) view.findViewById(R.id.spinner_pref);
-        spinnerPositon    = (Spinner) view.findViewById(R.id.spinner_positon);
+        spinnerExp = (Spinner) view.findViewById(R.id.spinner_exp);
+        spinnerPref = (Spinner) view.findViewById(R.id.spinner_pref);
+        spinnerPositon = (Spinner) view.findViewById(R.id.spinner_positon);
         spinnerTLInterest = (Spinner) view.findViewById(R.id.spinner_tl_interest);
         spinnerTourRating = (Spinner) view.findViewById(R.id.spinner_tour_rating);
-        spinnerWtoTravel  = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
-        editHeight      =   (Spinner) view.findViewById(R.id.txtvHeight);
+        spinnerWtoTravel = (Spinner) view.findViewById(R.id.spinner_Wto_travel);
+        editHeight = (Spinner) view.findViewById(R.id.txtvHeight);
 
 
         spinnerExp.setEnabled(false);
@@ -372,18 +552,17 @@ setViews();
         editCity.setEnabled(false);
 
 
-
-        editPlayed      = (EditText) view.findViewById(R.id.txtvPlayed);
-        editCBVANo      = (EditText) view.findViewById(R.id.txtvCBVANo);
-        editCBVAFName   = (EditText) view.findViewById(R.id.txtvCBVAFName);
-        editCBVALName   = (EditText) view.findViewById(R.id.txtvCBVALName);
-        editHighschool  = (EditText) view.findViewById(R.id.txtvHighschool);
-        editIndoorClub  = (EditText) view.findViewById(R.id.txtvIndoorClub);
-        editColgClub    = (EditText) view.findViewById(R.id.txtvColgClub);
-        editColgBeach   = (EditText) view.findViewById(R.id.txtvColgBeach);
-        editColgIndoor  = (EditText) view.findViewById(R.id.txtvColgIndoor);
+        editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
+        editCBVANo = (EditText) view.findViewById(R.id.txtvCBVANo);
+        editCBVAFName = (EditText) view.findViewById(R.id.txtvCBVAFName);
+        editCBVALName = (EditText) view.findViewById(R.id.txtvCBVALName);
+        editHighschool = (EditText) view.findViewById(R.id.txtvHighschool);
+        editIndoorClub = (EditText) view.findViewById(R.id.txtvIndoorClub);
+        editColgClub = (EditText) view.findViewById(R.id.txtvColgClub);
+        editColgBeach = (EditText) view.findViewById(R.id.txtvColgBeach);
+        editColgIndoor = (EditText) view.findViewById(R.id.txtvColgIndoor);
         edit_volleyRanking = (EditText) view.findViewById(R.id.txtvRank);
-        editPoints      = (EditText) view.findViewById(R.id.txtvPoints);
+        editPoints = (EditText) view.findViewById(R.id.txtvPoints);
         topfinishes_txt_1 = (EditText) view.findViewById(R.id.topfinishes_txt_1);
         topfinishes_txt_2 = (EditText) view.findViewById(R.id.topfinishes_txt_2);
         topfinishes_txt_3 = (EditText) view.findViewById(R.id.topfinishes_txt_3);
@@ -429,15 +608,15 @@ setViews();
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Image", Toast.LENGTH_SHORT).show();
-              //  if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
-                    if (myProfileImageFile != null) {
+                //  if (selectedImageUri != null || userDataModel.getImageUrl()!=null ) {
+                if (myProfileImageFile != null) {
 
-                        Intent intent = new Intent(Intent.ACTION_SEND);
-                        intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
-                        intent.putExtra(Intent.EXTRA_SUBJECT,"BeachPartner App");
-                        intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileImageFile));
-                        intent.setType("image/*");
-                        startActivity(Intent.createChooser(intent, "Share image via..."));
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "BeachPartner App");
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileImageFile));
+                    intent.setType("image/*");
+                    startActivity(Intent.createChooser(intent, "Share image via..."));
 
 
                 } else {
@@ -452,17 +631,17 @@ setViews();
             @Override
             public void onClick(View view) {
                 //Toast.makeText(getActivity(), "Video", Toast.LENGTH_SHORT).show();
-               // if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
-                   if (myProfileVideFile != null) {
-                 //       screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
+                // if (selectedVideoUri != null  || userDataModel.getVideoUrl()!=null ) {
+                if (myProfileVideFile != null) {
+                    //       screenshotVideoUri= Uri.parse(String.valueOf(selectedVideoUri));
 
 
-                       Intent intent = new Intent(Intent.ACTION_SEND);
-                       intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
-                       intent.putExtra(Intent.EXTRA_SUBJECT,"BeachPartner App");
-                       intent.setType("video/*");
-                       intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile));
-                       startActivity(Intent.createChooser(intent, "Share image via..."));
+                    Intent intent = new Intent(Intent.ACTION_SEND);
+                    intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
+                    intent.putExtra(Intent.EXTRA_SUBJECT, "BeachPartner App");
+                    intent.setType("video/*");
+                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile));
+                    startActivity(Intent.createChooser(intent, "Share image via..."));
 
 
                        /* ShareLinkContent contentvideo = new ShareLinkContent.Builder()
@@ -518,7 +697,7 @@ setViews();
         // tabs.setupWithViewPager(viewPager);
 
 //        imgEdit.setOnClickListener(this);
-     //   imgVideo.setOnClickListener(this);
+        //   imgVideo.setOnClickListener(this);
         videoFrameLayout.setOnClickListener(this);
         imgProfile.setOnClickListener(this);
         imgPlay.setOnClickListener(this);
@@ -542,13 +721,12 @@ setViews();
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
 
-                if(!spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerExpValue = spinnerExp.getSelectedItem().toString();
-                }
-                else{
-                    int spinnerExpPos=expAdapter.getPosition(spinnerExpValue);
+                } else {
+                    int spinnerExpPos = expAdapter.getPosition(spinnerExpValue);
                     spinnerExp.setSelection(spinnerExpPos);
-                    spinnerExpValue="";
+                    spinnerExpValue = "";
                 }
             }
 
@@ -574,13 +752,12 @@ setViews();
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
 
-                if(!spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerPrefValue = spinnerPref.getSelectedItem().toString();
-                }
-                else{
-                    int spinnerpref=prefAdapter.getPosition(spinnerPrefValue);
+                } else {
+                    int spinnerpref = prefAdapter.getPosition(spinnerPrefValue);
                     spinnerPref.setSelection(spinnerpref);
-                    spinnerPrefValue="";
+                    spinnerPrefValue = "";
                 }
             }
 
@@ -606,13 +783,12 @@ setViews();
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
 
-                if(!spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerPosValue = spinnerPositon.getSelectedItem().toString();
-                }
-                else{
-                    int spinnerposition=positionAdapter.getPosition(spinnerPosValue);
+                } else {
+                    int spinnerposition = positionAdapter.getPosition(spinnerPosValue);
                     spinnerPositon.setSelection(spinnerposition);
-                    spinnerPosValue="";
+                    spinnerPosValue = "";
                 }
             }
 
@@ -643,13 +819,12 @@ setViews();
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
 
-                if(!spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
-                }
-                else{
-                    int spinnerTLValuePos=tournamentInterestAdapter.getPosition(spinnerTLValue);
+                } else {
+                    int spinnerTLValuePos = tournamentInterestAdapter.getPosition(spinnerTLValue);
                     spinnerTLInterest.setSelection(spinnerTLValuePos);
-                    spinnerTLValue="";
+                    spinnerTLValue = "";
                 }
             }
 
@@ -682,13 +857,12 @@ setViews();
         spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                if(!spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
-                }
-                else{
-                    int spinnerTRValuePos=highestRatingAdapter.getPosition(spinnerTRValue);
+                } else {
+                    int spinnerTRValuePos = highestRatingAdapter.getPosition(spinnerTRValue);
                     spinnerTourRating.setSelection(spinnerTRValuePos);
-                    spinnerTRValue="";
+                    spinnerTRValue = "";
                 }
             }
 
@@ -718,13 +892,12 @@ setViews();
         spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                if(!spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
-                }
-                else{
-                    int travelValuePos=distanceAdapter.getPosition(spinnerWTValue);
+                } else {
+                    int travelValuePos = distanceAdapter.getPosition(spinnerWTValue);
                     spinnerWtoTravel.setSelection(travelValuePos);
-                    spinnerWTValue="";
+                    spinnerWTValue = "";
                 }
 
             }
@@ -771,13 +944,12 @@ setViews();
         editHeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 moreUploadStatus = true;
-                if(!editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                if (!editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
                     editHeightValue = editHeight.getSelectedItem().toString();
-                }
-                else{
-                    int editHeightValuePos=heightAdapter.getPosition(editHeightValue);
+                } else {
+                    int editHeightValuePos = heightAdapter.getPosition(editHeightValue);
                     editHeight.setSelection(editHeightValuePos);
-                    editHeightValue="";
+                    editHeightValue = "";
                 }
 
             }
@@ -789,7 +961,7 @@ setViews();
             }
         });
 
-        dataAdapter     = new ArrayAdapter<String>(getContext(),R.layout.spinner_style, stateList);
+        dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         editCity.setAdapter(dataAdapter);
@@ -813,7 +985,7 @@ setViews();
             @Override
             public void onClick(View v) {
                 InfoSave();
-               // editStatus = !editStatus;
+                // editStatus = !editStatus;
             }
         });
         moreBtnSave.setOnClickListener(new View.OnClickListener() {
@@ -853,21 +1025,19 @@ setViews();
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
                     edit_tag.setText("Save Profile");
                     editStatus = !editStatus;
-                }
+                } else {
+                    // InfoCancelChange();
+                    InfoSave();
 
-                else {
-                       // InfoCancelChange();
-                        InfoSave();
-
-                        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-                        edit_tag.setText("Save Profile");
+                    imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+                    edit_tag.setText("Save Profile");
 
                 }
             }
         });
 
 
-            final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
@@ -1053,7 +1223,6 @@ setViews();
 
     }
 
-
     private void setupViewPager(ViewPager viewPager) {
 
         Adapter adapter = new Adapter(getChildFragmentManager());
@@ -1154,32 +1323,32 @@ setViews();
     public void onClick(View view) {
 
 
-        String[] PERMISSIONS = {Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+        String[] PERMISSIONS = {Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
         switch (view.getId()) {
 
-           // case R.id.imgVideo:
+            // case R.id.imgVideo:
             case R.id.header_cover_video:
 
-                if(!hasPermissions(getActivity(),PERMISSIONS)){
+                if (!hasPermissions(getActivity(), PERMISSIONS)) {
                     requestPermissions(PERMISSIONS, 20);
-                }else {
+                } else {
                     Intent chooseVideoIntent = getPickImageIntent(getActivity().getApplicationContext(), "videoIntent");
-                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
 
                 }
                 break;
             case R.id.row_icon:
                 //if (editStatus) {
-                    if(!hasPermissions(getActivity(),PERMISSIONS)){
-                        requestPermissions(PERMISSIONS, 21);
-                    }else {
-                        Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
-                        chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+                if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                    requestPermissions(PERMISSIONS, 21);
+                } else {
+                    Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
+                    chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
-                        startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
-                    }
+                    startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
+                }
 
                 //}
                 break;
@@ -1238,7 +1407,7 @@ setViews();
     private void playVideo(String videoURL) {
 
 
-        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL),dataSourceFactory,extractorsFactory,null,null);
+        MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(videoURL), dataSourceFactory, extractorsFactory, null, null);
 
 
         playerView.setPlayer(exoPlayer);
@@ -1249,9 +1418,7 @@ setViews();
         exoPlayer.setVolume(0);
     }
 
-
-    private void playVideoFromFile(Uri fileURL){
-
+    private void playVideoFromFile(Uri fileURL) {
 
 
         DataSpec dataSpec = new DataSpec(fileURL);
@@ -1294,15 +1461,12 @@ setViews();
         startActivityForResult(galleryIntent, PICK_VIDEO_REQUEST);
     }
 
-
-    private boolean checkExternalDrivePermission(final int type){
+    private boolean checkExternalDrivePermission(final int type) {
 
         int currentAPIVersion = Build.VERSION.SDK_INT;
-        if(currentAPIVersion>=android.os.Build.VERSION_CODES.M)
-        {
-            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ||(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED))
-            {
-                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(),Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
+        if (currentAPIVersion >= android.os.Build.VERSION_CODES.M) {
+            if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) || (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                if ((ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)) || (ActivityCompat.shouldShowRequestPermissionRationale(getActivity(), Manifest.permission.WRITE_EXTERNAL_STORAGE))) {
                     AlertDialog.Builder alertBuilder = new AlertDialog.Builder(getActivity());
                     alertBuilder.setCancelable(true);
                     alertBuilder.setTitle("Permission necessary");
@@ -1310,13 +1474,13 @@ setViews();
                     alertBuilder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
                         public void onClick(DialogInterface dialog, int which) {
-                            requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                         }
                     });
                     AlertDialog alert = alertBuilder.create();
                     alert.show();
                 } else {
-                    requestPermissions( new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
+                    requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE}, type);
                 }
                 return false;
             } else {
@@ -1336,8 +1500,8 @@ setViews();
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Intent chooseImageIntent =  getPickImageIntent(getActivity().getApplicationContext(),"imageIntent");
-                    chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+                    Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
+                    chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
 
@@ -1358,13 +1522,13 @@ setViews();
                 }
                 return;
             }
-            case 20:{
+            case 20: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
 
-                    Intent chooseVideoIntent =  getPickImageIntent(getActivity().getApplicationContext(),"videoIntent");
-                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+                    Intent chooseVideoIntent = getPickImageIntent(getActivity().getApplicationContext(), "videoIntent");
+                    chooseVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
                     startActivityForResult(chooseVideoIntent, PICK_VIDEO_REQUEST);
 
@@ -1386,7 +1550,7 @@ setViews();
                 }
                 return;
             }
-            case REQUEST_SAVEIMGTODRIVE:{
+            case REQUEST_SAVEIMGTODRIVE: {
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
@@ -1412,7 +1576,7 @@ setViews();
                 }
                 return;
             }
-            default:{
+            default: {
                 super.onRequestPermissionsResult(requestCode, permissions, grantResults);
                 return;
             }
@@ -1423,18 +1587,13 @@ setViews();
         }
     }
 
-
-
-
-
     private void editCustomView() {
 
-      //  imgVideo.setVisibility(View.VISIBLE);
+        //  imgVideo.setVisibility(View.VISIBLE);
         //profile_img_editIcon.setVisibility(View.VISIBLE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
         edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
     }
-
 
     public void updateLabel() {
         String myFormat = "MM-dd-yyyy"; //In which you need put here
@@ -1442,20 +1601,17 @@ setViews();
         editDob.setText(sdf.format(myCalendar.getTime()));
     }
 
-
-    private int getIndex(CharSequence[] items, CharSequence sequence){
-        for (int i=0;i<items.length;i++){
+    private int getIndex(CharSequence[] items, CharSequence sequence) {
+        for (int i = 0; i < items.length; i++) {
             if (items[i].equals(sequence))
                 return i;
         }
         return -1;
     }
-    // set the selected values from server int List
-    boolean[] checkedItem = new boolean[0];
-    final static CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
-    private void setSelectedToursFromServer(String selectedTours){
+
+    private void setSelectedToursFromServer(String selectedTours) {
         mToursSelectedfromServer = new ArrayList<>(Arrays.asList(selectedTours.split("\\s*,\\s*")));
-        mToursSelectedfromServer.removeAll(Arrays.asList(null,""));
+        mToursSelectedfromServer.removeAll(Arrays.asList(null, ""));
         Log.d("size", String.valueOf(mToursSelectedfromServer.size()));
         Set<String> mToursSelectedfromServerHash = new HashSet<>();
         mToursSelectedfromServerHash.addAll(mToursSelectedfromServer);
@@ -1464,46 +1620,56 @@ setViews();
         Log.d("size hash", String.valueOf(mToursSelectedfromServer.size()));
         checkedItem = new boolean[items.length];
         ListIterator<String> iterator = mToursSelectedfromServer.listIterator();
-        while(iterator.hasNext()){
-            int position = getIndex(items,iterator.next());
-            if(position != -1)
+        while (iterator.hasNext()) {
+            int position = getIndex(items, iterator.next());
+            if (position != -1)
                 checkedItem[position] = true;
             Log.d("Position", String.valueOf(position));
         }
     }
-    private void removeAlreadySelectedTourFromServerList(String tour){
-        Log.d("selected",tour);
-        for(int i=0;i<mToursSelectedfromServer.size();i++){
-            if (mToursSelectedfromServer.get(i).equals(tour)){
+
+
+    //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
+    //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
+
+
+    // TODO: Rename method, update argument and hook method into UI event
+
+    private void removeAlreadySelectedTourFromServerList(String tour) {
+        Log.d("selected", tour);
+        for (int i = 0; i < mToursSelectedfromServer.size(); i++) {
+            if (mToursSelectedfromServer.get(i).equals(tour)) {
                 mToursSelectedfromServer.remove(i);
-                Log.d("selected", String.valueOf(mToursSelectedfromServer.size()));
+                Log.d("removedFromList", String.valueOf(mToursSelectedfromServer.size()));
             }
         }
     }
-    boolean unchecked = false;
+
     public void toursPlayed() {
-       // final CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
+        // final CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
 
         final ArrayList seletedItems = new ArrayList();
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
-                .setMultiChoiceItems(items,checkedItem, new DialogInterface.OnMultiChoiceClickListener() {
+                .setMultiChoiceItems(items, checkedItem, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked) {
                             // If the user checked the item, add it to the selected items
                             seletedItems.add(indexSelected);
-
+                            checkedItem[indexSelected] = true;
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
                             seletedItems.remove(Integer.valueOf(indexSelected));
+                            checkedItem[indexSelected] =  false;
                             Log.d("removed_selected","seletedItems");
                         }else {
                             removeAlreadySelectedTourFromServerList(items[indexSelected].toString());
                             unchecked = true;
-                            Log.d("removed_selected","serverItemsCalled");
+                            checkedItem[indexSelected] =  false;
+                            Log.d("uncheck","called");
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -1511,12 +1677,7 @@ setViews();
                     public void onClick(DialogInterface dialog, int id) {
 
                         // Edit Text and array list should be cleared on every Tour selection
-                       // mToursPlayed.clear()
 
-                        if(seletedItems.size() == 0){
-                            if (!unchecked)
-                            return;
-                        }
                         editPlayed.setText("");
                         Set<String> mToursPlayedHash = new HashSet<>();
                         for(int i = 0;i<mToursSelectedfromServer.size();i++){
@@ -1529,18 +1690,15 @@ setViews();
                             Log.d("selectedTours", String.valueOf(mToursPlayed.size()));
                         }
                         mToursPlayedHash.addAll(mToursPlayed);
-                          //  mToursPlayed.addAll(mToursSelectedfromServer);
-                        // For setting the multiple value in editPlayed set Text
                         mToursPlayed.clear();
                         mToursPlayed.addAll(mToursPlayedHash);
                         Log.d("selectedToursHash", String.valueOf(mToursPlayed.size()));
                         if (mToursPlayed.size()!=0){
                             for(int i = 0;i<mToursPlayed.size();i++){
-                                editPlayed.append(mToursPlayed.get(i)+",");
-                                /*if (i != mToursPlayed.size()-1)
+                                if (i != mToursPlayed.size()-1)
                                     editPlayed.append(mToursPlayed.get(i)+",");
                                 else
-                                    editPlayed.append(mToursPlayed.get(i)+"");*/
+                                    editPlayed.append(mToursPlayed.get(i)+"");
                             }
                         }
                         //editPlayed.setText(selectedTours);
@@ -1563,25 +1721,26 @@ setViews();
         });
 
         dialog.show();
-        unchecked =false;
+        unchecked = false;
 
     }
 
-    private void reloadFragment(){
-        if(getActivity() instanceof TabActivity){
-            TabActivity tabActivity = (TabActivity)getActivity();
+    private void reloadFragment() {
+        if (getActivity() instanceof TabActivity) {
+            TabActivity tabActivity = (TabActivity) getActivity();
             tabActivity.loadProfileFragment();
         }
     }
+
     private void editBasicInfo() {
 
         //Profile image edit icon active
 
         imgProfile.setClickable(true);
-      //  imgVideo.setClickable(true);
+        //  imgVideo.setClickable(true);
         btnsBottom.setVisibility(View.VISIBLE);
         more_info_btns_bottom.setVisibility(View.VISIBLE);
-    //    profile_img_editIcon.setVisibility(View.VISIBLE);
+        //    profile_img_editIcon.setVisibility(View.VISIBLE);
 
 
         editFname.setEnabled(true);
@@ -1605,16 +1764,16 @@ setViews();
 //        editPassword.setEnabled(true);
 //        editPassword.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
 
-        editLname.setFilters(new InputFilter[] {
+        editLname.setFilters(new InputFilter[]{
                 new InputFilter() {
                     @Override
                     public CharSequence filter(CharSequence cs, int start,
                                                int end, Spanned spanned, int dStart, int dEnd) {
                         // TODO Auto-generated method stub
-                        if(cs.equals("")){ // for backspace
+                        if (cs.equals("")) { // for backspace
                             return cs;
                         }
-                        if(cs.toString().matches("[a-zA-Z ]+")){
+                        if (cs.toString().matches("[a-zA-Z ]+")) {
                             return cs;
                         }
                         return "";
@@ -1700,6 +1859,64 @@ setViews();
 
     }
 
+
+    //Get User Details Api
+
+/*
+    private void updateUserDetails(JSONObject object) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+*/
+
+    //Update User Details
+
     //Saving information after edit
     public void InfoSave() {
 
@@ -1707,9 +1924,9 @@ setViews();
 
         if (!validate()) {
 
-           // imgProfile.setClickable(false);
-          //  profile_img_editIcon.setVisibility(View.GONE);
-          //  imgVideo.setVisibility(View.GONE);
+            // imgProfile.setClickable(false);
+            //  profile_img_editIcon.setVisibility(View.GONE);
+            //  imgVideo.setVisibility(View.GONE);
             btnsBottom.setVisibility(View.GONE);
             imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
             edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
@@ -1808,23 +2025,23 @@ setViews();
             imageView3.setVisibility(View.GONE);
             String dateOb = editDob.getText().toString();
 
-           // Log.d("date--",c);
+            // Log.d("date--",c);
 
             //long date = Long.parseLong(dateOb);
-           // DateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy",
-           //         Locale.ENGLISH);
+            // DateFormat sdf = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy",
+            //         Locale.ENGLISH);
 
-          //  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            //  DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-            Date date=null;
-            Date dateLong=null;
+            Date date = null;
+            Date dateLong = null;
             String stringDate = null;
             try {
 
                 date = new SimpleDateFormat("MM-dd-yyyy").parse(dateOb);
 
                 SimpleDateFormat dateFormat = new SimpleDateFormat(
-                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'",Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
+                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
                 stringDate = dateFormat.format(date);
 
                 dateLong = dateFormat.parse(stringDate);
@@ -1843,17 +2060,17 @@ setViews();
                 object.put("firstName", editFname.getText().toString().trim());
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
-                object.put("dob",stringDate);
+                object.put("dob", stringDate);
                 object.put("city", location.toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
-                object.put("imageUrl",userDataModel.getImageUrl().trim());
-                object.put("videoUrl",userDataModel.getVideoUrl().trim());
-                object.put("userType",userDataModel.getUserType().trim());
-                object.put("langKey",userDataModel.getLangKey().trim());
-                object.put("fcmToken",userDataModel.getFcmToken().trim());
-                object.put("email",userDataModel.getEmail().trim());
-                object.put("deviceId",userDataModel.getDeviceId().trim());
-                object.put("authToken",userDataModel.getAuthToken().trim());
+                object.put("imageUrl", userDataModel.getImageUrl().trim());
+                object.put("videoUrl", userDataModel.getVideoUrl().trim());
+                object.put("userType", userDataModel.getUserType().trim());
+                object.put("langKey", userDataModel.getLangKey().trim());
+                object.put("fcmToken", userDataModel.getFcmToken().trim());
+                object.put("email", userDataModel.getEmail().trim());
+                object.put("deviceId", userDataModel.getDeviceId().trim());
+                object.put("authToken", userDataModel.getAuthToken().trim());
 //                object.put("city",userDataModel.getLocation().trim());
 
             } catch (JSONException e) {
@@ -1866,60 +2083,60 @@ setViews();
                 jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
                 jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
                 jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());
-                jsonObjectMore.put("collage",0);
+                jsonObjectMore.put("collage", 0);
                 jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
                 jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
                 jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
                 jsonObjectMore.put("courtSidePreference", spinnerPref.getSelectedItem());
-                jsonObjectMore.put("description",0);
-                jsonObjectMore.put("division",0);
+                jsonObjectMore.put("description", 0);
+                jsonObjectMore.put("division", 0);
                 jsonObjectMore.put("experience", spinnerExp.getSelectedItem());
-                jsonObjectMore.put("fundingStatus",0);
+                jsonObjectMore.put("fundingStatus", 0);
                 jsonObjectMore.put("height", editHeight.getSelectedItem());
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
                 jsonObjectMore.put("highestTourRatingEarned", spinnerTourRating.getSelectedItem());
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
-                jsonObjectMore.put("numOfAthlets",0);
+                jsonObjectMore.put("numOfAthlets", 0);
                 jsonObjectMore.put("position", spinnerPositon.getSelectedItem());
-                jsonObjectMore.put("programsOffered",0);
-                jsonObjectMore.put("shareAthlets",0);
+                jsonObjectMore.put("programsOffered", 0);
+                jsonObjectMore.put("shareAthlets", 0);
                 StringBuffer topFinishes = new StringBuffer();
                 // jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+",
                 // "+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
-                if(!topfinishes_txt_1.getText().toString().trim().isEmpty()){
-                    topFinishes.append(topfinishes_txt_1.getText().toString().trim()+",");
+                if (!topfinishes_txt_1.getText().toString().trim().isEmpty()) {
+                    topFinishes.append(topfinishes_txt_1.getText().toString().trim() + ",");
                 }
-                if (!topfinishes_txt_2.getText().toString().trim().isEmpty()){
-                    topFinishes.append(topfinishes_txt_2.getText().toString().trim()+",");
+                if (!topfinishes_txt_2.getText().toString().trim().isEmpty()) {
+                    topFinishes.append(topfinishes_txt_2.getText().toString().trim() + ",");
                 }
-                if (!topfinishes_txt_3.getText().toString().trim().isEmpty()){
+                if (!topfinishes_txt_3.getText().toString().trim().isEmpty()) {
                     topFinishes.append(topfinishes_txt_3.getText().toString().trim());
                 }
-                jsonObjectMore.put("topFinishes",topFinishes.toString());
+                jsonObjectMore.put("topFinishes", topFinishes.toString());
                 jsonObjectMore.put("totalPoints", editPoints.getText().toString().trim());
                 jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue);
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
                 jsonObjectMore.put("willingToTravel", spinnerWtoTravel.getSelectedItem());
-                jsonObjectMore.put("yearsRunning",0);
+                jsonObjectMore.put("yearsRunning", 0);
 
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             //update user fields
-            JSONObject jsonallobj =new JSONObject();
+            JSONObject jsonallobj = new JSONObject();
             try {
-                jsonallobj.put("userInputDto",object);
-                jsonallobj.put("userProfileDto",jsonObjectMore);
+                jsonallobj.put("userInputDto", object);
+                jsonallobj.put("userProfileDto", jsonObjectMore);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
             updateAllUserDetails(jsonallobj);
 
-        }else{
+        } else {
 
-            editStatus=true;
+            editStatus = true;
             imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
             edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
             edit_tag.setText("Save Profile");
@@ -1931,7 +2148,6 @@ setViews();
 
 
     }
-
 
     private boolean validate() {
         isValidate = false;
@@ -1952,9 +2168,9 @@ setViews();
         } else if (editDob.getText().toString().trim().matches("")) {
             editDob.setError("Please enter your dob");
             isValidate = true;
-        } else if (!editPhone.getText().toString().trim().isEmpty()){
+        } else if (!editPhone.getText().toString().trim().isEmpty()) {
             String mobile = editPhone.getText().toString();
-            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mobile)){
+            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN, mobile)) {
                 editPhone.setError(getString(R.string.mobilerror));
                 isValidate = true;
             }
@@ -1969,8 +2185,7 @@ setViews();
         return isValidate;
     }
 
-
-    private void nullCheck(){
+    private void nullCheck() {
 
     }
 
@@ -1982,11 +2197,10 @@ setViews();
         awesomeValidation.addValidation(getActivity(), R.id.txtv_mobileno, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
     }
 
-
     public void InfoCancelChange() {
 
-      //  profile_img_editIcon.setVisibility(View.GONE);
-      //  imgVideo.setVisibility(View.GONE);
+        //  profile_img_editIcon.setVisibility(View.GONE);
+        //  imgVideo.setVisibility(View.GONE);
         btnsBottom.setVisibility(View.GONE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
@@ -2092,27 +2306,23 @@ setViews();
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
     }
+    //Camera Functionality
+
+    //Intent Chooser
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-
-    //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
-    //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK || resultCode==-1) {
+        if (resultCode == Activity.RESULT_OK || resultCode == -1) {
 
-            if(requestCode == PICK_IMAGE_REQUEST) {
+            if (requestCode == PICK_IMAGE_REQUEST) {
 
                 if (data.hasExtra("data")) {
-                    profilePhoto= (Bitmap) data.getExtras().get("data");
+                    profilePhoto = (Bitmap) data.getExtras().get("data");
 
                     selectedImageUri = getImageUri(getApplicationContext(), profilePhoto);
                 } else {
@@ -2136,39 +2346,35 @@ setViews();
                         imageUri = getRealPathFromURI(selectedImageUri);
                         Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
 
-                        createDirectoryAndSaveFile(selectedImageUri, imgfile.getName(),"image");
+                        createDirectoryAndSaveFile(selectedImageUri, imgfile.getName(), "image");
 
                     } else {
                         Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if(imageUri!=null || videoUri!=null) {
+                if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
                 }
-            }
-            else if(requestCode == PICK_VIDEO_REQUEST){
+            } else if (requestCode == PICK_VIDEO_REQUEST) {
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 Uri picUri = data.getData();
 
 //                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
-                selectedVideoUri=data.getData();
-
-
-
+                selectedVideoUri = data.getData();
 
 
                 if (selectedVideoUri != null) {
 
                     // File file = new File(String.valueOf(getPath(selectedVideoUri)));
-                    File file = new File(SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri));
+                    File file = new File(SelectedFilePath.getPath(getApplicationContext(), selectedVideoUri));
                     exoPlayer.stop();
                     Uri uri = Uri.fromFile(file);    //Uri.parse(getPath(selectedVideoUri));
                     playVideoFromFile(uri);
 
                     if (fileSize(file.length()) <= 30 && videoDuration <= 30) {
                         videoUri = getPath(selectedVideoUri);
-                        createDirectoryAndSaveFile(selectedVideoUri,file.getName(),"video");
+                        createDirectoryAndSaveFile(selectedVideoUri, file.getName(), "video");
 
                         //imgVideo.setVisibility(View.VISIBLE);
                         //imgPlay.setVisibility(View.VISIBLE);
@@ -2179,15 +2385,14 @@ setViews();
                         Toast.makeText(getActivity(), "Aw!! Video is too large", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if(imageUri!=null || videoUri!=null) {
+                if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
                 }
 
 
-
             }
 
-            if(imageUri!=null || videoUri!=null) {
+            if (imageUri != null || videoUri != null) {
                 uploadImgFiles(imageUri, videoUri, user_id);
 
             }
@@ -2195,7 +2400,7 @@ setViews();
     }
 
     //Method for check the size of the selected file
-    private float fileSize(long fileLength){
+    private float fileSize(long fileLength) {
         long fileSizeInBytes = fileLength;
         // Convert the bytes to Kilobytes (1 KB = 1024 Bytes)
         long fileSizeInKB = fileSizeInBytes / 1024;
@@ -2206,10 +2411,14 @@ setViews();
     }
 
 
+/*
+*  Methods for convert the camera image
+*
+* */
 
-    private void uploadImgFiles(final String imagePath,final String videoPath,final String userId) {
+    private void uploadImgFiles(final String imagePath, final String videoPath, final String userId) {
 
-        if(!progress.isShowing()) {
+        if (!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
@@ -2222,11 +2431,11 @@ setViews();
         asyncTask.setListener(new PhotoAsyncTask.PhotoAsyncTaskListener() {
             @Override
             public void onPhotoAsyncTaskFinished(HttpEntity value) {
-                if(value!=null){
-                    videoUri=null;
-                    imageUri=null;
+                if (value != null) {
+                    videoUri = null;
+                    imageUri = null;
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
                     reloadFragment();
 
                 }
@@ -2236,10 +2445,6 @@ setViews();
         asyncTask.execute();
 
     }
-
-
-
-
 
     // UPDATED!
     public String getPath(Uri uri) {
@@ -2262,16 +2467,16 @@ setViews();
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.d("response get account--", response.toString());
-                        if(response!=null) {
+                        if (response != null) {
                             try {
                                 userDataModel = new UserDataModel();
                                 userDataModel.setId(response.getString("id"));
                                 userDataModel.setFirstName(response.getString("firstName"));
                                 userDataModel.setLastName(response.getString("lastName"));
                                 userDataModel.setGender(response.getString("gender"));
-if(response.getString("dob")!=null) {
-    userDataModel.setDob(response.getString("dob"));
-}
+                                if (response.getString("dob") != null) {
+                                    userDataModel.setDob(response.getString("dob"));
+                                }
                                 userDataModel.setCity(response.getString("city"));
                                 userDataModel.setPhoneNumber(response.getString("phoneNumber"));
                                 userDataModel.setLangKey(response.getString("langKey"));
@@ -2369,66 +2574,8 @@ if(response.getString("dob")!=null) {
 
     }
 
-
-    //Get User Details Api
-
-/*
-    private void updateUserDetails(JSONObject object) {
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String json = null;
-                Log.d("error--", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    switch (response.statusCode) {
-                        case 401:
-                            json = new String(response.data);
-                            json = trimMessage(json, "detail");
-                            if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonObjectRequest.toString());
-        requestQueue.add(jsonObjectRequest);
-
-    }
-*/
-
-    //Update User Details
-
     private void updateAllUserDetails(JSONObject object) {
-        if(!progress.isShowing()) {
+        if (!progress.isShowing()) {
             progress.setTitle("Loading");
 
             progress.setMessage("Please wait while we save your data");
@@ -2444,33 +2591,33 @@ if(response.getString("dob")!=null) {
                             if (getActivity() != null) {
 
                                 edit_tag.setText("Edit Profile");
-                                editStatus=false;
+                                editStatus = false;
                                 if (userDataModel.getImageUrl() != null) {
-                                    File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+getString(R.string.app_name)+"/"+userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
+                                    File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
 
-                                    if(myFile.exists()){
+                                    if (myFile.exists()) {
                                         Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
 
 
                                     }
-                                   // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
+                                    // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
 
-                                  //  }
-                                  //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
-                                }else {
+                                    //  }
+                                    //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                                } else {
                                     imgProfile.setImageResource(R.drawable.ic_person);
                                 }
                                 if (userDataModel.getVideoUrl() != null) {
-                                   // playVideo(userDataModel.getVideoUrl());
+                                    // playVideo(userDataModel.getVideoUrl());
                                 }
 
                                 progress.dismiss();
-                                Toast.makeText(getActivity(),"Successfully updated your details",Toast.LENGTH_LONG).show();
+                                Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_LONG).show();
                                 reloadFragment();
                             }
-                        }else {
+                        } else {
                             progress.dismiss();
-                            Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -2480,9 +2627,9 @@ if(response.getString("dob")!=null) {
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
 
-                videoUri=null;
-                imageUri=null;
-                Toast.makeText(getActivity(),"Failed to update your details",Toast.LENGTH_LONG).show();
+                videoUri = null;
+                imageUri = null;
+                Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -2519,8 +2666,7 @@ if(response.getString("dob")!=null) {
         requestQueue.add(jsonObjectRequest);
 
     }
-    File myProfileImageFile;
-    File myProfileVideFile;
+
     @SuppressLint("NewApi")
     private void setViews() {
         if (getActivity() != null) {
@@ -2533,146 +2679,146 @@ if(response.getString("dob")!=null) {
                         String exactImageName = imagePathArray[1];
 
                         Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
-                         myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image"+"/" +exactImageName);
+                        myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
 
                         if (myProfileImageFile.exists()) {
                             Glide.with(ProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
                         } else {
                             Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
 
-                            new DownloadFileFromURL(exactImageName,"image").execute(userDataModel.getImageUrl());
+                            new DownloadFileFromURL(exactImageName, "image").execute(userDataModel.getImageUrl());
 
 
                         }
                     }
 
-                    } else {
-                        imgProfile.setImageResource(R.drawable.ic_person);
-                    }
-                    if (userDataModel.getVideoUrl() != null && !userDataModel.getVideoUrl().equalsIgnoreCase("null")) {
-                        String videoName = userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1);
-                        String[] videoPathArray = videoName.split("-");
-                        if (videoPathArray != null && videoPathArray.length >= 0) {
-                            String exactVideoName = videoPathArray[1];
+                } else {
+                    imgProfile.setImageResource(R.drawable.ic_person);
+                }
+                if (userDataModel.getVideoUrl() != null && !userDataModel.getVideoUrl().equalsIgnoreCase("null")) {
+                    String videoName = userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1);
+                    String[] videoPathArray = videoName.split("-");
+                    if (videoPathArray != null && videoPathArray.length >= 0) {
+                        String exactVideoName = videoPathArray[1];
 
-                            Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
-                            myProfileVideFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video"+"/"+exactVideoName);
+                        Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
+                        myProfileVideFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video" + "/" + exactVideoName);
 
-                            if (myProfileVideFile.exists()) {
-                                playVideoFromFile(Uri.parse(myProfileVideFile.getPath()));
-                            } else {
-                                playVideo(userDataModel.getVideoUrl());
-                                new DownloadFileFromURL(exactVideoName,"video").execute(userDataModel.getVideoUrl());
+                        if (myProfileVideFile.exists()) {
+                            playVideoFromFile(Uri.parse(myProfileVideFile.getPath()));
+                        } else {
+                            playVideo(userDataModel.getVideoUrl());
+                            new DownloadFileFromURL(exactVideoName, "video").execute(userDataModel.getVideoUrl());
 
-                            }
                         }
                     }
-                    if (userDataModel.getToursPlayedIn() != null || !userDataModel.getToursPlayedIn().isEmpty()){
-                        setSelectedToursFromServer(userDataModel.getToursPlayedIn());
-                    }
-                    profileName.setText(userDataModel.getFirstName().trim());
-                    profileDesig.setText(userDataModel.getUserType().trim());
-                    editLname.setText(userDataModel.getLastName().trim());
-                    editFname.setText(userDataModel.getFirstName().trim());
-                    editGender.setText(userDataModel.getGender().trim());
-                    location = userDataModel.getCity().trim();
-                    if (location != null) {
-                        int positions = dataAdapter.getPosition(location);
-                        editCity.setSelection(positions);
-                    }
-                    //Long value to date conversion
-                if(userDataModel.getDob().trim()!=null && !userDataModel.getDob().equals("null")) {
+                }
+                if (userDataModel.getToursPlayedIn() != null || !userDataModel.getToursPlayedIn().isEmpty()) {
+                    setSelectedToursFromServer(userDataModel.getToursPlayedIn());
+                }
+                profileName.setText(userDataModel.getFirstName().trim());
+                profileDesig.setText(userDataModel.getUserType().trim());
+                editLname.setText(userDataModel.getLastName().trim());
+                editFname.setText(userDataModel.getFirstName().trim());
+                editGender.setText(userDataModel.getGender().trim());
+                location = userDataModel.getCity().trim();
+                if (location != null) {
+                    int positions = dataAdapter.getPosition(location);
+                    editCity.setSelection(positions);
+                }
+                //Long value to date conversion
+                if (userDataModel.getDob().trim() != null && !userDataModel.getDob().equals("null")) {
                     SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
                     long dob = Long.parseLong(userDataModel.getDob());
                     Date date_dob = new Date(dob);
                     editDob.setText(dft.format(date_dob));
                 }
-                    editPhone.setText(userDataModel.getPhoneNumber());
-                    //set More information
-                    if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {
-                        editCBVAFName.setText(userDataModel.getCbvaFirstName());
-                    }
-                    if (userDataModel.getCbvaLastName() != "null" | userDataModel.getCbvaLastName() != null) {
-                        editCBVALName.setText(userDataModel.getCbvaLastName());
-                    }
-                    if (userDataModel.getCbvaPlayerNumber() != "null" || userDataModel.getCbvaPlayerNumber() != null) {
-                        editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
-                    }
-                    if (userDataModel.getCollageClub() != "null" || userDataModel.getCollageClub() != null) {
-                        editColgClub.setText(userDataModel.getCollageClub());
-                    }
-                    if (userDataModel.getCollegeBeach() != "null" || userDataModel.getCollegeBeach() != null) {
-                        editColgBeach.setText(userDataModel.getCollegeBeach());
-                    }
-                    if (userDataModel.getCollegeIndoor() != "null" || userDataModel.getCollegeIndoor() != null) {
-                        editColgIndoor.setText(userDataModel.getCollegeIndoor());
-                    }
-                    if (userDataModel.getHighSchoolAttended() != "null" || userDataModel.getHighSchoolAttended() != null) {
-                        editHighschool.setText(userDataModel.getHighSchoolAttended());
-                    }
-                    if (userDataModel.getIndoorClubPlayed() != "null" || userDataModel.getIndoorClubPlayed() != null) {
-                        editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
-                    }
-                    if (userDataModel.getTotalPoints() != "null" || userDataModel.getTotalPoints() != null) {
-                        editPoints.setText(userDataModel.getTotalPoints());
-                    }
-                    if (userDataModel.getToursPlayedIn() != "null" || userDataModel.getToursPlayedIn() != null) {
-                        editPlayed.setText(userDataModel.getToursPlayedIn());
-                    }
-                    if (userDataModel.getUsaVolleyballRanking() != "null" || userDataModel.getUsaVolleyballRanking() != null) {
-                        edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
-                    }
+                editPhone.setText(userDataModel.getPhoneNumber());
+                //set More information
+                if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {
+                    editCBVAFName.setText(userDataModel.getCbvaFirstName());
+                }
+                if (userDataModel.getCbvaLastName() != "null" | userDataModel.getCbvaLastName() != null) {
+                    editCBVALName.setText(userDataModel.getCbvaLastName());
+                }
+                if (userDataModel.getCbvaPlayerNumber() != "null" || userDataModel.getCbvaPlayerNumber() != null) {
+                    editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
+                }
+                if (userDataModel.getCollageClub() != "null" || userDataModel.getCollageClub() != null) {
+                    editColgClub.setText(userDataModel.getCollageClub());
+                }
+                if (userDataModel.getCollegeBeach() != "null" || userDataModel.getCollegeBeach() != null) {
+                    editColgBeach.setText(userDataModel.getCollegeBeach());
+                }
+                if (userDataModel.getCollegeIndoor() != "null" || userDataModel.getCollegeIndoor() != null) {
+                    editColgIndoor.setText(userDataModel.getCollegeIndoor());
+                }
+                if (userDataModel.getHighSchoolAttended() != "null" || userDataModel.getHighSchoolAttended() != null) {
+                    editHighschool.setText(userDataModel.getHighSchoolAttended());
+                }
+                if (userDataModel.getIndoorClubPlayed() != "null" || userDataModel.getIndoorClubPlayed() != null) {
+                    editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+                }
+                if (userDataModel.getTotalPoints() != "null" || userDataModel.getTotalPoints() != null) {
+                    editPoints.setText(userDataModel.getTotalPoints());
+                }
+                if (userDataModel.getToursPlayedIn() != "null" || userDataModel.getToursPlayedIn() != null) {
+                    editPlayed.setText(userDataModel.getToursPlayedIn());
+                }
+                if (userDataModel.getUsaVolleyballRanking() != "null" || userDataModel.getUsaVolleyballRanking() != null) {
+                    edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+                }
 
 
-                    String topFinishes = userDataModel.getTopFinishes();
+                String topFinishes = userDataModel.getTopFinishes();
 
 
-                    String courSidePref = userDataModel.getCourtSidePreference();
-                    if (courSidePref != null) {
-                        int courtPos = prefAdapter.getPosition(courSidePref);
-                       // spinnerPref.setSelection(courtPos);
-                        spinnerPref.setSelection (prefAdapter.getPosition(courSidePref) );
+                String courSidePref = userDataModel.getCourtSidePreference();
+                if (courSidePref != null) {
+                    int courtPos = prefAdapter.getPosition(courSidePref);
+                    // spinnerPref.setSelection(courtPos);
+                    spinnerPref.setSelection(prefAdapter.getPosition(courSidePref));
 
-                    }
-                    String exp = userDataModel.getExperience();
-                    if (exp != null) {
-                        int exper = expAdapter.getPosition(exp);
-                        spinnerExp.setSelection(exper);
-                    }
-                    String highestTER = userDataModel.getHighestTourRatingEarned();
-                    if (highestTER != null) {
-                        int hter = highestRatingAdapter.getPosition(highestTER);
-                        spinnerTourRating.setSelection(hter);
-                    }
-                    String tourIntrest = userDataModel.getTournamentLevelInterest();
-                    if (tourIntrest != null) {
-                        int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
-                        spinnerTLInterest.setSelection(tIL);
-                    }
-                    String pos = userDataModel.getPosition();
-                    if (pos != null) {
-                        int positions = positionAdapter.getPosition(pos);
-                        spinnerPositon.setSelection(positions);
-                    }
-                    String wTot = userDataModel.getWillingToTravel();
-                    if (wTot != null) {
-                        int willingTotravel = distanceAdapter.getPosition(wTot);
-                        spinnerWtoTravel.setSelection(willingTotravel);
-                    }
-                    String height = userDataModel.getHeight();
-                    if (height != null) {
-                        int heightVal = heightAdapter.getPosition(height);
-                        editHeight.setSelection(heightVal);
-                    }
-                if(userDataModel.getTopFinishes()!=null){
+                }
+                String exp = userDataModel.getExperience();
+                if (exp != null) {
+                    int exper = expAdapter.getPosition(exp);
+                    spinnerExp.setSelection(exper);
+                }
+                String highestTER = userDataModel.getHighestTourRatingEarned();
+                if (highestTER != null) {
+                    int hter = highestRatingAdapter.getPosition(highestTER);
+                    spinnerTourRating.setSelection(hter);
+                }
+                String tourIntrest = userDataModel.getTournamentLevelInterest();
+                if (tourIntrest != null) {
+                    int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
+                    spinnerTLInterest.setSelection(tIL);
+                }
+                String pos = userDataModel.getPosition();
+                if (pos != null) {
+                    int positions = positionAdapter.getPosition(pos);
+                    spinnerPositon.setSelection(positions);
+                }
+                String wTot = userDataModel.getWillingToTravel();
+                if (wTot != null) {
+                    int willingTotravel = distanceAdapter.getPosition(wTot);
+                    spinnerWtoTravel.setSelection(willingTotravel);
+                }
+                String height = userDataModel.getHeight();
+                if (height != null) {
+                    int heightVal = heightAdapter.getPosition(height);
+                    editHeight.setSelection(heightVal);
+                }
+                if (userDataModel.getTopFinishes() != null) {
 
                     String[] values = userDataModel.getTopFinishes().split(",");
-                    if(values.length == 1){
+                    if (values.length == 1) {
                         if (values[0] != null) {
                             topfinishes_txt_1.setText(values[0].trim());
                         }
                     }
-                    if(values.length == 2){
+                    if (values.length == 2) {
                         imageView2.setVisibility(View.GONE);
                         imageView3.setVisibility(View.GONE);
                         if (values[0] != null) {
@@ -2702,9 +2848,9 @@ if(response.getString("dob")!=null) {
                     }
                 }
 
-                }
             }
         }
+    }
 
     public void addLocation() {
         stateList.add("Alabama");
@@ -2773,32 +2919,28 @@ if(response.getString("dob")!=null) {
 
         return trimmedString;
     }
-    //Camera Functionality
 
-    //Intent Chooser
-
-    public  Intent getPickImageIntent(Context context,String type) {
+    public Intent getPickImageIntent(Context context, String type) {
         Intent chooserIntent = null;
 
         List<Intent> intentList = new ArrayList<>();
 
 
-
-        if (type.equals("videoIntent")){
+        if (type.equals("videoIntent")) {
             Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-            takeVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+            takeVideoIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Video.Media.INTERNAL_CONTENT_URI);
 
 
             if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
-                 takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,30000);
                 // takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
-                takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT,10485760L);// 10*1024*1024 = 10MB  10485760L
-                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY,0);
+                takeVideoIntent.putExtra(MediaStore.EXTRA_SIZE_LIMIT, 10485760L);// 10*1024*1024 = 10MB  10485760L
+                takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
                 takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.HEIGHT, 480);
                 takeVideoIntent.putExtra(MediaStore.Video.Thumbnails.WIDTH, 720);
 
@@ -2809,13 +2951,11 @@ if(response.getString("dob")!=null) {
             intentList = addIntentsToList(context, intentList, pickIntent);
             intentList = addIntentsToList(context, intentList, takeVideoIntent);
 
-        }else if(type.equals("imageIntent")){
-
-
+        } else if (type.equals("imageIntent")) {
 
 
             Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION|FLAG_GRANT_WRITE_URI_PERMISSION);
+            takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -2831,15 +2971,13 @@ if(response.getString("dob")!=null) {
 
 
         if (intentList.size() > 0) {
-            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1),"");
+            chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1), "");
             // context.getString(R.string.pick_image_intent_text));
             chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, intentList.toArray(new Parcelable[]{}));
         }
 
         return chooserIntent;
     }
-
-
 
     public boolean hasPermissions(Context context, String... permissions) {
         if (context != null && permissions != null) {
@@ -2853,191 +2991,27 @@ if(response.getString("dob")!=null) {
         return true;
     }
 
-
-    // method for add intent to arraylist
-    private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
-        List<ResolveInfo> resInfo = context.getPackageManager().queryIntentActivities(intent, 0);
-        for (ResolveInfo resolveInfo : resInfo) {
-            String packageName = resolveInfo.activityInfo.packageName;
-            Intent targetedIntent = new Intent(intent);
-            targetedIntent.setPackage(packageName);
-            list.add(targetedIntent);
-            //Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
-        }
-        return list;
-    }
-
-
-/*
-*  Methods for convert the camera image
-*
-* */
-
-
-    public static Bitmap getImageFromResult(Context context, int resultCode,
-                                            Intent imageReturnedIntent) {
-        Log.d(TAG, "getImageFromResult, resultCode: " + resultCode);
-        Bitmap bm = null;
-        File imageFile = getTempFile(context);
-        if (resultCode == Activity.RESULT_OK) {
-            Uri selectedImage;
-            boolean isCamera = (imageReturnedIntent == null ||
-                    imageReturnedIntent.getData() == null  ||
-                    imageReturnedIntent.getData().toString().contains(imageFile.toString()));
-            if (isCamera) {     /** CAMERA **/
-                selectedImage = Uri.fromFile(imageFile);
-            } else {            /** ALBUM **/
-                selectedImage = imageReturnedIntent.getData();
-            }
-            Log.d(TAG, "selectedImage: " + selectedImage);
-
-            bm = getImageResized(context, selectedImage);
-            int rotation = getRotation(context, selectedImage, isCamera);
-            bm = rotate(bm, rotation);
-        }
-        return bm;
-    }
-
-
-    private static File getTempFile(Context context) {
-        File imageFile = new File(context.getExternalCacheDir(), "BpProfileImage");
-        imageFile.getParentFile().mkdirs();
-        return imageFile;
-    }
-
-    private static Bitmap decodeBitmap(Context context, Uri theUri, int sampleSize) {
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = sampleSize;
-
-        AssetFileDescriptor fileDescriptor = null;
-        try {
-            fileDescriptor = context.getContentResolver().openAssetFileDescriptor(theUri, "r");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        Bitmap actuallyUsableBitmap = BitmapFactory.decodeFileDescriptor(
-                fileDescriptor.getFileDescriptor(), null, options);
-
-        Log.d(TAG, options.inSampleSize + " sample method bitmap ... " +
-                actuallyUsableBitmap.getWidth() + " " + actuallyUsableBitmap.getHeight());
-
-        return actuallyUsableBitmap;
-    }
-
-    /**
-     * Resize to avoid using too much memory loading big images (e.g.: 2560*1920)
-     **/
-    private static Bitmap getImageResized(Context context, Uri selectedImage) {
-        Bitmap bm = null;
-        int[] sampleSizes = new int[]{5, 3, 2, 1};
-        int i = 0;
-        do {
-            bm = decodeBitmap(context, selectedImage, sampleSizes[i]);
-            Log.d(TAG, "resizer: new bitmap width = " + bm.getWidth());
-            i++;
-        } while (bm.getWidth() < 1024 && i < sampleSizes.length);
-        return bm;
-    }
-
-
-    private static int getRotation(Context context, Uri imageUri, boolean isCamera) {
-        int rotation;
-        if (isCamera) {
-            rotation = getRotationFromCamera(context, imageUri);
-        } else {
-            rotation = getRotationFromGallery(context, imageUri);
-        }
-        Log.d(TAG, "Image rotation: " + rotation);
-        return rotation;
-    }
-
-    private static int getRotationFromCamera(Context context, Uri imageFile) {
-        int rotate = 0;
-        try {
-
-            context.getContentResolver().notifyChange(imageFile, null);
-            ExifInterface exif = new ExifInterface(imageFile.getPath());
-            int orientation = exif.getAttributeInt(
-                    ExifInterface.TAG_ORIENTATION,
-                    ExifInterface.ORIENTATION_NORMAL);
-
-            switch (orientation) {
-                case ExifInterface.ORIENTATION_ROTATE_270:
-                    rotate = 270;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_180:
-                    rotate = 180;
-                    break;
-                case ExifInterface.ORIENTATION_ROTATE_90:
-                    rotate = 90;
-                    break;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return rotate;
-    }
-
-    public static int getRotationFromGallery(Context context, Uri imageUri) {
-        int result = 0;
-        String[] columns = {MediaStore.Images.Media.ORIENTATION};
-        Cursor cursor = null;
-        try {
-            cursor = context.getContentResolver().query(imageUri, columns, null, null, null);
-            if (cursor != null && cursor.moveToFirst()) {
-                int orientationColumnIndex = cursor.getColumnIndex(columns[0]);
-                result = cursor.getInt(orientationColumnIndex);
-            }
-        } catch (Exception e) {
-            //Do nothing
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }//End of try-catch block
-        return result;
-    }
-
-
-    private static Bitmap rotate(Bitmap bm, int rotation) {
-        if (rotation != 0) {
-            Matrix matrix = new Matrix();
-            matrix.postRotate(rotation);
-            Bitmap bmOut = Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
-            return bmOut;
-        }
-        return bm;
-    }
-
-
-
-
     @SuppressLint("NewApi")
-    private String getRealPath(Uri uri){
+    private String getRealPath(Uri uri) {
         String filePath = null;
         String uriString = uri.toString();
 
-        if(uriString.startsWith("content://media")){
+        if (uriString.startsWith("content://media")) {
             filePath = getDataColumn(getActivity(), uri, null, null);
-        } else if (uriString.startsWith("file")){
+        } else if (uriString.startsWith("file")) {
             filePath = uri.getPath();
-        } else if (uriString.startsWith("content://com")){
+        } else if (uriString.startsWith("content://com")) {
             String docId = DocumentsContract.getDocumentId(uri);
             String[] split = docId.split(":");
             Uri contentUri = null;
             contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             String selection = "_id=?";
-            String[] selectionArgs = new String[] {split[1]};
+            String[] selectionArgs = new String[]{split[1]};
             filePath = getDataColumn(getActivity(), contentUri, selection, selectionArgs);
         }
 
         return filePath;
     }
-
-
-
-
 
     public Uri getImageUri(Context inContext, Bitmap inImage) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -3046,7 +3020,6 @@ if(response.getString("dob")!=null) {
         return Uri.parse(path);
     }
 
-
     public String getRealPathFromURI(Uri uri) {
         Cursor cursor = getApplicationContext().getContentResolver().query(uri, null, null, null, null);
         cursor.moveToFirst();
@@ -3054,29 +3027,227 @@ if(response.getString("dob")!=null) {
         return cursor.getString(idx);
     }
 
-
-    private MediaSource buildMediaSource(Uri uri){
+    private MediaSource buildMediaSource(Uri uri) {
         return new ExtractorMediaSource(uri,
                 new DefaultHttpDataSourceFactory("ua"),
-                new DefaultExtractorsFactory(),null,null);
+                new DefaultExtractorsFactory(), null, null);
 
     }
 
-public String isEmptyOrNull(String stringToCheck){
-       String stringValue = " ";
-    if(stringToCheck == null && stringToCheck.isEmpty()){
-        stringValue = " ";
-    }else{
-        if(stringToCheck.equalsIgnoreCase("null")){
+    public String isEmptyOrNull(String stringToCheck) {
+        String stringValue = " ";
+        if (stringToCheck == null && stringToCheck.isEmpty()) {
             stringValue = " ";
-        }else {
-            stringValue = stringToCheck;
+        } else {
+            if (stringToCheck.equalsIgnoreCase("null")) {
+                stringValue = " ";
+            } else {
+                stringValue = stringToCheck;
+            }
+        }
+        return stringValue;
+    }
+
+    //method to write profile image and video into a local file
+    private void createDirectoryAndSaveFile(Uri uri, String fileName, String fileType) {
+
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+            wallpaperDirectory.mkdirs();
+        }
+        if (fileType.equals("image")) {
+            File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
+            //File imageDirectory=null;
+            if (!profileImageDir.exists()) {
+                new File(direct, "image").mkdir();
+
+                writeImageToDirectory(fileName, uri);
+            } else {
+                String[] children = profileImageDir.list();
+                for (int i = 0; i < children.length; i++) {
+                    new File(profileImageDir, children[i]).delete();
+                }
+
+                writeImageToDirectory(fileName, uri);
+
+            }
+
+        } else {
+            InputStream inStream = null;
+            OutputStream outStream = null;
+
+            String sourcePath = SelectedFilePath.getPath(getApplicationContext(), selectedVideoUri);
+            File source = new File(sourcePath);
+
+            File profileVideoDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
+            //File imageDirectory=null;
+            if (!profileVideoDir.exists()) {
+                new File(direct, "video").mkdir();
+
+                writeVideoToDirectory(fileName, source);
+            } else {
+                String[] children = profileVideoDir.list();
+                for (int i = 0; i < children.length; i++) {
+                    new File(profileVideoDir, children[i]).delete();
+                }
+
+                writeVideoToDirectory(fileName, source);
+
+            }
+
         }
     }
-    return stringValue;
-}
+
+    private void writeVideoToDirectory(String fileName, File source) {
 
 
+        String destinationPath = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video" + "/" + fileName;
+        File destination = new File(destinationPath);
+
+        try {
+            destination.createNewFile();
+
+            FileUtils.copyFile(source, destination);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void writeImageToDirectory(String fileName, Uri uri) {
+        Bitmap mBitmap = null;
+        File file = null;
+
+        try {
+            mBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+        file = new File(new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image"), fileName);
+        if (file.exists()) {
+            file.delete();
+        }
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    public static class PhotoAsyncTask extends AsyncTask<String, String, HttpEntity> {
+        String userId;
+        String imagePath;
+        String videoPath;
+        private PhotoAsyncTaskListener listener;
+
+
+        public PhotoAsyncTask(final String imagePath, final String videoPath, final String userId) {
+            super();
+            this.userId = userId;
+            this.imagePath = imagePath;
+            this.videoPath = videoPath;
+
+            // do stuff
+        }
+
+        @Override
+        protected HttpEntity doInBackground(String... voids) {
+            try {
+                FileBody imageFile, videoFile;
+                MultipartEntity reqEntity = new MultipartEntity();
+                StringBody user_Id = new StringBody(userId);
+                reqEntity.addPart("userId", user_Id);
+
+                if (imagePath != null && videoPath != null) {
+
+                    imageFile = new FileBody(new File(imagePath));
+                    videoFile = new FileBody(new File(videoPath));
+
+
+                    reqEntity.addPart("profileImg", imageFile);
+
+
+                    reqEntity.addPart("profileVideo", videoFile);
+
+                } else if (imagePath != null && videoPath == null) {
+                    imageFile = new FileBody(new File(imagePath));
+
+                    reqEntity.addPart("profileImg", imageFile);
+
+
+                } else if (imagePath == null && videoPath != null) {
+                    videoFile = new FileBody(new File(videoPath));
+
+                    reqEntity.addPart("profileVideo", videoFile);
+
+                } else {
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(), "Profile updation failed", Toast.LENGTH_LONG).show();
+                }
+
+
+                HttpEntity result = uploadToServer(reqEntity);
+                return result;
+
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(HttpEntity result) {
+            super.onPostExecute(result);
+
+
+            if (listener != null) {
+
+                try {
+                    if (result != null) {
+                        System.out.println(EntityUtils.toString(result));
+                    } // end if
+
+                    if (result != null) {
+                        result.consumeContent();
+
+
+                    } // end if
+
+                    int success, failure;
+                    // success = resultJson.getInt("success");
+                    //failure = resultJson.getInt("failure");
+                    //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+            listener.onPhotoAsyncTaskFinished(result);
+        }
+
+        public void setListener(PhotoAsyncTaskListener listener) {
+            this.listener = listener;
+        }
+
+        public interface PhotoAsyncTaskListener {
+            void onPhotoAsyncTaskFinished(HttpEntity value);
+        }
+    }
 
     private class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -3109,277 +3280,6 @@ public String isEmptyOrNull(String stringToCheck){
         }
     }
 
-
-    //method to write profile image and video into a local file
-    private void createDirectoryAndSaveFile(Uri uri, String fileName,String fileType) {
-
-
-
-        File direct = new File(Environment.getExternalStorageDirectory()+"/"+ getString(R.string.app_name));
-
-
-
-        if (!direct.exists()) {
-            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
-            wallpaperDirectory.mkdirs();
-        }
-        if(fileType.equals("image")) {
-            File profileImageDir = new File(Environment.getExternalStorageDirectory()+"/" + getString(R.string.app_name)+"/"+"image");
-            //File imageDirectory=null;
-            if(!profileImageDir.exists()){
-                new File(direct, "image").mkdir();
-
-                writeImageToDirectory(fileName,uri);
-            }
-           else{
-                String[] children = profileImageDir.list();
-                for (int i = 0; i < children.length; i++)
-                {
-                    new File(profileImageDir, children[i]).delete();
-                }
-
-                writeImageToDirectory(fileName,uri);
-
-            }
-
-        }else {
-            InputStream inStream = null;
-            OutputStream outStream = null;
-
-            String sourcePath = SelectedFilePath.getPath(getApplicationContext(),selectedVideoUri);
-            File source = new File(sourcePath);
-
-            File profileVideoDir = new File(Environment.getExternalStorageDirectory()+"/" + getString(R.string.app_name)+"/"+"video");
-            //File imageDirectory=null;
-            if(!profileVideoDir.exists()){
-                new File(direct, "video").mkdir();
-
-                writeVideoToDirectory(fileName,source);
-            }
-            else{
-                String[] children = profileVideoDir.list();
-                for (int i = 0; i < children.length; i++)
-                {
-                    new File(profileVideoDir, children[i]).delete();
-                }
-
-                writeVideoToDirectory(fileName,source);
-
-            }
-
-        }
-    }
-
-    private void writeVideoToDirectory(String fileName, File source) {
-
-
-        String destinationPath = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+"video"+"/"+fileName;
-        File destination = new File(destinationPath);
-
-        try
-        {
-            destination.createNewFile();
-
-            FileUtils.copyFile(source, destination);
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    private void writeImageToDirectory(String fileName,Uri uri) {
-        Bitmap  mBitmap = null;
-        File file=null;
-
-        try {
-            mBitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-
-        file = new File(new File(Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+"image"), fileName);
-        if (file.exists()) {
-            file.delete();
-        }
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public static class PhotoAsyncTask extends AsyncTask<String, String, HttpEntity> {
-        private PhotoAsyncTaskListener listener;
-        String userId;
-        String imagePath;
-        String videoPath;
-
-
-        public PhotoAsyncTask(final String imagePath,final String videoPath,final String userId) {
-            super();
-            this.userId = userId;
-            this.imagePath = imagePath;
-            this.videoPath =videoPath;
-
-            // do stuff
-        }
-
-        @Override
-        protected HttpEntity doInBackground(String... voids)
-        {
-            try {
-                FileBody imageFile, videoFile;
-                MultipartEntity reqEntity = new MultipartEntity();
-                StringBody user_Id = new StringBody(userId);
-                reqEntity.addPart("userId", user_Id);
-
-                if (imagePath != null && videoPath != null) {
-
-                    imageFile = new FileBody(new File(imagePath));
-                    videoFile = new FileBody(new File(videoPath));
-
-
-                    reqEntity.addPart("profileImg", imageFile);
-
-
-                    reqEntity.addPart("profileVideo", videoFile);
-
-                }
-                else if(imagePath!=null && videoPath==null) {
-                    imageFile = new FileBody(new File(imagePath));
-
-                    reqEntity.addPart("profileImg", imageFile);
-
-
-                }else if(imagePath==null && videoPath!=null) {
-                    videoFile = new FileBody(new File(videoPath));
-
-                    reqEntity.addPart("profileVideo", videoFile);
-
-                }else{
-                    progress.dismiss();
-                    Toast.makeText(getApplicationContext(),"Profile updation failed",Toast.LENGTH_LONG).show();
-                }
-
-
-
-
-
-
-
-                HttpEntity result = uploadToServer(reqEntity);
-                return result;
-
-
-
-            }
-            catch (Exception ex) {
-                ex.printStackTrace();
-                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(HttpEntity result) {
-            super.onPostExecute(result);
-
-
-
-
-            if (listener != null) {
-
-                try {
-                    if (result != null) {
-                        System.out.println( EntityUtils.toString( result ) );
-                    } // end if
-
-                    if (result != null) {
-                        result.consumeContent( );
-
-
-
-                    } // end if
-
-                    int success, failure;
-                    // success = resultJson.getInt("success");
-                    //failure = resultJson.getInt("failure");
-                    //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                }
-            }
-
-
-
-
-
-
-
-
-
-
-            listener.onPhotoAsyncTaskFinished(result);
-        }
-
-        public void setListener(PhotoAsyncTaskListener listener) {
-            this.listener = listener;
-        }
-        public interface PhotoAsyncTaskListener {
-            void onPhotoAsyncTaskFinished(HttpEntity value);
-        }
-    }
-
-    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
-
-        HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-        try {
-            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            //throws ParseException, IOException
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(new URI("https://www.beachpartner.com/api/storage/uploadProfileData"));
-//            sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sslFactory, 443));
-
-            httppost.setEntity(reqEntity);
-
-
-
-            // DEBUG
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
-
-
-            HttpEntity resEntity = response.getEntity();
-            while(resEntity==null){
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(),"User details updation failed",Toast.LENGTH_LONG).show();
-            }
-            return resEntity;
-        }
-        catch (Exception ex) {
-            ex.printStackTrace();
-            progress.dismiss();
-            Toast.makeText(getApplicationContext(),"User details updation failed",Toast.LENGTH_LONG).show();
-        }
-        return null;
-    }
-
-
     /***
      * Download profile file from the server when the local file directory is empty
      */
@@ -3390,14 +3290,14 @@ public String isEmptyOrNull(String stringToCheck){
         private String fileType;
 
 
-        public DownloadFileFromURL(String fileName,String fileType){
-           this.fileName=fileName;
-           this.fileType=fileType;
+        public DownloadFileFromURL(String fileName, String fileType) {
+            this.fileName = fileName;
+            this.fileType = fileType;
         }
 
         /**
          * Before starting background thread
-         * */
+         */
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -3412,7 +3312,7 @@ public String isEmptyOrNull(String stringToCheck){
 
         /**
          * Downloading file in background thread
-         * */
+         */
         @Override
         protected String doInBackground(String... f_url) {
             File parentDirectory = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
@@ -3461,14 +3361,14 @@ public String isEmptyOrNull(String stringToCheck){
 
             }
 
-                return null;
-            }
+            return null;
+        }
 
-        private void downloadProfileImageAndVideo(String fileName, String fileType,String... f_url) {
+        private void downloadProfileImageAndVideo(String fileName, String fileType, String... f_url) {
             int count;
 
             try {
-                String root = Environment.getExternalStorageDirectory()+"/"+getString(R.string.app_name)+"/"+fileType+"/";
+                String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
 
                 System.out.println("Downloading");
                 URL url = new URL(f_url[0]);
@@ -3483,7 +3383,7 @@ public String isEmptyOrNull(String stringToCheck){
 
                 // Output stream to write file
 
-                OutputStream output = new FileOutputStream(root+fileName);
+                OutputStream output = new FileOutputStream(root + fileName);
                 byte data[] = new byte[1024];
 
                 long total = 0;
@@ -3510,7 +3410,7 @@ public String isEmptyOrNull(String stringToCheck){
 
         /**
          * After completing background task
-         * **/
+         **/
         @Override
         protected void onPostExecute(String file_url) {
             System.out.println("Downloaded");
@@ -3519,9 +3419,6 @@ public String isEmptyOrNull(String stringToCheck){
         }
 
     }
-
-
-
 
 
 }

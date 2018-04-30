@@ -210,7 +210,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         Bundle data = getArguments();
         if (data != null) {
             getBpProfiles();//Method for getting next strip
-
             if (data.containsKey(AppConstants.HI_FI_LIST))
                 hifiList = data.getParcelableArrayList(AppConstants.HI_FI_LIST);
             if (data.containsKey(AppConstants.NO_LIKES_LIST))

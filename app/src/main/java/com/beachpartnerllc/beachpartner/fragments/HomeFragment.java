@@ -92,7 +92,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<String> chatList = new ArrayList<>();
     private ArrayList<BpFinderModel> likesList = new ArrayList<>();
     private ArrayList<ConnectionModel> userList = new ArrayList<>();
-
+    View ln_layout_tournamentrequestheader;
+    View ln_layout_tournamentrequestcontent;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -106,7 +107,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
-
         }
     }
 
@@ -141,16 +141,22 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         getMyTournaments();
         getConnections();
         getNumberLike();
+        setViewBasedOnUserType();
         //setUpMessage();
 
         /*getRequests();
         getPeopleWhoLiked();*/
 
-
     }
 
 
-
+    private void setViewBasedOnUserType(){
+        if (prefManager.getUserType().equals(AppConstants.USER_TYPE_ATHLETE)){
+        }else {
+            ln_layout_tournamentrequestcontent.setVisibility(View.GONE);
+            ln_layout_tournamentrequestheader.setVisibility(View.GONE);
+        }
+    }
     private void initView(View view) {
 
         //Next buttons
@@ -182,6 +188,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
         parRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_partners); //Recycler view for tournament requests
 
+
+        ln_layout_tournamentrequestheader = view.findViewById(R.id.tournament_request_header);
+        ln_layout_tournamentrequestcontent = view.findViewById(R.id.tournament_request_content);
 
         img_send.setOnClickListener(this);
         img_received.setOnClickListener(this);

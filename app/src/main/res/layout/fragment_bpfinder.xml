@@ -483,8 +483,7 @@
             app:swipeEnabled="true"
             app:swipeThreshold="0.75"
             app:topOverlay="@layout/overlay_top"
-            app:translationDiff="8"
-            app:visibleCount="4">
+            app:translationDiff="8">
 
         </com.beachpartnerllc.beachpartner.cardstackview.CardStackView>
 

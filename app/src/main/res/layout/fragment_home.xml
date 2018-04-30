@@ -358,6 +358,7 @@
         <!--  Menu Partner Intrested in-->
 
         <LinearLayout
+            android:id="@+id/tournament_request_header"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:background="@color/menubar"
@@ -435,6 +436,7 @@
         <!--Partners Intrested Box-->
 
         <LinearLayout
+            android:id="@+id/tournament_request_content"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.3">
