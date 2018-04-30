@@ -1871,21 +1871,21 @@ setViews();
                 jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
                 jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
                 jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
-                jsonObjectMore.put("courtSidePreference", spinnerPrefValue);
+                jsonObjectMore.put("courtSidePreference", spinnerPref.getSelectedItem());
                 jsonObjectMore.put("description",0);
                 jsonObjectMore.put("division",0);
                 jsonObjectMore.put("experience", spinnerExp.getSelectedItem());
                 jsonObjectMore.put("fundingStatus",0);
-                jsonObjectMore.put("height", editHeightValue);
+                jsonObjectMore.put("height", editHeight.getSelectedItem());
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
-                jsonObjectMore.put("highestTourRatingEarned", spinnerTRValue);
+                jsonObjectMore.put("highestTourRatingEarned", spinnerTourRating.getSelectedItem());
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
                 jsonObjectMore.put("numOfAthlets",0);
-                jsonObjectMore.put("position", spinnerPosValue);
+                jsonObjectMore.put("position", spinnerPositon.getSelectedItem());
                 jsonObjectMore.put("programsOffered",0);
                 jsonObjectMore.put("shareAthlets",0);
                 StringBuffer topFinishes = new StringBuffer();
-               // jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+",
+                // jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+",
                 // "+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
                 if(!topfinishes_txt_1.getText().toString().trim().isEmpty()){
                     topFinishes.append(topfinishes_txt_1.getText().toString().trim()+",");
@@ -1901,7 +1901,7 @@ setViews();
                 jsonObjectMore.put("tournamentLevelInterest", spinnerTLValue);
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
-                jsonObjectMore.put("willingToTravel", spinnerWTValue);
+                jsonObjectMore.put("willingToTravel", spinnerWtoTravel.getSelectedItem());
                 jsonObjectMore.put("yearsRunning",0);
 
             } catch (JSONException e) {
@@ -1917,12 +1917,10 @@ setViews();
             }
 
             updateAllUserDetails(jsonallobj);
-
-
+            
         }else{
 
-
-                editStatus=true;
+            editStatus=true;
             imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
             edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
             edit_tag.setText("Save Profile");
