@@ -857,13 +857,12 @@ setViews();
                 }
 
                 else {
-                        InfoCancelChange();
+                       // InfoCancelChange();
                         InfoSave();
 
                         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-                        edit_tag.setText("Edit Profile");
+                        edit_tag.setText("Save Profile");
 
-                    editStatus=false;
                 }
             }
         });
@@ -1875,7 +1874,7 @@ setViews();
                 jsonObjectMore.put("courtSidePreference", spinnerPrefValue);
                 jsonObjectMore.put("description",0);
                 jsonObjectMore.put("division",0);
-                jsonObjectMore.put("experience", spinnerExpValue);
+                jsonObjectMore.put("experience", spinnerExp.getSelectedItem());
                 jsonObjectMore.put("fundingStatus",0);
                 jsonObjectMore.put("height", editHeightValue);
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
@@ -1923,7 +1922,7 @@ setViews();
         }else{
 
 
-                editStatus=false;
+                editStatus=true;
             imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
             edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
             edit_tag.setText("Save Profile");
@@ -2634,8 +2633,8 @@ if(response.getString("dob")!=null) {
                     if (courSidePref != null) {
                         int courtPos = prefAdapter.getPosition(courSidePref);
                        // spinnerPref.setSelection(courtPos);
-                        spinnerPref.setSelection ( courtPref.indexOf(courSidePref) );
-                        spinnerPref.invalidate();
+                        spinnerPref.setSelection (prefAdapter.getPosition(courSidePref) );
+
                     }
                     String exp = userDataModel.getExperience();
                     if (exp != null) {

@@ -14,6 +14,7 @@ import android.provider.Settings;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.text.InputType;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
 import android.text.style.ForegroundColorSpan;
@@ -150,8 +151,7 @@ public class SignUpActivity extends AppCompatActivity{
         txt_cityError   =  (TextView) findViewById(R.id.txt_cityError);
 
 
-
-
+        user_fname.setInputType(InputType.TYPE_TEXT_VARIATION_PERSON_NAME | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
 // Username focous Listener
         user_fname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
