@@ -1917,7 +1917,7 @@ setViews();
             }
 
             updateAllUserDetails(jsonallobj);
-            
+
         }else{
 
             editStatus=true;
@@ -2529,11 +2529,11 @@ if(response.getString("dob")!=null) {
                 if (userDataModel.getImageUrl() != null && !userDataModel.getImageUrl().equalsIgnoreCase("null")) {
                     String imageName = userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1);
                     String[] imagePathArray = imageName.split("-");
-                    if (imagePathArray != null && imagePathArray.length >= 0) {
+                    if (imagePathArray != null && imagePathArray.length > 0) {
                         String exactImageName = imagePathArray[1];
 
                         Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
-                        File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "profile_image"+"/" +exactImageName);
+                        File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image"+"/" +exactImageName);
 
                         if (myFile.exists()) {
                             Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
@@ -2556,7 +2556,7 @@ if(response.getString("dob")!=null) {
                             String exactVideoName = videoPathArray[1];
 
                             Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
-                            File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + exactVideoName);
+                            File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video"+"/"+exactVideoName);
 
                             if (myFile.exists()) {
                                 playVideoFromFile(Uri.parse(myFile.getPath()));
@@ -3437,6 +3437,7 @@ public String isEmptyOrNull(String stringToCheck){
                         new File(profileImageDir, children[i]).delete();
                     }
 
+                    downloadProfileImageAndVideo(fileName, fileType, f_url);
 
                 }
 
@@ -3456,6 +3457,7 @@ public String isEmptyOrNull(String stringToCheck){
                     }
 
                 }
+                downloadProfileImageAndVideo(fileName, fileType, f_url);
 
             }
 

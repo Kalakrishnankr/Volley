@@ -88,7 +88,7 @@ public class ChatFragmentPage extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if(getActivity() instanceof TabActivity){
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle(ChatWith_name);
+            tabActivity.setActionBarTitle("Chat with "+ChatWith_name);
         }
     }
 
@@ -134,7 +134,7 @@ public class ChatFragmentPage extends Fragment {
                     map.put("profileImg",chatPicture);
                     map.put("date", String.valueOf(currentTime));
                     reference1.push().setValue(map);
-                   // reference2.push().setValue(map);
+                    // reference2.push().setValue(map);
 
                     ref.push().setValue(myId+":"+ChatWith_id);
 
@@ -158,10 +158,13 @@ public class ChatFragmentPage extends Fragment {
                 //String profilePic = map.get("profileImg").toString();
                 //String date = map.get("date").toString();
                 if(userId.equals(myId)){
-                    addMessageBox("You:-\n" + message, 1);
+                    //addMessageBox("You:-\n" + message, 1);
+                    addMessageBox( message, 1);
                 }
                 else{
-                    addMessageBox(ChatWith_name + ":-\n" + message, 2);
+                    // addMessageBox(ChatWith_name + ":-\n" + message, 2);
+                    addMessageBox( message, 2);
+
                 }
             }
 
@@ -210,14 +213,15 @@ public class ChatFragmentPage extends Fragment {
 
     public void addMessageBox(String message, int type){
         if(getActivity()!=null){
-            TextView textView = new TextView(getActivity());
+            final TextView textView = new TextView(getActivity());
+            textView.setGravity(View.SCROLL_INDICATOR_BOTTOM);
             textView.setText(message);
             textView.setFocusable(true);
             LinearLayout.LayoutParams lp2 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             lp2.weight = 1.0f;
 
             if(type == 1) {
-                lp2.gravity = Gravity.RIGHT;
+                lp2.gravity = Gravity.RIGHT|Gravity.BOTTOM;
                 textView.setBackgroundResource(R.drawable.bubble_in);
             }
             else{
