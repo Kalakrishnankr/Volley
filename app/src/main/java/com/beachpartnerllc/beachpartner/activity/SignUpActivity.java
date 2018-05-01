@@ -60,7 +60,6 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 /**
  * Created by seq-kala on 7/2/18.
@@ -575,7 +574,7 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_genderError.setVisibility(View.VISIBLE);
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
                     }
-                if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mobileno)){
+                if (!AppCommon.isValidMobileNumber(mobileno)){
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
                     txt_mobileError.setVisibility(View.VISIBLE);
                     return;

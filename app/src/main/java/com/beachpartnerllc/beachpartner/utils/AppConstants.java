@@ -15,6 +15,7 @@ public class AppConstants {
     public static final String HI_FI_LIST ="hifiList";
     public static final String NO_LIKES_LIST ="noLikeslist";
     public static final String USER_TYPE_ATHLETE ="Athlete";
+    public static final String USER_TYPE_COACH="Coach";
     public static final String CHAT_USER ="chatUser";
     public static final String ID = "id";
 }

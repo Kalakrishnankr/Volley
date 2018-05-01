@@ -43,6 +43,7 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -53,10 +54,16 @@ import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.CoachProfileResponse;
+import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.CoachProfileUpdateInputData;
+import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.UserInputDto;
+import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.UserProfileDto;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.AppCommon;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -77,6 +84,7 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.security.KeyStore;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -137,6 +145,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
     private Uri selectedImageUri;
+
+    CoachProfileResponse userCoachModel;
     public CoachProfileFragment() {
         // Required empty public constructor
     }
@@ -400,7 +410,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     public void updateLabel() {
         String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
-        editDob.setText(sdf.format(myCalendar.getTime()));
+        String set_date = sdf.format(myCalendar.getTime());
+        editDob.setText(set_date);
     }
 
     public void addLocation() {
@@ -590,44 +601,74 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setBackground(null);
 
 
-        JSONObject jsonObjectMore = new JSONObject();
+        Date date = null;
+        Date dateLong = null;
+        String stringDate = null;
         try {
-            jsonObjectMore.put("cbvaFirstName", mFirstName);
-            jsonObjectMore.put("cbvaLastName", mLastName);
-            jsonObjectMore.put("cbvaPlayerNumber", "");
-            jsonObjectMore.put("collage", mCollege);
-            jsonObjectMore.put("collageClub", "");
-            jsonObjectMore.put("collegeBeach", "");
-            jsonObjectMore.put("collegeIndoor", "");
-            jsonObjectMore.put("courtSidePreference", "");
-            jsonObjectMore.put("description", mDescription);
-            jsonObjectMore.put("division", mDivision);
-            jsonObjectMore.put("experience", "");
-            jsonObjectMore.put("fundingStatus", "");
-            jsonObjectMore.put("height", "");
-            jsonObjectMore.put("highSchoolAttended", "");
-            jsonObjectMore.put("highestTourRatingEarned", "");
-            jsonObjectMore.put("indoorClubPlayed", "");
-            jsonObjectMore.put("numOfAthlets", mNoOfAthletes);
-            jsonObjectMore.put("position", "");
-            jsonObjectMore.put("programsOffered", mProgramsOffered);
-            jsonObjectMore.put("shareAthlets",  mProgramShareAthletes);
-            jsonObjectMore.put("topFinishes", "");
-            jsonObjectMore.put("totalPoints", "");
-            jsonObjectMore.put("tournamentLevelInterest", "");
-            jsonObjectMore.put("toursPlayedIn", "");
-            jsonObjectMore.put("usaVolleyballRanking", "");
-            jsonObjectMore.put("willingToTravel", "");
-            jsonObjectMore.put("yearsRunning",mYearsRunning);
+            date = new SimpleDateFormat("MM-dd-yyyy").parse(editDob.getText().toString());
+            SimpleDateFormat dateFormat = new SimpleDateFormat(
+                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
+            stringDate = dateFormat.format(date);
+            dateLong = dateFormat.parse(stringDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        CoachProfileUpdateInputData profileUpdateInputData = new CoachProfileUpdateInputData();
+        UserInputDto userInputDto = new UserInputDto();
+        UserProfileDto userProfileDto = new UserProfileDto();
+        userInputDto.setAuthToken(token);
+        userInputDto.setCity(mCity);
+        userInputDto.setParentUserId("1");
+        userInputDto.setDob(stringDate); // FIXME : CHANGE TO ORIGINAL VALUE
+        userInputDto.setFirstName(mFirstName);
+        userInputDto.setLastName(mLastName);
+        userInputDto.setPhoneNumber(mPhone);
+        userInputDto.setGender(editGender.getText().toString());
+        userInputDto.setUserType(AppConstants.USER_TYPE_COACH);
 
+        userProfileDto.setCbvaFirstName(mFirstName);
+        userProfileDto.setCbvaLastName(mLastName);
+        userProfileDto.setCbvaPlayerNumber("");
+        userProfileDto.setCollage(mCollege);
+        userProfileDto.setCollageClub("");
+        userProfileDto.setCollegeBeach("");
+        userProfileDto.setCollegeIndoor("");
+        userProfileDto.setCourtSidePreference("");
+        userProfileDto.setDescription(mDescription);
+        userProfileDto.setDivision(mDivision);
+        userProfileDto.setExperience("");
+        userProfileDto.setFundingStatus("");
+        userProfileDto.setHeight("");
+        userProfileDto.setHighSchoolAttended("");
+        userProfileDto.setHighestTourRatingEarned("");
+        userProfileDto.setIndoorClubPlayed("");
+        userProfileDto.setNumOfAthlets(mNoOfAthletes);
+        userProfileDto.setPosition("");
+        userProfileDto.setProgramsOffered(mProgramsOffered);
+        userProfileDto.setFundingStatus(mProgramFunding);
+        userProfileDto.setShareAthlets(mProgramShareAthletes);
+        userProfileDto.setTopFinishes("");
+        userProfileDto.setTotalPoints("");
+        userProfileDto.setTournamentLevelInterest("");
+        userProfileDto.setToursPlayedIn("");
+        userProfileDto.setUsaVolleyballRanking("");
+        userProfileDto.setWillingToTravel("");
+        userProfileDto.setYearsRunning(mYearsRunning);
+
+        profileUpdateInputData.setUserInputDto(userInputDto);
+        profileUpdateInputData.setUserProfileDto(userProfileDto);
+
+        JSONObject _jsonObjectMore = new JSONObject();
+        try {
+            _jsonObjectMore = new JSONObject(new Gson().toJson(profileUpdateInputData));
+            Log.e(TAG,_jsonObjectMore.toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        Log.i(TAG,jsonObjectMore.toString());
         Log.d(TAG,token);
-        postUserMoreDetails(jsonObjectMore);
+        postUserMoreDetails(_jsonObjectMore);
 
 
     }
@@ -691,7 +732,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             editPhone.setError("Please enter your phone number");
             mFormValidation = AppCommon.FORM_INVALID;
         }else {
-            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN,mPhone)){
+            if (!AppCommon.isValidMobileNumber(mPhone)){
                 editPhone.setError("Please enter valid phone number");
                 mFormValidation = AppCommon.FORM_INVALID;
             }
@@ -706,8 +747,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         return view.getText().toString().trim();
     }
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_PROFILE +""+user_id, jsonObjectMore,
+        Log.d(TAG,jsonObjectMore.toString());
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, ApiService.UPDATE_USER_PROFILE +""+user_id, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -744,7 +785,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             public Map<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                headers.put("Content-Type", "application/json");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
 
@@ -824,6 +865,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     public void onResponse(JSONObject response) {
                         Log.d("response get account--", response.toString());
                         try {
+                            Gson gson = new Gson();
+                            userCoachModel = gson.fromJson(response.toString(),CoachProfileResponse.class);
                             userDataModel = new UserDataModel();
                             userDataModel.setId(response.getString("id"));
                             userDataModel.setFirstName(response.getString("firstName"));
@@ -886,7 +929,76 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
     private void setView() {
-        if (userDataModel != null) {
+        if (userCoachModel !=null){
+            profileName.setText(userCoachModel.getFirstName()+" "+userDataModel.getLastName());
+            editFname.setText(userCoachModel.getFirstName());
+            editLname.setText(userCoachModel.getLastName());
+            editGender.setText(userCoachModel.getGender());
+            editCity.setText(userDataModel.getCity());
+        }
+        Log.i(TAG,"PROFILE_IMAGE_LOAD");
+        if (userCoachModel.getImageUrl() != null) {
+            Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgProfile);
+            Log.d(TAG,"PROFILE_IMAGE_LOAD "+userCoachModel.getImageUrl());
+        } else {
+            imgProfile.setImageResource(R.drawable.ic_person);
+        }
+        Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
+        //Long value to date conversion
+        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+        if (userCoachModel.getDob() != null){
+            long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
+            Date date_dob = new Date(dob);
+            editDob.setText(dft.format(date_dob));
+        }
+
+        editPhone.setText(userCoachModel.getPhoneNumber());
+
+
+
+        if (userCoachModel.getUserProfile().getCollage() !=null)
+            editCollege.setText(userCoachModel.getUserProfile().getCollage());
+
+        if(userCoachModel.getUserProfile().getDescription() != null)
+            description.setText(userCoachModel.getUserProfile().getDescription().toString());
+
+        if(userCoachModel.getUserProfile().getYearsRunning() != null)
+            years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
+
+        if(userCoachModel.getUserProfile().getNumOfAthlets() != null)
+            no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
+
+        if(userCoachModel.getUserProfile().getProgramsOffered() != null)
+            prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
+
+        if(userCoachModel.getUserProfile().getDivision() != null)
+            division.setText(userCoachModel.getUserProfile().getDivision().toString());
+
+        if(userCoachModel.getUserProfile().getFundingStatus() != null)
+        {
+            if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
+                program_funding.setSelection(0);
+            else
+                program_funding.setSelection(1);
+        }
+
+        if (userCoachModel.getUserProfile().getShareAthlets() != null){
+            if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
+                program_share_athletes.setSelection(0);
+            else
+                program_share_athletes.setSelection(1);
+        }
+
+
+
+    /*    years_running.setEnabled(false);
+        no_athletes.setEnabled(false);
+        prog_offered.setEnabled(false);
+        division.setEnabled(false);
+        program_funding.setEnabled(false);
+        program_share_athletes.setEnabled(false);*/
+
+    /*    if (userDataModel != null) {
             profileName.setText(userDataModel.getFirstName() + userDataModel.getLastName());
             editLname.setText(userDataModel.getLastName());
             editFname.setText(userDataModel.getFirstName());
@@ -904,7 +1016,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             Date date_dob = new Date(dob);
             editDob.setText(dft.format(date_dob));
             editPhone.setText(userDataModel.getPhoneNumber());
-        }
+        }*/
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

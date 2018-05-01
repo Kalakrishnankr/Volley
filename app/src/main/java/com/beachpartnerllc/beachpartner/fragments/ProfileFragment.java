@@ -90,15 +90,21 @@ import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
 import com.bumptech.glide.Glide;
 import com.facebook.CallbackManager;
 import com.facebook.share.widget.ShareDialog;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.PlaybackParameters;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ExtractorsFactory;
 import com.google.android.exoplayer2.source.ExtractorMediaSource;
 import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.trackselection.AdaptiveTrackSelection;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
 import com.google.android.exoplayer2.trackselection.TrackSelector;
 import com.google.android.exoplayer2.ui.PlayerView;
 import com.google.android.exoplayer2.upstream.BandwidthMeter;
@@ -149,7 +155,6 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Pattern;
 
 import javax.net.ssl.HostnameVerifier;
 
@@ -159,7 +164,8 @@ import static com.beachpartnerllc.beachpartner.utils.SelectedFilePath.getDataCol
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class ProfileFragment extends Fragment implements View.OnClickListener, AdapterView.OnItemSelectedListener {
+public class ProfileFragment extends Fragment implements View.OnClickListener,
+        AdapterView.OnItemSelectedListener,ExoPlayer.EventListener {
 
     final static CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA", "Relentless", "BVNE", "LC", "USAV", "Volley America", "Beach Elite", "United States Association of Volleyball (USAV)", "Amateur Athletic Union (AAU)", "Association of Volleyball Professionals (AVP)", "Extreme Volleyball Professionals (EVP)", "National Volleyball League (NVL)", "VolleyAmerica", "Beach Volleyball National Events (BVNE)", "Rox Volleyball Series", "California Beach Volleyball Association", "Volley OC", "Northern California Volleyball Association", "Beach Elite/Endless Summer", "Beach Volleyball Clubs of American (BVCA)", "Junior Volleyball Association (JVA)", "Beach Volleyball San Diego", "Gulf coast Volleyball Association (GCVA)", "tArizona Tournaments", "The Island Volleyball", "Florida Tournaments", "Northeast Volleyball Qualifier", "North East Beach Volleyball", "Precision Sand Volleyball", "AVA", "Wasatch Beach Volleyball", "Ohio Valley Region", "Wisconsin Juniors", "AlohaRegionJuniors", "Ohio Valley Region", "Wisconsin Juniors", "AlohaRegionJuniors"};
     private static final int REQUEST_SAVEIMGTODRIVE = 3;
@@ -226,6 +232,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     private Handler mUiHandler = new Handler();
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
+    boolean saveClicked = false;
+    boolean appendEditOpenedOne = false;
+    boolean appendEditOpenedTwo = false;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -436,6 +445,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
         exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+        exoPlayer.addListener(this);
         dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
         extractorsFactory = new DefaultExtractorsFactory();
         playerView.hideController();
@@ -445,7 +455,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
         playerView.setUseArtwork(true);
         playerView.setResizeMode(exoPlayer.getVideoScalingMode());
-
         return view;
     }
 
@@ -1188,7 +1197,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                 if (finishCount == 1) {
                     imageView2.setVisibility(View.VISIBLE);
                     topFinishes2_lt.setVisibility(View.VISIBLE);
-
+                    appendEditOpenedOne = true;
+                    Log.i(TAG,"ONE OPEN");
                 } else if (finishCount == 2) {
                     imageView1.setVisibility(View.GONE);
                     imageView2.setVisibility(View.VISIBLE);
@@ -1196,7 +1206,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
 
                     topFinishes2_lt.setVisibility(View.VISIBLE);
                     topFinishes3_lt.setVisibility(View.VISIBLE);
-
+                    appendEditOpenedTwo = true;
+                    Log.i(TAG,"TWO OPEN");
                 } else {
                     topFinishes2_lt.setVisibility(View.GONE);
                     topFinishes3_lt.setVisibility(View.GONE);
@@ -2162,10 +2173,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             isValidate = true;
         } else if (!editPhone.getText().toString().trim().isEmpty()) {
             String mobile = editPhone.getText().toString();
-            if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN, mobile)) {
+            if (!AppCommon.isValidMobileNumber(mobile)){
                 editPhone.setError(getString(R.string.mobilerror));
                 isValidate = true;
             }
+            /*if (!Pattern.matches(AppCommon.MOBILE_REGEX_PATTERN, mobile)) {
+                editPhone.setError(getString(R.string.mobilerror));
+                isValidate = true;
+            }*/
         }
 //        else if(selectedImageUri == null){
 //            Toast.makeText(getActivity(), "Please upload a picture", Toast.LENGTH_SHORT).show();
@@ -2291,6 +2306,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         imageView3.setVisibility(View.GONE);
         topfinishes_txt_1.setBackground(null);
 
+        if (appendEditOpenedOne){
+            topfinishes_txt_2.setEnabled(false);
+            topfinishes_txt_2.setText("");
+            topFinishes2_lt.setVisibility(View.GONE);
+            imageView2.setVisibility(View.GONE);
+            topfinishes_txt_1.setBackground(null);
+            appendEditOpenedOne = false;
+        }
+        if (appendEditOpenedTwo){
+            topfinishes_txt_3.setEnabled(false);
+            topfinishes_txt_3.setText("");
+            topFinishes3_lt.setVisibility(View.GONE);
+            imageView3.setVisibility(View.GONE);
+            topfinishes_txt_3.setBackground(null);
+            appendEditOpenedTwo = false;
+        }
 
     }
 
@@ -2776,7 +2807,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     String imageName = userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1);
                     String[] imagePathArray = imageName.split("-");
                     if (imagePathArray != null && imagePathArray.length > 0) {
-                        String exactImageName = imagePathArray[1];
+
+                        String exactImageName = imagePathArray[imagePathArray.length-1];
 
                         Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
                         myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
@@ -3240,6 +3272,66 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest, int reason) {
+
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+        Log.e(TAG,"LOADING");
+
+    }
+
+    @Override
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+        if (playbackState == ExoPlayer.STATE_BUFFERING) {
+            Log.e(TAG,"BUFFERING");
+            progressbar.setVisibility(View.VISIBLE);
+            //show your progress dialog here
+        }
+        if (playbackState == ExoPlayer.STATE_READY) {
+            Log.e(TAG,"READY");
+            progressbar.setVisibility(View.GONE);
+            //show your progress dialog here
+        }
+    }
+
+    @Override
+    public void onRepeatModeChanged(int repeatMode) {
+
+    }
+
+    @Override
+    public void onShuffleModeEnabledChanged(boolean shuffleModeEnabled) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+
+    }
+
+    @Override
+    public void onPositionDiscontinuity(int reason) {
+
+    }
+
+    @Override
+    public void onPlaybackParametersChanged(PlaybackParameters playbackParameters) {
+
+    }
+
+    @Override
+    public void onSeekProcessed() {
+
     }
 
 
