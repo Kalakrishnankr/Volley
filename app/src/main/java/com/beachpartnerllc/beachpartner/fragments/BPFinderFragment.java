@@ -70,9 +70,12 @@ import com.beachpartnerllc.beachpartner.cardstackview.SwipeDirection;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.ramotion.foldingcell.FoldingCell;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
@@ -84,6 +87,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -106,7 +110,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TouristSpotCardAdapter adapter;
     private RelativeLayout rr;
     private CoordinatorLayout llv;
-    private ImageView imgv_profilepic, imgv_rvsecard, imgv_location, imgv_highfi, btnPlay;
+    private ImageView imgv_profilepic;
+    private ImageView imgv_rvsecard;
+    private ImageView imgv_location;
+    private ImageView imgv_highfi;
+    private ImageView btnPlay;
     private TextView tvmonth, tvMin, tvMax, txtv_gender;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
@@ -423,9 +431,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             @Override
             public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-
             }
         });
 
@@ -617,9 +622,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     }
                 }
 
-                Log.d(TAG, "onCardSwiped: mine " + cardStackView.getTopIndex());
-                Log.d(TAG, "onCardSwiped: mine" + adapter.getCount());
-
                 if (cardStackView.getTopIndex() == adapter.getCount()) {
                     Log.d("CardStackView", "Paginate: no card displayed " + cardStackView.getTopIndex());
                     noCrads();
@@ -692,14 +694,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         // String newFormat= "dd MMMM";
         tvmonth.setText(dateFormatForMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
 
-
         //Card reverse onclick
         imgv_rvsecard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String id = new PrefManager(getActivity()).getReverseCardID();
-                //Toast.makeText(getActivity(), "person id"+id, Toast.LENGTH_SHORT).show();
                 reverse();
+               /* empty_card.setVisibility(View.GONE);
+                cardStackView.setVisibleCount(View.VISIBLE);*/
                 cardReverse(id);
                 reversecard();
             }
@@ -748,50 +750,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONArray response) {
                         Log.d(TAG, "onResponse: " + response.toString());
-
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-
-                                JSONObject jsonObject = response.getJSONObject(i);
-
-                                BpFinderModel finderModel = new BpFinderModel();
-                                finderModel.setBpf_id(jsonObject.getString("id"));
-                                finderModel.setBpf_login(jsonObject.getString("login"));
-                                finderModel.setBpf_userProfile(jsonObject.getString("userProfile"));
-                                // finderModel.setBpf_subscriptions(jsonObject.getString("subscriptions"));
-                                finderModel.setBpf_firstName(jsonObject.getString("firstName"));
-                                finderModel.setBpf_lastName(jsonObject.getString("lastName"));
-                                finderModel.setBpf_email(jsonObject.getString("email"));
-                                finderModel.setBpf_activated(jsonObject.getString("activated"));
-                                finderModel.setBpf_langKey(jsonObject.getString("langKey"));
-                                finderModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
-                                finderModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                                //finderModel.setBpf_resetDate(jsonObject.getString("resetDate"));
-                                finderModel.setBpf_dob(jsonObject.getString("dob"));
-                                finderModel.setBpf_gender(jsonObject.getString("gender"));
-                                finderModel.setBpf_loginType(jsonObject.getString("loginType"));
-                                finderModel.setBpf_city(jsonObject.getString("city"));
-                                finderModel.setBpf_phoneNumber(jsonObject.getString("phoneNumber"));
-                                finderModel.setBpf_deviceId(jsonObject.getString("deviceId"));
-                                finderModel.setBpf_authToken(jsonObject.getString("authToken"));
-                                finderModel.setBpf_location(jsonObject.getString("location"));
-                                finderModel.setBpf_userType(jsonObject.getString("userType"));
-
-                                finderModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
-
-                                JSONObject profileObject = jsonObject.getJSONObject("userProfile");
-                                finderModel.setBpf_topfinishes(profileObject.getString("topFinishes"));
-                                //finderModel.setBpf_age(jsonObject.getString("age"));
-                                allCardList.add(finderModel);
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-
-                        }
-
+                        Type listType = new TypeToken<List<BpFinderModel>>() {
+                        }.getType();
+                        allCardList = new Gson().fromJson(response.toString(), listType);
                         addCards();
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -806,7 +768,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                              //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -933,42 +895,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            try {
+
+                            SwipeResultModel swipeResultModel =
+                                    new Gson().fromJson(response.toString(), SwipeResultModel.class);
+
+                            if (swipeResultModel != null) {
                                 getBpProfiles();
-                               // Toast.makeText(getActivity(), "ID:" + response.getString("id"), Toast.LENGTH_SHORT).show();
-                                new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
-                                String status = response.getString("status").toString().trim();
-                                if (status.equals("New")) {
-                                    Log.d("request send", status);
-                                }
-                                if (status.equalsIgnoreCase("Active")) {
-
-                                    JSONObject object = new JSONObject(response.getString("user"));
-
-                                    cModel = new BpFinderModel();
-                                    cModel.setBpf_tableId(response.getString("id"));
-                                    cModel.setBpf_id(object.getString("id"));
-                                    cModel.setBpf_firstName(object.getString("firstName"));
-                                    cModel.setBpf_lastName(object.getString("lastName"));
-                                    cModel.setBpf_email(object.getString("email"));
-                                    cModel.setBpf_imageUrl(object.getString("imageUrl"));
-                                    cModel.setBpf_videoUrl(object.getString("videoUrl"));
-                                    cModel.setBpf_dob(object.getString("dob"));
-                                    cModel.setBpf_gender(object.getString("gender"));
-                                    cModel.setBpf_loginType(object.getString("loginType"));
-                                    cModel.setBpf_city(object.getString("city"));
-                                    cModel.setBpf_phoneNumber(object.getString("phoneNumber"));
-                                    cModel.setBpf_deviceId(object.getString("deviceId"));
-                                    cModel.setBpf_userType(object.getString("userType"));
-                                    cModel.setBpf_age(object.getString("age"));
-                                    cModel.setBpf_fcmToken(object.getString("fcmToken"));
-
-                                    showAlertDialog();
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
+                                cModel = swipeResultModel.getBpFinderModel();
+                                showAlertDialog();
                             }
+
                         }
 
                     }
@@ -1037,7 +974,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onResponse(JSONObject response) {
                 try {
                     getBpProfiles();
-                 //   Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
                     new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                     String status = response.getString("status").toString().trim();
                     if (status.equals("New")) {
@@ -1113,7 +1049,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         if (response != null) {
                             getBpProfiles();
                             try {
-                              //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
+                                //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
                                 new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                                 String status = response.getString("status").toString().trim();
                                 if (status.equals("New")) {
@@ -1190,30 +1126,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            try {
+
+                            SwipeResultModel swipeResultModel =
+                                    new Gson().fromJson(response.toString(), SwipeResultModel.class);
+
+                            if (swipeResultModel != null) {
                                 getBpProfiles();
-                                String status = response.getString("status").toString().trim();
-
-                                JSONObject object = new JSONObject(response.getString("user"));
-                                cModel = new BpFinderModel();
-                                cModel.setBpf_id(object.getString("id"));
-                                cModel.setBpf_firstName(object.getString("firstName"));
-                                cModel.setBpf_lastName(object.getString("lastName"));
-                                cModel.setBpf_email(object.getString("email"));
-                                cModel.setBpf_imageUrl(object.getString("imageUrl"));
-                                cModel.setBpf_videoUrl(object.getString("videoUrl"));
-                                cModel.setBpf_dob(object.getString("dob"));
-                                cModel.setBpf_gender(object.getString("gender"));
-                                cModel.setBpf_loginType(object.getString("loginType"));
-                                cModel.setBpf_city(object.getString("city"));
-                                cModel.setBpf_phoneNumber(object.getString("phoneNumber"));
-                                cModel.setBpf_deviceId(object.getString("deviceId"));
-                                cModel.setBpf_userType(object.getString("userType"));
-                                cModel.setBpf_age(object.getString("age"));
-                                cModel.setBpf_fcmToken(object.getString("fcmToken"));
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                                cModel = swipeResultModel.getBpFinderModel();
                             }
                         }
 
@@ -1321,7 +1240,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                             //   Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //   Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1366,33 +1285,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        if (response != null && response.length() > 0) {
-                            Log.d(TAG, "onResponse: " + response.toString());
-                            for (int i = 0; i < response.length(); i++) {
-                                try {
-                                    JSONObject object = response.getJSONObject(i);
-                                    JSONObject jsonObject = object.getJSONObject("user");
 
-                                    BpFinderModel bpModel = new BpFinderModel();
-                                    bpModel.setBpf_id(jsonObject.getString("id"));
-                                    bpModel.setBpf_firstName(jsonObject.getString("firstName"));
-                                    bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
-                                    bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                                    bpModel.setBpf_userType(jsonObject.getString("userType"));
-                                    bpModel.setBpf_age(jsonObject.getString("age"));
-                                    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
-                                    bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
-                                    bpModel.setBpf_termDate(object.getString("termDate"));
-                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));
-                                    bluebpListSecond.add(bpModel);
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+                        Log.d(TAG, "onResponse: " + response.toString());
+
+                        if (response.length() > 0) {
+                            Type listType = new TypeToken<List<BpFinderModel>>() {
+                            }.getType();
+                            bluebpListSecond = new Gson().fromJson(response.toString(), listType);
                             setUpBlueBPStrips();
                         }
-
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -1407,7 +1308,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
                             if (json != null) {
-                              //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                //  Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
 
@@ -1445,20 +1346,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-
-    /* private void reload() {
-         cardStackView.setVisibility(View.GONE);
-         progressBar.setVisibility(View.VISIBLE);
-         new Handler().postDelayed(new Runnable() {
-             @Override
-             public void run() {
-                 adapter = createTouristSpotCardAdapter();
-                 cardStackView.setAdapter(adapter);
-                 cardStackView.setVisibility(View.VISIBLE);
-                 progressBar.setVisibility(View.GONE);
-             }
-         }, 1000);
-     }*/
     private void reload() {
         cardStackView.setVisibility(View.GONE);
         progressBar.setVisibility(View.VISIBLE);
@@ -1501,9 +1388,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         Glide.with(getContext()).load(url).into(imgv_profilepic);
         collapsingToolbarLayout.setTitle(nm);
         rrvBottom.setVisibility(View.GONE);
-
-        //imgview.setImageURI(Uri.parse(url));
-//        tvname.setText(nm);
 
     }
 
@@ -1574,9 +1458,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         if (spots.isEmpty()) {
             return;
         }
-        if (spots.size() > 0) {
-            reqPersonId = spots.get(0).getBpf_id().trim();
-        }
+        reqPersonId = String.valueOf(spots.get(0).getBpf_id());
         View target = cardStackView.getTopView();
 
         ValueAnimator rotation = ObjectAnimator.ofPropertyValuesHolder(
@@ -1641,7 +1523,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
             SettingsFragment sf = new SettingsFragment();
-//            getActivity().setTitle("Settings");
             Bundle arguments = new Bundle();
             arguments.putString("prime_card", "location");
             sf.setArguments(arguments);
@@ -1649,23 +1530,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             FragmentTransaction trans = mang.beginTransaction().addToBackStack(null);
             trans.replace(R.id.container, sf);
             trans.commit();
-
-//            Dialog filterDialogue = new Dialog(getContext());
-//            //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
-//            filterDialogue.setContentView(R.layout.popup_locations);
-//            filterDialogue.setCanceledOnTouchOutside(true);
-//            Window window = filterDialogue.getWindow();
-//            WindowManager.LayoutParams wlp = window.getAttributes();
-//            wlp.gravity = Gravity.CENTER;
-//            wlp.y = 80;
-//            wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
-//            window.setAttributes(wlp);
-//            filterDialogue
-//                    .getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
-//
-//            filterDialogue.show();
-//            initView(filterDialogue);
-
         } else if (user_subcription.equals("BlueBP")) {
             likesDisplay();
         } else {
@@ -1864,14 +1728,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (getActivity() != null) {
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
-                    bundle.putString("personId", cModel.getBpf_id());
-                    bundle.putString("personName", cModel.getBpf_firstName());
-                    bundle.putString("myName", new PrefManager(getActivity()).getUserName());
-                    bundle.putString("personPic", cModel.getBpf_imageUrl());
                     chatFragmentPage.setArguments(bundle);
-                    FragmentManager manager = ((FragmentActivity) getActivity()).getSupportFragmentManager();
+                    FragmentManager manager = (getActivity()).getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
-                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ctrans.replace(R.id.container, chatFragmentPage);
                     ctrans.commit();
                     alertDialog.dismiss();

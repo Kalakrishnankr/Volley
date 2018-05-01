@@ -323,10 +323,10 @@ public class CoachHomeFragment extends Fragment {
                                     bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
                                     bpModel.setBpf_userType(jsonObject.getString("userType"));
                                     bpModel.setBpf_age(jsonObject.getString("age"));
-                                    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
+                                /*    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
                                     bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
                                     bpModel.setBpf_termDate(object.getString("termDate"));
-                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));
+                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));*/
                                     bpList.add(bpModel);
 
                                 } catch (JSONException e) {
@@ -397,10 +397,10 @@ public class CoachHomeFragment extends Fragment {
                             bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
                             bpModel.setBpf_userType(jsonObject.getString("userType"));
                             bpModel.setBpf_age(jsonObject.getString("age"));
-                            bpModel.setBpf_daysToExpireSubscription(obj.getString("daysToExpireSubscription"));
+                   /*         bpModel.setBpf_daysToExpireSubscription(obj.getString("daysToExpireSubscription"));
                             bpModel.setBpf_effectiveDate(obj.getString("effectiveDate"));
                             bpModel.setBpf_termDate(obj.getString("termDate"));
-                            bpModel.setBpf_subscriptionType(obj.getString("subscriptionType"));
+                            bpModel.setBpf_subscriptionType(obj.getString("subscriptionType"));*/
                             premiumLikesList.add(bpModel);
 
 
