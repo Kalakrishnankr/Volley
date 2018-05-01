@@ -42,7 +42,9 @@
         <provider android:authorities="com.facebook.app.FacebookContentProvider182470729033334"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
-
+        <meta-data
+            android:name="android.support.FILE_PROVIDER_PATHS"
+            android:resource="@xml/provider_paths"/>
         <activity
             android:name="com.facebook.FacebookActivity"
             android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"

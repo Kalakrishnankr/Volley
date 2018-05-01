@@ -38,6 +38,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewPager;
 import android.text.InputFilter;
 import android.text.SpannableStringBuilder;
@@ -175,8 +176,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue, editHeightValue, imageUri, videoUri;
     Calendar myCalendar = Calendar.getInstance();
     ArrayList selectedItems;
-    ArrayList<String> mToursPlayed;
-    List<String> mToursSelectedfromServer;
+
     CallbackManager callbackManager;
     ShareDialog shareDialog;
     Context mContext;
@@ -186,8 +186,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
     DefaultHttpDataSourceFactory dataSourceFactory = null;
     ExtractorsFactory extractorsFactory = null;
     // set the selected values from server int List
-    boolean[] checkedItem = new boolean[0];
-    boolean unchecked = false;
+
     File myProfileImageFile;
     File myProfileVideFile;
     private TabLayout tabs;
@@ -640,7 +639,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "BeachPartner App");
                     intent.setType("video/*");
-                    intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile));
+                 //   intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile)); // deprecated
+                    Uri apkURI = FileProvider.getUriForFile(
+                            getActivity(),
+                            getActivity().getApplicationContext()
+                                    .getPackageName() + ".provider", myProfileVideFile);
+                    intent.setDataAndType(apkURI, "video/*");
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(Intent.createChooser(intent, "Share image via..."));
 
 
@@ -835,9 +840,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
             }
         });
 
-        /*Tourrating Spinner*/
-        mToursPlayed = new ArrayList<>(); // for setting multiple tour data
-        mToursSelectedfromServer = new ArrayList<>(); // for auto check data
+
         spinnerTourRating.setOnItemSelectedListener(this);
         List<String> rating = new ArrayList<>();
         rating.add("Please Select");
@@ -1601,6 +1604,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         editDob.setText(sdf.format(myCalendar.getTime()));
     }
 
+    //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
+    //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
+
+
+    ArrayList seletedItems = new ArrayList();
+    boolean[] checkedItem = new boolean[items.length];
+    boolean unchecked = false;
     private int getIndex(CharSequence[] items, CharSequence sequence) {
         for (int i = 0; i < items.length; i++) {
             if (items[i].equals(sequence))
@@ -1608,9 +1618,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         }
         return -1;
     }
-
     private void setSelectedToursFromServer(String selectedTours) {
-        mToursSelectedfromServer = new ArrayList<>(Arrays.asList(selectedTours.split("\\s*,\\s*")));
+        ArrayList<String >mToursSelectedfromServer = new ArrayList<>(Arrays.asList(selectedTours.split("\\s*,\\s*")));
         mToursSelectedfromServer.removeAll(Arrays.asList(null, ""));
         Log.d("size", String.valueOf(mToursSelectedfromServer.size()));
         Set<String> mToursSelectedfromServerHash = new HashSet<>();
@@ -1618,38 +1627,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
         mToursSelectedfromServer.clear();
         mToursSelectedfromServer.addAll(mToursSelectedfromServerHash);
         Log.d("size hash", String.valueOf(mToursSelectedfromServer.size()));
-        checkedItem = new boolean[items.length];
         ListIterator<String> iterator = mToursSelectedfromServer.listIterator();
         while (iterator.hasNext()) {
             int position = getIndex(items, iterator.next());
-            if (position != -1)
+            if (position != -1){
+                //selectedItems.add(position);
+                if (selectedItems ==null){
+                    selectedItems = new ArrayList();
+                }
+                selectedItems.add(items[position]);
                 checkedItem[position] = true;
-            Log.d("Position", String.valueOf(position));
-        }
-    }
-
-
-    //tabHost.addTab(tabHost.newTabSpec("basicInfo").setIndicator("Basic Information").setContent());
-    //tabHost.addTab(tabHost.newTabSpec("moreInfo").setIndicator("More Information").setContent());
-
-
-    // TODO: Rename method, update argument and hook method into UI event
-
-    private void removeAlreadySelectedTourFromServerList(String tour) {
-        Log.d("selected", tour);
-        for (int i = 0; i < mToursSelectedfromServer.size(); i++) {
-            if (mToursSelectedfromServer.get(i).equals(tour)) {
-                mToursSelectedfromServer.remove(i);
-                Log.d("removedFromList", String.valueOf(mToursSelectedfromServer.size()));
             }
+
         }
     }
-
     public void toursPlayed() {
         // final CharSequence[] items = {"AVP Next", "AVP First", "CBVA Adult", "CBVA Junior", "AAU", "BVCA","Relentless","BVNE","LC","USAV","Volley America","Beach Elite","United States Association of Volleyball (USAV)","Amateur Athletic Union (AAU)","Association of Volleyball Professionals (AVP)","Extreme Volleyball Professionals (EVP)","National Volleyball League (NVL)","VolleyAmerica","Beach Volleyball National Events (BVNE)","Rox Volleyball Series","California Beach Volleyball Association","Volley OC","Northern California Volleyball Association","Beach Elite/Endless Summer","Beach Volleyball Clubs of American (BVCA)","Junior Volleyball Association (JVA)","Beach Volleyball San Diego","Gulf coast Volleyball Association (GCVA)","tArizona Tournaments","The Island Volleyball","Florida Tournaments","Northeast Volleyball Qualifier","North East Beach Volleyball","Precision Sand Volleyball","AVA","Wasatch Beach Volleyball","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors","Ohio Valley Region","Wisconsin Juniors","AlohaRegionJuniors"};
 // arraylist to keep the selected items
 
-        final ArrayList seletedItems = new ArrayList();
+
 
         final AlertDialog dialog = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT)
                 .setTitle("Select-Tours Played in")
@@ -1660,16 +1656,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                             // If the user checked the item, add it to the selected items
                             seletedItems.add(indexSelected);
                             checkedItem[indexSelected] = true;
+                            Log.d(TAG,"CHECKED");
                         } else if (seletedItems.contains(indexSelected)) {
                             // Else, if the item is already in the array, remove it
+                            Log.d(TAG,"UNCHECKED-ITEM-CONTAINED");
                             seletedItems.remove(Integer.valueOf(indexSelected));
-                            checkedItem[indexSelected] =  false;
-                            Log.d("removed_selected","seletedItems");
+                            checkedItem[indexSelected] = false;
                         }else {
-                            removeAlreadySelectedTourFromServerList(items[indexSelected].toString());
-                            unchecked = true;
-                            checkedItem[indexSelected] =  false;
-                            Log.d("uncheck","called");
+                            Log.d(TAG,"UNCHECKED-ITEM-NOT-CONTAINED");
+                            seletedItems.remove(Integer.valueOf(indexSelected));
+                            checkedItem[indexSelected] = false;
                         }
                     }
                 }).setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -1677,30 +1673,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener, A
                     public void onClick(DialogInterface dialog, int id) {
 
                         // Edit Text and array list should be cleared on every Tour selection
-
                         editPlayed.setText("");
-                        Set<String> mToursPlayedHash = new HashSet<>();
-                        for(int i = 0;i<mToursSelectedfromServer.size();i++){
-                            mToursPlayed.add(mToursSelectedfromServer.get(i));
-                            Log.d("mTourServerSize", String.valueOf(mToursSelectedfromServer.size()));
-                        }
-                        for (int i = 0; i < seletedItems.size(); i++) {
-                            selectedTours = (String) items[(int) seletedItems.get(i)];
-                            mToursPlayed.add(selectedTours);
-                            Log.d("selectedTours", String.valueOf(mToursPlayed.size()));
-                        }
-                        mToursPlayedHash.addAll(mToursPlayed);
-                        mToursPlayed.clear();
-                        mToursPlayed.addAll(mToursPlayedHash);
-                        Log.d("selectedToursHash", String.valueOf(mToursPlayed.size()));
-                        if (mToursPlayed.size()!=0){
-                            for(int i = 0;i<mToursPlayed.size();i++){
-                                if (i != mToursPlayed.size()-1)
-                                    editPlayed.append(mToursPlayed.get(i)+",");
-                                else
-                                    editPlayed.append(mToursPlayed.get(i)+"");
+                        for(int i=0;i<checkedItem.length;i++){
+                            if (checkedItem[i] == true){
+                                    editPlayed.append(items[i]+",");
                             }
+                            Log.i(TAG, String.valueOf(checkedItem[i]));
                         }
+                        return;
+                        /*for(int i = 0;i<seletedItems.size();i++){
+                                if (i != seletedItems.size()-1)
+                                    editPlayed.append(items[(int) seletedItems.get(i)]+",");
+                                else
+                                    editPlayed.append(items[(int) seletedItems.get(i)]+"");
+                        }*/
                         //editPlayed.setText(selectedTours);
 
                         //  Your code when user clicked on OK
