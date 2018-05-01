@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,9 +68,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             contentView = inflater.inflate(R.layout.item_tourist_spot_card, parent, false);
             holder = new ViewHolder(contentView);
-
-            holder.progressBar.setVisibility(View.VISIBLE);
-            holder.progressBar.start();
             contentView.setTag(holder);
 
         } else {
@@ -80,7 +78,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
         holder.exoPlayerView.setVisibility(View.INVISIBLE);
         holder.spinnerView.setVisibility(View.INVISIBLE);
+        holder.progress.setVisibility(View.INVISIBLE);
         holder.image.setVisibility(View.VISIBLE);
+        holder.progressBar.setVisibility(View.VISIBLE);
+        holder.progressBar.start();
 
         if (spot != null) {
             if (spot.getBpf_age() != null) {
@@ -110,12 +111,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().equals("null")) {
             holder.spinnerView.stop();
             Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
-            Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
 
         } else {
             holder.spinnerView.stop();
             holder.image.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.user_img));
-            holder.frameImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.user_img));
         }
 
 
@@ -143,9 +142,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
             @Override
             public void onDoubleClick(View v) {
-
-                holder.frameLayoutOne.setVisibility(View.VISIBLE);
-                Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.img_profile);
                 if (spot.getBpf_videoUrl() != null) {
                     MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(spot.getBpf_videoUrl()), dataSourceFactory, extractorsFactory, null, null);
                     holder.exoPlayer.prepare(mediaSource);
@@ -173,8 +169,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
     private void playVideo(final ViewHolder holder) {
         holder.progress.setVisibility(View.VISIBLE);
-        holder.frameLayoutOne.setVisibility(View.VISIBLE);
-        holder.exoPlayerView.setVisibility(View.VISIBLE);
         holder.exoPlayerView.setPlayer(holder.exoPlayer);
         holder.exoPlayer.setPlayWhenReady(true);
         holder.exoPlayer.setVolume(0);
@@ -182,8 +176,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             @Override
             public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
                 if (playWhenReady && playbackState == Player.STATE_READY) {
-                    //holder.progress.setVisibility(View.GONE);
-                    holder.frameLayoutOne.setVisibility(View.GONE);
+                    holder.exoPlayerView.setVisibility(View.VISIBLE);
                     // media actually playing
                 }
             }
@@ -196,40 +189,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         return position;
     }
 
-    /*private void playvideo(final ViewHolder holder) {
-
-        holder.videoView.start();
-        holder.videoView.setVisibility(View.VISIBLE);
-        holder.frameLayout.setVisibility(View.VISIBLE);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
-            holder.videoView.setOnInfoListener(new MediaPlayer.OnInfoListener() {
-                @Override
-                public boolean onInfo(MediaPlayer mediaPlayer, int what, int extra) {
-                    if (MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START == what) {
-                        holder.spinnerView.setVisibility(View.GONE);
-
-                    }
-                    if (MediaPlayer.MEDIA_INFO_BUFFERING_START == what) {
-                        holder.spinnerView.start();
-                        holder.spinnerView.setVisibility(View.VISIBLE);
-                    }
-                    if (MediaPlayer.MEDIA_INFO_BUFFERING_END == what) {
-                        holder.spinnerView.setVisibility(View.GONE);
-                    }
-                    return false;
-                }
-            });
-
-            holder.videoView.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    holder.frameLayout.setVisibility(View.GONE);
-                }
-            });
-        }
-    }*/
 
 
     private static class ViewHolder {
@@ -240,8 +199,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         public RotateLoading spinnerView, progressBar;
         public Button info;
         public CardView swipe_card;
-        public FrameLayout frameLayout, frameLayoutOne;
-        public ImageView frameImage;
+        public FrameLayout frameLayout; //frameLayoutOne;
+      //  public ImageView frameImage;
         public RelativeLayout relativeLayout;
         SimpleExoPlayerView exoPlayerView;
         SimpleExoPlayer exoPlayer;
@@ -251,24 +210,18 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             name = (TextView) view.findViewById(R.id.item_tourist_spot_card_name);
             userType = (TextView) view.findViewById(R.id.item_tourist_spot_card_city);
             image = (ImageView) view.findViewById(R.id.img_view);
-            //videoView   =   (VideoView) view.findViewById(R.id.item_tourist_spot_card_image);
             progressBar = (RotateLoading) view.findViewById(R.id.prsbar);
             info = (Button) view.findViewById(R.id.btnInfo);
 
             swipe_card = (CardView) view.findViewById(R.id.swipe_card);
             spinnerView = (RotateLoading) view.findViewById(R.id.my_spinner);
             frameLayout = (FrameLayout) view.findViewById(R.id.placeholder);
-            frameImage = (ImageView) view.findViewById(R.id.frameimg_view);
             relativeLayout = (RelativeLayout) view.findViewById(R.id.cardlayout);
 
             exoPlayerView = (SimpleExoPlayerView) view.findViewById(R.id.exo_player_view);
-            frameLayoutOne = (FrameLayout) view.findViewById(R.id.ffImg);
             img_profile = (ImageView) view.findViewById(R.id.img_profile);
 
             progress = (AVLoadingIndicatorView) view.findViewById(R.id.progBar);
-           /* exoPlayerView.hideController();
-            exoPlayerView.setControllerAutoShow(false);*/
-            ;
         }
     }
 

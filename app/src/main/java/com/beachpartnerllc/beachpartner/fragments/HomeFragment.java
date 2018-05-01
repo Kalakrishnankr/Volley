@@ -45,6 +45,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
+import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -90,7 +91,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private static  boolean isblueBP = false;
     private static boolean isPartner = false;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
-    private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
+    private ArrayList<SwipeResultModel> bpList  = new ArrayList<>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatList = new ArrayList<>();
@@ -404,18 +405,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
+
+                        Log.d(TAG, "onResponse() called with: response = [" + response.toString() + "]");
                         if(response!=null){
 
 
-                            Type listType = new TypeToken<List<BpFinderModel>>() {
+                            Type listType = new TypeToken<List<SwipeResultModel>>() {
                             }.getType();
                             bpList = new Gson().fromJson(response.toString(), listType);
 
 
-                            if(getActivity()!=null){
-                                //new PrefManager(getActivity()).savePageno(0);
-                                setblueBpstrip();
-                            }
+       setblueBpstrip();
+
 
                         }
 
@@ -578,6 +579,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         }
 
     }
+
+    private static final String TAG = "HomeFragment";
 
     //Get 20+ Likes
     private void getNumberLike() {

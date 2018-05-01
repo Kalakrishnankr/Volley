@@ -29,6 +29,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
@@ -79,7 +80,7 @@ public class CoachHomeFragment extends Fragment {
     private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatCoachList = new ArrayList<>();
     private ArrayList<ConnectionModel> userCoachList = new ArrayList<>();
-    private ArrayList<BpFinderModel> bpList  = new ArrayList<BpFinderModel>();
+    private ArrayList<SwipeResultModel> bpList  = new ArrayList<>();
     private ArrayList<BpFinderModel> premiumLikesList  = new ArrayList<BpFinderModel>();
 
 
@@ -317,6 +318,7 @@ public class CoachHomeFragment extends Fragment {
                                     JSONObject jsonObject = object.getJSONObject("user");
 
                                     BpFinderModel bpModel = new BpFinderModel();
+                                    SwipeResultModel swipeResultModel = new SwipeResultModel();
                                     bpModel.setBpf_id(jsonObject.getString("id"));
                                     bpModel.setBpf_firstName(jsonObject.getString("firstName"));
                                     bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
@@ -327,7 +329,8 @@ public class CoachHomeFragment extends Fragment {
                                     bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
                                     bpModel.setBpf_termDate(object.getString("termDate"));
                                     bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));*/
-                                    bpList.add(bpModel);
+                                swipeResultModel.setBpFinderModel(bpModel);
+                                    bpList.add(swipeResultModel);
 
                                 } catch (JSONException e) {
                                     e.printStackTrace();

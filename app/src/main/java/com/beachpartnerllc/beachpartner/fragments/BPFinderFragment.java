@@ -72,6 +72,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.OnRecyclerOnClickListener;
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
@@ -94,6 +95,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -102,7 +104,7 @@ import java.util.Map;
 import io.apptik.widget.MultiSlider;
 
 
-public class BPFinderFragment extends Fragment implements MyInterface {
+public class BPFinderFragment extends Fragment implements MyInterface, OnRecyclerOnClickListener {
 
 
     private ProgressBar progressBar;
@@ -149,7 +151,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private String token, user_id, user_subscription, reqPersonId, deviceId, fcmToken;
     private ArrayList<BpFinderModel> allCardList = new ArrayList<BpFinderModel>();
 
-    private ArrayList<BpFinderModel> bluebpListSecond = new ArrayList<BpFinderModel>();
+    private ArrayList<SwipeResultModel> bluebpListSecond = new ArrayList<>();
     private ArrayList<BpFinderModel> hifiList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> bluebpList = new ArrayList<>();
@@ -225,9 +227,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             if (data.containsKey(AppConstants.BLUE_BP_LIST))
                 bluebpList = data.getParcelableArrayList(AppConstants.BLUE_BP_LIST);
 
-            if (data.containsKey(AppConstants.BP_PROFILE)) {
-                BpFinderModel bpFinderModel = data.getParcelable(AppConstants.BP_PROFILE);
-                addASingleUser(bpFinderModel);
+            else if (hifiList != null && hifiList.size() > 0) {
+                addUserList(hifiList);
+            } else if (bluebpList != null && bluebpList.size() > 0) {
+                addUserList(bluebpList);
+            } else if (noLikes != null && noLikes.size() > 0) {
+                // TODO: 5/1/2018  
+                addUserList(noLikes);
+            } else if (data.containsKey(AppConstants.BP_PROFILE)) {
+                cModel = data.getParcelable(AppConstants.BP_PROFILE);
+                addASingleUser(cModel);
             } else {
                 if (minAge == 0 && maxAge == 0) {
                     getAllCards(null, "", false, 5, 35);
@@ -238,9 +247,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
             //From 20+ Likes
-          /*  if (noLikes != null && noLikes.size() > 0) {
-               addUserList(noLikes);
-            }*/
+
 
         }
         return view;
@@ -249,7 +256,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private void addASingleUser(BpFinderModel bpFinderModel) {
 
         initializeUserAdapter();
-        if (adapter != null) {
+        if (adapter != null && bpFinderModel != null) {
             adapter.clear();
             adapter.add(bpFinderModel);
             adapter.notifyDataSetChanged();
@@ -565,8 +572,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         topFrameLayout.setVisibility(View.VISIBLE);
                         if (bluebpList.size() != 0) {
                             if (getActivity() != null) {
-                                blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpList);
-                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                               /* blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpList);
+                                rcv_bpProfiles.setAdapter(blueBProfileAdapter);*/
                             }
                         }
                     }
@@ -592,7 +599,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //abraham 08-03-2018
 
                 reverseCount = true;
-                imgv_rvsecard.setBackground(BPFinderFragment.this.getResources().getDrawable(R.drawable.ic_backcard));
+                imgv_rvsecard.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
                 //Methods for swipe card kalakrishnan 06/04/2018
@@ -903,7 +910,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 getBpProfiles();
                                 new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
                                 cModel = swipeResultModel.getBpFinderModel();
-                                showAlertDialog();
+                                if (swipeResultModel.isActive())
+                                    showAlertDialog();
                             }
 
                         }
@@ -974,30 +982,18 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onResponse(JSONObject response) {
 
 
-                if (response!=null) {
+                if (response != null) {
                     getBpProfiles();
                     try {
                         if (response.has(AppConstants.ID)) {
                             new PrefManager(getActivity()).saveReverseCardId(response.getString(AppConstants.ID));
                         }
-                                           } catch (JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
 
-
-                try {
-
-                    getBpProfiles();
-                    new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
-                    String status = response.getString("status").toString().trim();
-                    if (status.equals("New")) {
-                        Log.d("request send", status);
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
 
             }
         }, new Response.ErrorListener() {
@@ -1294,7 +1290,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for getting bluebpstrips
     private void getBpProfiles() {
-        bluebpListSecond.clear();
+
+        if (adapter != null) {
+            adapter.clear();
+            adapter.notifyDataSetChanged();
+        }
 
         VolleyLog.DEBUG = true;
         JsonArrayRequest jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS + "?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
@@ -1305,7 +1305,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         Log.d(TAG, "onResponse: " + response.toString());
 
                         if (response.length() > 0) {
-                            Type listType = new TypeToken<List<BpFinderModel>>() {
+                            Type listType = new TypeToken<List<SwipeResultModel>>() {
                             }.getType();
                             bluebpListSecond = new Gson().fromJson(response.toString(), listType);
                             setUpBlueBPStrips();
@@ -1357,6 +1357,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             if (getActivity() != null) {
                 blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpListSecond);
                 rcv_bpProfiles.setAdapter(blueBProfileAdapter);
+                blueBProfileAdapter.setOnRecyclerOnClickListener(this);
                 blueBProfileAdapter.notifyDataSetChanged();
             }
         }
@@ -1454,7 +1455,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         if (reverseCount) {
             cardStackView.reverse();
-            imgv_rvsecard.setBackground(getResources().getDrawable(R.drawable.ic_backcard_disable));
+            imgv_rvsecard.setImageDrawable(getResources().getDrawable(R.drawable.ic_backcard_disable));
         }
     }
 
@@ -1552,78 +1553,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             likesDisplay();
         }
 
-    }
-
-    private void initView(final Dialog filterDialogue) {
-
-        List<String> regionList = new ArrayList<>();
-        regionList.add("Alaska Region (AK)");
-        regionList.add("Aloha Region (AH)");
-        regionList.add("Arizona Region (AZ)");
-        regionList.add("Badger Region (BG)");
-        regionList.add("Bayou Region (BY)");
-        regionList.add("Carolina Region (CR)");
-        regionList.add("Chesapeake Region (CH)");
-        regionList.add("Columbia Empire Region (CE)");
-        regionList.add("Delta Region (DE)");
-        regionList.add("Evergreen Region (EV)");
-        regionList.add("Florida Region (FL)");
-        regionList.add("Garden Empire Region (GE)");
-        regionList.add("Gateway Region (GW)");
-        regionList.add("Great Lakes Region (GL)");
-        regionList.add("Great Plains Region (GP)");
-        regionList.add("Gulf Coast Region (GC)");
-        regionList.add("Heart of America Region (HA)");
-        regionList.add("Hoosier Region (HO)");
-        regionList.add("Intermountain Region (IM)");
-        regionList.add("Iowa Region (IA)");
-        regionList.add("Iroquois Empire Region (IE)");
-        regionList.add("Keystone Region (KE)");
-        regionList.add("Lakeshore Region (LK)");
-        regionList.add("Lone Star Region (LS)");
-        regionList.add("Moku O Keawe Region (MK)");
-        regionList.add("New England Region (NE)");
-        regionList.add("North Country Region (NO)");
-        regionList.add("North Texas Region (NT)");
-        regionList.add("Northern California Region (NC)");
-        regionList.add("Ohio Valley Region (OV)");
-        regionList.add("Oklahoma Region (OK)");
-        regionList.add("Old Dominion Region (OD)");
-        regionList.add("Palmetto Region (PM)");
-        regionList.add("Pioneer Region (PR)");
-        regionList.add("Puget Sound Region (PS)");
-        regionList.add("Rocky Mountain Region (RM)");
-        regionList.add("Southern Region (SO)");
-        regionList.add("Southern California Region (SC)");
-        regionList.add("Sun Country Region (SU)");
-        regionList.add("Western Empire Region (WE)");
-        Typeface font = Typeface.createFromAsset(getContext().getAssets(),
-                "fonts/SanFranciscoTextRegular.ttf");
-
-        final AutoCompleteTextView tv_locations = (AutoCompleteTextView) filterDialogue.findViewById(R.id.item_locations);
-        Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_search);
-
-        final ArrayAdapter<String> adapterLocation = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, regionList);
-        tv_locations.setTypeface(font);
-        tv_locations.setAdapter(adapterLocation);
-
-        tv_locations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                item_location = adapterLocation.getItem(i);
-
-            }
-        });
-
-        btn_search.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                filterDialogue.dismiss();
-                //Toast.makeText(getActivity(), "Location" + item_location, Toast.LENGTH_SHORT).show();
-                getAllCards(item_location, sgender, isCoach, minAge, maxAge);
-
-            }
-        });
     }
 
     private void likesDisplay() {
@@ -1740,10 +1669,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //alertDialog.dismiss();
                 if (getActivity() != null) {
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
-                    bundle.putParcelable(AppConstants.CHAT_USER,cModel);
+                    bundle.putParcelable(AppConstants.CHAT_USER, cModel);
                     chatFragmentPage.setArguments(bundle);
                     FragmentManager manager = (getActivity()).getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
@@ -1759,11 +1689,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // alertDialog.dismiss();
+                //Moving to Calendar Fragment
                 if (getActivity() != null) {
                     CalendarFragment calendarFragment = new CalendarFragment();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ctrans.replace(R.id.container, calendarFragment);
+                    //ctrans.addToBackStack(null);
                     ctrans.commit();
                     alertDialog.dismiss();
                 }
@@ -1783,4 +1717,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
+    @Override
+    public void onItemClick(Object item, int position) {
+        adapter = null;
+        SwipeResultModel swipeResultModel = (SwipeResultModel) item;
+        addASingleUser(swipeResultModel.getBpFinderModel());
+        bluebpListSecond.remove(position);
+        blueBProfileAdapter.notifyDataSetChanged();
+    }
 }
