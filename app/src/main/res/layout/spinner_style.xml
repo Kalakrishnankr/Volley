@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:ellipsize="marquee"
     android:singleLine="true"
-    android:textAlignment="inherit"
+    android:paddingLeft="25dp"
+    android:textAlignment="gravity"
     android:textColor="@color/colorText"
     android:textSize="@dimen/text_size" />

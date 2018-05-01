@@ -1,10 +1,13 @@
 package com.beachpartnerllc.beachpartner.models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by seq-kala on 26/3/18.
  */
 
-public class ConnectionModel {
+public class ConnectionModel implements Parcelable {
     public String Connected_uId;
     public String Connected_login;
     public String Connected_firstName;
@@ -149,5 +152,15 @@ public class ConnectionModel {
 
     public void setConnected_isAvailable_ondate(boolean connected_isAvailable_ondate) {
         Connected_isAvailable_ondate = connected_isAvailable_ondate;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+
     }
 }

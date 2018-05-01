@@ -104,7 +104,7 @@ import java.util.Map;
 import io.apptik.widget.MultiSlider;
 
 
-public class BPFinderFragment extends Fragment implements MyInterface, OnRecyclerOnClickListener {
+public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     private ProgressBar progressBar;
@@ -117,7 +117,7 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
     private ImageView imgv_location;
     private ImageView imgv_highfi;
     private ImageView btnPlay;
-    private TextView tvmonth, tvMin, tvMax, txtv_gender;
+    private TextView tvmonth, tvMin, tvMax, txtv_gender,text_nocard;
     private CollapsingToolbarLayout collapsingToolbarLayout;
 
     private Spinner spinner_location;
@@ -399,6 +399,8 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
         topFinishes_Two = view.findViewById(R.id.topTwo_finishes);
         topFinishes_Three = view.findViewById(R.id.topThree_finishes);
 
+        text_nocard = view.findViewById(R.id.text_nocard);
+
 
         rcv_bpProfiles = (RecyclerView) view.findViewById(R.id.rrv_topbpProfiles);
         //recycler for top bp profiles
@@ -424,7 +426,7 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
 
         //choose Location
         if (getActivity() != null) {
-            dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
+            dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_style, stateList);
 
 
             spinner_location.setAdapter(dataAdapter);
@@ -741,10 +743,18 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
 
     private void noCrads() {
         if (getActivity() != null) {
+            if (bluebpList.size()==0) {
+                text_nocard.setText("Please select the BP logo for more cards");
+            }/* else if (noLikes.size() == 0) {
+                text_nocard.setText("No more Likes ");
+            } else if (hifiList.size() == 0) {
+                text_nocard.setText("No more hifi's");
+            }*/
             cardStackView.setVisibility(View.INVISIBLE);
             rr.setVisibility(View.VISIBLE);
             empty_card.setVisibility(View.VISIBLE);
             Glide.with(getActivity()).load(profileImage).into(profilePic);
+
         }
     }
 
@@ -874,8 +884,8 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
         stateList.add("Virginia");
         stateList.add("Washington");
         stateList.add("West Virginia");
-        stateList.add("Wisconsin WI");
-        stateList.add("Wyoming WY");
+        stateList.add("Wisconsin");
+        stateList.add("Wyoming ");
 
 
     }
@@ -909,7 +919,7 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
                             if (swipeResultModel != null) {
                                 getBpProfiles();
                                 new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
-                                cModel = swipeResultModel.getBpFinderModel();
+                                //cModel = swipeResultModel.getBpFinderModel();
                                 if (swipeResultModel.isActive())
                                     showAlertDialog();
                             }
@@ -1291,10 +1301,10 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
     //Method for getting bluebpstrips
     private void getBpProfiles() {
 
-        if (adapter != null) {
+        /*if (adapter != null) {
             adapter.clear();
             adapter.notifyDataSetChanged();
-        }
+        }*/
 
         VolleyLog.DEBUG = true;
         JsonArrayRequest jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS + "?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
@@ -1357,7 +1367,7 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
             if (getActivity() != null) {
                 blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpListSecond);
                 rcv_bpProfiles.setAdapter(blueBProfileAdapter);
-                blueBProfileAdapter.setOnRecyclerOnClickListener(this);
+             //   blueBProfileAdapter.setOnRecyclerOnClickListener(this);
                 blueBProfileAdapter.notifyDataSetChanged();
             }
         }
@@ -1717,12 +1727,12 @@ public class BPFinderFragment extends Fragment implements MyInterface, OnRecycle
 
     }
 
-    @Override
+   /* @Override
     public void onItemClick(Object item, int position) {
         adapter = null;
         SwipeResultModel swipeResultModel = (SwipeResultModel) item;
         addASingleUser(swipeResultModel.getBpFinderModel());
         bluebpListSecond.remove(position);
         blueBProfileAdapter.notifyDataSetChanged();
-    }
+    }*/
 }

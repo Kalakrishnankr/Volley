@@ -18,6 +18,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -67,10 +68,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
-                bundle.putString("personId", message.getConnected_uId());
-                bundle.putString("personName",message.getConnected_firstName());
-                bundle.putString("myName",new PrefManager(mContext).getUserName());
-                bundle.putString("personPic",message.getConnected_imageUrl());
+                bundle.putParcelable(AppConstants.CHAT_USER, message);
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();

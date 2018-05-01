@@ -18,6 +18,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -58,14 +59,14 @@ public class ChatFragmentPage extends Fragment {
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
         }
-        BpFinderModel bpFinderModel = null;
+        ConnectionModel bpFinderModel = null;
         if (getArguments() != null) {
             bpFinderModel = getArguments().getParcelable(AppConstants.CHAT_USER);
             if (bpFinderModel != null) {
-                ChatWith_id = String.valueOf(bpFinderModel.getBpf_id());
-                ChatWith_name = bpFinderModel.getBpf_firstName();
+                ChatWith_id = String.valueOf(bpFinderModel.getConnected_uId());
+                ChatWith_name = bpFinderModel.getConnected_firstName();
                 myName = new PrefManager(getActivity()).getUserName();
-                chatPicture = bpFinderModel.getBpf_imageUrl();
+                chatPicture = bpFinderModel.getConnected_imageUrl();
             }
         }
     }

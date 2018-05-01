@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
@@ -77,10 +78,12 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
 
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
-                bundle.putString("personId", dataList.get(position).getConnected_uId());
+                bundle.putParcelable(AppConstants.CHAT_USER, model);
+
+                /*bundle.putString("personId", dataList.get(position).getConnected_uId());
                 bundle.putString("personName",dataList.get(position).getConnected_firstName());
                 bundle.putString("myName",new PrefManager(mContext).getUserName());
-                bundle.putString("personPic",dataList.get(position).getConnected_imageUrl());
+                bundle.putString("personPic",dataList.get(position).getConnected_imageUrl());*/
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();
