@@ -50,18 +50,22 @@ import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -401,30 +405,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(JSONArray response) {
                         if(response!=null){
-                            for (int i=0;i<response.length();i++){
-                                try {
-                                    JSONObject object = response.getJSONObject(i);
-                                    JSONObject jsonObject = object.getJSONObject("user");
-                                    BpFinderModel bpModel = new BpFinderModel();
-                                    bpModel.setBpf_id(jsonObject.getString("id"));
-                                    bpModel.setBpf_firstName(jsonObject.getString("firstName"));
-                                    bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
-                                    bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                                    bpModel.setBpf_userType(jsonObject.getString("userType"));
-                                    bpModel.setBpf_age(jsonObject.getString("age"));
-                                    bpModel.setBpf_dob(jsonObject.getString("dob"));
-                                    bpModel.setBpf_fcmToken(jsonObject.getString("fcmToken"));
-                                    bpModel.setBpf_deviceId(jsonObject.getString("deviceId"));
-                                    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
-                                    bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
-                                    bpModel.setBpf_termDate(object.getString("termDate"));
-                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));
-                                    bpList.add(bpModel);
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
+
+                            Type listType = new TypeToken<List<BpFinderModel>>() {
+                            }.getType();
+                            bpList = new Gson().fromJson(response.toString(), listType);
+
+
                             if(getActivity()!=null){
                                 //new PrefManager(getActivity()).savePageno(0);
                                 setblueBpstrip();
@@ -761,23 +748,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             findModel.setBpf_dob(obj.getString("dob"));
                             findModel.setBpf_fcmToken(obj.getString("fcmToken"));
                             findModel.setBpf_deviceId(obj.getString("deviceId"));
-                            //findModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
-                           // findModel.setBpf_effectiveDate(object.getString("effectiveDate"));
-                            //findModel.setBpf_termDate(object.getString("termDate"));
-                           // findModel.setBpf_subscriptionType(object.getString("subscriptionType"));
-
-                            likesList.add(findModel);
-
+                                               likesList.add(findModel);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
-                    //Goto BP FinderPage
                     moveToCard();
                 }
-
-
             }
         }, new Response.ErrorListener() {
             @Override

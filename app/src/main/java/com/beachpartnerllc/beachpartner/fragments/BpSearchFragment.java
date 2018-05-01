@@ -143,7 +143,7 @@ public class BpSearchFragment extends Fragment implements OnRecyclerOnClickListe
                                     BpFinderModel finderModel = new BpFinderModel();
                                     finderModel.setBpf_id(jsonObject.getString("id"));
                                     finderModel.setBpf_login(jsonObject.getString("login"));
-                                    finderModel.setBpf_userProfile(jsonObject.getString("userProfile"));
+                                   // finderModel.setBpf_userProfile(jsonObject.getString("userProfile"));
                                     // finderModel.setBpf_subscriptions(jsonObject.getString("subscriptions"));
                                     finderModel.setBpf_firstName(jsonObject.getString("firstName"));
                                     finderModel.setBpf_lastName(jsonObject.getString("lastName"));
