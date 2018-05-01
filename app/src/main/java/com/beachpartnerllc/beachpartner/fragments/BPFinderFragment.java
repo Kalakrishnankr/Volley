@@ -701,6 +701,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //Toast.makeText(getActivity(), "person id"+id, Toast.LENGTH_SHORT).show();
                 reverse();
                 cardReverse(id);
+                reversecard();
             }
         });
 
@@ -721,6 +722,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
 
+    }
+
+    private void reversecard() {
+        cardStackView.setVisibility(View.VISIBLE);
+        empty_card.setVisibility(View.INVISIBLE);
     }
 
 
