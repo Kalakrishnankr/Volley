@@ -972,7 +972,23 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         JsonObjectRequest jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
+
+                if (response!=null) {
+                    getBpProfiles();
+                    try {
+                        if (response.has(AppConstants.ID)) {
+                            new PrefManager(getActivity()).saveReverseCardId(response.getString(AppConstants.ID));
+                        }
+                                           } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+
+
                 try {
+
                     getBpProfiles();
                     new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
                     String status = response.getString("status").toString().trim();
@@ -1724,10 +1740,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //alertDialog.dismiss();
                 if (getActivity() != null) {
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
+                    bundle.putParcelable(AppConstants.CHAT_USER,cModel);
                     chatFragmentPage.setArguments(bundle);
                     FragmentManager manager = (getActivity()).getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
@@ -1743,15 +1759,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnFind.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // alertDialog.dismiss();
-                //Moving to Calendar Fragment
                 if (getActivity() != null) {
                     CalendarFragment calendarFragment = new CalendarFragment();
-                    FragmentManager manager = ((FragmentActivity) getActivity()).getSupportFragmentManager();
+                    FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
-                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ctrans.replace(R.id.container, calendarFragment);
-                    //ctrans.addToBackStack(null);
                     ctrans.commit();
                     alertDialog.dismiss();
                 }

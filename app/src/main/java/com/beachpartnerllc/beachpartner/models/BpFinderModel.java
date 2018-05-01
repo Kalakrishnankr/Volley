@@ -285,7 +285,7 @@ public class BpFinderModel implements Parcelable {
     }
 
     public UserProfileModel getUserProfile() {
-        if (userProfile==null)userProfile=new UserProfileModel();
+        if (userProfile == null) userProfile = new UserProfileModel();
         return userProfile;
     }
 
@@ -335,7 +335,7 @@ public class BpFinderModel implements Parcelable {
     }
 
     public String getBpf_topfinishes() {
-                return getUserProfile().topFinishes;
+        return getUserProfile().topFinishes;
     }
 
     public void setBpf_topfinishes(String bpf_topfinishes) {

@@ -48,7 +48,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     private Integer ageInt;
-    private String video_url, fcm_token, person_id = null, deviceId, personName, imageUrl;
     MyInterface myInterface;
 
 
@@ -80,8 +79,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         final BpFinderModel spot = getItem(position);
 
         holder.exoPlayerView.setVisibility(View.INVISIBLE);
-        // holder.exoPlayerView.getOverlayFrameLayout().setFocusable(false);
-        // holder.exoPlayer.clearVideoSurface();
         holder.spinnerView.setVisibility(View.INVISIBLE);
         holder.image.setVisibility(View.VISIBLE);
 
@@ -117,31 +114,10 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
         } else {
             holder.spinnerView.stop();
-            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.image);
-            //Glide.with(getContext()).load(getContext().getResources().getDrawable(R.drawable.user_img)).into(holder.frameImage);
             holder.image.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.user_img));
             holder.frameImage.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.user_img));
         }
 
-        if (spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().isEmpty() && !spot.getBpf_deviceId().equalsIgnoreCase("null")) {
-            deviceId = spot.getBpf_deviceId();
-        }
-        if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().isEmpty() && !spot.getBpf_fcmToken().equalsIgnoreCase("null")) {
-            fcm_token = spot.getBpf_fcmToken();
-        }
-        if (spot.getBpf_id() != null && !spot.getBpf_id().isEmpty() && !spot.getBpf_id().equalsIgnoreCase("null")) {
-            person_id = spot.getBpf_id();
-        }
-        if (spot.getBpf_firstName() != null && !spot.getBpf_firstName().isEmpty() && !spot.getBpf_firstName().equalsIgnoreCase("null")) {
-            personName = spot.getBpf_firstName();
-        }
-        if (spot.getBpf_imageUrl() != null && !spot.getBpf_imageUrl().isEmpty() && !spot.getBpf_imageUrl().equalsIgnoreCase("null")) {
-            imageUrl = spot.getBpf_imageUrl();
-        }
-        if (spot.getBpf_videoUrl() != null && !spot.getBpf_videoUrl().isEmpty() && !spot.getBpf_videoUrl().equalsIgnoreCase("null")) {
-            video_url = spot.getBpf_videoUrl();
-        }
-        //
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
@@ -167,30 +143,14 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
             @Override
             public void onDoubleClick(View v) {
-                //  holder.image.setVisibility(View.VISIBLE);
-                //holder.progress.setVisibility(View.VISIBLE);
+
                 holder.frameLayoutOne.setVisibility(View.VISIBLE);
                 Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.img_profile);
-                //holder.progressBar.setVisibility(View.VISIBLE);
-                //  holder.spinnerView.setVisibility(View.VISIBLE);
-                // holder.spinnerView.start();
-                //holder.videoView.setVisibility(View.VISIBLE);
-                if (video_url != null) {
+                if (spot.getBpf_videoUrl() != null) {
                     MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(spot.getBpf_videoUrl()), dataSourceFactory, extractorsFactory, null, null);
                     holder.exoPlayer.prepare(mediaSource);
-
                     playVideo(holder);
-
-                    // playvideo(holder);
-                } else {
-
-                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.image);
-                    Glide.with(getContext()).load(spot.getBpf_imageUrl()).into(holder.frameImage);
                 }
-                // dialog.setMessage("Please wait");
-               /* if (spot.getBpf_fcmToken() != null && !spot.getBpf_fcmToken().equalsIgnoreCase("null") || !spot.getBpf_deviceId().equalsIgnoreCase("null") && spot.getBpf_deviceId() != null && !spot.getBpf_deviceId().equals("") ) {
-                    myInterface.onItemClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken());
-                }*/
             }
         });
 
