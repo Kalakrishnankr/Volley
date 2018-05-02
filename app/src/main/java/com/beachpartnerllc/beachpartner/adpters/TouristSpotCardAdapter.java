@@ -50,6 +50,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     private Context mContext;
     private Integer ageInt;
     MyInterface myInterface;
+    private static final String TAG = "TouristSpotCardAdapter";
 
 
     public TouristSpotCardAdapter(Context context, MyInterface inter) {
@@ -157,6 +158,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                 holder.exoPlayer.stop();
                 myInterface.addView(spot.getBpf_imageUrl(), spot.getBpf_firstName());
                 myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken(), spot.getBpf_topfinishes());
+                Log.d(TAG, "Top Finishes: "+spot.getBpf_topfinishes());
             }
         });
 

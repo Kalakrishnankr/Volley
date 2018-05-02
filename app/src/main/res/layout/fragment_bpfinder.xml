@@ -686,14 +686,12 @@
                                         android:id="@+id/topOne_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:text="No notable finishes"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
                                     <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:id="@+id/topTwo_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:text="No notable finishes"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
 
@@ -701,7 +699,6 @@
                                         android:id="@+id/topThree_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:text="No notable finishes"
                                         android:gravity="center"
                                         android:layout_weight="1"/>
 

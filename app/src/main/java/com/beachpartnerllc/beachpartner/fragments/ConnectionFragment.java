@@ -1,6 +1,5 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
-import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -536,9 +535,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchPerson(query);
-                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
-                alertDialog.setMessage("Search keyword is " + query);
-                alertDialog.show();
+//                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+//                alertDialog.setMessage("Search keyword is " + query);
+//                alertDialog.show();
                 return false;
             }
 

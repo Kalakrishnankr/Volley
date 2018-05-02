@@ -419,7 +419,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         //choose Location
         if (getActivity() != null) {
-            dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style, stateList);
+            dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style_bp, stateList);
 
 
             spinner_location.setAdapter(dataAdapter);
@@ -905,7 +905,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     if (swipeResultModel.getId() != null) {
                                         new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
                                     }
-                                    //cModel = swipeResultModel.getBpFinderModel();
+                                    cModel = swipeResultModel.getBpFinderModel();
                                     if (swipeResultModel.isActive())
                                         showAlertDialog();
                                 }
@@ -1414,21 +1414,22 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         getIndividualEvents(reqPersonId);
 
         if (topThreeFinish != null && !topThreeFinish.equalsIgnoreCase("") && !topThreeFinish.equalsIgnoreCase("null")) {
-            String[] values = topThreeFinish.split(",");
-            if (values.length == 1) {
+            String[] values=null;
+            values= topThreeFinish.split(",");
+            if (values.length == 0) {
+                topFinishes_Two.setText("No notable finishes");
+            }else if (values.length == 1) {
                 if (values[0] != null) {
                     topFinishes_One.setText(values[0].trim());
                 }
-            }
-            if (values.length == 2) {
+            }else if (values.length == 2) {
                 if (values[0] != null) {
                     topFinishes_One.setText(values[0].trim());
                 }
                 if (values[1] != null) {
                     topFinishes_Two.setText(values[1].trim());
                 }
-            }
-            if (values.length == 3) {
+            }else if (values.length == 3) {
                 if (values[0] != null) {
                     topFinishes_One.setText(values[0].trim());
                 }
@@ -1443,6 +1444,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             //
             //topFinishes_Three.setText(values[2].trim());
+        }else {
+            topFinishes_Two.setText("No notable finishes");
+            topFinishes_One.setText("");
+            topFinishes_Three.setText("");
         }
     }
 
@@ -1662,14 +1667,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onClick(View v) {
                 if (getActivity() != null) {
                     alertDialog.dismiss();
-                    ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
-                    Bundle bundle = new Bundle();
-                    bundle.putParcelable(AppConstants.CHAT_USER, cModel);
-                    chatFragmentPage.setArguments(bundle);
-                    FragmentManager manager = (getActivity()).getSupportFragmentManager();
-                    FragmentTransaction ctrans = manager.beginTransaction();
-                    ctrans.replace(R.id.container, chatFragmentPage);
-                    ctrans.commit();
+                    if (cModel != null) {
+                        ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(AppConstants.CHAT_USER, cModel);
+                        chatFragmentPage.setArguments(bundle);
+                        FragmentManager manager = (getActivity()).getSupportFragmentManager();
+                        FragmentTransaction ctrans = manager.beginTransaction();
+                        ctrans.replace(R.id.container, chatFragmentPage);
+                        ctrans.commit();
+                    }
                 }
 
             }

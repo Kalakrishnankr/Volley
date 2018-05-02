@@ -60,8 +60,8 @@ public class ChatFragmentPage extends Fragment {
         if (getArguments() != null) {
             bpFinderModel = getArguments().getParcelable(AppConstants.CHAT_USER);
             if (bpFinderModel != null) {
-                ChatWith_id = String.valueOf(bpFinderModel.getBpf_id());
-                ChatWith_name = bpFinderModel.getBpf_firstName();
+                ChatWith_id    = String.valueOf(bpFinderModel.getBpf_id());
+                ChatWith_name  = bpFinderModel.getBpf_firstName();
                 myName = new PrefManager(getActivity()).getUserName();
                 chatPicture = bpFinderModel.getBpf_imageUrl();
             }

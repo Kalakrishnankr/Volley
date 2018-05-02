@@ -622,13 +622,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "BeachPartner App");
-                   // intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileImageFile));
+                    // intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileImageFile));
                     intent.setType("image/*");
                     Uri apkURI = FileProvider.getUriForFile(
                             getContext(),
                             getContext().getPackageName()+".provider", myProfileImageFile);
                     intent.putExtra(Intent.EXTRA_STREAM, apkURI);
-                   // intent.setDataAndType(apkURI, "image/*");
+                    // intent.setDataAndType(apkURI, "image/*");
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     startActivity(Intent.createChooser(intent, "Share image via..."));
 
@@ -654,7 +654,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     intent.putExtra(Intent.EXTRA_TEXT, "https://www.beachpartner.com/preregistration/");
                     intent.putExtra(Intent.EXTRA_SUBJECT, "BeachPartner App");
                     intent.setType("video/*");
-                 //   intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile)); // deprecated
+                    //   intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(myProfileVideFile)); // deprecated
                     Uri apkURI = FileProvider.getUriForFile(
                             getContext(),
                             getContext().getPackageName()+".provider", myProfileVideFile);
@@ -761,7 +761,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         spinnerPref.setOnItemSelectedListener(this);
         courtPref = new ArrayList<>();
         courtPref.add("Please Select");
-        courtPref.add("Left side");
+        courtPref.add("Left Side");
         courtPref.add("Right Side");
         courtPref.add("No Preference");
         prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
@@ -1048,7 +1048,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     InfoSave();
 
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-                    edit_tag.setText("Save Profile");
+                    edit_tag.setText("Edit Profile");
 
                 }
             }
@@ -1693,7 +1693,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         editPlayed.setText("");
                         for(int i=0;i<checkedItem.length;i++){
                             if (checkedItem[i] == true){
-                                    editPlayed.append(items[i]+",");
+                                editPlayed.append(items[i]+",");
                             }
                             Log.i(TAG, String.valueOf(checkedItem[i]));
                         }
@@ -2086,23 +2086,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
                 jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
                 jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());
-                jsonObjectMore.put("collage", 0);
+                jsonObjectMore.put("collage", "");
                 jsonObjectMore.put("collageClub", editColgClub.getText().toString().trim());
                 jsonObjectMore.put("collegeBeach", editColgBeach.getText().toString().trim());
                 jsonObjectMore.put("collegeIndoor", editColgIndoor.getText().toString().trim());
                 jsonObjectMore.put("courtSidePreference", spinnerPref.getSelectedItem());
-                jsonObjectMore.put("description", 0);
-                jsonObjectMore.put("division", 0);
+                jsonObjectMore.put("description", "");
+                jsonObjectMore.put("division", "");
                 jsonObjectMore.put("experience", spinnerExp.getSelectedItem());
-                jsonObjectMore.put("fundingStatus", 0);
+                jsonObjectMore.put("fundingStatus", "");
                 jsonObjectMore.put("height", editHeight.getSelectedItem());
                 jsonObjectMore.put("highSchoolAttended", editHighschool.getText().toString().trim());
                 jsonObjectMore.put("highestTourRatingEarned", spinnerTourRating.getSelectedItem());
                 jsonObjectMore.put("indoorClubPlayed", editIndoorClub.getText().toString().trim());
-                jsonObjectMore.put("numOfAthlets", 0);
+                jsonObjectMore.put("numOfAthlets", "");
                 jsonObjectMore.put("position", spinnerPositon.getSelectedItem());
-                jsonObjectMore.put("programsOffered", 0);
-                jsonObjectMore.put("shareAthlets", 0);
+                jsonObjectMore.put("programsOffered", "");
+                jsonObjectMore.put("shareAthlets", "");
                 StringBuffer topFinishes = new StringBuffer();
                 // jsonObjectMore.put("topFinishes", topfinishes_txt_1.getText().toString().trim()+",
                 // "+topfinishes_txt_2.getText().toString().trim()+","+topfinishes_txt_3.getText().toString().trim());
@@ -2121,7 +2121,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 jsonObjectMore.put("toursPlayedIn", editPlayed.getText().toString().trim());
                 jsonObjectMore.put("usaVolleyballRanking", edit_volleyRanking.getText().toString().trim());
                 jsonObjectMore.put("willingToTravel", spinnerWtoTravel.getSelectedItem());
-                jsonObjectMore.put("yearsRunning", 0);
+                jsonObjectMore.put("yearsRunning", "");
 
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -2721,8 +2721,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         if (response != null) {
                             if (getActivity() != null) {
 
-                                edit_tag.setText("Edit Profile");
+
                                 editStatus = false;
+                                edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                                edit_tag.setText("Edit Profile");
                                 if (userDataModel.getImageUrl() != null) {
                                     File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
 
@@ -2757,10 +2759,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onErrorResponse(VolleyError error) {
                 progress.dismiss();
-
+                editStatus = false;
+                edit_tag.setText("Edit Profile");
                 videoUri = null;
                 imageUri = null;
                 Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
+
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -2845,7 +2849,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         }
                     }
                 }
-                if (userDataModel.getToursPlayedIn() != null || !userDataModel.getToursPlayedIn().isEmpty()) {
+                else{
+                    progressbar.setVisibility(View.GONE);
+                }
+                if (userDataModel.getToursPlayedIn() != null && userDataModel.getToursPlayedIn().equalsIgnoreCase("")) {
                     setSelectedToursFromServer(userDataModel.getToursPlayedIn());
                 }
                 profileName.setText(userDataModel.getFirstName().trim());
@@ -3033,8 +3040,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         stateList.add("Virginia");
         stateList.add("Washington");
         stateList.add("West Virginia");
-        stateList.add("Wisconsin ");
-        stateList.add("Wyoming ");
+        stateList.add("Wisconsin");
+        stateList.add("Wyoming");
 
     }
 
@@ -3292,6 +3299,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     @Override
     public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
+
         if (playbackState == ExoPlayer.STATE_BUFFERING) {
             Log.e(TAG,"BUFFERING");
             progressbar.setVisibility(View.VISIBLE);
@@ -3614,5 +3622,3 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
 
 }
-
-
