@@ -254,7 +254,11 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_passwordError.setVisibility(View.VISIBLE);
                     txt_passwordError.setText(getResources().getString(R.string.invalid_password));
 
-                }else if(hasFocus){
+                }else if(!hasFocus&& user_password.getText().charAt(0)==' '&& user_password.getText().charAt(user_password.getText().length()-1)==' ' ){
+                    txt_passwordError.setVisibility(View.VISIBLE);
+                    txt_passwordError.setText(getResources().getString(R.string.null_password));
+                }
+                else if(hasFocus){
 
                     txt_passwordError.setVisibility(View.GONE);
 
