@@ -43,7 +43,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
@@ -93,10 +92,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
     private ArrayList<SwipeResultModel> bpList  = new ArrayList<>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
-    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatList = new ArrayList<>();
     private ArrayList<BpFinderModel> likesList = new ArrayList<>();
-    private ArrayList<ConnectionModel> userList = new ArrayList<>();
+    private ArrayList<BpFinderModel> userList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
 
@@ -415,7 +414,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             bpList = new Gson().fromJson(response.toString(), listType);
 
 
-       setblueBpstrip();
+                         setblueBpstrip();
 
 
                         }
@@ -670,15 +669,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel model = new ConnectionModel();
-                            model.setConnected_uId(obj.getString("id"));
-                            model.setConnected_login(obj.getString("login"));
-                            model.setConnected_firstName(obj.getString("firstName"));
-                            model.setConnected_lastName(obj.getString("lastName"));
-                            model.setConnected_email(obj.getString("email"));
-                            model.setConnected_userType(obj.getString("userType"));
-                            model.setConnected_imageUrl(obj.getString("imageUrl"));
-                            connectionList.add(model);
+
+                            Type type = new TypeToken<BpFinderModel>(){}.getType();
+                            BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                            connectionList.add(finderModel);
 
 
                         } catch (JSONException e) {
@@ -741,17 +735,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            BpFinderModel findModel = new BpFinderModel();
-                            findModel.setBpf_id(obj.getString("id"));
-                            findModel.setBpf_firstName(obj.getString("firstName"));
-                            findModel.setBpf_imageUrl(obj.getString("imageUrl"));
-                            findModel.setBpf_videoUrl(obj.getString("videoUrl"));
-                            findModel.setBpf_userType(obj.getString("userType"));
-                            findModel.setBpf_age(obj.getString("age"));
-                            findModel.setBpf_dob(obj.getString("dob"));
-                            findModel.setBpf_fcmToken(obj.getString("fcmToken"));
-                            findModel.setBpf_deviceId(obj.getString("deviceId"));
-                                               likesList.add(findModel);
+                            Type mtype = new TypeToken<BpFinderModel>(){}.getType();
+                            BpFinderModel mModel = new Gson().fromJson(obj.toString(),mtype);
+                            likesList.add(mModel);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -816,7 +802,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
                                 if (connectionList.size() > 0 && connectionList != null) {
                                     for (int j=0;j<connectionList.size();j++){
-                                        if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                        if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
                                             userList.add(connectionList.get(j));
                                         }
                                     }

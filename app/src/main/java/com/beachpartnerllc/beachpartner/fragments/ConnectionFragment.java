@@ -1,5 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -38,7 +39,9 @@ import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,15 +60,16 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private TextView txtv_coach, txtv_athlete, txtv_noconnection;
     private static boolean isCoachTab = false;
     private static boolean isAthleteTab = false;
-    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
-    private ArrayList<ConnectionModel> coachList = new ArrayList<>();
-    private ArrayList<ConnectionModel> athleteList = new ArrayList<>();
-    private ArrayList<ConnectionModel> searchList = new ArrayList<>();
-    private ArrayList<ConnectionModel> blockList = new ArrayList<>();
-    private ArrayList<ConnectionModel> blockCoachList = new ArrayList<>();
-    private ArrayList<ConnectionModel> blockAthleteList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> connectionList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> coachList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> athleteList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> searchList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> blockList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> blockCoachList = new ArrayList<>();
+    private ArrayList<ConnectionResultModel> blockAthleteList = new ArrayList<>();
+    private ArrayList<BpFinderModel> dataList = new ArrayList<>();
 
-    private List<ConnectionModel> mCountryModel;
+    private List<BpFinderModel> mCountryModel;
     private String token, user_id;
     private ProgressBar progress;
     TabActivity tabActivity;
@@ -208,6 +212,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         coachList.clear();
         blockAthleteList.clear();
         blockCoachList.clear();
+        dataList.clear();
         progress.setVisibility(View.VISIBLE);
         String user_id = new PrefManager(getContext()).getUserId();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
@@ -218,17 +223,12 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     for (int i = 0; i < response.length(); i++) {
                         try {
                             JSONObject object = response.getJSONObject(i);
-                            JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel model = new ConnectionModel();
-                            model.setConnected_status(object.getString("status"));
-                            model.setConnected_uId(obj.getString("id"));
-                            model.setConnected_login(obj.getString("login"));
-                            model.setConnected_firstName(obj.getString("firstName"));
-                            model.setConnected_lastName(obj.getString("lastName"));
-                            model.setConnected_email(obj.getString("email"));
-                            model.setConnected_userType(obj.getString("userType"));
-                            model.setConnected_imageUrl(obj.getString("imageUrl"));
-                            connectionList.add(model);
+                            //model.setConnected_status(object.getString("status"));
+                            ConnectionResultModel connectionResultModel = new Gson().fromJson(object.toString(),ConnectionResultModel.class);
+                            if (connectionResultModel != null) {
+                                connectionList.add(connectionResultModel);
+                                dataList.add(connectionResultModel.getBpFinderModel());
+                            }
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -250,7 +250,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
-                            json = trimMessage(json, "detail");
+                            json = trimMessage(json, "title");
                             if (json != null) {
                                 Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
@@ -287,12 +287,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     private void setConnections() {
-        //rcv_conn.setVisibility(View.VISIBLE);
-        //txtv_noconnection.setVisibility(View.GONE);
         progress.setVisibility(View.GONE);
         if (connectionList != null && connectionList.size() > 0) {
             for (int i = 0; i < connectionList.size(); i++) {
-                if (connectionList.get(i).getConnected_userType().equals("Athlete")) {
+                if (connectionList.get(i).getBpFinderModel().getBpf_userType().equals("Athlete")) {
                     athleteList.add(connectionList.get(i));
                 } else {
                     coachList.add(connectionList.get(i));
@@ -336,7 +334,14 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
-                            json = trimMessage(json, "detail");
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
                             if (json != null) {
                                 Toast.makeText(getContext(), "" + json, Toast.LENGTH_LONG).show();
                             }
@@ -531,17 +536,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             @Override
             public boolean onQueryTextSubmit(String query) {
                 searchPerson(query);
-               /* AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
                 alertDialog.setMessage("Search keyword is " + query);
-                alertDialog.show();*/
+                alertDialog.show();
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (connectionList != null && connectionList.size() > 0 && athleteList.size() > 0) {
+                if (dataList != null && dataList.size() > 0 ) {
                     if (!newText.isEmpty()) {
-                        final List<ConnectionModel> filteredModelList = filter(connectionList, newText);
+                        final List<BpFinderModel> filteredModelList = filter(dataList, newText);
                         adapter.setFilter(filteredModelList);
                         adapter.notifyDataSetChanged();
 
@@ -558,11 +563,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-    private List<ConnectionModel> filter(List<ConnectionModel> models, String query) {
+    private List<BpFinderModel> filter(List<BpFinderModel> models, String query) {
         query = query.toLowerCase().trim();
-        final List<ConnectionModel> filteredModelList = new ArrayList<>();
-        for (ConnectionModel model : models) {
-            final String text = model.getConnected_firstName().toLowerCase().trim();
+        final List<BpFinderModel> filteredModelList = new ArrayList<>();
+        for (BpFinderModel model : models) {
+            final String text = model.getBpf_firstName().toLowerCase().trim();
             if (text.contains(query)) {
                 filteredModelList.add(model);
             }
@@ -592,7 +597,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 searchList.clear();
                 if (athleteList.size() > 0) {
                     for (int i = 0; i < athleteList.size(); i++) {
-                        if (textSearch.equalsIgnoreCase(athleteList.get(i).getConnected_firstName().trim())) {
+                        if (textSearch.equalsIgnoreCase(athleteList.get(i).getBpFinderModel().getBpf_firstName().trim())) {
                             searchList.add(athleteList.get(i));
 
                         }
@@ -602,7 +607,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 searchList.clear();
                 if (coachList.size() > 0) {
                     for (int i = 0; i < coachList.size(); i++) {
-                        if (textSearch.equalsIgnoreCase(coachList.get(i).getConnected_firstName())) {
+                        if (textSearch.equalsIgnoreCase(coachList.get(i).getBpFinderModel().getBpf_firstName())) {
                             searchList.add(coachList.get(i));
 
                         }
@@ -644,17 +649,16 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     for(int i =0 ;i<response.length();i++){
                         try {
                             JSONObject object = response.getJSONObject(i);
-                            JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel cModel = new ConnectionModel();
-                            cModel.setConnected_status(object.getString("status"));
-                            cModel.setConnected_uId(obj.getString("id"));
-                            cModel.setConnected_login(obj.getString("login"));
-                            cModel.setConnected_firstName(obj.getString("firstName"));
-                            cModel.setConnected_lastName(obj.getString("lastName"));
-                            cModel.setConnected_email(obj.getString("email"));
-                            cModel.setConnected_userType(obj.getString("userType"));
-                            cModel.setConnected_imageUrl(obj.getString("imageUrl"));
-                            blockList.add(cModel);
+                            ConnectionResultModel connectionResultModel = new Gson().fromJson(object.toString(),ConnectionResultModel.class);
+                            if (connectionResultModel != null) {
+                                blockList.add(connectionResultModel);
+                            }
+
+                            /*JSONObject obj = object.getJSONObject("connectedUser");
+                            Type listType = new TypeToken<BpFinderModel>() {
+                            }.getType();
+                            BpFinderModel mModel = new Gson().fromJson(obj.toString(), listType);
+                            blockList.add(mModel);*/
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -695,7 +699,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         progress.setVisibility(View.GONE);
         if(blockList!=null && blockList.size()>0){
             for (int j = 0; j<blockList.size();j++){
-                if (blockList.get(j).getConnected_userType().equals("Athlete")) {
+                if (blockList.get(j).getBpFinderModel().getBpf_userType().equals("Athlete")) {
                     blockAthleteList.add(blockList.get(j));
                 }else {
                     blockCoachList.add(blockList.get(j));

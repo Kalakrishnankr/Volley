@@ -90,9 +90,21 @@ public class BpFinderModel implements Parcelable {
     @SerializedName("age")
     @Expose
     private String age;
+    @SerializedName("status")
+    @Expose
+    private String status;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public BpFinderModel() {
     }
+
 
     protected BpFinderModel(Parcel in) {
         id = in.readString();
@@ -118,6 +130,7 @@ public class BpFinderModel implements Parcelable {
         videoUrl = in.readString();
         fcmToken = in.readString();
         age = in.readString();
+        status =in.readString();
     }
 
     public static final Creator<BpFinderModel> CREATOR = new Creator<BpFinderModel>() {
@@ -373,5 +386,6 @@ public class BpFinderModel implements Parcelable {
         parcel.writeString(videoUrl);
         parcel.writeString(fcmToken);
         parcel.writeString(age);
+        parcel.writeString(status);
     }
 }

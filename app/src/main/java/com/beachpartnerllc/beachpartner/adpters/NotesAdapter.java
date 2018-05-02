@@ -53,7 +53,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
         final NoteDataModel model = dataList.get(position);
-
+        holder.edit_notes.setFocusable(false);
+        holder.edit_notes.setFocusableInTouchMode(false);
         holder.edit_notes.setText(model.getNotes().trim());
         holder.deleteNotes.setOnClickListener(new View.OnClickListener() {
             @SuppressLint("ResourceType")
@@ -61,11 +62,16 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             public void onClick(View v) {
                 holder.removeAt(position);
                 noteInterface.removeNote(model.getNote_id());
-
-
             }
         });
         //holder.timeStamp.setReferenceTime(new Date().getTime());
+        holder.edit_notes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                holder.edit_notes.setFocusable(true);
+                holder.edit_notes.setFocusableInTouchMode(true);
+            }
+        });
 
         holder.edit_notes.addTextChangedListener(new TextWatcher() {
             @Override
@@ -88,9 +94,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
             }
         });
-
         holder.noteDisabled.setFocusable(true);
-
         holder.noteDisabled.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +104,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 if (noteId != null && text.length() != 0) {
                     noteInterface.update(text,noteId);
                     holder.noteDisabled.setImageResource(R.drawable.ic__note);
+                    holder.edit_notes.setFocusable(false);
                 }
 
 

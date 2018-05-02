@@ -6,11 +6,9 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,7 +17,6 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
@@ -33,7 +30,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -72,7 +68,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
-import com.beachpartnerllc.beachpartner.utils.OnRecyclerOnClickListener;
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
@@ -95,7 +90,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -107,6 +101,13 @@ import io.apptik.widget.MultiSlider;
 public class BPFinderFragment extends Fragment implements MyInterface {
 
 
+    public static final MediaType JSON
+            = MediaType.parse("application/json; charset=utf-8");
+    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
+    private static final String TAG = "BPFinderFragment";
+    public ToggleButton btnMale, btnFemale;
+    public boolean reverseCount = false;
+    OkHttpClient mClient = new OkHttpClient();
     private ProgressBar progressBar;
     private CardStackView cardStackView;
     private TouristSpotCardAdapter adapter;
@@ -117,15 +118,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ImageView imgv_location;
     private ImageView imgv_highfi;
     private ImageView btnPlay;
-    private TextView tvmonth, tvMin, tvMax, txtv_gender,text_nocard;
+    private TextView tvmonth, tvMin, tvMax, txtv_gender, text_nocard;
     private CollapsingToolbarLayout collapsingToolbarLayout;
-
     private Spinner spinner_location;
     private MultiSlider age_bar;
-    public static final MediaType JSON
-            = MediaType.parse("application/json; charset=utf-8");
-
-    public ToggleButton btnMale, btnFemale;
     private FoldingCell fc;
     private LinearLayout llvFilter;
     private ArrayAdapter<String> dataAdapter;
@@ -135,7 +131,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<String> stateList = new ArrayList<>();
     private RelativeLayout rrvBottom;
     private SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-    public boolean reverseCount = false;
     private boolean isbpActive = false;
     private boolean isPartner = false;
     private View view;
@@ -150,7 +145,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private CircularImageView profilePic;
     private String token, user_id, user_subscription, reqPersonId, deviceId, fcmToken;
     private ArrayList<BpFinderModel> allCardList = new ArrayList<BpFinderModel>();
-
     private ArrayList<SwipeResultModel> bluebpListSecond = new ArrayList<>();
     private ArrayList<BpFinderModel> hifiList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
@@ -162,10 +156,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private BpFinderModel cModel;
     private CustomTextView topFinishes_One, topFinishes_Two, topFinishes_Three;
 
-
-    private static final String TAG = "BPFinderFragment";
-
     public BPFinderFragment() {
+    }
+
+    @SuppressLint("ValidFragment")
+    public BPFinderFragment(boolean isBPActive, boolean isPartnerFinder) {
+        isbpActive = isBPActive;
+        isPartner = isPartnerFinder;
     }
 
     @Override
@@ -173,12 +170,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         super.onCreate(savedInstanceState);
         FirebaseApp.initializeApp(getActivity());
 
-    }
-
-    @SuppressLint("ValidFragment")
-    public BPFinderFragment(boolean isBPActive, boolean isPartnerFinder) {
-        isbpActive = isBPActive;
-        isPartner = isPartnerFinder;
     }
 
     @Override
@@ -228,13 +219,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 bluebpList = data.getParcelableArrayList(AppConstants.BLUE_BP_LIST);
 
             else if (hifiList != null && hifiList.size() > 0) {
+                text_nocard.setText("No more hi-fi's");
                 addUserList(hifiList);
             } else if (bluebpList != null && bluebpList.size() > 0) {
                 addUserList(bluebpList);
             } else if (noLikes != null && noLikes.size() > 0) {
-                // TODO: 5/1/2018  
+                // TODO: 5/1/2018
+                text_nocard.setText("No more Likes");
                 addUserList(noLikes);
             } else if (data.containsKey(AppConstants.BP_PROFILE)) {
+                text_nocard.setText("Please select the BP logo for more cards");
                 cModel = data.getParcelable(AppConstants.BP_PROFILE);
                 addASingleUser(cModel);
             } else {
@@ -347,7 +341,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-
     public void setUp(final View view) {
 
         progressBar = view.findViewById(R.id.activity_main_progress_bar);
@@ -426,7 +419,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         //choose Location
         if (getActivity() != null) {
-            dataAdapter = new ArrayAdapter<String>(getActivity(),R.layout.spinner_style, stateList);
+            dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style, stateList);
 
 
             spinner_location.setAdapter(dataAdapter);
@@ -601,7 +594,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //abraham 08-03-2018
 
                 reverseCount = true;
-                imgv_rvsecard.setImageDrawable(getActivity().getResources().getDrawable(R.drawable.ic_backcard));
+                imgv_rvsecard.setImageResource(R.drawable.ic_backcard);
                 Log.d("CardStackView", "onCardSwiped: " + direction.toString());
                 Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
                 //Methods for swipe card kalakrishnan 06/04/2018
@@ -740,16 +733,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         empty_card.setVisibility(View.INVISIBLE);
     }
 
-
     private void noCrads() {
         if (getActivity() != null) {
-            if (bluebpList.size()==0) {
-                text_nocard.setText("Please select the BP logo for more cards");
-            }/* else if (noLikes.size() == 0) {
-                text_nocard.setText("No more Likes ");
-            } else if (hifiList.size() == 0) {
-                text_nocard.setText("No more hifi's");
-            }*/
             cardStackView.setVisibility(View.INVISIBLE);
             rr.setVisibility(View.VISIBLE);
             empty_card.setVisibility(View.VISIBLE);
@@ -757,7 +742,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         }
     }
-
 
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
@@ -834,7 +818,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-
     public void addLocation() {
         stateList.add("Alabama");
         stateList.add("Alaska");
@@ -890,7 +873,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
-
     private void paginate() {
 
         if (getActivity() != null) {
@@ -904,6 +886,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
+    //Method for hifi
+
     //Method for right swipe
     private void cardRightSwiped(String reqPersonId) {
 
@@ -915,14 +899,18 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                             SwipeResultModel swipeResultModel =
                                     new Gson().fromJson(response.toString(), SwipeResultModel.class);
-
-                            if (swipeResultModel != null) {
-                                getBpProfiles();
-                                new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
-                                //cModel = swipeResultModel.getBpFinderModel();
-                                if (swipeResultModel.isActive())
-                                    showAlertDialog();
+                            if (getActivity() != null) {
+                                if (swipeResultModel != null) {
+                                    getBpProfiles();
+                                    if (swipeResultModel.getId() != null) {
+                                        new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
+                                    }
+                                    //cModel = swipeResultModel.getBpFinderModel();
+                                    if (swipeResultModel.isActive())
+                                        showAlertDialog();
+                                }
                             }
+
 
                         }
 
@@ -940,7 +928,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
-                                //Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                                // Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
                             }
                             break;
                         case 401:
@@ -983,7 +971,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
-
     //Method for card left swiped
     private void cardLeftSwiped(String reqPersonId) {
 
@@ -991,19 +978,19 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onResponse(JSONObject response) {
 
-
-                if (response != null) {
-                    getBpProfiles();
-                    try {
-                        if (response.has(AppConstants.ID)) {
-                            new PrefManager(getActivity()).saveReverseCardId(response.getString(AppConstants.ID));
+                if (getActivity() != null) {
+                    if (response != null) {
+                        getBpProfiles();
+                        try {
+                            if (response.has(AppConstants.ID)) {
+                                new PrefManager(getActivity()).saveReverseCardId(response.getString(AppConstants.ID));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+
                     }
-
                 }
-
 
             }
         }, new Response.ErrorListener() {
@@ -1060,7 +1047,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     }
 
-    //Method for hifi
+
+    //Api for get individual events for a particular person
 
     private void cardHifiSwiped(String reqPersonId) {
 
@@ -1068,17 +1056,19 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        if (response != null) {
-                            getBpProfiles();
-                            try {
-                                //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
-                                new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
-                                String status = response.getString("status").toString().trim();
-                                if (status.equals("New")) {
-                                    Log.d("request send", status);
+                        if (getActivity() != null) {
+                            if (response != null) {
+                                getBpProfiles();
+                                try {
+                                    //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
+                                    new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
+                                    String status = response.getString("status").toString().trim();
+                                    if (status.equals("New")) {
+                                        Log.d("request send", status);
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
                             }
                         }
 
@@ -1138,7 +1128,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
     }
-
 
     //Card Reverse Api
     private void cardReverse(String id) {
@@ -1213,9 +1202,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
 
     }
-
-
-    //Api for get individual events for a particular person
 
     public void getIndividualEvents(String reqPersonId) {
         personEventList.clear();
@@ -1297,7 +1283,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-
     //Method for getting bluebpstrips
     private void getBpProfiles() {
 
@@ -1367,7 +1352,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             if (getActivity() != null) {
                 blueBProfileAdapter = new BlueBProfileAdapter(getActivity(), bluebpListSecond);
                 rcv_bpProfiles.setAdapter(blueBProfileAdapter);
-             //   blueBProfileAdapter.setOnRecyclerOnClickListener(this);
+                //   blueBProfileAdapter.setOnRecyclerOnClickListener(this);
                 blueBProfileAdapter.notifyDataSetChanged();
             }
         }
@@ -1407,6 +1392,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         super.onAttach(context);
 
     }
+
+    //Method for card reverse
 
     @Override
     public void addView(String url, String nm) {
@@ -1459,7 +1446,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
     }
 
-    //Method for card reverse
+    //Method for SwipeUp
 
     private void reverse() {
 
@@ -1476,8 +1463,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
         return spots;
     }
-
-    //Method for SwipeUp
 
     private void swipeUp() {
 
@@ -1505,6 +1490,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         cardStackView.swipe(SwipeDirection.Top, set);
     }
 
+    //Method for getting current location
+    //Conditions for show location
+    //if user_subscription = PRime didn't show payment dialogue
+    //if user_subscription = BlueBP show payment dialogue,once the user paid then show the location
+    // user_subscription = null show the payment dialogue  ,once the user paid then show the location
+
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 
@@ -1518,7 +1509,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         return trimmedString;
     }
-
 
     public long DatetoMilli(Date dateClicked) {
         Date givenDateString = dateClicked;
@@ -1538,11 +1528,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         return timeInMilliseconds;
     }
 
-    //Method for getting current location
-    //Conditions for show location
-    //if user_subscription = PRime didn't show payment dialogue
-    //if user_subscription = BlueBP show payment dialogue,once the user paid then show the location
-    // user_subscription = null show the payment dialogue  ,once the user paid then show the location
+    //push notification
 
     private void getLocation() {
         String user_subcription = "";
@@ -1601,11 +1587,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             }
         });
     }
-
-    //push notification
-
-    public static final String FCM_MESSAGE_URL = "https://fcm.googleapis.com/fcm/send";
-    OkHttpClient mClient = new OkHttpClient();
 
     public void sendMessage(final String recipients, final String title, final String body, final String icon) {
 
@@ -1679,8 +1660,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         btnMsg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //alertDialog.dismiss();
                 if (getActivity() != null) {
+                    alertDialog.dismiss();
                     ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                     Bundle bundle = new Bundle();
                     bundle.putParcelable(AppConstants.CHAT_USER, cModel);
@@ -1689,7 +1670,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     FragmentTransaction ctrans = manager.beginTransaction();
                     ctrans.replace(R.id.container, chatFragmentPage);
                     ctrans.commit();
-                    alertDialog.dismiss();
                 }
 
             }
@@ -1702,14 +1682,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 // alertDialog.dismiss();
                 //Moving to Calendar Fragment
                 if (getActivity() != null) {
+                    alertDialog.dismiss();
                     CalendarFragment calendarFragment = new CalendarFragment();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();
                     //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
                     ctrans.replace(R.id.container, calendarFragment);
-                    //ctrans.addToBackStack(null);
                     ctrans.commit();
-                    alertDialog.dismiss();
                 }
 
             }

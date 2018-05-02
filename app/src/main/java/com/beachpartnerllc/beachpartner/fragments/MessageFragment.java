@@ -24,16 +24,19 @@ import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.ChatListAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,8 +53,8 @@ public class MessageFragment extends Fragment  {
     private ProgressBar progressBar;
     private TextView tv_nomsgs;
     ArrayList<String> chatList = new ArrayList<>();
-    ArrayList<ConnectionModel> userList = new ArrayList<>();
-    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    ArrayList<BpFinderModel> userList = new ArrayList<>();
+    private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
 
     TabActivity tabActivity;
     public MessageFragment() {
@@ -124,15 +127,9 @@ public class MessageFragment extends Fragment  {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel model = new ConnectionModel();
-                            model.setConnected_uId(obj.getString("id"));
-                            model.setConnected_login(obj.getString("login"));
-                            model.setConnected_firstName(obj.getString("firstName"));
-                            model.setConnected_lastName(obj.getString("lastName"));
-                            model.setConnected_email(obj.getString("email"));
-                            model.setConnected_userType(obj.getString("userType"));
-                            model.setConnected_imageUrl(obj.getString("imageUrl"));
-                            connectionList.add(model);
+                            Type type = new TypeToken<BpFinderModel>(){}.getType();
+                            BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                            connectionList.add(finderModel);
 
 
                         } catch (JSONException e) {
@@ -198,7 +195,7 @@ public class MessageFragment extends Fragment  {
                         if(chatId.equals(myId) || chatwith_id.equals(myId)){
                             if (connectionList.size() > 0 && connectionList != null) {
                                 for (int j=0;j<connectionList.size();j++){
-                                    if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                    if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
                                         userList.add(connectionList.get(j));
                                     }
                                 }

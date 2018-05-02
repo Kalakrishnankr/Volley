@@ -18,7 +18,6 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.ChildEventListener;
 import com.firebase.client.DataSnapshot;
@@ -43,15 +42,13 @@ public class ChatFragmentPage extends Fragment {
     private EmojIconActions emojIcon;
     private LinearLayout rootview;
     private ScrollView scrollview;
-    Firebase reference1, reference2, ref;
+    Firebase reference1, ref;
     private String myId, ChatWith_id, ChatWith_name, myName, chatPicture;
     private int idLeft, idRight;
     private Date currentTime;
     TabActivity tabActivity;
-   /* public ChatFragmentPage() {
-        // Required empty public constructor
-    }
-*/
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -59,14 +56,14 @@ public class ChatFragmentPage extends Fragment {
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
         }
-        ConnectionModel bpFinderModel = null;
+        BpFinderModel bpFinderModel = null;
         if (getArguments() != null) {
             bpFinderModel = getArguments().getParcelable(AppConstants.CHAT_USER);
             if (bpFinderModel != null) {
-                ChatWith_id = String.valueOf(bpFinderModel.getConnected_uId());
-                ChatWith_name = bpFinderModel.getConnected_firstName();
+                ChatWith_id = String.valueOf(bpFinderModel.getBpf_id());
+                ChatWith_name = bpFinderModel.getBpf_firstName();
                 myName = new PrefManager(getActivity()).getUserName();
-                chatPicture = bpFinderModel.getConnected_imageUrl();
+                chatPicture = bpFinderModel.getBpf_imageUrl();
             }
         }
     }
@@ -129,7 +126,7 @@ public class ChatFragmentPage extends Fragment {
                 emojicon_editText.setText("");*/
                 String messageText = emojicon_editText.getText().toString();
 
-                if (!messageText.equals("")) {
+                if (!messageText.equals("")&& !messageText.isEmpty() && messageText.length()!= 0) {
                     Map<String, String> map = new HashMap<String, String>();
                     map.put("text", messageText);
                     map.put("sender_id", myId);

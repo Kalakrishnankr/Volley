@@ -29,12 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
-import com.beachpartnerllc.beachpartner.utils.AppConstants;
-import com.firebase.client.DataSnapshot;
-import com.firebase.client.Firebase;
-import com.firebase.client.FirebaseError;
-import com.firebase.client.ValueEventListener;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.CardAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MessageAdapter;
@@ -43,13 +37,21 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
+import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.firebase.client.DataSnapshot;
+import com.firebase.client.Firebase;
+import com.firebase.client.FirebaseError;
+import com.firebase.client.ValueEventListener;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -77,9 +79,9 @@ public class CoachHomeFragment extends Fragment {
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
 
     private TextView txtv_notour,txtv_nomessgs;
-    private ArrayList<ConnectionModel> connectionList = new ArrayList<>();
+    private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatCoachList = new ArrayList<>();
-    private ArrayList<ConnectionModel> userCoachList = new ArrayList<>();
+    private ArrayList<BpFinderModel> userCoachList = new ArrayList<>();
     private ArrayList<SwipeResultModel> bpList  = new ArrayList<>();
     private ArrayList<BpFinderModel> premiumLikesList  = new ArrayList<BpFinderModel>();
 
@@ -393,18 +395,21 @@ public class CoachHomeFragment extends Fragment {
                         try {
                             JSONObject jsonObject = response.getJSONObject(i);
                             JSONObject obj    = jsonObject.getJSONObject("connectedUser");
-                            BpFinderModel bpModel = new BpFinderModel();
+                            Type type = new TypeToken<BpFinderModel>(){}.getType();
+                            BpFinderModel bpfModel = new Gson().fromJson(obj.toString(),type);
+
+                            /*BpFinderModel bpModel = new BpFinderModel();
                             bpModel.setBpf_id(jsonObject.getString("id"));
                             bpModel.setBpf_firstName(jsonObject.getString("firstName"));
                             bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
                             bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
                             bpModel.setBpf_userType(jsonObject.getString("userType"));
                             bpModel.setBpf_age(jsonObject.getString("age"));
-                   /*         bpModel.setBpf_daysToExpireSubscription(obj.getString("daysToExpireSubscription"));
+                            bpModel.setBpf_daysToExpireSubscription(obj.getString("daysToExpireSubscription"));
                             bpModel.setBpf_effectiveDate(obj.getString("effectiveDate"));
                             bpModel.setBpf_termDate(obj.getString("termDate"));
                             bpModel.setBpf_subscriptionType(obj.getString("subscriptionType"));*/
-                            premiumLikesList.add(bpModel);
+                            premiumLikesList.add(bpfModel);
 
 
                         } catch (JSONException e) {
@@ -500,15 +505,9 @@ public class CoachHomeFragment extends Fragment {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            ConnectionModel model = new ConnectionModel();
-                            model.setConnected_uId(obj.getString("id"));
-                            model.setConnected_login(obj.getString("login"));
-                            model.setConnected_firstName(obj.getString("firstName"));
-                            model.setConnected_lastName(obj.getString("lastName"));
-                            model.setConnected_email(obj.getString("email"));
-                            model.setConnected_userType(obj.getString("userType"));
-                            model.setConnected_imageUrl(obj.getString("imageUrl"));
-                            connectionList.add(model);
+                            Type mType = new TypeToken<BpFinderModel>(){}.getType();
+                            BpFinderModel fmModel = new Gson().fromJson(obj.toString(),mType);
+                            connectionList.add(fmModel);
 
 
                         } catch (JSONException e) {
@@ -569,7 +568,7 @@ public class CoachHomeFragment extends Fragment {
                         String chatwith_id = chatCoachList.get(i).split("-")[1];
                         if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
                             for (int j=0;j<connectionList.size();j++){
-                                if(chatwith_id.equals(connectionList.get(j).getConnected_uId()) || chatId.equals(connectionList.get(j).getConnected_uId())){
+                                if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
                                     userCoachList.add(connectionList.get(j));
                                 }
                             }

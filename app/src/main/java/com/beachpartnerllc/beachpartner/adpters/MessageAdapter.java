@@ -12,13 +12,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.beachpartnerllc.beachpartner.utils.AppConstants;
-import com.bumptech.glide.Glide;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -30,10 +30,10 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     public Context mContext;
     private PrefManager prefManager;
     private String userType,uName;
-    private ArrayList<ConnectionModel> dataList;
+    private ArrayList<BpFinderModel> dataList;
     MyViewHolder myViewHolder;
 
-    public MessageAdapter(Context context, ArrayList<ConnectionModel> allSampleData) {
+    public MessageAdapter(Context context, ArrayList<BpFinderModel> allSampleData) {
         this.dataList = allSampleData;
         this.mContext = context;
     }
@@ -59,11 +59,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MessageAdapter.MyViewHolder holder, final int position) {
 
-        final ConnectionModel model = dataList.get(position);
+        final BpFinderModel model = dataList.get(position);
 
-        holder.txtvUname.setText(model.getConnected_firstName());
-        if(!dataList.get(position).getConnected_imageUrl().equals("null")){
-            Glide.with(mContext).load(dataList.get(position).getConnected_imageUrl()).into(holder.imgUserPic);
+        holder.txtvUname.setText(model.getBpf_firstName());
+        if(!dataList.get(position).getBpf_imageUrl().equals("null")){
+            Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imgUserPic);
             //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
         }else {
             holder.imgUserPic.setImageResource(R.drawable.ic_person);
@@ -79,11 +79,6 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppConstants.CHAT_USER, model);
-
-                /*bundle.putString("personId", dataList.get(position).getConnected_uId());
-                bundle.putString("personName",dataList.get(position).getConnected_firstName());
-                bundle.putString("myName",new PrefManager(mContext).getUserName());
-                bundle.putString("personPic",dataList.get(position).getConnected_imageUrl());*/
                 chatFragmentPage.setArguments(bundle);
                 FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = manager.beginTransaction();

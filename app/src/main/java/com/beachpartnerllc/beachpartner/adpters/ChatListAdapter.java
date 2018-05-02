@@ -14,10 +14,9 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 
@@ -30,9 +29,9 @@ import java.util.ArrayList;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     Context mContext;
-    ArrayList<ConnectionModel>list;
+    ArrayList<BpFinderModel>list;
     MessageFragment messageFragment;
-    public ChatListAdapter(MessageFragment messageFragment,Context context, ArrayList<ConnectionModel> chatList) {
+    public ChatListAdapter(MessageFragment messageFragment,Context context, ArrayList<BpFinderModel> chatList) {
         this.mContext = context;
         this.list     = chatList;
         this.messageFragment = messageFragment;
@@ -51,11 +50,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
 
 
         //holder.person_pic.setImageResource(model.getImage());
-        final ConnectionModel message = list.get(position);
+        final BpFinderModel message = list.get(position);
 
-        holder.txv_name.setText(message.getConnected_firstName());
-        if(!list.get(position).getConnected_imageUrl().equals("null")){
-            Glide.with(mContext).load(list.get(position).getConnected_imageUrl()).into(holder.person_pic);
+        holder.txv_name.setText(message.getBpf_firstName());
+        if(!list.get(position).getBpf_imageUrl().equals("null")){
+            Glide.with(mContext).load(list.get(position).getBpf_imageUrl()).into(holder.person_pic);
             //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
         }else {
             holder.person_pic.setImageResource(R.drawable.ic_person);

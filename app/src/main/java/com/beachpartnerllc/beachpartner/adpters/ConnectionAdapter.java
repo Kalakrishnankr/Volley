@@ -15,9 +15,10 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
-import com.beachpartnerllc.beachpartner.models.ConnectionModel;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -30,9 +31,9 @@ import java.util.List;
 public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.MyViewHolder> {
 
     public Context mContext;
-    private ArrayList<ConnectionModel> dataLists;
+    private ArrayList<ConnectionResultModel> dataLists;
     public ConnectionInterface connectionInterface;
-    private ArrayList<ConnectionModel> mCountryModel;
+    private ArrayList<BpFinderModel> mCountryModel;
 
     //    public static boolean isExpanded =false;
 
@@ -40,7 +41,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
 
 
-    public ConnectionAdapter(Context context, ArrayList<ConnectionModel> allSampleData, ConnectionFragment connectionFragment) {
+    public ConnectionAdapter(Context context, ArrayList<ConnectionResultModel> allSampleData, ConnectionFragment connectionFragment) {
         this.dataLists=allSampleData;
         this.mContext=context;
         this.connectionInterface=connectionFragment;
@@ -60,7 +61,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
 
-        final ConnectionModel model =dataLists.get(position);
+        final ConnectionResultModel model =dataLists.get(position);
 
         if (dataLists != null && !dataLists.isEmpty()) {
             if (dataLists.get(position).isExpanded) {
@@ -100,10 +101,9 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 @Override
                 public void onClick(View v) {
 
-
                     Bundle bundle = new Bundle();
-                    bundle.putString("personId",model.getConnected_uId());
-                    bundle.putString("personName",model.getConnected_firstName());
+                    bundle.putString("personId",model.getBpFinderModel().getBpf_id());
+                    bundle.putString("personName",model.getBpFinderModel().getBpf_firstName());
                     connectionInterface.connectionToNote(bundle);
 
 
@@ -111,10 +111,10 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 }
             });
 
-            holder.txtv_name.setText(dataLists.get(position).getConnected_firstName().trim());
+            holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim());
 
-            if(!dataLists.get(position).getConnected_imageUrl().equals("null")){
-                Glide.with(mContext).load(dataLists.get(position).getConnected_imageUrl()).into(holder.profilePic);
+            if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equals("null")){
+                Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
                 //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
             }else {
                 holder.profilePic.setImageResource(R.drawable.ic_person);
@@ -126,17 +126,15 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 public void onClick(View view) {
 
                     Bundle bundle = new Bundle();
-                    bundle.putString("personId", model.getConnected_uId());
-                    bundle.putString("personName",model.getConnected_firstName());
-                    bundle.putString("myName",new PrefManager(mContext).getUserName());
-                    bundle.putString("personPic",model.getConnected_imageUrl());
+                    bundle.putParcelable(AppConstants.CHAT_USER,model.getBpFinderModel());
                     connectionInterface.transition(bundle);
 
                 }
             });
-            final String active_status = dataLists.get(position).getConnected_status();
+
+            final String active_status = model.getStatus() ;
             if (!active_status.equals("null") && !active_status.isEmpty()) {
-                if(active_status.equals("Blocked")){
+                if(active_status.equalsIgnoreCase("Blocked")){
                     holder.txtv_block.setText("UNBLOCK");
                     holder.viewOne.setVisibility(View.GONE);
                     holder.txtv_message.setVisibility(View.GONE);
@@ -153,14 +151,14 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 @Override
                 public void onClick(View view) {
                     //unblock api
-                    if (!active_status.isEmpty() && active_status.equals("Blocked")) {
-                        String personid = model.getConnected_uId();
-                        connectionInterface.unblock(personid,model.getConnected_firstName());
+                    if (!active_status.isEmpty() && active_status.equalsIgnoreCase("Blocked")) {
+                        String personid = model.getBpFinderModel().getBpf_id();
+                        connectionInterface.unblock(personid,model.getBpFinderModel().getBpf_firstName());
                         holder.ItemChanged(position);
                     //block
-                    }else if(!active_status.isEmpty() && active_status.equals("Active")) {
-                        String personid = model.getConnected_uId();
-                        connectionInterface.block(personid,model.getConnected_firstName());
+                    }else if(!active_status.isEmpty() && active_status.equalsIgnoreCase("Active")) {
+                        String personid = model.getBpFinderModel().getBpf_id();
+                        connectionInterface.block(personid,model.getBpFinderModel().getBpf_firstName());
                         holder.reMovePosition(position);
                     }
 
@@ -178,7 +176,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
         return dataLists.size();
     }
 
-    public void setFilter(List<ConnectionModel> countryModels) {
+    public void setFilter(List<BpFinderModel> countryModels) {
         mCountryModel = new ArrayList<>();
         mCountryModel.addAll(countryModels);
         notifyDataSetChanged();
