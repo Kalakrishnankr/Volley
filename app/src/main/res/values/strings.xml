@@ -59,6 +59,8 @@
     <string name="mobilerror">Please enter a valid mobile number</string>
     <string name="cityerror">Please enter your location</string>
     <string name="invalid_password">Your password is too small. Please enter a minimum of eight characters</string>
+    <string name="null_password">Accepts only the valid characters. Please remove space</string>
+
     <string name="invalid_confirmpassword">Confirm password does not match with the password you entered</string>
     <string name="enter_confirm_pwd">Please confirm your password</string>
     <string name="fname_blank">First name cannot be blank</string>
