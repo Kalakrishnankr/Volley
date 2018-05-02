@@ -49,7 +49,6 @@ dependencies {
     implementation 'hani.momanii.supernova_emoji_library:supernova-emoji-library:0.0.2'
     implementation 'com.github.vihtarb:tooltip:0.1.9'
     implementation 'com.firebase:firebase-client-android:2.5.2+'
-    implementation 'com.github.vihtarb:tooltip:0.1.9'
     implementation 'com.squareup.okhttp:okhttp:2.5.0'
     implementation 'com.google.firebase:firebase-messaging:12.0.0'
     implementation 'com.firebase:firebase-jobdispatcher:0.5.2'
