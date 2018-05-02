@@ -140,6 +140,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     holder.txtv_block.setText("UNBLOCK");
                     holder.viewOne.setVisibility(View.GONE);
                     holder.txtv_message.setVisibility(View.GONE);
+                    holder.cardView.setBackgroundResource(R.color.lightGrey);
 
                 }else  {
                     holder.txtv_block.setText("BLOCK");
