@@ -957,7 +957,12 @@ public class SignUpActivity extends AppCompatActivity{
         return trimmedString;
     }
 
-    /*public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
+/*public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
                 selectedVideoUri = data.getData();

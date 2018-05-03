@@ -232,7 +232,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }*/
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private void initActivity() {
 
@@ -352,6 +356,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Toast.makeText(LoginActivity.this, "SignUp", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
