@@ -2875,7 +2875,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         } else {
                             Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
 
-                            new DownloadFileFromURL(exactImageName, "image").execute(userDataModel.getImageUrl());
+                            new DownloadFileFromURL(exactImageName, "image",userDataModel.getImageUrl()).execute();
 
 
                         }
@@ -2897,7 +2897,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                             playVideoFromFile(Uri.parse(myProfileVideFile.getPath()));
                         } else {
                             playVideo(userDataModel.getVideoUrl());
-                            new DownloadFileFromURL(exactVideoName, "video").execute(userDataModel.getVideoUrl());
+
+                                new DownloadFileFromURL(exactVideoName, "video",userDataModel.getVideoUrl()).execute();
 
                         }
                     }
@@ -3544,11 +3545,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     class DownloadFileFromURL extends AsyncTask<String, String, String> {
         private String fileName;
         private String fileType;
+        private String f_url;
 
 
-        public DownloadFileFromURL(String fileName, String fileType) {
+        public DownloadFileFromURL(String fileName, String fileType, String f_url) {
             this.fileName = fileName;
             this.fileType = fileType;
+            this.f_url =f_url;
         }
 
         /**
@@ -3570,97 +3573,101 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
          * Downloading file in background thread
          */
         @Override
-        protected String doInBackground(String... f_url) {
-            File parentDirectory = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+        protected String doInBackground(String... url) {
 
-            if (!parentDirectory.exists()) {
-                File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
-                wallpaperDirectory.mkdirs();
-            }
-            if (fileType.equals("image")) {
+            if (getActivity() != null) {
+                File parentDirectory = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+
+                if (!parentDirectory.exists()) {
+                    File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+                    wallpaperDirectory.mkdirs();
+                }
+                if (fileType.equals("image")) {
 
 
-                File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
-                //File imageDirectory=null;
-                if (!profileImageDir.exists()) {
-                    new File(parentDirectory, "image").mkdir();
+                    File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
+                    //File imageDirectory=null;
+                    if (!profileImageDir.exists()) {
+                        new File(parentDirectory, "image").mkdir();
 
-                    downloadProfileImageAndVideo(fileName, fileType, f_url);
+                        downloadProfileImageAndVideo(fileName, fileType, f_url);
 
-                } else {
-                    String[] children = profileImageDir.list();
-                    for (int i = 0; i < children.length; i++) {
-                        new File(profileImageDir, children[i]).delete();
+                    } else {
+                        String[] children = profileImageDir.list();
+                        for (int i = 0; i < children.length; i++) {
+                            new File(profileImageDir, children[i]).delete();
+                        }
+
+                        downloadProfileImageAndVideo(fileName, fileType, f_url);
+
                     }
 
+
+                } else {
+                    File profileVideoDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
+                    //File imageDirectory=null;
+                    if (!profileVideoDir.exists()) {
+                        new File(parentDirectory, "video").mkdir();
+
+                        downloadProfileImageAndVideo(fileName, fileType, f_url);
+
+                    } else {
+                        String[] children = profileVideoDir.list();
+                        for (int i = 0; i < children.length; i++) {
+                            new File(profileVideoDir, children[i]).delete();
+                        }
+
+                    }
                     downloadProfileImageAndVideo(fileName, fileType, f_url);
 
                 }
-
-
-            } else {
-                File profileVideoDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "video");
-                //File imageDirectory=null;
-                if (!profileVideoDir.exists()) {
-                    new File(parentDirectory, "video").mkdir();
-
-                    downloadProfileImageAndVideo(fileName, fileType, f_url);
-
-                } else {
-                    String[] children = profileVideoDir.list();
-                    for (int i = 0; i < children.length; i++) {
-                        new File(profileVideoDir, children[i]).delete();
-                    }
-
-                }
-                downloadProfileImageAndVideo(fileName, fileType, f_url);
-
             }
+                return null;
 
-            return null;
         }
 
         private void downloadProfileImageAndVideo(String fileName, String fileType, String... f_url) {
             int count;
+if(getActivity()!=null) {
+    try {
+        String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
 
-            try {
-                String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
+        System.out.println("Downloading");
+        URL url = new URL(f_url[0]);
 
-                System.out.println("Downloading");
-                URL url = new URL(f_url[0]);
+        URLConnection conection = url.openConnection();
+        conection.connect();
+        // getting file length
+        int lenghtOfFile = conection.getContentLength();
 
-                URLConnection conection = url.openConnection();
-                conection.connect();
-                // getting file length
-                int lenghtOfFile = conection.getContentLength();
+        // input stream to read file - with 8k buffer
+        InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-                // input stream to read file - with 8k buffer
-                InputStream input = new BufferedInputStream(url.openStream(), 8192);
+        // Output stream to write file
 
-                // Output stream to write file
+        OutputStream output = new FileOutputStream(root + fileName);
+        byte data[] = new byte[1024];
 
-                OutputStream output = new FileOutputStream(root + fileName);
-                byte data[] = new byte[1024];
+        long total = 0;
+        while ((count = input.read(data)) != -1) {
+            total += count;
 
-                long total = 0;
-                while ((count = input.read(data)) != -1) {
-                    total += count;
+            // writing data to file
+            output.write(data, 0, count);
 
-                    // writing data to file
-                    output.write(data, 0, count);
+        }
 
-                }
+        // flushing output
+        output.flush();
 
-                // flushing output
-                output.flush();
+        // closing streams
+        output.close();
+        input.close();
 
-                // closing streams
-                output.close();
-                input.close();
-
-            } catch (Exception e) {
-                Log.e("Error: ", e.getMessage());
-            }
+    } catch (Exception e) {
+        Log.e("Error: ", e.getMessage());
+    }
+}
         }
 
 
