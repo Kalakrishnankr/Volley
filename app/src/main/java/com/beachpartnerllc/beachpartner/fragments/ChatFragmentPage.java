@@ -54,7 +54,6 @@ public class ChatFragmentPage extends Fragment {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
-
         }
         BpFinderModel bpFinderModel = null;
         if (getArguments() != null) {

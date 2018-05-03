@@ -901,7 +901,28 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     public void onResponse(JSONObject response) {
                         if (response != null) {
 
-                            SwipeResultModel swipeResultModel =
+                            JSONObject obj = null;
+                            try {
+                                SwipeResultModel swipeResultModel =
+                                        new Gson().fromJson(response.toString(), SwipeResultModel.class);
+                                obj = response.getJSONObject("connectedUser");
+                                Type type = new TypeToken<BpFinderModel>(){}.getType();
+                                BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                                if (finderModel != null) {
+                                    getBpProfiles();
+                                    if (swipeResultModel.getId() != null) {
+                                        new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
+                                    }
+                                    cModel = finderModel;
+                                    if (swipeResultModel.isActive())
+                                        showAlertDialog();
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            /*SwipeResultModel swipeResultModel =
                                     new Gson().fromJson(response.toString(), SwipeResultModel.class);
                             if (getActivity() != null) {
                                 if (swipeResultModel != null) {
@@ -913,7 +934,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     if (swipeResultModel.isActive())
                                         showAlertDialog();
                                 }
-                            }
+                            }*/
 
 
                         }
@@ -1073,7 +1094,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }*/
-                                SwipeResultModel swipeResultModelhifi =
+                               /* SwipeResultModel swipeResultModelhifi =
                                         new Gson().fromJson(response.toString(), SwipeResultModel.class);
                                 if (getActivity() != null) {
                                     if (swipeResultModelhifi != null) {
@@ -1085,6 +1106,25 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                         if (swipeResultModelhifi.isActive())
                                             showAlertDialog();
                                     }
+                                }*/
+                                JSONObject obj = null;
+                                try {
+                                    SwipeResultModel swipeResultModel =
+                                            new Gson().fromJson(response.toString(), SwipeResultModel.class);
+                                    obj = response.getJSONObject("connectedUser");
+                                    Type type = new TypeToken<BpFinderModel>(){}.getType();
+                                    BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                                    if (finderModel != null) {
+                                        getBpProfiles();
+                                        if (swipeResultModel.getId() != null) {
+                                            new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
+                                        }
+                                        cModel = finderModel;
+                                        if (swipeResultModel.isActive())
+                                            showAlertDialog();
+                                    }
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
                                 }
                             }
                         }
