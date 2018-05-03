@@ -95,11 +95,11 @@ public class ChatFragmentPage extends Fragment {
     }
 
     private void initView(View view) {
-        submitButton = (ImageView) view.findViewById(R.id.sendButton);
-        emoji_btn = (ImageView) view.findViewById(R.id.emoji_btn);
+        submitButton    = (ImageView) view.findViewById(R.id.sendButton);
+        emoji_btn       = (ImageView) view.findViewById(R.id.emoji_btn);
         emojicon_editText = (EmojiconEditText) view.findViewById(R.id.emojicon_edit_text);
-        rootview = (LinearLayout) view.findViewById(R.id.layout1);
-        scrollview = (ScrollView) view.findViewById(R.id.scroll);
+        rootview        = (LinearLayout) view.findViewById(R.id.layout1);
+        scrollview      = (ScrollView) view.findViewById(R.id.scroll);
 
         emojIcon = new EmojIconActions(getActivity(), rootview, emojicon_editText, emoji_btn);
         emojIcon.ShowEmojIcon();
@@ -124,7 +124,7 @@ public class ChatFragmentPage extends Fragment {
                 /*String newText = emojicon_editText.getText().toString();
                 addMessageBox(newText,1);
                 emojicon_editText.setText("");*/
-                String messageText = emojicon_editText.getText().toString();
+                String messageText = emojicon_editText.getText().toString().trim();
 
                 if (!messageText.equals("")&& !messageText.isEmpty() && messageText.length()!= 0) {
                     Map<String, String> map = new HashMap<String, String>();
