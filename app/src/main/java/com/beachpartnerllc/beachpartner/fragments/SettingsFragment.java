@@ -1,8 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.content.SharedPreferences;
-
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -373,8 +371,8 @@ public class SettingsFragment extends Fragment {
         stateList.add("Virginia");
         stateList.add("Washington");
         stateList.add("West Virginia");
-        stateList.add("Wisconsin WI");
-        stateList.add("Wyoming WY");
+        stateList.add("Wisconsin");
+        stateList.add("Wyoming");
     }
 
 }

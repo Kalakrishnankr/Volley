@@ -4,7 +4,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,11 +45,9 @@ import java.util.Locale;
 
 public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
-    private String YOUR_FRAGMENT_STRING_TAG;
     private Context mContext;
     private Integer ageInt;
     MyInterface myInterface;
-    private static final String TAG = "TouristSpotCardAdapter";
 
 
     public TouristSpotCardAdapter(Context context, MyInterface inter) {
@@ -156,9 +153,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             @Override
             public void onClick(View view) {
                 holder.exoPlayer.stop();
-                myInterface.addView(spot.getBpf_imageUrl(), spot.getBpf_firstName());
+                myInterface.addView(spot.getBpf_imageUrl(), spot.getBpf_firstName(),spot.getBpf_dob(),spot.getBpf_userType());
                 myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken(), spot.getBpf_topfinishes());
-                Log.d(TAG, "Top Finishes: "+spot.getBpf_topfinishes());
             }
         });
 

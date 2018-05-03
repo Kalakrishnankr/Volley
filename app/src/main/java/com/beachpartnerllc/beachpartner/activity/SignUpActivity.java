@@ -705,9 +705,7 @@ public class SignUpActivity extends AppCompatActivity{
         JSONObject object = new JSONObject();
         try {
 
-        //  object.put("activated",true);
             object.put("authToken","null");
-        //  object.put("authorities",array);
 
             object.put("city",location);
         //  object.put("createdBy",dob);
@@ -723,7 +721,6 @@ public class SignUpActivity extends AppCompatActivity{
 
             object.put("imageUrl","null");
             object.put("langKey","null");
-        //  object.put("lastModifiedBy","null");
 
             object.put("lastName",lastName);
             object.put("location",location);
@@ -759,7 +756,9 @@ public class SignUpActivity extends AppCompatActivity{
                             String statusMessage = response.getString("message").toString().trim();
                             if(response!=null && statusMessage.equals("success")){
 
-                                Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
+                                //Toast.makeText(SignUpActivity.this, "Successfully Registered\nUser ID: "+response.getString("userId"), Toast.LENGTH_LONG).show();
+                                Toast.makeText(SignUpActivity.this, "Successfully Registered", Toast.LENGTH_LONG).show();
+
                                 clearFeilds();
                                 PrefManager prefManager = new PrefManager(SignUpActivity.this);
                                 prefManager.saveRegistrationStatus("pending");

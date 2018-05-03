@@ -32,8 +32,6 @@ import java.util.Map;
 import hani.momanii.supernova_emoji_library.Actions.EmojIconActions;
 import hani.momanii.supernova_emoji_library.Helper.EmojiconEditText;
 
-import static com.beachpartnerllc.beachpartner.instagram.util.Cons.TAG;
-
 
 public class ChatFragmentPage extends Fragment {
 
@@ -47,6 +45,7 @@ public class ChatFragmentPage extends Fragment {
     private int idLeft, idRight;
     private Date currentTime;
     TabActivity tabActivity;
+    private static final String TAG = "ChatFragmentPage";
 
 
 
@@ -55,6 +54,7 @@ public class ChatFragmentPage extends Fragment {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
+
         }
         BpFinderModel bpFinderModel = null;
         if (getArguments() != null) {
@@ -116,6 +116,8 @@ public class ChatFragmentPage extends Fragment {
                 Log.e(TAG, "Keyboard closed");
             }
         });
+
+
 
 
         submitButton.setOnClickListener(new View.OnClickListener() {
@@ -192,7 +194,6 @@ public class ChatFragmentPage extends Fragment {
 
 
     }
-
 
     private void getConnections() {
 

@@ -113,12 +113,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TouristSpotCardAdapter adapter;
     private RelativeLayout rr;
     private CoordinatorLayout llv;
-    private ImageView imgv_profilepic;
-    private ImageView imgv_rvsecard;
-    private ImageView imgv_location;
-    private ImageView imgv_highfi;
-    private ImageView btnPlay;
-    private TextView tvmonth, tvMin, tvMax, txtv_gender, text_nocard;
+    private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi,btnPlay;
+    private TextView tvmonth, tvMin, tvMax, txtv_gender, text_nocard,type_user,tv_title;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private Spinner spinner_location;
     private MultiSlider age_bar;
@@ -134,6 +130,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private boolean isbpActive = false;
     private boolean isPartner = false;
     private View view;
+    private int bp_ageInt;
     private SharedPreferences prefs;
     private String location, sgender, profileImage, topThreeFinish;
     private Boolean isCoach;
@@ -371,7 +368,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         fc = (FoldingCell) view.findViewById(R.id.folding_cell);
         topFrameLayout = (LinearLayout) view.findViewById(R.id.frmeOne);
 
-
+        type_user = (TextView) view.findViewById(R.id.txtv_typeUser);
+        tv_title  = (TextView) view.findViewById(R.id.txtv_title);
         showPreviousMonthButton = (ImageButton) view.findViewById(R.id.prev_button);
         showNextMonthButton = (ImageButton) view.findViewById(R.id.next_button);
 
@@ -752,7 +750,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                        Log.d(TAG, "onResponse: " + response.toString());
+                       // Log.d(TAG, "onResponse: " + response.toString());
                         Type listType = new TypeToken<List<BpFinderModel>>() {
                         }.getType();
                         allCardList = new Gson().fromJson(response.toString(), listType);
@@ -1299,7 +1297,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONArray response) {
 
-                        Log.d(TAG, "onResponse: " + response.toString());
+                        //Log.d(TAG, "onResponse: " + response.toString());
 
                         if (response.length() > 0) {
                             Type listType = new TypeToken<List<SwipeResultModel>>() {
@@ -1398,11 +1396,27 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Method for card reverse
 
     @Override
-    public void addView(String url, String nm) {
+    public void addView(String url, String nm,String finder_age,String type) {
         rr.setVisibility(View.GONE);
         llv.setVisibility(View.VISIBLE);
         Glide.with(getContext()).load(url).into(imgv_profilepic);
-        collapsingToolbarLayout.setTitle(nm);
+        if (finder_age != null && !finder_age.isEmpty()) {
+            long millisecond = Long.parseLong(finder_age);
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            Date datef = new Date(millisecond);
+            Calendar today = Calendar.getInstance();
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(datef);
+            int age = today.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+            if (today.get(Calendar.DAY_OF_YEAR) < cal.get(Calendar.DAY_OF_YEAR)) {
+                age--;
+            }
+            bp_ageInt = new Integer(age);
+        }
+       // Log.d(TAG, "age FRom Server: "+player_age+"age from Calculation:"+age);
+        //collapsingToolbarLayout.setTitle(nm+", "+bp_ageInt);
+        tv_title.setText(nm+", "+bp_ageInt);
+        type_user.setText(type);
         rrvBottom.setVisibility(View.GONE);
 
     }
@@ -1417,6 +1431,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         if (topThreeFinish != null && !topThreeFinish.equalsIgnoreCase("") && !topThreeFinish.equalsIgnoreCase("null")) {
             String[] values=null;
+            topFinishes_One.setText("");
+            topFinishes_Two.setText("");
+            topFinishes_Three.setText("");
             values= topThreeFinish.split(",");
             if (values.length == 0) {
                 topFinishes_Two.setText("No notable finishes");
