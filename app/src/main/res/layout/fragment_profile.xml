@@ -63,19 +63,23 @@
                     android:foregroundGravity="center"
                     android:visibility="gone">
 
-                    <ImageView
+                    <TextView
                         android:id="@+id/frameimg_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:scaleType="fitXY" />
+                        android:scaleType="fitXY"
+                        android:text="No Video available"
+                        android:gravity="center"
+                        android:textSize="@dimen/header_text_size"
+                        android:textColor="@color/white"/>
 
-                    <com.beachpartnerllc.beachpartner.utils.RotateLoading
-                        android:id="@+id/my_spinner"
-                        android:layout_width="65dp"
-                        android:layout_height="65dp"
-                        android:layout_gravity="center"
-                        app:loading_color="#ffffff"
-                        app:loading_width="5dp" />
+                    <!--<com.beachpartnerllc.beachpartner.utils.RotateLoading-->
+                        <!--android:id="@+id/my_spinner"-->
+                        <!--android:layout_width="65dp"-->
+                        <!--android:layout_height="65dp"-->
+                        <!--android:layout_gravity="center"-->
+                        <!--app:loading_color="#ffffff"-->
+                        <!--app:loading_width="5dp" />-->
                 </FrameLayout>
 
                 <ImageView

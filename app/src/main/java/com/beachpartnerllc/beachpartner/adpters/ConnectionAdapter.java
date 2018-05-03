@@ -144,6 +144,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     holder.txtv_block.setText("BLOCK");
                     holder.viewOne.setVisibility(View.VISIBLE);
                     holder.txtv_message.setVisibility(View.VISIBLE);
+                    holder.cardView.setBackgroundResource(R.color.white);
                 }
             }
 

@@ -296,7 +296,9 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
                     public void onResponse(JSONObject response) {
                         Log.d("responseDelete",response.toString());
                         if (response != null) {
-                            Toast.makeText(getActivity(), "Note deleted Successfully", Toast.LENGTH_SHORT).show();
+                            if(getActivity()!=null){
+                                Toast.makeText(getActivity(), "Note deleted Successfully", Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                     }
@@ -359,7 +361,9 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
-                    Toast.makeText(getActivity(), "Successfully Updated Note", Toast.LENGTH_SHORT).show();
+                    if(getActivity()!=null){
+                        Toast.makeText(getActivity(), "Successfully Updated Note", Toast.LENGTH_SHORT).show();
+                    }
                 }
 
             }

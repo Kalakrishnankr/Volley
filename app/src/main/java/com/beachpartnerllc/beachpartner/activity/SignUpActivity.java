@@ -583,7 +583,7 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_mobileError.setVisibility(View.VISIBLE);
                     return;
                 }
-                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==10 &&(locationSelectedStatus!=null)) {
+                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==10 && sex!=null &&(locationSelectedStatus!=null)) {
                             submitForm();
                     }
 

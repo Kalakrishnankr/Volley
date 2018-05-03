@@ -235,6 +235,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean saveClicked = false;
     boolean appendEditOpenedOne = false;
     boolean appendEditOpenedTwo = false;
+    FrameLayout placeholder;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -524,6 +525,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         llMoreDetails = (LinearLayout) view.findViewById(R.id.llMoreInfoDetails);
         viewBasic = (View) view.findViewById(R.id.viewBasic);
         viewMore = (View) view.findViewById(R.id.viewMore);
+        placeholder= (FrameLayout)view.findViewById(R.id.placeholder);
 
         //For Basic Details
 
@@ -941,6 +943,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         height.add("5' 7\"");
         height.add("5' 8\"");
         height.add("5' 9\"");
+        height.add("5' 10\"");
+        height.add("5' 11\"");
         height.add("6' 0\"");
         height.add("6' 1\"");
         height.add("6' 2\"");
@@ -1148,12 +1152,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         });
 
-        editPlayed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toursPlayed();
-            }
-        });
+//        editPlayed.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                toursPlayed();
+//            }
+//        });
 
 
         //Browse video from gallery
@@ -2065,6 +2069,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 object.put("gender", editGender.getText().toString().trim());
                 object.put("dob", stringDate);
                 object.put("city", location.toString().trim());
+                object.put("location", location.toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl", userDataModel.getImageUrl().trim());
                 object.put("videoUrl", userDataModel.getVideoUrl().trim());
@@ -2851,6 +2856,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 }
                 else{
                     progressbar.setVisibility(View.GONE);
+                    placeholder.setVisibility(View.VISIBLE);
                 }
                 if (userDataModel.getToursPlayedIn() != null && userDataModel.getToursPlayedIn().equalsIgnoreCase("")) {
                     setSelectedToursFromServer(userDataModel.getToursPlayedIn());

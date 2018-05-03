@@ -62,7 +62,7 @@
             android:gravity="center"
             android:background="@color/white"
             android:visibility="gone"
-            android:text="You have no Notes"/>
+            android:text="You have no notes"/>
 
 
         <android.support.v7.widget.RecyclerView

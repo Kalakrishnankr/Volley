@@ -4,7 +4,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     private ArrayList<SwipeResultModel> dataList;
     private static  boolean isblueBP = false;
     private static boolean isPartner = false;
-    private static final String TAG = "ProfileAdapter";
     public ProfileAdapter(Context context, ArrayList<SwipeResultModel> dataList) {
         this.dataList=dataList;
         this.mContext=context;
@@ -47,7 +45,6 @@ public class ProfileAdapter extends RecyclerView.Adapter<ProfileAdapter.ViewHold
     public void onBindViewHolder(final ViewHolder holder, int position) {
 
         final BpFinderModel model = dataList.get(position).getBpFinderModel();
-        Log.d(TAG, "onBindViewHolder: "+model.getBpf_imageUrl());
         Glide.with(mContext).load(model.getBpf_imageUrl()).into(holder.imv_profile);
         holder.imv_profile.setOnClickListener(new View.OnClickListener() {
             @Override

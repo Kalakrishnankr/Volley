@@ -224,7 +224,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             } else if (bluebpList != null && bluebpList.size() > 0) {
                 addUserList(bluebpList);
             } else if (noLikes != null && noLikes.size() > 0) {
-                // TODO: 5/1/2018
                 text_nocard.setText("No more Likes");
                 addUserList(noLikes);
             } else if (data.containsKey(AppConstants.BP_PROFILE)) {
@@ -427,7 +426,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
-                location = spinner_location.getSelectedItem().toString();
+                String Slocaton = spinner_location.getSelectedItem().toString().trim();
+                location = Slocaton.replaceAll("\\s", "");
 
             }
 
@@ -545,7 +545,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     sgender = "";
                 }
 
-                new PrefManager(getActivity()).saveSettingData(location, sgender, isCoach, minAge, maxAge);
+                //changed as per request from rp on 2-05-2018 9:07
+                //new PrefManager(getActivity()).saveSettingData(location, sgender, isCoach, minAge, maxAge);
                 llvFilter.setVisibility(View.GONE);
                 rr.setVisibility(View.VISIBLE);
                 rrvBottom.setVisibility(View.VISIBLE);
@@ -554,7 +555,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (isbpActive) {
                     topFrameLayout.setVisibility(View.GONE);
 
-                    new PrefManager(getActivity()).saveSettingData(location, sgender, isCoach, minAge, maxAge);
+                    //changed as per request from rp on 2-05-2018 9:07
+//                    new PrefManager(getActivity()).saveSettingData(location, sgender, isCoach, minAge, maxAge);
                     llvFilter.setVisibility(View.GONE);
                     rr.setVisibility(View.VISIBLE);
 
@@ -746,7 +748,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
         allCardList.clear();
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD + "?includeCoach=" + isCoach + "&minAge=" + minAge + "&maxAge=" + maxAge + "&gender=" + sgender + "&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null,
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD + "?includeCoach=" + isCoach + "&location="+ location + "&minAge=" + minAge + "&maxAge=" + maxAge + "&gender=" + sgender + "&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null,
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
@@ -868,7 +870,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         stateList.add("Washington");
         stateList.add("West Virginia");
         stateList.add("Wisconsin");
-        stateList.add("Wyoming ");
+        stateList.add("Wyoming");
 
 
     }
