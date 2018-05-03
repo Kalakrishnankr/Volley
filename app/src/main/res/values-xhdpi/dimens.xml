@@ -4,8 +4,9 @@
 	<dimen name="parallax_image_height">324dp</dimen>
 
 	<dimen name="margin_button">10dp</dimen>
-	<dimen name="text_size">16sp</dimen>
+	<dimen name="text_size">14sp</dimen>
 	<dimen name="header_text_size">28sp</dimen>
+	<dimen name="sign_up_text">12sp</dimen>
 
 	<!--framelayout that contains videView height-->
 	<dimen name="frame_layout_profileVide_height">170dp</dimen>

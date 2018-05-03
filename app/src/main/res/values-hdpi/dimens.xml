@@ -7,6 +7,7 @@
 	<dimen name="margin_button">5dp</dimen>
 	<dimen name="text_size">14sp</dimen>
 	<dimen name="header_text_size">20sp</dimen>
+	<dimen name="sign_up_text">11sp</dimen>
 
 	<!--framelayout that contains videView height-->
 	<dimen name="frame_layout_profileVide_height">140dp</dimen>
