@@ -738,7 +738,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             cardStackView.setVisibility(View.INVISIBLE);
             rr.setVisibility(View.VISIBLE);
             empty_card.setVisibility(View.VISIBLE);
-            Glide.with(getActivity()).load(profileImage).into(profilePic);
+            if (profileImage != null && !profileImage.equals("null")) {
+                Glide.with(getActivity()).load(profileImage).into(profilePic);
+            }else {
+                Glide.with(getActivity()).load(R.drawable.user_img).into(profilePic);
+            }
 
         }
     }
@@ -1058,7 +1062,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     public void onResponse(JSONObject response) {
                         if (getActivity() != null) {
                             if (response != null) {
-                                getBpProfiles();
+                               /* getBpProfiles();
                                 try {
                                     //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
                                     new PrefManager(getActivity()).saveReverseCardId(response.getString("id"));
@@ -1068,6 +1072,19 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                }*/
+                                SwipeResultModel swipeResultModelhifi =
+                                        new Gson().fromJson(response.toString(), SwipeResultModel.class);
+                                if (getActivity() != null) {
+                                    if (swipeResultModelhifi != null) {
+                                        getBpProfiles();
+                                        if (swipeResultModelhifi.getId() != null) {
+                                            new PrefManager(getActivity()).saveReverseCardId(swipeResultModelhifi.getId());
+                                        }
+                                        cModel = swipeResultModelhifi.getBpFinderModel();
+                                        if (swipeResultModelhifi.isActive())
+                                            showAlertDialog();
+                                    }
                                 }
                             }
                         }

@@ -657,8 +657,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private void getConnections() {
         connectionList.clear();
         progressBar_msg.setVisibility(View.VISIBLE);
-        String user_id = new PrefManager(getContext()).getUserId();
-        final String token = new PrefManager(getContext()).getToken();
 
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
@@ -709,7 +707,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + token);
+                headers.put("Authorization", "Bearer " + user_token);
                 //headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
 
@@ -794,7 +792,37 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 chatList.clear();
                 userList.clear();
                 chatList.addAll(hashSet);
-                if(chatList.size()>0 && chatList!=null){
+
+                if (connectionList != null && connectionList.size() > 0) {
+                    if (chatList.size() > 0 && chatList != null) {
+                        for (int i = 0; i < chatList.size() ; i++) {
+                            String chatId = chatList.get(i).split("-")[0];
+                            String chatwith_id = chatList.get(i).split("-")[1];
+                            if (chatwith_id != null && chatId != null) {
+                                if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
+                                    if (connectionList.size() > 0 && connectionList != null) {
+                                        for (int j=0;j<connectionList.size();j++){
+                                            if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
+                                                userList.add(connectionList.get(j));
+                                            }
+                                        }
+                                    }else {
+                                        txtv_nomsgs.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    progressBar_msg.setVisibility(View.GONE);
+                    messageAdapter  =  new MessageAdapter(getContext(),userList);
+                    msgRecyclerview.setAdapter(messageAdapter);
+                    messageAdapter.notifyDataSetChanged();
+                }else {
+                    progressBar_msg.setVisibility(View.GONE);
+                    txtv_nomsgs.setVisibility(View.VISIBLE);
+                }
+
+               /* if(chatList.size()>0 && chatList!=null){
                     for (int i=0;i<chatList.size();i++){
                         String chatId = chatList.get(i).split("-")[0];
                         String chatwith_id = chatList.get(i).split("-")[1];
@@ -809,9 +837,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                                 }else {
                                     txtv_nomsgs.setVisibility(View.VISIBLE);
                                 }
-                            }/*else {
+                            }else {
                                 txtv_nomsgs.setVisibility(View.VISIBLE);
-                            }*/
+                            }
                         }
 
                     }
@@ -822,7 +850,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                 }else {
                     progressBar_msg.setVisibility(View.GONE);
                     txtv_nomsgs.setVisibility(View.VISIBLE);
-                }
+                }*/
 
 
 

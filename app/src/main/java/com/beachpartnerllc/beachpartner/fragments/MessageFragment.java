@@ -188,7 +188,7 @@ public class MessageFragment extends Fragment  {
                 chatList.clear();
                 userList.clear();
                 chatList.addAll(hashSet);
-                if(chatList.size()>0 && chatList!=null){
+               /* if(chatList.size()>0 && chatList!=null){
                     for (int i=0;i<chatList.size();i++){
                         String chatId = chatList.get(i).split("-")[0];
                         String chatwith_id = chatList.get(i).split("-")[1];
@@ -203,12 +203,41 @@ public class MessageFragment extends Fragment  {
                                 tv_nomsgs.setVisibility(View.VISIBLE);
                             }
 
-                        }/*else {
+                        }*//*else {
                             tv_nomsgs.setVisibility(View.VISIBLE);
-                        }*/
+                        }*//*
                     }
                     progressBar.setVisibility(View.GONE);
                     chatListAdapter = new ChatListAdapter(MessageFragment.this,getContext(), userList);
+                    recyclerView.setAdapter(chatListAdapter);
+                    chatListAdapter.notifyDataSetChanged();
+                }else {
+                    progressBar.setVisibility(View.GONE);
+                    tv_nomsgs.setVisibility(View.VISIBLE);
+                }*/
+
+                if (connectionList != null && connectionList.size() > 0) {
+                    if (chatList.size() > 0 && chatList != null) {
+                        for (int i = 0; i < chatList.size() ; i++) {
+                            String chatId = chatList.get(i).split("-")[0];
+                            String chatwith_id = chatList.get(i).split("-")[1];
+                            if (chatwith_id != null && chatId != null) {
+                                if(chatId.equals(myId) || chatwith_id.equals(myId)){
+                                    if (connectionList.size() > 0 && connectionList != null) {
+                                        for (int j=0;j<connectionList.size();j++){
+                                            if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
+                                                userList.add(connectionList.get(j));
+                                            }
+                                        }
+                                    }else {
+                                        tv_nomsgs.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    progressBar.setVisibility(View.GONE);
+                    chatListAdapter  =  new ChatListAdapter(MessageFragment.this,getContext(), userList);
                     recyclerView.setAdapter(chatListAdapter);
                     chatListAdapter.notifyDataSetChanged();
                 }else {
