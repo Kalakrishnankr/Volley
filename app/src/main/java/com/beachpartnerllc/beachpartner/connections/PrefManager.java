@@ -174,5 +174,15 @@ public class PrefManager {
     }
 
 
+    public void clearAllPrefrence() {
+        /*SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.commit();*/
 
+        SharedPreferences sharedPreferenc = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
+        SharedPreferences.Editor edit       = sharedPreferenc.edit();
+        edit.clear();
+        edit.commit();
+    }
 }
