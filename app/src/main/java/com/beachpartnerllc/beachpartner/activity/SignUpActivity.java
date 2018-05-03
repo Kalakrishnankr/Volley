@@ -594,7 +594,7 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
     public void toursPlayed() {
-        final String[] items = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont", "Virginia", " Washington ", "West Virginia", "Wisconsin ", "Wyoming "};
+        final String[] items = {"Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina","South Dakota","Tennessee","Texas","Utah","Vermont", "Virginia", "Washington", "West Virginia", "Wisconsin", "Wyoming"};
 // arraylist to keep the selected items
 
         final android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(SignUpActivity.this, android.app.AlertDialog.THEME_HOLO_LIGHT)
