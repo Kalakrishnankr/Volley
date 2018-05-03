@@ -85,7 +85,7 @@ public class SettingsFragment extends Fragment {
 
                         blink();
 
-                dataAdapter.setDropDownViewResource(R.layout.spinner_style);
+                dataAdapter.setDropDownViewResource(R.layout.spinner_style_bp);
 
             }
         }catch (Exception e){
@@ -131,7 +131,7 @@ public class SettingsFragment extends Fragment {
         addLocation();
 
 
-        dataAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
+        dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style_bp, stateList);
         spinner_location.setAdapter(dataAdapter);
         spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {

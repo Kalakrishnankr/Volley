@@ -426,7 +426,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        editStatus = false;
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     @Override
