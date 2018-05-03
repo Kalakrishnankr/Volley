@@ -1,9 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     tools:context="com.beachpartnerllc.beachpartner.fragments.BPFinderFragment"
     tools:ignore="NamespaceTypo">
 
@@ -20,7 +20,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rrv_topbpProfiles"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
 
         </LinearLayout>
@@ -31,12 +31,12 @@
     <!--Layout for Filter start here -->
 
     <LinearLayout
-        android:visibility="visible"
         android:id="@+id/llFilter"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/frmeOne"
         android:orientation="vertical"
+        android:visibility="visible"
         android:weightSum="4.7">
 
         <!--Layout for Age card-->
@@ -62,44 +62,46 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:layout_margin="10dp"
                         android:layout_weight="0.8"
                         android:orientation="horizontal"
-                        android:layout_margin="10dp"
                         android:weightSum="2">
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.8"
                             android:layout_marginLeft="5dp"
+                            android:layout_weight="0.8"
                             android:gravity="center_vertical"
-                            android:textColor="@color/menubar"
-                            android:text="Age Limit"/>
+                            android:text="Age Limit"
+                            android:textColor="@color/menubar" />
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_minAge"
-                            android:textAlignment="viewStart"
                             android:layout_width="0dp"
-                            android:textColor="@color/menubar"
-                            android:gravity="center_vertical"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.2"/>
+                            android:layout_weight="0.2"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart"
+                            android:textColor="@color/menubar" />
+
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
+                            android:layout_weight="0.2"
+                            android:gravity="center_vertical|center"
                             android:text="-"
                             android:textAlignment="center"
-                            android:textSize="20sp"
-                            android:gravity="center_vertical|center"
-                            android:layout_weight="0.2"/>
+                            android:textSize="20sp" />
+
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_maxAge"
                             android:layout_width="0dp"
-                            android:textAlignment="viewEnd"
-                            android:textColor="@color/menubar"
-                            android:gravity="center_vertical"
                             android:layout_height="match_parent"
-                            android:layout_weight="0.2"/>
+                            android:layout_weight="0.2"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewEnd"
+                            android:textColor="@color/menubar" />
 
 
                     </LinearLayout>
@@ -107,17 +109,17 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
+                        android:layout_margin="10dp"
                         android:layout_weight="1.2"
                         android:orientation="horizontal"
-                        android:layout_margin="10dp"
                         android:weightSum="3">
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="Min"
+                            android:layout_weight="0.3"
                             android:gravity="center"
-                            android:layout_weight="0.3"/>
+                            android:text="Min" />
 
                         <!--<com.appyvet.materialrangebar.RangeBar
                             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -138,17 +140,15 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="2.4"
-                            app:drawThumbsApart="true"/>
-
+                            app:drawThumbsApart="true" />
 
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:text="Max"
+                            android:layout_weight="0.3"
                             android:gravity="center"
-                            android:layout_weight="0.3"/>
-
+                            android:text="Max" />
 
 
                     </LinearLayout>
@@ -164,9 +164,9 @@
         <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.2"
             android:layout_marginLeft="15dp"
-            android:text="@string/hint_age"/>
+            android:layout_weight="0.2"
+            android:text="@string/hint_age" />
 
         <!--Location card-->
 
@@ -186,18 +186,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:weightSum="2">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="left"
-                        android:layout_weight="0.8"
                         android:layout_marginLeft="20dp"
-                        android:textColor="@color/menubar"
-                        android:text="State"/>
+                        android:layout_weight="0.8"
+                        android:gravity="left"
+                        android:text="State"
+                        android:textColor="@color/menubar" />
 
 
                     <!--<Spinner
@@ -209,15 +209,15 @@
                         android:id="@+id/spinner_location"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:layout_marginRight="15dp"
-                        android:textAlignment="textStart"
                         android:layout_gravity="start"
-                        android:hint="Select"
+                        android:layout_marginRight="15dp"
+                        android:layout_weight="1"
                         android:background="@color/white"
-                        android:textSize="16sp"
+                        android:hint="Select"
                         android:inputType="text"
                         android:maxLines="1"
-                        android:layout_weight="1" />
+                        android:textAlignment="textStart"
+                        android:textSize="16sp" />
 
                 </LinearLayout>
 
@@ -228,9 +228,9 @@
         <com.beachpartnerllc.beachpartner.CustomTextView
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.2"
             android:layout_marginLeft="15dp"
-            android:text="@string/hint_location"/>
+            android:layout_weight="0.2"
+            android:text="@string/hint_location" />
 
         <!--card GEnder-->
 
@@ -249,33 +249,33 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:weightSum="2"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:orientation="horizontal"
-                        android:layout_weight="1"
                         android:layout_marginLeft="10dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
                         android:weightSum="2">
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:gravity="center_vertical"
                             android:layout_marginLeft="5dp"
-                            android:textColor="@color/menubar"
                             android:layout_weight="0.8"
-                            android:text="Show me"/>
+                            android:gravity="center_vertical"
+                            android:text="Show me"
+                            android:textColor="@color/menubar" />
 
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/txtv_gender"
                             android:layout_width="0dp"
-                            android:gravity="center_vertical"
-                            android:textAlignment="viewStart"
                             android:layout_height="match_parent"
-                            android:layout_weight="1.2"/>
+                            android:layout_weight="1.2"
+                            android:gravity="center_vertical"
+                            android:textAlignment="viewStart" />
 
 
                     </LinearLayout>
@@ -283,18 +283,19 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:weightSum="2"
                         android:layout_margin="20dp"
-                        android:orientation="horizontal">
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
                         <ToggleButton
                             android:id="@+id/btnMen"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="MEN"
+                            android:layout_weight="1"
                             android:background="@color/imgBacgnd"
-                            android:layout_weight="1"/>
+                            android:text="MEN" />
+
                         <Space
                             android:layout_width="4dp"
                             android:layout_height="match_parent" />
@@ -303,19 +304,17 @@
                             android:id="@+id/btnWomen"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
+                            android:layout_weight="1"
                             android:background="@color/imgBacgnd"
-                            android:text="WOMEN"
-                            android:layout_weight="1"/>
+                            android:text="WOMEN" />
 
 
                     </LinearLayout>
 
 
-
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
-
 
 
         </LinearLayout>
@@ -335,18 +334,18 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_gravity="center_vertical"
+                    android:orientation="horizontal"
                     android:weightSum="2">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
-                        android:gravity="left|center"
                         android:layout_marginLeft="20dp"
                         android:layout_weight="1"
-                        android:textColor="@color/menubar"
-                        android:text="Include Coaches"/>
+                        android:gravity="left|center"
+                        android:text="Include Coaches"
+                        android:textColor="@color/menubar" />
 
                     <!--<com.goldemo.beachpartner.CustomTextView
                         android:id="@+id/txtv_location"
@@ -359,16 +358,15 @@
                         android:id="@+id/swich_coach"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:layout_weight="0.5"
-                        android:gravity="left"
-                        android:layout_gravity="center"/>
+                        android:gravity="left" />
 
                 </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
-
 
 
         <!--play button-->
@@ -385,24 +383,16 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:layout_gravity="center"
-                android:background="@drawable/icon_play"/>
+                android:background="@drawable/icon_play" />
 
             <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Play"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="Play" />
 
 
         </LinearLayout>
-
-
-
-
-
-
-
-
 
 
     </LinearLayout>
@@ -471,10 +461,10 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:clipToPadding="false"
+            android:paddingBottom="70dp"
             android:paddingLeft="2dp"
             android:paddingRight="2dp"
             android:paddingTop="60dp"
-            android:paddingBottom="70dp"
             app:elevationEnabled="false"
             app:leftOverlay="@layout/overlay_left"
             app:rightOverlay="@layout/overlay_right"
@@ -487,26 +477,29 @@
             app:translationDiff="8">
 
         </com.beachpartnerllc.beachpartner.cardstackview.CardStackView>
+
         <android.support.v7.widget.CardView
             android:id="@+id/no_cards"
             android:layout_width="match_parent"
             android:layout_height="400dp"
+            android:layout_marginBottom="80dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_marginTop="60dp"
-            android:layout_marginBottom="80dp"
             android:visibility="gone"
             app:cardCornerRadius="10dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
+
                 <com.beachpartnerllc.beachpartner.CircularImageView
                     android:id="@+id/profilePic"
                     android:layout_width="120dp"
                     android:layout_height="120dp"
-                    android:layout_marginTop="80dp"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_marginTop="80dp" />
 
                 <TextView
                     android:id="@+id/text_nocard"
@@ -530,7 +523,6 @@
     </RelativeLayout>
 
 
-
     <!--<LinearLayout
         android:id="@+id/llMoreinfo"
         android:layout_width="match_parent"
@@ -540,16 +532,13 @@
         android:orientation="vertical">-->
 
 
-
     <android.support.design.widget.CoordinatorLayout
         android:id="@+id/llMoreinfo"
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/frmeOne"
         android:visibility="gone"
-        app:expandedTitleMarginStart="70dp"
-        android:layout_below="@+id/frmeOne">
-
-
+        app:expandedTitleMarginStart="70dp">
 
 
         <!--Image and name-->
@@ -591,17 +580,37 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
+                    <TextView
+                        android:id="@+id/txtv_title"
+                        android:layout_width="250dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="180dp"
+                        android:textSize="20dp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"/>
+
+                    <TextView
+                        android:id="@+id/txtv_typeUser"
+                        android:layout_width="250dp"
+                        android:layout_height="30dp"
+                        android:layout_marginLeft="15dp"
+                        android:textSize="16dp"
+                        android:layout_below="@+id/txtv_title"
+                        android:textColor="@color/white"
+                        android:layout_alignParentBottom="true"/>
+
                     <ImageView
                         android:id="@+id/toggle"
                         android:layout_width="50dp"
                         android:layout_height="50dp"
-                        android:layout_gravity="right"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
-                        android:layout_marginTop="180dp"
+                        android:layout_gravity="right"
                         android:layout_marginRight="20dp"
-                        android:elevation="20dp"
-                        android:background="@drawable/ic_up" />
+                        android:layout_marginTop="180dp"
+                        android:background="@drawable/ic_up"
+                        android:elevation="20dp" />
 
 
                 </RelativeLayout>
@@ -628,13 +637,8 @@
             </LinearLayout>-->
 
 
-
-
             </android.support.design.widget.CollapsingToolbarLayout>
         </android.support.design.widget.AppBarLayout>
-
-
-
 
 
         <android.support.v4.widget.NestedScrollView
@@ -685,27 +689,28 @@
                                         android:id="@+id/topOne_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:gravity="center"
-                                        android:layout_weight="1"/>
+                                        android:layout_weight="1"
+                                        android:gravity="center" />
+
                                     <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:id="@+id/topTwo_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:gravity="center"
-                                        android:layout_weight="1"/>
+                                        android:layout_weight="1"
+                                        android:gravity="center" />
 
                                     <com.beachpartnerllc.beachpartner.CustomTextView
                                         android:id="@+id/topThree_finishes"
                                         android:layout_width="match_parent"
                                         android:layout_height="0dp"
-                                        android:gravity="center"
-                                        android:layout_weight="1"/>
-
+                                        android:layout_weight="1"
+                                        android:gravity="center" />
 
 
                                 </LinearLayout>
 
                             </FrameLayout>
+
                             <LinearLayout
                                 android:id="@+id/cell_title_view"
                                 android:layout_width="match_parent"
@@ -720,13 +725,13 @@
                                     android:layout_height="0dp"
                                     android:layout_gravity="center_horizontal"
                                     android:layout_weight="1.2"
-                                    android:background="@drawable/ic_badge"/>
+                                    android:background="@drawable/ic_badge" />
 
                                 <com.beachpartnerllc.beachpartner.CustomTextView
                                     android:layout_width="match_parent"
                                     android:layout_height="0dp"
-                                    android:gravity="center"
                                     android:layout_weight="0.8"
+                                    android:gravity="center"
                                     android:text="Top Finishes in Last Year" />
 
                             </LinearLayout>
@@ -748,14 +753,12 @@
                     <!--</com.ramotion.foldingcell.FoldingCell>-->
 
 
-
-
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
-                    android:background="@color/menubar"/>
+                    android:background="@color/menubar" />
 
 
                 <!--Calender-->
@@ -763,46 +766,50 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:weightSum="6"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:weightSum="6">
 
                     <LinearLayout
                         android:id="@+id/llmonthview"
                         android:layout_width="match_parent"
                         android:layout_height="0dp"
                         android:layout_weight="1"
-                        android:weightSum="10"
-                        android:orientation="horizontal">
-                        <android.support.v4.widget.Space
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="2"/>
-                        <ImageButton
-                            android:id="@+id/prev_button"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_gravity="center_vertical"
-                            android:background="@drawable/ic_action_name"/>
-                        <TextView
-                            android:id="@+id/month_name"
-                            android:layout_weight="4"
-                            android:gravity="center"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:textColor="#283873"/>
-                        <ImageButton
-                            android:id="@+id/next_button"
-                            android:background="@drawable/ic_next_arrow"
-                            android:layout_gravity="center_vertical"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"/>
+                        android:orientation="horizontal"
+                        android:weightSum="10">
 
                         <android.support.v4.widget.Space
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
-                            android:layout_weight="2"/>
+                            android:layout_weight="2" />
+
+                        <ImageButton
+                            android:id="@+id/prev_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_action_name" />
+
+                        <TextView
+                            android:id="@+id/month_name"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="4"
+                            android:gravity="center"
+                            android:textColor="#283873" />
+
+                        <ImageButton
+                            android:id="@+id/next_button"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:background="@drawable/ic_next_arrow" />
+
+                        <android.support.v4.widget.Space
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="2" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -811,24 +818,22 @@
                         android:layout_below="@id/llmonthview"
                         android:layout_weight="5">
 
-                        <com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView
-                            xmlns:app="http://schemas.android.com/apk/res-auto"
+                        <com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView xmlns:app="http://schemas.android.com/apk/res-auto"
                             android:id="@+id/compactcalendar_view"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            app:compactCalendarTextSize="12sp"
-                            app:compactCalendarTargetHeight="@dimen/calendarTargetHt"
                             app:compactCalendarBackgroundColor="#fff"
-                            app:compactCalendarTextColor="#534c4c"
-                            app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
-                            app:compactCalendarCurrentSelectedDayTextColor="#fff"
-                            app:compactCalendarCurrentDayTextColor="#fff"
                             app:compactCalendarCurrentDayBackgroundColor="#283873"
                             app:compactCalendarCurrentDayIndicatorStyle="fill_large_indicator"
+                            app:compactCalendarCurrentDayTextColor="#fff"
+                            app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
+                            app:compactCalendarCurrentSelectedDayTextColor="#fff"
                             app:compactCalendarEventIndicatorStyle="small_indicator"
                             app:compactCalendarOtherMonthDaysTextColor="#534c4c"
                             app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="true"
-                            />
+                            app:compactCalendarTargetHeight="@dimen/calendarTargetHt"
+                            app:compactCalendarTextColor="#534c4c"
+                            app:compactCalendarTextSize="12sp" />
                     </LinearLayout>
 
                 </LinearLayout>
