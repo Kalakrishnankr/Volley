@@ -6,6 +6,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -89,6 +90,9 @@ public class LoginActivity extends AppCompatActivity {
     private TextView  never_got_email_tv;
     private TextInputLayout password_inputText;
     public JSONObject fbObject,instaObject;
+    private String location, sgender;
+    private Boolean isCoach=false;
+    private int minAge, maxAge;
 
 
     @Override
@@ -450,6 +454,10 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setVideoUrl(userObj.getString("videoUrl"));
                                     userDataModel.setDob(userObj.getString("dob"));
                                     userDataModel.setGender(userObj.getString("gender"));
+
+
+
+
                                     userDataModel.setLoginType(userObj.getString("loginType"));
                                     userDataModel.setCity(userObj.getString("city"));
                                     userDataModel.setPhoneNumber(userObj.getString("phoneNumber"));
@@ -483,6 +491,12 @@ public class LoginActivity extends AppCompatActivity {
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
                                     new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation,subscribe);
+
+                                    SharedPreferences prefs = new PrefManager(getApplicationContext()).getSettingsData();
+                                    if (prefs.getString("location",null) == null && prefs.getString("gender", null) == null) {
+                                        new PrefManager(getApplicationContext()).saveSettingData(userLocation, userDataModel.getGender().trim(), isCoach, 5, 30);
+                                    }
+
                                     //getUserInfo();
 
                                     //User Suggestion for profile updation
