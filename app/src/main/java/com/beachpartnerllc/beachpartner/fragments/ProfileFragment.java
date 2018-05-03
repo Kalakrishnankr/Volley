@@ -2388,6 +2388,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 }
                 if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
+                    if(editStatus){
+                        InfoSave();
+                    }
                 }
             } else if (requestCode == PICK_VIDEO_REQUEST) {
                 Intent intent = new Intent();
@@ -2421,6 +2424,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 }
                 if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
+                    if(editStatus){
+                        InfoSave();
+                    }
                 }
 
 
@@ -2818,6 +2824,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     if (imagePathArray != null && imagePathArray.length > 0) {
 
                         String exactImageName = imagePathArray[imagePathArray.length-1];
+                        Log.d("Image----",exactImageName);
 
                         Log.d("filename---", userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
                         myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
@@ -2840,7 +2847,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     String videoName = userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1);
                     String[] videoPathArray = videoName.split("-");
                     if (videoPathArray != null && videoPathArray.length >= 0) {
-                        String exactVideoName = videoPathArray[1];
+                        String exactVideoName = videoPathArray[videoPathArray.length-1];
 
                         Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
                         myProfileVideFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video" + "/" + exactVideoName);
