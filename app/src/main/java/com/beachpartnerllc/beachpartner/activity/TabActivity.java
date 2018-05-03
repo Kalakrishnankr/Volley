@@ -408,6 +408,7 @@ public class TabActivity extends AppCompatActivity  {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         //logout
+                        clearPreference();
                         Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                         startActivity(intent);
                         finish();
@@ -425,6 +426,8 @@ public class TabActivity extends AppCompatActivity  {
         dialog.show();
 
     }
+
+
 
     @Override
     public void onBackPressed() {
@@ -458,6 +461,12 @@ public class TabActivity extends AppCompatActivity  {
                           }).show();
         }
 
+
+    }
+
+    private void clearPreference() {
+        PrefManager prefManager = new PrefManager(getApplicationContext());
+        prefManager.clearAllPrefrence();
 
     }
 
