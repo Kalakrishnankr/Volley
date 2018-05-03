@@ -36,6 +36,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="5"
+                    android:visibility="invisible"
                     android:gravity="left|center"
                     android:drawableLeft="@drawable/ic_time_note"
                     android:text="Just Now" />
@@ -68,6 +69,7 @@
                 android:paddingLeft="75dp"
                 android:clickable="true"
                 android:editable="true"
+                android:maxLength="126"
                 android:focusable="true"
                 android:layout_below="@+id/button_row"
                 android:background="@android:color/transparent"
