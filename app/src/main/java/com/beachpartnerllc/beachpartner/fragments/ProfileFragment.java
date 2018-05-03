@@ -113,6 +113,7 @@ import com.google.android.exoplayer2.upstream.DataSpec;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
+import com.google.android.exoplayer2.util.Util;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.http.HttpEntity;
@@ -470,6 +471,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             tabActivity.setActionBarTitle("Profile");
         }*/
         setViews();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (Util.SDK_INT <= 23) {
+            exoPlayer.removeListener(this);
+            exoPlayer.stop();
+            exoPlayer.release();
+
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (Util.SDK_INT > 23) {
+            exoPlayer.removeListener(this);
+            exoPlayer.stop();
+            exoPlayer.release();
+        }
     }
 
     private void blink() {
