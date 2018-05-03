@@ -232,7 +232,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }*/
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 
     private void initActivity() {
 
@@ -352,6 +356,7 @@ public class LoginActivity extends AppCompatActivity {
                 //Toast.makeText(LoginActivity.this, "SignUp", Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(LoginActivity.this,SignUpActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -681,7 +686,17 @@ private void neverGotEmailAlertTextUnderline(){
     ClickableSpan clickableSpan = new ClickableSpan() {
         @Override
         public void onClick(View textView) {
-            Toast.makeText(LoginActivity.this, "Clicked on contact Us ", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(LoginActivity.this, "Clicked on contact Us ", Toast.LENGTH_SHORT).show();
+
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("message/rfc822");
+            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"kara@beachpartner.com"});
+
+            intent.putExtra(Intent.EXTRA_SUBJECT, "Beach Partner: Activation Email not received");
+            intent.putExtra(Intent.EXTRA_TEXT, "Hello,\n" +
+                    "I did not receive an email from Beach Partner yet. Can you please help?");
+
+            startActivity(Intent.createChooser(intent, "Send Email"));
         }
 
         public void updateDrawState(TextPaint ds) {
