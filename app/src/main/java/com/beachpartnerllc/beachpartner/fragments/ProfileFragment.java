@@ -236,6 +236,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean appendEditOpenedOne = false;
     boolean appendEditOpenedTwo = false;
     FrameLayout placeholder;
+    private String d1;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -1066,10 +1067,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                myCalendar.set(Calendar.YEAR, year);
-                myCalendar.set(Calendar.MONTH, monthOfYear);
-                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+                    myCalendar.set(Calendar.YEAR, year);
+                    myCalendar.set(Calendar.MONTH, monthOfYear);
+                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+//                else{
+//                    String myFormat = "MM-dd-yyyy"; //In which you need put here
+//                    SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
+//                    Date d = null;
+//                    try {
+//                        d = sdf.parse(d1);
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                    myCalendar.setTime(d);
+//                }
+
+
                 updateLabel();
+
             }
 
         };
@@ -2884,7 +2902,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
                     long dob = Long.parseLong(userDataModel.getDob());
                     Date date_dob = new Date(dob);
+                    d1=dft.format(date_dob);
                     editDob.setText(dft.format(date_dob));
+                    myCalendar.setTime(date_dob);
                 }
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
