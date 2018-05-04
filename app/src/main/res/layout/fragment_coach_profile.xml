@@ -18,8 +18,9 @@
         android:id="@+id/img_bg_coach"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:scaleType="fitXY"
         android:backgroundTint="@color/transparent"
-        android:backgroundTintMode="src_atop"
+        android:backgroundTintMode="src_over"
         android:background="@drawable/coach_background"/>
 
         <com.beachpartnerllc.beachpartner.CircularImageView
