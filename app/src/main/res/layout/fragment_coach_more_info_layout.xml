@@ -137,6 +137,7 @@
                         android:singleLine="true"
                         android:inputType="textCapWords"
                         android:layout_weight="1"
+                        android:textSize="@dimen/text_size"
                         android:nextFocusDown="@+id/txtv_no_athletes"
                         android:paddingStart="5dp"
                         android:paddingLeft="5dp"
@@ -305,11 +306,11 @@
                         android:id="@+id/spinner_program_funding"
                         android:layout_weight="1"
                         android:layout_width="0dp"
-
                         android:layout_height="33dp"
                         android:paddingStart="5dp"
                         android:paddingLeft="5dp"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:background="@null"/>
 
 
 
@@ -352,7 +353,8 @@
                         android:layout_height="33dp"
                         android:paddingStart="5dp"
                         android:paddingLeft="5dp"
-                        android:enabled="false"/>
+                        android:enabled="false"
+                        android:background="@null"/>
 
                 </LinearLayout>
                 <View

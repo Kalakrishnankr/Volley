@@ -397,6 +397,16 @@ public class TabActivity extends AppCompatActivity  {
         trans.commit();
         disableFloatButtons();
     }
+
+    public void loadCoachProfileFragment(){
+        CoachProfileFragment cpf = new CoachProfileFragment();
+        getSupportActionBar().setTitle("Profile");
+        FragmentManager Coachmang = getSupportFragmentManager();
+        FragmentTransaction trans = Coachmang.beginTransaction();
+        trans.replace(R.id.container, cpf, YOUR_FRAGMENT_STRING_TAG);
+        trans.commit();
+        disableFloatButtons();
+    }
     private void alertLogout() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Logout")

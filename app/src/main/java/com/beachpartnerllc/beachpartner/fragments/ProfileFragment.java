@@ -499,15 +499,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    private void blink() {
-        Animation anim = new AlphaAnimation(0.0f, 1.0f);
-        anim.setDuration(50); //You can manage the blinking time with this parameter
-        anim.setStartOffset(20);
-        anim.setRepeatMode(Animation.REVERSE);
-        anim.setRepeatCount(30);
-        editCity.setBackgroundColor(getResources().getColor(R.color.light_blue));
-        editCity.startAnimation(anim);
-    }
+
 
     @Override
     public void onDestroy() {

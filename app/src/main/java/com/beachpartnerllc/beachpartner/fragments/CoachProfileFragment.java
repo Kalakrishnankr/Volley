@@ -15,8 +15,10 @@ import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -61,6 +63,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.CoachProfileResponse;
@@ -417,6 +420,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         ArrayAdapter<String> fundingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, funding);
         fundingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         program_funding.setAdapter(fundingAdapter);
+        program_funding.invalidate();
         program_funding.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 program_funding_value = program_funding.getSelectedItem().toString();
@@ -437,6 +441,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         ArrayAdapter<String> athlete_sharingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, athlete_sharing);
         athlete_sharingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         program_share_athletes.setAdapter(athlete_sharingAdapter);
+        program_share_athletes.invalidate();
         program_share_athletes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                 program_share_athletes_value = program_share_athletes.getSelectedItem().toString();
@@ -787,6 +792,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         return mFormValidation;
     }
+    private void reloadFragment() {
+        if (getActivity() instanceof TabActivity) {
+            TabActivity tabActivity = (TabActivity) getActivity();
+            tabActivity.loadCoachProfileFragment();
+        }
+    }
 
     private String getValue(EditText view) {
         return view.getText().toString().trim();
@@ -800,6 +811,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                         if (response != null) {
                             editStatus = false;
                             Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
+                            reloadFragment();
+                        }
+                        else{
+                            Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -991,9 +1006,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Log.i(TAG,"PROFILE_IMAGE_LOAD");
         if (userCoachModel.getImageUrl() != null) {
             Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgProfile);
+            Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
+            imgBgCoach.setBackground(null);
             Log.d(TAG,"PROFILE_IMAGE_LOAD "+userCoachModel.getImageUrl());
         } else {
             imgProfile.setImageResource(R.drawable.ic_person);
+
         }
         Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
         //Long value to date conversion
