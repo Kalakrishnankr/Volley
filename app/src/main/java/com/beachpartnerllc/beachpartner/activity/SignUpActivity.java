@@ -599,7 +599,7 @@ public class SignUpActivity extends AppCompatActivity{
     private void submitForm() {
 
 
-        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat sim = new SimpleDateFormat("MM-dd-yyyy'T'HH:mm:ss'Z'");
 
         JSONArray array = new JSONArray();
         array.put("basic");
@@ -736,7 +736,7 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
     public SimpleDateFormat updateLabel() {
-        String myFormat = "yyyy-MM-dd"; //In which you need put here
+        String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         user_dob.setText(sdf.format(myCalendar.getTime()));
         return sdf;
