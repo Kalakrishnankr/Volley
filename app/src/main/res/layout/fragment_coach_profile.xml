@@ -19,8 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:backgroundTint="@color/transparent"
-        android:backgroundTintMode="src_atop"
-        android:background="@drawable/coach_background"/>
+        android:backgroundTintMode="src_atop" />
 
         <com.beachpartnerllc.beachpartner.CircularImageView
             android:id="@+id/row_icon"
@@ -45,6 +44,7 @@
             android:textSize="@dimen/textsize_header"
             android:textColor="@color/white"
             android:textStyle="bold"
+            android:background="@drawable/overlay_card"
             android:text="Username"/>
         <LinearLayout
             android:layout_width="wrap_content"
