@@ -109,11 +109,6 @@ public class SignUpActivity extends AppCompatActivity{
         progress = new ProgressDialog(SignUpActivity.this);
         progress.setMessage("Loading...");
 
-//        SignUpActivity.this.getWindow().setSoftInputMode(
-//                WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
-        //Toast.makeText(this, "Device Id"+android_id, Toast.LENGTH_SHORT).show();
-
-
 
     }
 
@@ -179,7 +174,6 @@ public class SignUpActivity extends AppCompatActivity{
             }
         });
 
-// Lastname focous Listener
         user_lname.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -191,7 +185,6 @@ public class SignUpActivity extends AppCompatActivity{
                     user_lnameError.setText(getResources().getString(R.string.lnameerror));
 
                 }else if(!hasFocus && new FormValidator().validateLastName(user_lname).equalsIgnoreCase("failed")){
-                    //user_lname.setText("");
 
                     user_lnameError.setVisibility(View.VISIBLE);
                     user_lnameError.setText(getResources().getString(R.string.lname_blank));
@@ -223,6 +216,7 @@ public class SignUpActivity extends AppCompatActivity{
                 }
             }
         });
+
 // Username focous Listener
         user_email.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -290,6 +284,7 @@ public class SignUpActivity extends AppCompatActivity{
                 }
             }
         });
+
 // Mobile focous Listener
         user_mobileno.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -303,10 +298,7 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
                 }
-//                else if(hasFocus && user_mobileno.getText().length()<10){
-//                    txt_mobileError.setVisibility(View.VISIBLE);
-//                    txt_mobileError.setText(getResources().getString(R.string.mobilerror));
-//                }
+
                 else if(!hasFocus &&(user_mobileno.getText().length()==10)){
                     txt_mobileError.setVisibility(View.GONE);
                 }
@@ -335,7 +327,6 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                 }
                 txt_usrTypeError.setVisibility(View.GONE);
-                // Toast.makeText(SignUpActivity.this, "you cliked"+userType, Toast.LENGTH_SHORT).show();
 
             }
 
@@ -404,42 +395,6 @@ public class SignUpActivity extends AppCompatActivity{
            }
        });
 
-
-
-
-
-
-        //Browse video from gallery
-        /*imgVideo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onItemClick(View view) {
-
-                Intent intent= new Intent();
-                intent.setType("video*//*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Video"),REQUEST_TAKE_GALLERY_VIDEO);
-
-            }
-        });
-*/
-        //browse profile picture from  gallery
-        /*imgProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onItemClick(View view) {
-                Intent intent = new Intent();
-                intent.setType("image*//*");
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Image"),REQUEST_TAKE_GALLERY_IMAGE);
-            }
-        });*/
-
-        //play video
-        /*imgPlay.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onItemClick(View view) {
-                videoView.start();
-            }
-        });*/
 
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
@@ -620,77 +575,6 @@ public class SignUpActivity extends AppCompatActivity{
         dialog.show();
 
     }
-
-//    private void addValidationToViews() {
-//        //adding validation to edittext
-//       if(user_fname.getText().toString().trim().equals("")){
-//           user_fname.setError("First name cannot be a blank");
-//           awesomeValidation.clear();
-//
-//       }
-//        else{
-//           user_fname.setError(null);
-//           awesomeValidation.addValidation(SignUpActivity.this, R.id.input_firstname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
-//       }
-//        if(user_lname.getText().toString().trim().equals("")){
-//           user_lname.setError("Last name cannot be blank");
-//            awesomeValidation.clear();
-//        }
-//        else{
-//            user_lname.setError(null);
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_lastname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.lnameerror);
-//        }
-//        if(user_dob.getText().toString().trim().equals("")){
-//            user_dob.setError(getString(R.string.doberror));
-//        }
-//        else{
-//            user_dob.setError(null);
-//        }
-//        if(user_email.getText().toString().trim().equals("")){
-//            user_email.setError("Email cannot be blank");
-//            awesomeValidation.clear();
-//        }
-//        else{
-//            user_email.setError(null);
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_email, Patterns.EMAIL_ADDRESS, R.string.emailerror);
-//        }
-//
-//        if(user_mobileno.getText().toString().trim().equals("")){
-//            user_mobileno.setError(getString(R.string.mobilerror));
-//            awesomeValidation.clear();
-//        }
-//        else{
-//            user_mobileno.setError(null);
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_mobile, "^[1-9]{2}[0-9]{8}$", R.string.mobilerror);
-//        }
-//        if(user_location_spinner.getText().toString().trim().equals("")){
-//            user_location_spinner.setError(getString(R.string.cityerror));
-//            awesomeValidation.clear();
-//        }
-//        else{
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_city, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.cityerror);
-//            user_location_spinner.setError(null);
-//        }
-//        String regx=".{8,}";
-//        if(user_password.getText().toString().trim().equals("")){
-//            user_password.setError("Please enter a password");
-//            awesomeValidation.clear();
-//        }
-//        else {
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_password,regx, R.string.invalid_password);
-//            user_password.setError(null);
-//        }
-//        if(user_confPasswd.getText().toString().trim().equals("")){
-//            user_confPasswd.setError("Please confirm your password");
-//            awesomeValidation.clear();
-//        }
-//        else{
-//            awesomeValidation.addValidation(SignUpActivity.this, R.id.input_confirm_password,R.id.input_password , R.string.invalid_confirmpassword);
-//            user_confPasswd.setError(null);
-//        }
-//
-//        //awesomeValidation.addValidation(this, R.id.profile_pic, "^null|$", R.string.error_your_id);
-//    }
 
 
 
@@ -962,46 +846,6 @@ public class SignUpActivity extends AppCompatActivity{
         super.onBackPressed();
         finish();
     }
-/*public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_GALLERY_VIDEO) {
-                selectedVideoUri = data.getData();
-               // String filemanagerstring = selectedVideoUri.getPath();
-               String selectedVideoPath = getPath(selectedVideoUri);
-                if (selectedVideoPath != null) {
 
-                    imgVideo.setVisibility(View.GONE);
-                    videoView.setVisibility(View.VISIBLE);
-                    imgPlay.setVisibility(View.VISIBLE);
-                    videoView.setVideoURI(Uri.parse(selectedVideoPath));
-
-                }
-            }
-            if(requestCode == REQUEST_TAKE_GALLERY_IMAGE){
-                 selectedImageUri = data.getData();
-                //String selectedImagePath = getPath(selectedImageUriImg);
-                if (selectedImageUri != null) {
-                    imgProfile.setImageURI(selectedImageUri);
-
-                }
-
-            }
-        }
-    }*/
-
-    // UPDATED!
-    /*public String getPath(Uri uri) {
-        String[] projection = { MediaStore.Video.Media.DATA };
-        Cursor cursor = getContentResolver().query(uri, projection, null, null, null);
-        if (cursor != null) {
-            // HERE YOU WILL GET A NULLPOINTER IF CURSOR IS NULL
-            // THIS CAN BE, IF YOU USED OI FILE MANAGER FOR PICKING THE MEDIA
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Video.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        } else
-            return null;
-    }*/
 
 }

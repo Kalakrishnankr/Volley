@@ -194,12 +194,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         setUp(view);
         getPreferences();
-        btnFemale.setText("Women");
-        btnMale.setText("Men");
-        btnFemale.setTextOff("Women");
-        btnMale.setTextOff("Men");
-        btnFemale.setTextOn("Women");
-        btnMale.setTextOn("Men");
+        btnFemale.setText("Female");
+        btnMale.setText("Male");
+        btnFemale.setTextOff("Female");
+        btnMale.setTextOff("Male");
+        btnFemale.setTextOn("Female");
+        btnMale.setTextOn("Male");
         //reload card
         reload();
         //get profile pic from preference

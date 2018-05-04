@@ -11,6 +11,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 /**
  * Created by seq-kala on 12/2/18.
@@ -75,10 +76,18 @@ public class CircularImageView extends ImageView
 
     private void loadBitmap()
     {
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) this.getDrawable();
 
-        if (bitmapDrawable != null)
-            image = bitmapDrawable.getBitmap();
+        try {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) this.getDrawable();
+
+            if (bitmapDrawable != null)
+                image = bitmapDrawable.getBitmap();
+        }catch(Exception e){
+
+
+        }
+
+
     }
 
     @Override
