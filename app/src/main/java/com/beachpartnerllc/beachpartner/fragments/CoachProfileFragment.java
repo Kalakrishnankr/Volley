@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -17,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -89,11 +91,17 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URI;
+import java.net.URL;
+import java.net.URLConnection;
+
 import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -127,6 +135,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private static final int PICK_IMAGE_REQUEST = 0;
     private static final String TAG = "CoachProfile";
     private static boolean editStatus = false;
+    private static AsyncPhotoUploadTask asyncTask;
     public UserDataModel userDataModel;
     Calendar myCalendar = Calendar.getInstance();
     String mFirstName;
@@ -165,6 +174,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     CoachProfileResponse userCoachModel;
     Bitmap profilePhoto = null;
     private ImageView imgBgCoach;
+    private static ProgressDialog progress;
 
 
     public CoachProfileFragment() {
@@ -193,6 +203,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         VolleyLog.DEBUG = true;
+        editStatus=false;
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
@@ -307,7 +318,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Calendar c = Calendar.getInstance();
         c.setTime(today);
         // Subtract 5 years
-        c.add( Calendar.YEAR, -5 ) ;
+        c.add( Calendar.YEAR, -18 ) ;
         maxDate = c.getTime().getTime();
         editDob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -391,7 +402,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         stateSpinner.setAdapter(dataAdapter);
-//        stateSpinner.invalidate();
+        stateSpinner.invalidate();
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 
@@ -446,6 +457,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             }
         });
+
+
 
     }
 
@@ -803,11 +816,16 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             editStatus = false;
-                            Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
-                            reloadFragment();
+                            if (getActivity() != null) {
+                                Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
+
+                            }
+                           // reloadFragment();
                         }
                         else{
-                            Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
+                            if (getActivity() != null) {
+                                Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
+                            }
                         }
 
                     }
@@ -985,73 +1003,103 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
     private void setView() {
-        if (userCoachModel !=null){
-            profileName.setText(userCoachModel.getFirstName()+" "+userDataModel.getLastName());
-            editFname.setText(userCoachModel.getFirstName());
-            editLname.setText(userCoachModel.getLastName());
-            editGender.setText(userCoachModel.getGender());
-            location = userDataModel.getCity().trim();
-            if (location != null) {
-                int positions = dataAdapter.getPosition(location);
-                stateSpinner.setSelection(positions);
-            }
-        }
-        Log.i(TAG,"PROFILE_IMAGE_LOAD");
-        if (userCoachModel.getImageUrl() != null) {
-            Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgProfile);
-            Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
-            imgBgCoach.setBackground(null);
-            Log.d(TAG,"PROFILE_IMAGE_LOAD "+userCoachModel.getImageUrl());
-        } else {
-            imgProfile.setImageResource(R.drawable.ic_person);
-
-        }
-        Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
-        //Long value to date conversion
-        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
-        if (userCoachModel.getDob() != null){
-            long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
-            Date date_dob = new Date(dob);
-            editDob.setText(dft.format(date_dob));
-            myCalendar.setTime(date_dob);
-        }
-
-        editPhone.setText(userCoachModel.getPhoneNumber());
-        if(userCoachModel.getUserProfile()!=null){
-            if (userCoachModel.getUserProfile().getCollage() !=null || !userCoachModel.getUserProfile().getCollage().equalsIgnoreCase("null"))
-                editCollege.setText(userCoachModel.getUserProfile().getCollage());
-
-            if(userCoachModel.getUserProfile().getDescription() != null){
-                if(userCoachModel.getUserProfile().getDescription().equals("null")){
-                    description.setText(userCoachModel.getUserProfile().getDescription().toString());
+        if(getActivity()!=null){
+            if (userCoachModel !=null){
+                profileName.setText(userCoachModel.getFirstName()+" "+userCoachModel.getLastName());
+                editFname.setText(userCoachModel.getFirstName());
+                editLname.setText(userCoachModel.getLastName());
+                editGender.setText(userCoachModel.getGender());
+                location = userCoachModel.getCity().trim();
+                if (location != null) {
+                    int positions = dataAdapter.getPosition(location);
+                    stateSpinner.setSelection(positions);
                 }
             }
-            if(userCoachModel.getUserProfile().getYearsRunning() != null || userCoachModel.getUserProfile().getYearsRunning().equalsIgnoreCase("null"))
-                years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
+            Log.i(TAG,"PROFILE_IMAGE_LOAD");
 
-            if(userCoachModel.getUserProfile().getNumOfAthlets() != null || userCoachModel.getUserProfile().getNumOfAthlets().equalsIgnoreCase("null"))
-                no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
+            if (userCoachModel.getImageUrl() != null && !userCoachModel.getImageUrl().equalsIgnoreCase("null")) {
+                String imageName = userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1);
+                String[] imagePathArray = imageName.split("-");
+                if (imagePathArray != null && imagePathArray.length > 0) {
 
-            if(userCoachModel.getUserProfile().getProgramsOffered() != null || userCoachModel.getUserProfile().getProgramsOffered().equalsIgnoreCase("null"))
-                prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
+                    String exactImageName = imagePathArray[imagePathArray.length-1];
+                    Log.d("Image----",exactImageName);
 
-            if(userCoachModel.getUserProfile().getDivision() != null || userCoachModel.getUserProfile().getDivision().equalsIgnoreCase("null"))
-                division.setText(userCoachModel.getUserProfile().getDivision().toString());
+                    Log.d("filename---", userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
+                    File myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
 
-            if(userCoachModel.getUserProfile().getFundingStatus() != null || userCoachModel.getUserProfile().getFundingStatus().equalsIgnoreCase("null"))
-            {
-                if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
-                    program_funding.setSelection(0);
-                else
-                    program_funding.setSelection(1);
+                    if (myProfileImageFile.exists()) {
+                        Glide.with(CoachProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
+                        Glide.with(getContext()).load(myProfileImageFile.getAbsolutePath()).into(imgBgCoach);
+                    } else {
+                        Glide.with(CoachProfileFragment.this).load(userCoachModel.getImageUrl()).into(imgProfile);
+                        Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
+
+
+                        new DownloadFileFromURL(exactImageName, "image",userCoachModel.getImageUrl()).execute();
+
+
+                    }
+                }
+
+            } else {
+                imgProfile.setImageResource(R.drawable.ic_person);
             }
 
-            if (userCoachModel.getUserProfile().getShareAthlets() != null || userCoachModel.getUserProfile().getShareAthlets().equalsIgnoreCase("null")){
-                if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
-                    program_share_athletes.setSelection(0);
-                else
-                    program_share_athletes.setSelection(1);
+            Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
+            //Long value to date conversion
+            SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+            if (userCoachModel.getDob() != null){
+                try {
+
+
+                    long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
+                    Date date_dob = new Date(dob);
+                    editDob.setText(dft.format(date_dob));
+                    myCalendar.setTime(date_dob);
+                }catch (Exception e){
+
+                }
             }
+
+            editPhone.setText(userCoachModel.getPhoneNumber());
+            if(userCoachModel.getUserProfile()!=null){
+                if (userCoachModel.getUserProfile().getCollage() !=null || !userCoachModel.getUserProfile().getCollage().equalsIgnoreCase("null"))
+                    editCollege.setText(userCoachModel.getUserProfile().getCollage());
+
+                if(userCoachModel.getUserProfile().getDescription() != null){
+                    if(userCoachModel.getUserProfile().getDescription().equals("null")){
+                        description.setText(userCoachModel.getUserProfile().getDescription().toString());
+                    }
+                }
+                if(userCoachModel.getUserProfile().getYearsRunning() != null || userCoachModel.getUserProfile().getYearsRunning().equalsIgnoreCase("null"))
+                    years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
+
+                if(userCoachModel.getUserProfile().getNumOfAthlets() != null || userCoachModel.getUserProfile().getNumOfAthlets().equalsIgnoreCase("null"))
+                    no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
+
+                if(userCoachModel.getUserProfile().getProgramsOffered() != null || userCoachModel.getUserProfile().getProgramsOffered().equalsIgnoreCase("null"))
+                    prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
+
+                if(userCoachModel.getUserProfile().getDivision() != null || userCoachModel.getUserProfile().getDivision().equalsIgnoreCase("null"))
+                    division.setText(userCoachModel.getUserProfile().getDivision().toString());
+
+                if(userCoachModel.getUserProfile().getFundingStatus() != null || userCoachModel.getUserProfile().getFundingStatus().equalsIgnoreCase("null"))
+                {
+                    if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
+                        program_funding.setSelection(0);
+                    else
+                        program_funding.setSelection(1);
+                }
+
+                if (userCoachModel.getUserProfile().getShareAthlets() != null || userCoachModel.getUserProfile().getShareAthlets().equalsIgnoreCase("null")){
+                    if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
+                        program_share_athletes.setSelection(0);
+                    else
+                        program_share_athletes.setSelection(1);
+                }
+        }
+
 
         }
 
@@ -1100,7 +1148,130 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         return cursor.getString(idx);
     }
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    class DownloadFileFromURL extends AsyncTask<String, String, String> {
+        private String fileName;
+        private String fileType;
+        private String f_url;
+
+
+        public DownloadFileFromURL(String fileName, String fileType, String f_url) {
+            this.fileName = fileName;
+            this.fileType = fileType;
+            this.f_url = f_url;
+        }
+
+        /**
+         * Before starting background thread
+         */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            System.out.println("Starting download");
+
+           /* pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("Loading... Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+        }
+
+        /**
+         * Downloading file in background thread
+         */
+        @Override
+        protected String doInBackground(String... url) {
+
+            if (getActivity() != null) {
+                File parentDirectory = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+
+                if (!parentDirectory.exists()) {
+                    File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+                    wallpaperDirectory.mkdirs();
+                }
+                if (fileType.equals("image")) {
+
+
+                    File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
+                    //File imageDirectory=null;
+                    if (!profileImageDir.exists()) {
+                        new File(parentDirectory, "image").mkdir();
+
+                        downloadProfileImageAndVideo(fileName, fileType, f_url);
+
+                    } else {
+                        String[] children = profileImageDir.list();
+                        for (int i = 0; i < children.length; i++) {
+                            new File(profileImageDir, children[i]).delete();
+                        }
+
+                        downloadProfileImageAndVideo(fileName, fileType, f_url);
+
+                    }
+
+
+                }
+            }
+            return null;
+
+        }
+
+    }
+
+        private void downloadProfileImageAndVideo(String fileName, String fileType, String... f_url) {
+            int count;
+            if(getActivity()!=null) {
+                try {
+                    String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
+
+                    System.out.println("Downloading");
+                    URL url = new URL(f_url[0]);
+
+                    URLConnection conection = url.openConnection();
+                    conection.connect();
+                    // getting file length
+                    int lenghtOfFile = conection.getContentLength();
+
+                    // input stream to read file - with 8k buffer
+                    InputStream input = new BufferedInputStream(url.openStream(), 8192);
+
+                    // Output stream to write file
+
+                    OutputStream output = new FileOutputStream(root + fileName);
+                    byte data[] = new byte[1024];
+
+                    long total = 0;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
+
+                        // writing data to file
+                        output.write(data, 0, count);
+
+                    }
+
+                    // flushing output
+                    output.flush();
+
+                    // closing streams
+                    output.close();
+                    input.close();
+
+                } catch (Exception e) {
+                    Log.e("Error: ", e.getMessage());
+                }
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK || resultCode == -1) {
             if (requestCode == PICK_IMAGE_REQUEST) {
 
@@ -1152,44 +1323,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             }
 
-            if (imgUri != null) {
-                //Method for uploading profilePic & profile video
-                uploadFiles(imgUri, user_id);
-            }
         }
     }
 
 
-    //method to write profile image and video into a local file
-    private void createDirectoryAndSaveFile(Uri uri, String fileName, String fileType) {
-
-
-        File direct = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
-
-
-        if (!direct.exists()) {
-            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
-            wallpaperDirectory.mkdirs();
-        }
-        if (fileType.equals("image")) {
-            File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
-            //File imageDirectory=null;
-            if (!profileImageDir.exists()) {
-                new File(direct, "image").mkdir();
-
-                writeImageToDirectory(fileName, uri);
-            } else {
-                String[] children = profileImageDir.list();
-                for (int i = 0; i < children.length; i++) {
-                    new File(profileImageDir, children[i]).delete();
-                }
-
-                writeImageToDirectory(fileName, uri);
-
-            }
-
-        }
-    }
     private void writeImageToDirectory(String fileName, Uri uri) {
         Bitmap mBitmap = null;
         File file = null;
@@ -1451,53 +1588,31 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     //Api for upload profile image and video
     private void uploadFiles(final String imagePath, final String userId) {
-        new Thread(new Runnable() {
+
+        progress = new ProgressDialog(getContext());
+        if (!progress.isShowing()) {
+            progress.setTitle("Loading");
+            progress.setMessage("Please wait while we save your data");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+            progress.show();
+        }
+        // START AsyncTask
+        asyncTask = new AsyncPhotoUploadTask(imagePath, userId);
+        asyncTask.setListener(new AsyncPhotoUploadTask.PhotoAsyncTaskListener() {
             @Override
-            public void run() {
-                try {
-                    HostnameVerifier hostnameVerifier = org.apache.http.conn.ssl.SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+            public void onPhotoAsyncTaskFinished(HttpEntity value) {
+                if (value != null) {
+                    imageUri = null;
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
+                   // reloadFragment();
 
-                    KeyStore trustStore = KeyStore.getInstance(KeyStore.getDefaultType());
-                    trustStore.load(null, null);
-                    SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(trustStore);
-                    sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-                    //throws ParseException, IOException
-                    HttpClient httpclient = new DefaultHttpClient();
-                    HttpPost httppost = new HttpPost(ApiService.ADD_PROFILE_VIDEO_IMAGE);
-                    sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-                    FileBody imageFile = new FileBody(new File(imagePath));
-                    StringBody user_Id = new StringBody(userId);
-
-                    MultipartEntity reqEntity = new MultipartEntity();
-                    reqEntity.addPart("profileImg", imageFile);
-                    reqEntity.addPart("userId", user_Id);
-                    httppost.setEntity(reqEntity);
-                    // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-                    SchemeRegistry registry = new SchemeRegistry();
-                    registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-                    registry.register(new Scheme("https", sslFactory, 443));
-                    // DEBUG
-                    System.out.println("executing request " + httppost.getRequestLine());
-                    HttpResponse response = httpclient.execute(httppost);
-                    HttpEntity resEntity = response.getEntity();
-
-                    // DEBUG
-                    System.out.println(response.getStatusLine());
-                    if (resEntity != null) {
-                        System.out.println(EntityUtils.toString(resEntity));
-                    } // end if
-
-                    if (resEntity != null) {
-                        resEntity.consumeContent();
-                    } // end if
-
-                    //  httpclient.getConnectionManager( ).getSchemeRegistry().register(new Scheme("SSLSocketFactory", SSLSocketFactory.getSocketFactory(), 443));
-                    httpclient.getConnectionManager().shutdown();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
                 }
             }
-        }).start();
+        });
+
+        asyncTask.execute();
 
 
     }
@@ -1660,6 +1775,169 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             //Log.d(TAG, "Intent: " + intent.getAction() + " package: " + packageName);
         }
         return list;
+    }
+
+
+    //method to write profile image and video into a local file
+    private void createDirectoryAndSaveFile(Uri uri, String fileName, String fileType) {
+
+
+        File direct = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name));
+
+
+        if (!direct.exists()) {
+            File wallpaperDirectory = new File(Environment.getExternalStorageDirectory(), getString(R.string.app_name));
+            wallpaperDirectory.mkdirs();
+        }
+        if (fileType.equals("image")) {
+            File profileImageDir = new File(Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + "image");
+            //File imageDirectory=null;
+            if (!profileImageDir.exists()) {
+                new File(direct, "image").mkdir();
+
+                writeImageToDirectory(fileName, uri);
+            } else {
+                String[] children = profileImageDir.list();
+                for (int i = 0; i < children.length; i++) {
+                    new File(profileImageDir, children[i]).delete();
+                }
+
+                writeImageToDirectory(fileName, uri);
+
+            }
+
+        }
+    }
+
+
+
+
+    public static class AsyncPhotoUploadTask extends AsyncTask<String, String, HttpEntity> {
+        String userId;
+        String imagePath;
+        String videoPath;
+        private PhotoAsyncTaskListener listener;
+
+
+        public AsyncPhotoUploadTask(final String imagePath, final String userId) {
+            super();
+            this.userId = userId;
+            this.imagePath = imagePath;
+
+            // do stuff
+        }
+
+        @Override
+        protected HttpEntity doInBackground(String... voids) {
+            try {
+                HttpEntity result=null;
+
+                if (imagePath != null ) {
+                    FileBody imageFile;
+                    MultipartEntity reqEntity = new MultipartEntity();
+                    StringBody user_Id = new StringBody(userId);
+                    reqEntity.addPart("userId", user_Id);
+
+                    imageFile = new FileBody(new File(imagePath));
+                    reqEntity.addPart("profileImg", imageFile);
+                     result = uploadToServer(reqEntity);
+
+                } else {
+                    Toast.makeText(getApplicationContext(), "Profile updation failed", Toast.LENGTH_LONG).show();
+                }
+
+
+
+                return result;
+
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
+
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(HttpEntity result) {
+            super.onPostExecute(result);
+
+
+            if (listener != null) {
+
+                try {
+                    if (result != null) {
+                        System.out.println(EntityUtils.toString(result));
+                    } // end if
+
+                    if (result != null) {
+                        result.consumeContent();
+
+
+                    } // end if
+
+                    int success, failure;
+                    // success = resultJson.getInt("success");
+                    //failure = resultJson.getInt("failure");
+                    //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
+                }
+            }
+
+
+            listener.onPhotoAsyncTaskFinished(result);
+        }
+
+        public void setListener(PhotoAsyncTaskListener listener) {
+            this.listener = listener;
+        }
+
+        public interface PhotoAsyncTaskListener {
+            void onPhotoAsyncTaskFinished(HttpEntity value);
+        }
+    }
+
+
+    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
+
+        HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
+        try {
+            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
+            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
+
+            //throws ParseException, IOException
+            HttpClient httpclient = new DefaultHttpClient();
+            HttpPost httppost = new HttpPost(new URI("https://www.beachpartner.com/api/storage/uploadProfileData"));
+//            sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
+            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
+            SchemeRegistry registry = new SchemeRegistry();
+            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+            registry.register(new Scheme("https", sslFactory, 443));
+
+            httppost.setEntity(reqEntity);
+
+
+            // DEBUG
+            System.out.println("executing request " + httppost.getRequestLine());
+            HttpResponse response = httpclient.execute(httppost);
+
+
+            HttpEntity resEntity = response.getEntity();
+            while (resEntity == null) {
+
+                Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
+            }
+            return resEntity;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
+        }
+        return null;
     }
 
 }
