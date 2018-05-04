@@ -14,7 +14,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -50,7 +49,7 @@ public class TabActivity extends AppCompatActivity  {
     private Boolean floatMenu2Active = false;
     private String userType;
     private Boolean tips;
-    private BottomNavigationView navigation;
+    public BottomNavigationView navigation;
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener
             = new BottomNavigationView.OnNavigationItemSelectedListener() {
 
@@ -201,11 +200,9 @@ public class TabActivity extends AppCompatActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
+        //requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
         setContentView(R.layout.activity_tab);
         getSupportActionBar().setDisplayShowTitleEnabled(true);
-
         fg = (FrameLayout) findViewById(R.id.container);
         navigation = (BottomNavigationView) findViewById(R.id.navigation);
         BottomNavigationViewHelper.disableShiftMode(navigation);
@@ -464,10 +461,13 @@ public class TabActivity extends AppCompatActivity  {
 
     }
 
+
     private void clearPreference() {
         PrefManager prefManager = new PrefManager(getApplicationContext());
         prefManager.clearAllPrefrence();
 
     }
+
+
 
 }

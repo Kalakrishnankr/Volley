@@ -76,6 +76,7 @@ public class ChatFragmentPage extends Fragment {
         ref = myFirebaseRef.child("users");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_page, container, false);
+
         getConnections();
         initView(view);
 

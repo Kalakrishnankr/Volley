@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.fragments.NoteFragment;
 import com.beachpartnerllc.beachpartner.models.NoteDataModel;
 import com.beachpartnerllc.beachpartner.utils.SaveNoteInterface;
@@ -29,6 +30,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private ArrayList<NoteDataModel> dataList;
     private SaveNoteInterface noteInterface;
     private static boolean isEditable=false;
+    TabActivity tabActivity;
 
     private String text,noteId;
 
@@ -41,8 +43,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public NotesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
+        if (mContext instanceof TabActivity) {
+            tabActivity = (TabActivity)mContext;
+        }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+
 
         return viewHolder;
     }
@@ -114,6 +120,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
         //delete note
 
 
+
+
     }
 
 
@@ -132,6 +140,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
+
 
 
             noteDisabled = view.findViewById(R.id.note_disabled);

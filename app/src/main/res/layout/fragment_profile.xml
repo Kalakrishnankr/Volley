@@ -13,7 +13,6 @@
         >
 
         <RelativeLayout
-            android:id="@+id/rrTop"
             android:layout_width="match_parent"
             android:layout_height="280dp"
             android:layout_alignParentBottom="true"
@@ -64,7 +63,6 @@
                     android:visibility="gone">
 
                     <TextView
-                        android:id="@+id/frameimg_view"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:scaleType="fitXY"
@@ -96,7 +94,6 @@
             </FrameLayout>
 
             <FrameLayout
-                android:id="@+id/profileMainPic"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
@@ -179,7 +176,6 @@
 
 
             <RelativeLayout
-                android:id="@+id/profile_layout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@+id/header_cover_video"
@@ -242,7 +238,6 @@
                     android:textColor="#696969" />
 
                 <com.beachpartnerllc.beachpartner.CustomTextView
-                    android:id="@+id/share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/profile_name"

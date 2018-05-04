@@ -1,13 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="activity_vertical_margin">28.8dp</dimen>
-    <dimen name="activity_horizontal_margin">28.8dp</dimen>
-    <dimen name="parallax_image_height">324dp</dimen>
 
 
     <dimen name="margin_button">10dp</dimen>
     <dimen name="text_size">14sp</dimen>
-    <dimen name="sign_up_text">12sp</dimen>
     <dimen name="header_text_size">28sp</dimen>
 
     <!--framelayout that contains videView height-->
@@ -20,7 +16,6 @@
 
     <!--marginTop of text under circular image view-->
     <dimen name="margin_top_text_under_circularImage">60dp</dimen>
-    <dimen name="filter_criteria_gender_margin">20dp</dimen>
 
     <dimen name="calendarTargetHt">200dp</dimen>
     <dimen name="floatingMenuMarginTop">110dp</dimen>

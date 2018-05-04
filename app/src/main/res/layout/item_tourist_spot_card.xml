@@ -33,7 +33,6 @@
 
 
         <RelativeLayout
-            android:id="@+id/rrlv"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 <!--
@@ -85,7 +84,6 @@
                 android:layout_height="fill_parent">
 
                 <ImageView
-                    android:id="@+id/frameimg_view"
                     android:scaleType="fitXY"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />

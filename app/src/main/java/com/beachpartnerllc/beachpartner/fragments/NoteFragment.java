@@ -45,7 +45,6 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
 
     private RecyclerView rcVNotes;
     private NotesAdapter adapter;
-    private ArrayList<NoteDataModel> allSampleData;
     private ArrayList<NoteDataModel> noteList = new ArrayList<>();
     private Button addNewBtn;
     private String personId,myID,personName,myToken;
@@ -67,6 +66,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_note, container, false);
         initViews(view);
@@ -75,6 +75,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         //Get all notes for a particular person;
         noteList.clear();
         getNotes();
+
         return view;
     }
 

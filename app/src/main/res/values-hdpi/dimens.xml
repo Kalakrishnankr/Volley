@@ -1,15 +1,11 @@
 <resources>
-	<dimen name="activity_vertical_margin">19.2dp</dimen>
-	<dimen name="activity_horizontal_margin">19.2dp</dimen>
-	<dimen name="parallax_image_height">216dp</dimen>
 
 
-	<dimen name="margin_button">5dp</dimen>
+    <dimen name="margin_button">5dp</dimen>
 	<dimen name="text_size">14sp</dimen>
 	<dimen name="header_text_size">20sp</dimen>
-	<dimen name="sign_up_text">11sp</dimen>
 
-	<!--framelayout that contains videView height-->
+    <!--framelayout that contains videView height-->
 	<dimen name="frame_layout_profileVide_height">140dp</dimen>
 
 	<!--Width and height of circular image inside in profile-->
@@ -22,8 +18,7 @@
 
 	<!--marginTop of text under circular image view-->
 	<dimen name="margin_top_text_under_circularImage">50dp</dimen>
-	<dimen name="filter_criteria_gender_margin">10dp</dimen>
-	<dimen name="calendarTargetHt">150dp</dimen>
+    <dimen name="calendarTargetHt">150dp</dimen>
 
 	<dimen name="pop_up_card_ht">300dp</dimen>
 	<dimen name="share_text_margin_top">12dp</dimen>

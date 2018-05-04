@@ -14,15 +14,10 @@
     <color name="lightGrey">#999999</color>
     <color name="smallgrey">#26999999</color>
     <color name="light_blue">#8f0a19e1</color>
-    <color name="grey">#DDDDDD</color>
     <color name="cyan">#00FFFF</color>
     <color name="transparent">#58000000</color>
 
     <!-- Screens background color-->
-    <color name="bg_screen1">#f64c73</color>
-    <color name="bg_screen2">#20d2bb</color>
-    <color name="bg_screen3">#3395ff</color>
-    <color name="bg_screen4">#c873f4</color>
 
     <!-- dots inactive colors -->
     <color name="dot_dark_screen1">#d1395c</color>
@@ -52,5 +47,4 @@
 
     <!--Color for top menus-->
 
-    <color name="topMenus">#ea2b386b</color>
 </resources>

@@ -115,7 +115,6 @@
                         android:weightSum="2">
 
                         <RadioButton
-                            android:id="@+id/athlete_user"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
@@ -123,7 +122,6 @@
                             android:text="Athlete" />
 
                         <RadioButton
-                            android:id="@+id/coach_user"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
