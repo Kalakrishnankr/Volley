@@ -12,14 +12,12 @@
 
 
     <RelativeLayout
-        android:id="@+id/llvTop"
         android:layout_width="match_parent"
         android:layout_height="160dp"
         android:orientation="horizontal"
         android:background="@drawable/connection_bgnd">
 
         <LinearLayout
-            android:id="@+id/topBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

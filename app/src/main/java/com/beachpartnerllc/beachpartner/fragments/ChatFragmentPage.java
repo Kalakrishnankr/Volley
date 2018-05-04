@@ -1,14 +1,18 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -53,7 +57,9 @@ public class ChatFragmentPage extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getActivity() != null) {
+            getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
             Firebase.setAndroidContext(getActivity());
+
         }
         BpFinderModel bpFinderModel = null;
         if (getArguments() != null) {
@@ -76,6 +82,7 @@ public class ChatFragmentPage extends Fragment {
         ref = myFirebaseRef.child("users");
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_chat_page, container, false);
+
         getConnections();
         initView(view);
 
@@ -103,16 +110,20 @@ public class ChatFragmentPage extends Fragment {
         emojIcon = new EmojIconActions(getActivity(), rootview, emojicon_editText, emoji_btn);
         emojIcon.ShowEmojIcon();
         emojIcon.setIconsIds(R.drawable.ic_action_keyboard, R.drawable.smiley);
-        emojIcon.setKeyboardListener(new EmojIconActions.KeyboardListener() {
-            @Override
-            public void onKeyboardOpen() {
-                Log.e(TAG, "Keyboard opened!");
 
-            }
-
+        emojicon_editText.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onKeyboardClose() {
-                Log.e(TAG, "Keyboard closed");
+            public void onGlobalLayout() {
+                if (keyboardShown(emojicon_editText.getRootView())) {
+                    Log.d("keyboard", "keyboard UP");
+                    tabActivity.navigation.setVisibility(View.GONE);
+                    scrollview.fullScroll(View.FOCUS_DOWN);
+
+                } else {
+                    Log.d("keyboard", "keyboard Down");
+                    tabActivity.navigation.setVisibility(View.VISIBLE);
+
+                }
             }
         });
 
@@ -192,6 +203,29 @@ public class ChatFragmentPage extends Fragment {
         });
 
 
+    }
+
+    /*@Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+
+        // Checks whether a hardware keyboard is available
+        if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_NO) {
+            Log.d(TAG, "Keyboard visible: ");
+        } else if (newConfig.hardKeyboardHidden == Configuration.HARDKEYBOARDHIDDEN_YES) {
+            Log.d(TAG, "Keyboard hide: ");
+        }
+    }*/
+
+    private boolean keyboardShown(View rootView) {
+
+        final int softKeyboardHeight = 100;
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+        int heightDiff = rootView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
     }
 
     private void getConnections() {

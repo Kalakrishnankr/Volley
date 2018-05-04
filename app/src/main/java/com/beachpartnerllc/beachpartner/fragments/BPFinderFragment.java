@@ -905,7 +905,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             try {
                                 SwipeResultModel swipeResultModel =
                                         new Gson().fromJson(response.toString(), SwipeResultModel.class);
-                                obj = response.getJSONObject("connectedUser");
+                                obj = response.getJSONObject("user");
                                 Type type = new TypeToken<BpFinderModel>(){}.getType();
                                 BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                 if (finderModel != null) {
@@ -1111,7 +1111,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 try {
                                     SwipeResultModel swipeResultModel =
                                             new Gson().fromJson(response.toString(), SwipeResultModel.class);
-                                    obj = response.getJSONObject("connectedUser");
+                                    obj = response.getJSONObject("user");
                                     Type type = new TypeToken<BpFinderModel>(){}.getType();
                                     BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                     if (finderModel != null) {

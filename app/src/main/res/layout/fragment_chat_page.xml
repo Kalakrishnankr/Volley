@@ -7,6 +7,7 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:paddingTop="16dp"
+    android:fitsSystemWindows="true"
     tools:context="com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage">
 
     <ScrollView
@@ -17,7 +18,6 @@
         android:isScrollContainer="true"
         android:id="@+id/scroll">
         <RelativeLayout
-            android:id="@+id/layout2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <LinearLayout

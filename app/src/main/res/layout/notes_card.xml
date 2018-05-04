@@ -70,12 +70,12 @@
                 android:clickable="true"
                 android:editable="true"
                 android:maxLength="126"
+                android:imeOptions="actionSend|flagNoEnterAction"
                 android:focusable="true"
                 android:layout_below="@+id/button_row"
                 android:background="@android:color/transparent"
                 android:textSize="@dimen/album_title" />
             <ImageView
-                android:id="@+id/ball_image"
                 android:layout_width="70dp"
                 android:layout_height="wrap_content"
                 android:background="@drawable/notes_balll_bg" />

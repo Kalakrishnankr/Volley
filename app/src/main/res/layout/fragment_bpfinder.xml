@@ -569,7 +569,6 @@
                     android:scaleType="centerCrop" />
 
                 <android.support.v7.widget.Toolbar
-                    android:id="@+id/toolbar1"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
                     android:minHeight="?attr/actionBarSize"
@@ -680,7 +679,6 @@
                             android:layout_height="wrap_content">
 
                             <FrameLayout
-                                android:id="@+id/cell_content_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:visibility="gone">
@@ -717,7 +715,6 @@
 
                             </FrameLayout>
                             <LinearLayout
-                                android:id="@+id/cell_title_view"
                                 android:layout_width="match_parent"
                                 android:layout_height="50dp"
                                 android:layout_margin="5dp"
@@ -725,7 +722,6 @@
                                 android:weightSum="2">
 
                                 <ImageView
-                                    android:id="@+id/badge"
                                     android:layout_width="25dp"
                                     android:layout_height="0dp"
                                     android:layout_gravity="center_horizontal"

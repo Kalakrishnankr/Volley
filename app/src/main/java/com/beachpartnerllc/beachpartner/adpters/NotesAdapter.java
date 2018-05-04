@@ -2,17 +2,22 @@ package com.beachpartnerllc.beachpartner.adpters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.graphics.Rect;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.fragments.NoteFragment;
 import com.beachpartnerllc.beachpartner.models.NoteDataModel;
 import com.beachpartnerllc.beachpartner.utils.SaveNoteInterface;
@@ -29,6 +34,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     private ArrayList<NoteDataModel> dataList;
     private SaveNoteInterface noteInterface;
     private static boolean isEditable=false;
+    TabActivity tabActivity;
 
     private String text,noteId;
 
@@ -41,8 +47,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
     @Override
     public NotesAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
+        if (mContext instanceof TabActivity) {
+            tabActivity = (TabActivity)mContext;
+        }
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notes_card, parent, false);
         ViewHolder viewHolder = new ViewHolder(view);
+
 
         return viewHolder;
     }
@@ -72,6 +82,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                 holder.edit_notes.setFocusableInTouchMode(true);
             }
         });
+
+
 
         holder.edit_notes.addTextChangedListener(new TextWatcher() {
             @Override
@@ -113,7 +125,34 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         //delete note
 
+        holder.edit_notes.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (keyboardShown(holder.edit_notes.getRootView())) {
+                    Log.d("keyboard", "keyboard UP");
+                    tabActivity.navigation.setVisibility(View.GONE);
+                } else {
+                    Log.d("keyboard", "keyboard Down");
+                    tabActivity.navigation.setVisibility(View.VISIBLE);
 
+                }
+            }
+        });
+
+
+
+
+
+    }
+
+    private boolean keyboardShown(View rootView) {
+
+        final int softKeyboardHeight = 100;
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+        int heightDiff = rootView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
     }
 
 
@@ -132,6 +171,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
         public ViewHolder(View view) {
             super(view);
+
 
 
             noteDisabled = view.findViewById(R.id.note_disabled);

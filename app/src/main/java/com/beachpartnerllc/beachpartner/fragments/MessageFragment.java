@@ -104,7 +104,6 @@ public class MessageFragment extends Fragment  {
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Messages");
-
         }
     }
 

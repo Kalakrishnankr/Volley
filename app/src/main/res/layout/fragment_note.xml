@@ -1,9 +1,10 @@
-
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:focusableInTouchMode="true"
+    android:weightSum="2"
     tools:context="com.beachpartnerllc.beachpartner.fragments.NoteFragment">
 
     <!-- TODO: Update blank fragment layout -->
@@ -11,10 +12,10 @@
 
 
     <RelativeLayout
-        android:id="@+id/llvTop"
         android:layout_width="match_parent"
-        android:layout_height="160dp"
+        android:layout_height="0dp"
         android:orientation="horizontal"
+        android:layout_weight="0.5"
         android:background="@drawable/connection_bgnd">
         <LinearLayout
             android:id="@+id/notesTxt"
@@ -46,11 +47,14 @@
 
     </RelativeLayout>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5">
+
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="60dp"
+        android:layout_height="match_parent"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/bgndbox_connections">
@@ -68,9 +72,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcv_notes"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="match_parent"/>
 
         <ProgressBar
             android:id="@+id/progress_note"
@@ -79,6 +81,6 @@
             android:layout_centerInParent="true"/>
 
     </RelativeLayout>
+    </ScrollView>
 
-
-</FrameLayout>
+</LinearLayout>
