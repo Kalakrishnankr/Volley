@@ -3123,7 +3123,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     public Intent getPickImageIntent(Context context, String type) {
         Intent chooserIntent = null;
-
         List<Intent> intentList = new ArrayList<>();
 
 
