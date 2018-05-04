@@ -322,8 +322,22 @@ public class SignUpActivity extends AppCompatActivity{
                 rb =(RadioButton) findViewById(checkedId);
                 if(rb.getText().toString().trim().equals("Coach")){
                     userType="Coach";
+
+                    Date today = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(today);
+                    // Subtract 5 years
+                    c.add( Calendar.YEAR, -18 ) ;
+                    maxDate = c.getTime().getTime();
+
                 }else {
                     userType="Athlete";
+                    Date today = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(today);
+                    c.add( Calendar.YEAR, -5 ) ;
+                    maxDate = c.getTime().getTime();
+                    // Subtract 5 years
                     if(minorStatus){
                         alertMinor();
                     }
@@ -429,12 +443,7 @@ public class SignUpActivity extends AppCompatActivity{
         };
 
         //dob date
-        Date today = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(today);
-        // Subtract 5 years
-        c.add( Calendar.YEAR, -5 ) ;
-        maxDate = c.getTime().getTime();
+
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
