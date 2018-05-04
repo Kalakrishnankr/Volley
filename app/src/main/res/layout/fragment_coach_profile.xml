@@ -12,12 +12,15 @@
     android:id="@+id/profile_img_layout"
     android:layout_width="match_parent"
     android:layout_height="0dp"
-    android:layout_weight="3.5"
-    android:backgroundTint="@color/transparent"
-    android:backgroundTintMode="src_atop"
-    android:background="@drawable/coach_background">
+    android:layout_weight="3.5">
 
-
+    <ImageView
+        android:id="@+id/img_bg_coach"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:backgroundTint="@color/transparent"
+        android:backgroundTintMode="src_atop"
+        android:background="@drawable/coach_background"/>
 
         <com.beachpartnerllc.beachpartner.CircularImageView
             android:id="@+id/row_icon"
@@ -32,7 +35,7 @@
             android:scaleType="fitCenter"
             android:src="@drawable/ic_person" />
 
-        <com.beachpartnerllc.beachpartner.CustomTextView
+        <TextView
             android:id="@+id/coachName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -40,6 +43,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
             android:textSize="@dimen/textsize_header"
+            android:textColor="@color/white"
             android:textStyle="bold"
             android:text="Username"/>
         <LinearLayout

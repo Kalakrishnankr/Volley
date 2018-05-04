@@ -168,6 +168,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private long maxDate;
     CoachProfileResponse userCoachModel;
     Bitmap profilePhoto = null;
+    private ImageView imgBgCoach;
 
 
     public CoachProfileFragment() {
@@ -222,6 +223,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         profileImgLayout = (RelativeLayout) view.findViewById(R.id.profile_img_layout);
         llMenuBasic = (LinearLayout) view.findViewById(R.id.llCoachMenuBasic);
         llMenuMore = (LinearLayout) view.findViewById(R.id.llCoachMenuMore);
+        imgBgCoach  =   (ImageView) view.findViewById(R.id.img_bg_coach);
 
         basic_info_tab = (TextView) view.findViewById(R.id.coach_basic_info_tab);
         more_info_tab = (TextView) view.findViewById(R.id.coach_more_info_tab);
@@ -281,9 +283,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         moreBtnSave.setOnClickListener(this);
         moreBtnCancel.setOnClickListener(this);
         imgEdit.setOnClickListener(this);
+        imgProfile.setOnClickListener(this);
         basicBtnSave.setOnClickListener(this);
         basicBtnSave.setOnClickListener(this);
         profile_img_editIcon.setOnClickListener(this);
+
+        program_funding.setEnabled(false);
+        program_share_athletes.setEnabled(false);
 
         addLocation();
 
@@ -514,7 +520,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         imgProfile.setClickable(true);
         coachBtnsBottom.setVisibility(View.VISIBLE);
         coachMore_infoBtnsBottom.setVisibility(View.VISIBLE);
-        profile_img_editIcon.setVisibility(View.VISIBLE);
+        //profile_img_editIcon.setVisibility(View.VISIBLE);
 
         editFname.setEnabled(true);
         editFname.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -568,7 +574,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private void editCustomView() {
 
-        profile_img_editIcon.setVisibility(View.VISIBLE);
+        //profile_img_editIcon.setVisibility(View.VISIBLE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
         edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
     }
@@ -576,137 +582,146 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private void InfoSave() {
         Log.d(TAG, "SAVE CLICKED");
 
-        if (!validateForms()){
-            Log.e(TAG, "Input Invalid");
-            return;
+        if (validateForms()){
+            //imgProfile.setClickable(false);
+            //profile_img_editIcon.setVisibility(View.GONE);
+            coachBtnsBottom.setVisibility(View.GONE);
+            imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+            edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+            coachMore_infoBtnsBottom.setVisibility(View.GONE);
+            //BasicInfo
+
+            editFname.setEnabled(false);
+            editFname.setBackground(null);
+
+            editLname.setEnabled(false);
+            editLname.setBackground(null);
+
+            editGender.setEnabled(false);
+            editGender.setBackground(null);
+
+            editDob.setEnabled(false);
+            editDob.setBackground(null);
+
+            stateSpinner.setEnabled(false);
+            stateSpinner.setBackground(null);
+
+            editPhone.setEnabled(false);
+            editPhone.setBackground(null);
+
+            //MoreInfo
+
+            editCollege.setEnabled(false);
+            editCollege.setBackground(null);
+
+            description.setEnabled(false);
+            description.setBackground(null);
+
+
+            years_running.setEnabled(false);
+            years_running.setBackground(null);
+
+
+            no_athletes.setEnabled(false);
+            no_athletes.setBackground(null);
+
+
+            prog_offered.setEnabled(false);
+            prog_offered.setBackground(null);
+
+
+            division.setEnabled(false);
+            division.setBackground(null);
+
+
+            program_funding.setEnabled(false);
+            program_funding.setBackground(null);
+
+
+            program_share_athletes.setEnabled(false);
+            program_share_athletes.setBackground(null);
+
+
+            Date date = null;
+            Date dateLong = null;
+            String stringDate = null;
+            try {
+                date = new SimpleDateFormat("MM-dd-yyyy").parse(editDob.getText().toString());
+                SimpleDateFormat dateFormat = new SimpleDateFormat(
+                        "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
+                stringDate = dateFormat.format(date);
+                dateLong = dateFormat.parse(stringDate);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+            CoachProfileUpdateInputData profileUpdateInputData = new CoachProfileUpdateInputData();
+            UserInputDto userInputDto = new UserInputDto();
+            UserProfileDto userProfileDto = new UserProfileDto();
+            userInputDto.setAuthToken(token);
+            userInputDto.setCity(mCity);
+            userInputDto.setParentUserId("1");
+            userInputDto.setDob(stringDate); // FIXME : CHANGE TO ORIGINAL VALUE
+            userInputDto.setFirstName(mFirstName);
+            userInputDto.setLastName(mLastName);
+            userInputDto.setPhoneNumber(mPhone);
+            userInputDto.setGender(editGender.getText().toString());
+            userInputDto.setUserType(AppConstants.USER_TYPE_COACH);
+
+            userProfileDto.setCbvaFirstName(mFirstName);
+            userProfileDto.setCbvaLastName(mLastName);
+            userProfileDto.setCbvaPlayerNumber("");
+            userProfileDto.setCollage(mCollege);
+            userProfileDto.setCollageClub("");
+            userProfileDto.setCollegeBeach("");
+            userProfileDto.setCollegeIndoor("");
+            userProfileDto.setCourtSidePreference("");
+            userProfileDto.setDescription(mDescription);
+            userProfileDto.setDivision(mDivision);
+            userProfileDto.setExperience("");
+            userProfileDto.setFundingStatus("");
+            userProfileDto.setHeight("");
+            userProfileDto.setHighSchoolAttended("");
+            userProfileDto.setHighestTourRatingEarned("");
+            userProfileDto.setIndoorClubPlayed("");
+            userProfileDto.setNumOfAthlets(mNoOfAthletes);
+            userProfileDto.setPosition("");
+            userProfileDto.setProgramsOffered(mProgramsOffered);
+            userProfileDto.setFundingStatus(mProgramFunding);
+            userProfileDto.setShareAthlets(mProgramShareAthletes);
+            userProfileDto.setTopFinishes("");
+            userProfileDto.setTotalPoints("");
+            userProfileDto.setTournamentLevelInterest("");
+            userProfileDto.setToursPlayedIn("");
+            userProfileDto.setUsaVolleyballRanking("");
+            userProfileDto.setWillingToTravel("");
+            userProfileDto.setYearsRunning(mYearsRunning);
+
+            profileUpdateInputData.setUserInputDto(userInputDto);
+            profileUpdateInputData.setUserProfileDto(userProfileDto);
+
+            JSONObject _jsonObjectMore = new JSONObject();
+            try {
+                _jsonObjectMore = new JSONObject(new Gson().toJson(profileUpdateInputData));
+                Log.e(TAG,_jsonObjectMore.toString());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG,token);
+            postUserMoreDetails(_jsonObjectMore);
+
         }
-        imgProfile.setClickable(false);
-        profile_img_editIcon.setVisibility(View.GONE);
-        coachBtnsBottom.setVisibility(View.GONE);
-        imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
-        edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
-        coachMore_infoBtnsBottom.setVisibility(View.GONE);
-        //BasicInfo
-
-        editFname.setEnabled(false);
-        editFname.setBackground(null);
-
-        editLname.setEnabled(false);
-        editLname.setBackground(null);
-
-        editGender.setEnabled(false);
-        editGender.setBackground(null);
-
-        editDob.setEnabled(false);
-        editDob.setBackground(null);
-
-        stateSpinner.setEnabled(false);
-        stateSpinner.setBackground(null);
-
-        editPhone.setEnabled(false);
-        editPhone.setBackground(null);
-
-        //MoreInfo
-
-        editCollege.setEnabled(false);
-        editCollege.setBackground(null);
-
-        description.setEnabled(false);
-        description.setBackground(null);
-
-
-        years_running.setEnabled(false);
-        years_running.setBackground(null);
-
-
-        no_athletes.setEnabled(false);
-        no_athletes.setBackground(null);
-
-
-        prog_offered.setEnabled(false);
-        prog_offered.setBackground(null);
-
-
-        division.setEnabled(false);
-        division.setBackground(null);
-
-
-        program_funding.setEnabled(false);
-        program_funding.setBackground(null);
-
-
-        program_share_athletes.setEnabled(false);
-        program_share_athletes.setBackground(null);
-
-
-        Date date = null;
-        Date dateLong = null;
-        String stringDate = null;
-        try {
-            date = new SimpleDateFormat("MM-dd-yyyy").parse(editDob.getText().toString());
-            SimpleDateFormat dateFormat = new SimpleDateFormat(
-                    "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.ENGLISH);  //2018-04-25T05:29:19.777Z
-            stringDate = dateFormat.format(date);
-            dateLong = dateFormat.parse(stringDate);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        else{
+            editStatus = true;
+            imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
+            edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+            edit_tag.setText("Save Profile");
+            editCustomView();
+            editBasicInfo();
+            editMoreInfo();
         }
 
-        CoachProfileUpdateInputData profileUpdateInputData = new CoachProfileUpdateInputData();
-        UserInputDto userInputDto = new UserInputDto();
-        UserProfileDto userProfileDto = new UserProfileDto();
-        userInputDto.setAuthToken(token);
-        userInputDto.setCity(mCity);
-        userInputDto.setParentUserId("1");
-        userInputDto.setDob(stringDate); // FIXME : CHANGE TO ORIGINAL VALUE
-        userInputDto.setFirstName(mFirstName);
-        userInputDto.setLastName(mLastName);
-        userInputDto.setPhoneNumber(mPhone);
-        userInputDto.setGender(editGender.getText().toString());
-        userInputDto.setUserType(AppConstants.USER_TYPE_COACH);
-
-        userProfileDto.setCbvaFirstName(mFirstName);
-        userProfileDto.setCbvaLastName(mLastName);
-        userProfileDto.setCbvaPlayerNumber("");
-        userProfileDto.setCollage(mCollege);
-        userProfileDto.setCollageClub("");
-        userProfileDto.setCollegeBeach("");
-        userProfileDto.setCollegeIndoor("");
-        userProfileDto.setCourtSidePreference("");
-        userProfileDto.setDescription(mDescription);
-        userProfileDto.setDivision(mDivision);
-        userProfileDto.setExperience("");
-        userProfileDto.setFundingStatus("");
-        userProfileDto.setHeight("");
-        userProfileDto.setHighSchoolAttended("");
-        userProfileDto.setHighestTourRatingEarned("");
-        userProfileDto.setIndoorClubPlayed("");
-        userProfileDto.setNumOfAthlets(mNoOfAthletes);
-        userProfileDto.setPosition("");
-        userProfileDto.setProgramsOffered(mProgramsOffered);
-        userProfileDto.setFundingStatus(mProgramFunding);
-        userProfileDto.setShareAthlets(mProgramShareAthletes);
-        userProfileDto.setTopFinishes("");
-        userProfileDto.setTotalPoints("");
-        userProfileDto.setTournamentLevelInterest("");
-        userProfileDto.setToursPlayedIn("");
-        userProfileDto.setUsaVolleyballRanking("");
-        userProfileDto.setWillingToTravel("");
-        userProfileDto.setYearsRunning(mYearsRunning);
-
-        profileUpdateInputData.setUserInputDto(userInputDto);
-        profileUpdateInputData.setUserProfileDto(userProfileDto);
-
-        JSONObject _jsonObjectMore = new JSONObject();
-        try {
-            _jsonObjectMore = new JSONObject(new Gson().toJson(profileUpdateInputData));
-            Log.e(TAG,_jsonObjectMore.toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        Log.d(TAG,token);
-        postUserMoreDetails(_jsonObjectMore);
 
 
     }
@@ -783,7 +798,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                            editStatus = false;
+                            Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -791,6 +807,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
+                editStatus = false;
+                edit_tag.setText("Edit Profile");
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -829,7 +847,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private void InfoCancelChange() {
         imgProfile.setClickable(false);
-        profile_img_editIcon.setVisibility(View.GONE);
+        //profile_img_editIcon.setVisibility(View.GONE);
         coachBtnsBottom.setVisibility(View.GONE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
@@ -1105,6 +1123,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     if (fileSize(imgfile.length()) <= 4) {
                         imageUri = getRealPathFromURI(selectedImageUri);
                         Glide.with(CoachProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
+                        Glide.with(CoachProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgBgCoach);
 
                         createDirectoryAndSaveFile(selectedImageUri, imgfile.getName(), "image");
 
@@ -1114,14 +1133,15 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 }
                 if (imageUri != null ) {
                     uploadFiles(imageUri, user_id);
-                    InfoSave();
+                    if(editStatus){
+                        InfoSave();
+                    }
                 }
 
 
             }
 
             if (imgUri != null) {
-
                 //Method for uploading profilePic & profile video
                 uploadFiles(imgUri, user_id);
             }
@@ -1529,50 +1549,49 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             case R.id.btnsave:
                 InfoSave();
-                editStatus = !editStatus;
+//                editStatus = !editStatus;
                 break;
             case R.id.btncancel:
                 InfoCancelChange();
-                editStatus = !editStatus;
+//                editStatus = !editStatus;
                 break;
             case R.id.btn_save:
                 InfoSave();
-                editStatus = !editStatus;
+//                editStatus = !editStatus;
                 break;
             case R.id.btn_cancel:
                 InfoCancelChange();
-                editStatus = !editStatus;
+//                editStatus = !editStatus;
                 break;
             case R.id.edit:
-                editStatus = !editStatus;
-
-
-                if (editStatus) {
+                if (!editStatus) {
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
 
-
-                    profile_img_editIcon.setVisibility(View.VISIBLE);
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                    edit_tag.setText("Save Profile");
+                    editStatus = !editStatus;
                 } else {
+                    // InfoCancelChange();
+                    InfoSave();
 
-                    InfoCancelChange();
-
+                    imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+                    edit_tag.setText("Edit Profile");
+                    break;
                 }
-                break;
-            case R.id.edit_profile_imgCoach:
-                if (editStatus) {
-                    if (!hasPermissions(getActivity(), PERMISSIONS)) {
-                        requestPermissions(PERMISSIONS, 21);
-                    } else {
-                        Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
-                        chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                        startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
-                    }
-                }
+//            case R.id.edit_profile_imgCoach:
+//                if (editStatus) {
+//                    if (!hasPermissions(getActivity(), PERMISSIONS)) {
+//                        requestPermissions(PERMISSIONS, 21);
+//                    } else {
+//                        Intent chooseImageIntent = getPickImageIntent(getActivity().getApplicationContext(), "imageIntent");
+//                        chooseImageIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
+//
+//                        startActivityForResult(chooseImageIntent, PICK_IMAGE_REQUEST);
+//                    }
+//                }
 
 
             default:

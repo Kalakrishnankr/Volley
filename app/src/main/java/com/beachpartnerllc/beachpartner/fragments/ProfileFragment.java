@@ -2784,7 +2784,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         if (response != null) {
                             if (getActivity() != null) {
 
-
                                 editStatus = false;
                                 edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
                                 edit_tag.setText("Edit Profile");
