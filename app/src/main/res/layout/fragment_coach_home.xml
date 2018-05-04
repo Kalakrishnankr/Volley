@@ -323,7 +323,7 @@
                     android:visibility="invisible"
                     android:layout_centerInParent="true"
                     app:indicatorName="LineScaleIndicator"
-                    app:indicatorColor="@color/menubar"/>
+                    app:indicatorColor="@color/white"/>
 
                 <TextView
                     android:id="@+id/txtv_messgs"
@@ -331,6 +331,7 @@
                     android:layout_height="match_parent"
                     android:gravity="center"
                     android:visibility="gone"
+                    android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
                     android:text="You have no messages" />
 

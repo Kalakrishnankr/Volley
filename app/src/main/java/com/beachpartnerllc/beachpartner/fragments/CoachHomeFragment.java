@@ -132,10 +132,10 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Beach Partner");
         }
-        getBluebpProfiles();
-        getMyTournaments();
-        getConnections();
-        getNumberLike();
+        getBluebpProfiles();//Api for getting blueBP Strip
+        getMyTournaments();//Api for getting my tournament lists
+        getConnections();//Api for getting all connections
+        getNumberLike();//Api for number of likes
 
     }
 
@@ -536,6 +536,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
 
 
     }
+
     private void setblueBpstrip() {
         progressBar_bp_coach.setVisibility(View.GONE);
         if(bpList!=null && bpList.size()>0){
@@ -546,6 +547,8 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
             txtv_nobp.setVisibility(View.VISIBLE);
         }
     }
+
+
     private void setLikesList(){
         getLikesList();
         if(premiumLikesList!=null && premiumLikesList.size()>0){
