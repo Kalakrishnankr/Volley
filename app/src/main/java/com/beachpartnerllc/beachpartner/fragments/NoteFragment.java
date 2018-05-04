@@ -305,6 +305,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
                         Log.d("responseDelete",response.toString());
                         if (response != null) {
                             if(getActivity()!=null){
+                                getNotes();
                                 Toast.makeText(getActivity(), "Note deleted Successfully", Toast.LENGTH_SHORT).show();
                             }
                         }
