@@ -237,7 +237,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean appendEditOpenedOne = false;
     boolean appendEditOpenedTwo = false;
     FrameLayout placeholder;
-    private String d1;
+    private long maxDate;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -1119,13 +1119,19 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         };
         //dob date
+        Date today = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        // Subtract 5 years
+        c.add( Calendar.YEAR, -5 ) ;
+        maxDate = c.getTime().getTime();
         editDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-                dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dialog.getDatePicker().setMaxDate(maxDate);
                 dialog.show();
 
             }
@@ -2930,7 +2936,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
                     long dob = Long.parseLong(userDataModel.getDob());
                     Date date_dob = new Date(dob);
-                    d1=dft.format(date_dob);
                     editDob.setText(dft.format(date_dob));
                     myCalendar.setTime(date_dob);
                 }
@@ -2939,7 +2944,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {
                     editCBVAFName.setText(userDataModel.getCbvaFirstName());
                 }
-                if (userDataModel.getCbvaLastName() != "null" | userDataModel.getCbvaLastName() != null) {
+                if (userDataModel.getCbvaLastName() != "null" || userDataModel.getCbvaLastName() != null) {
                     editCBVALName.setText(userDataModel.getCbvaLastName());
                 }
                 if (userDataModel.getCbvaPlayerNumber() != "null" || userDataModel.getCbvaPlayerNumber() != null) {

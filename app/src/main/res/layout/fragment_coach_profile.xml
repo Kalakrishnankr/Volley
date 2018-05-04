@@ -261,6 +261,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_weight="1"
                                 android:maxLines="1"
+                                android:textSize="@dimen/text_size"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
@@ -279,7 +280,7 @@
                         <LinearLayout
                             android:id="@+id/lastname"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -301,6 +302,7 @@
                                 android:enabled="false"
                                 android:layout_weight="1"
                                 android:maxLines="1"
+                                android:textSize="@dimen/text_size"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:inputType="text"
@@ -321,7 +323,7 @@
                         <LinearLayout
                             android:id="@+id/gender_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -342,6 +344,7 @@
                                 android:layout_height="match_parent"
                                 android:enabled="false"
                                 android:layout_weight="1"
+                                android:textSize="@dimen/text_size"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
                                 android:clickable="true"
@@ -361,7 +364,7 @@
                         <LinearLayout
                             android:id="@+id/birth_date_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="30dp"
                             android:orientation="horizontal"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
@@ -383,9 +386,10 @@
                                 android:enabled="false"
                                 android:focusable="false"
                                 android:layout_weight="1"
+                                android:textSize="@dimen/text_size"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
-                                android:nextFocusDown="@+id/txtv_city"
+                                android:nextFocusDown="@+id/txtv_city_Cprofile"
                                 android:background="@android:color/transparent"/>
 
 
@@ -400,7 +404,7 @@
                         <LinearLayout
                             android:id="@+id/city_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -415,20 +419,15 @@
                                 android:gravity="center_vertical"
                                 android:textStyle="bold" />
 
-                            <AutoCompleteTextView
-                                android:id="@+id/txtv_city"
+                            <Spinner
+                                android:id="@+id/txtv_city_Cprofile"
                                 android:layout_width="0dp"
                                 android:layout_height="match_parent"
+                                android:layout_weight="1"
                                 android:enabled="false"
-                                android:maxLines="1"
-                                android:paddingStart="5dp"
                                 android:paddingLeft="5dp"
-                                android:inputType="text"
-                                android:completionThreshold="1"
-                                android:textColor="@color/blueDark"
-                                android:nextFocusDown="@+id/txtv_mobileno"
-                                android:background="@android:color/transparent"
-                                android:layout_weight="1" />
+                                android:paddingStart="5dp"
+                                android:background="@null"/>
 
 
                         </LinearLayout>
@@ -442,7 +441,7 @@
                         <LinearLayout
                             android:id="@+id/phone_lt"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="30dp"
                             android:layout_marginBottom="10dp"
                             android:layout_marginTop="10dp"
                             android:orientation="horizontal"
@@ -465,6 +464,7 @@
                                 android:maxLines="1"
                                 android:inputType="phone"
                                 android:maxLength="10"
+                                android:textSize="@dimen/text_size"
                                 android:singleLine="true"
                                 android:paddingStart="5dp"
                                 android:paddingLeft="5dp"

@@ -57,6 +57,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -90,6 +91,7 @@ public class SignUpActivity extends AppCompatActivity{
     private int paymentStatus;
     private ProgressDialog progress;
     private  boolean minorStatus=false;
+    private long maxDate;
 
     private ArrayList<String> stateList = new ArrayList<>();
     private ArrayAdapter<String> dataAdapter;
@@ -427,6 +429,12 @@ public class SignUpActivity extends AppCompatActivity{
         };
 
         //dob date
+        Date today = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        // Subtract 5 years
+        c.add( Calendar.YEAR, -5 ) ;
+        maxDate = c.getTime().getTime();
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -434,7 +442,7 @@ public class SignUpActivity extends AppCompatActivity{
                 DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this, date, myCalendar
                         .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
                         myCalendar.get(Calendar.DAY_OF_MONTH));
-                dialog.getDatePicker().setMaxDate(System.currentTimeMillis() - 1000);
+                dialog.getDatePicker().setMaxDate(maxDate);
                 dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         if (which == DialogInterface.BUTTON_NEGATIVE) {
@@ -444,6 +452,7 @@ public class SignUpActivity extends AppCompatActivity{
                     }
                 });
                 dialog.show();
+
 
             }
         });

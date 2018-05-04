@@ -16,8 +16,8 @@
             android:gravity="center">
             <ImageView
                 android:id="@+id/happy_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:background="@drawable/logo"
                 android:layout_margin="30dp"
                 android:layout_below="@+id/close_btn"/>
