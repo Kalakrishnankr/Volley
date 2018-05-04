@@ -97,13 +97,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-<<<<<<< HEAD
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-=======
->>>>>>> 5bd930946c1e9fa7bb12ec2699b4c64b91aeec96
+
 import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -320,7 +318,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Calendar c = Calendar.getInstance();
         c.setTime(today);
         // Subtract 5 years
-        c.add( Calendar.YEAR, -5 ) ;
+        c.add( Calendar.YEAR, -18 ) ;
         maxDate = c.getTime().getTime();
         editDob.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1005,100 +1003,103 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
     private void setView() {
-        if (userCoachModel !=null){
-            profileName.setText(userCoachModel.getFirstName()+" "+userCoachModel.getLastName());
-            editFname.setText(userCoachModel.getFirstName());
-            editLname.setText(userCoachModel.getLastName());
-            editGender.setText(userCoachModel.getGender());
-            location = userCoachModel.getCity().trim();
-            if (location != null) {
-                int positions = dataAdapter.getPosition(location);
-                stateSpinner.setSelection(positions);
+        if(getActivity()!=null){
+            if (userCoachModel !=null){
+                profileName.setText(userCoachModel.getFirstName()+" "+userCoachModel.getLastName());
+                editFname.setText(userCoachModel.getFirstName());
+                editLname.setText(userCoachModel.getLastName());
+                editGender.setText(userCoachModel.getGender());
+                location = userCoachModel.getCity().trim();
+                if (location != null) {
+                    int positions = dataAdapter.getPosition(location);
+                    stateSpinner.setSelection(positions);
+                }
             }
-        }
-        Log.i(TAG,"PROFILE_IMAGE_LOAD");
+            Log.i(TAG,"PROFILE_IMAGE_LOAD");
 
-        if (userCoachModel.getImageUrl() != null && !userCoachModel.getImageUrl().equalsIgnoreCase("null")) {
-            String imageName = userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1);
-            String[] imagePathArray = imageName.split("-");
-            if (imagePathArray != null && imagePathArray.length > 0) {
+            if (userCoachModel.getImageUrl() != null && !userCoachModel.getImageUrl().equalsIgnoreCase("null")) {
+                String imageName = userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1);
+                String[] imagePathArray = imageName.split("-");
+                if (imagePathArray != null && imagePathArray.length > 0) {
 
-                String exactImageName = imagePathArray[imagePathArray.length-1];
-                Log.d("Image----",exactImageName);
+                    String exactImageName = imagePathArray[imagePathArray.length-1];
+                    Log.d("Image----",exactImageName);
 
-                Log.d("filename---", userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
-                File myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
+                    Log.d("filename---", userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
+                    File myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
 
-                if (myProfileImageFile.exists()) {
-                    Glide.with(CoachProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
-                    Glide.with(getContext()).load(myProfileImageFile.getAbsolutePath()).into(imgBgCoach);
-                } else {
-                    Glide.with(CoachProfileFragment.this).load(userCoachModel.getImageUrl()).into(imgProfile);
-                    Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
+                    if (myProfileImageFile.exists()) {
+                        Glide.with(CoachProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
+                        Glide.with(getContext()).load(myProfileImageFile.getAbsolutePath()).into(imgBgCoach);
+                    } else {
+                        Glide.with(CoachProfileFragment.this).load(userCoachModel.getImageUrl()).into(imgProfile);
+                        Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
 
 
-                    new DownloadFileFromURL(exactImageName, "image",userCoachModel.getImageUrl()).execute();
+                        new DownloadFileFromURL(exactImageName, "image",userCoachModel.getImageUrl()).execute();
 
+
+                    }
+                }
+
+            } else {
+                imgProfile.setImageResource(R.drawable.ic_person);
+            }
+
+            Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
+            //Long value to date conversion
+            SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+            if (userCoachModel.getDob() != null){
+                try {
+
+
+                    long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
+                    Date date_dob = new Date(dob);
+                    editDob.setText(dft.format(date_dob));
+                    myCalendar.setTime(date_dob);
+                }catch (Exception e){
 
                 }
             }
 
-        } else {
-            imgProfile.setImageResource(R.drawable.ic_person);
-        }
+            editPhone.setText(userCoachModel.getPhoneNumber());
+            if(userCoachModel.getUserProfile()!=null){
+                if (userCoachModel.getUserProfile().getCollage() !=null || !userCoachModel.getUserProfile().getCollage().equalsIgnoreCase("null"))
+                    editCollege.setText(userCoachModel.getUserProfile().getCollage());
 
-        Log.i(TAG,"PROFILE_IMAGE_LOAD_END");
-        //Long value to date conversion
-        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
-        if (userCoachModel.getDob() != null){
-            try {
-
-
-            long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
-            Date date_dob = new Date(dob);
-            editDob.setText(dft.format(date_dob));
-            myCalendar.setTime(date_dob);
-            }catch (Exception e){
-
-            }
-        }
-
-        editPhone.setText(userCoachModel.getPhoneNumber());
-        if(userCoachModel.getUserProfile()!=null){
-            if (userCoachModel.getUserProfile().getCollage() !=null || !userCoachModel.getUserProfile().getCollage().equalsIgnoreCase("null"))
-                editCollege.setText(userCoachModel.getUserProfile().getCollage());
-
-            if(userCoachModel.getUserProfile().getDescription() != null){
-                if(userCoachModel.getUserProfile().getDescription().equals("null")){
-                    description.setText(userCoachModel.getUserProfile().getDescription().toString());
+                if(userCoachModel.getUserProfile().getDescription() != null){
+                    if(userCoachModel.getUserProfile().getDescription().equals("null")){
+                        description.setText(userCoachModel.getUserProfile().getDescription().toString());
+                    }
                 }
-            }
-            if(userCoachModel.getUserProfile().getYearsRunning() != null || userCoachModel.getUserProfile().getYearsRunning().equalsIgnoreCase("null"))
-                years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
+                if(userCoachModel.getUserProfile().getYearsRunning() != null || userCoachModel.getUserProfile().getYearsRunning().equalsIgnoreCase("null"))
+                    years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
 
-            if(userCoachModel.getUserProfile().getNumOfAthlets() != null || userCoachModel.getUserProfile().getNumOfAthlets().equalsIgnoreCase("null"))
-                no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
+                if(userCoachModel.getUserProfile().getNumOfAthlets() != null || userCoachModel.getUserProfile().getNumOfAthlets().equalsIgnoreCase("null"))
+                    no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
 
-            if(userCoachModel.getUserProfile().getProgramsOffered() != null || userCoachModel.getUserProfile().getProgramsOffered().equalsIgnoreCase("null"))
-                prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
+                if(userCoachModel.getUserProfile().getProgramsOffered() != null || userCoachModel.getUserProfile().getProgramsOffered().equalsIgnoreCase("null"))
+                    prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
 
-            if(userCoachModel.getUserProfile().getDivision() != null || userCoachModel.getUserProfile().getDivision().equalsIgnoreCase("null"))
-                division.setText(userCoachModel.getUserProfile().getDivision().toString());
+                if(userCoachModel.getUserProfile().getDivision() != null || userCoachModel.getUserProfile().getDivision().equalsIgnoreCase("null"))
+                    division.setText(userCoachModel.getUserProfile().getDivision().toString());
 
-            if(userCoachModel.getUserProfile().getFundingStatus() != null || userCoachModel.getUserProfile().getFundingStatus().equalsIgnoreCase("null"))
-            {
-                if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
-                    program_funding.setSelection(0);
-                else
-                    program_funding.setSelection(1);
-            }
+                if(userCoachModel.getUserProfile().getFundingStatus() != null || userCoachModel.getUserProfile().getFundingStatus().equalsIgnoreCase("null"))
+                {
+                    if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
+                        program_funding.setSelection(0);
+                    else
+                        program_funding.setSelection(1);
+                }
 
-            if (userCoachModel.getUserProfile().getShareAthlets() != null || userCoachModel.getUserProfile().getShareAthlets().equalsIgnoreCase("null")){
-                if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
-                    program_share_athletes.setSelection(0);
-                else
-                    program_share_athletes.setSelection(1);
-            }
+                if (userCoachModel.getUserProfile().getShareAthlets() != null || userCoachModel.getUserProfile().getShareAthlets().equalsIgnoreCase("null")){
+                    if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
+                        program_share_athletes.setSelection(0);
+                    else
+                        program_share_athletes.setSelection(1);
+                }
+        }
+
 
         }
 

@@ -20,8 +20,7 @@
         android:layout_height="match_parent"
         android:scaleType="fitXY"
         android:backgroundTint="@color/transparent"
-        android:backgroundTintMode="src_over"
-        android:background="@drawable/coach_background"/>
+        android:backgroundTintMode="src_over" />
 
 
         <com.beachpartnerllc.beachpartner.CircularImageView

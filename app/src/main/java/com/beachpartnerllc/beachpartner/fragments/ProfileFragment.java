@@ -429,6 +429,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         editStatus = false;
     }
 
+
+
     @Override
     public void onResume() {
         super.onResume();
@@ -499,7 +501,34 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
 
+            exoPlayer.removeListener(this);
+            exoPlayer.stop();
+            exoPlayer.release();
+            setUp();
+
+            BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
+            TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
+            exoPlayer = ExoPlayerFactory.newSimpleInstance(getActivity(), trackSelector);
+            exoPlayer.addListener(this);
+            dataSourceFactory = new DefaultHttpDataSourceFactory("exoplayer_video");
+            extractorsFactory = new DefaultExtractorsFactory();
+            playerView.hideController();
+            playerView.setControllerAutoShow(false);
+
+
+            playerView.setUseArtwork(true);
+            playerView.setResizeMode(exoPlayer.getVideoScalingMode());
+//            if(userDataModel.getVideoUrl()!=null){
+//                playVideo(userDataModel.getVideoUrl());
+//            }
+
+        }
+    }
 
     @Override
     public void onDestroy() {
