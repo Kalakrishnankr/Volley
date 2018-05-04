@@ -4,6 +4,8 @@ import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,8 +31,10 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.CardAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MessageAdapter;
 import com.beachpartnerllc.beachpartner.adpters.ProfileAdapter;
@@ -46,6 +51,7 @@ import com.firebase.client.FirebaseError;
 import com.firebase.client.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,33 +63,35 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
-public class CoachHomeFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class CoachHomeFragment extends Fragment implements View.OnClickListener {
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private FrameLayout coachHomeLikesCard;
-    private String user_id,user_token,userType,userSubscription;
+    private String user_id,user_token,userType,userSubscription,no_likes_count;
     CardAdapter adapter;
     MessageAdapter messageAdapter;
     ProfileAdapter profileAdapter;
+    TabActivity tabActivity;
     private PrefManager prefManager;
     private RecyclerView upcomingRecyclerview,coachMsgRecyclerview,pRecyclerview;
+    private TextView txtv_nobp;
+    private AVLoadingIndicatorView progressBar_bp_coach,progressBar_tr_coach,progressBar_msg_coach;
+    private ImageView nextMsg,nextTour;
+    private LinearLayoutManager layoutManager,layoutmnger;
     private ArrayList<Event>myUpcomingTList = new ArrayList<>();
 
-    private TextView txtv_notour,txtv_nomessgs;
+    private TextView txtv_notour,txtv_nomessgs,txtv_likes_coach;
     private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
     private ArrayList<String> chatCoachList = new ArrayList<>();
     private ArrayList<BpFinderModel> userCoachList = new ArrayList<>();
     private ArrayList<SwipeResultModel> bpList  = new ArrayList<>();
     private ArrayList<BpFinderModel> premiumLikesList  = new ArrayList<BpFinderModel>();
+    private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
+
 
 
 
@@ -104,22 +112,32 @@ public class CoachHomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        prefManager = new PrefManager(getContext());
-        user_id     =  prefManager.getUserId();
-        user_token  =  prefManager.getToken();
-        userType    = prefManager.getUserType();
+        View view=inflater.inflate(R.layout.fragment_coach_home, container, false);
+        initView(view);
+        prefManager     = new PrefManager(getContext());
+        user_id         =  prefManager.getUserId();
+        user_token      =  prefManager.getToken();
+        userType        = prefManager.getUserType();
         userSubscription = prefManager.getSubscription();
 
-        View view=inflater.inflate(R.layout.fragment_coach_home, container, false);
-        getBluebpProfiles();
-        getMyTournaments();
-        getConnections();
-
-        initView(view);
         return view;
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Beach Partner");
+        }
+        getBluebpProfiles();
+        getMyTournaments();
+        getConnections();
+        getNumberLike();
+
+    }
 
     private void initView(View view){
 
@@ -128,14 +146,24 @@ public class CoachHomeFragment extends Fragment {
         pRecyclerview           =   (RecyclerView) view.findViewById(R.id.rrv_topProfile);
         coachHomeLikesCard      =   (FrameLayout)view.findViewById(R.id.no_of_likes_card);
 
-        txtv_notour            =   (TextView)  view.findViewById(R.id.txtv_notour);
-        txtv_nomessgs          =   (TextView) view.findViewById(R.id.txtv_messgs);
+        txtv_notour             =   (TextView)  view.findViewById(R.id.txtv_notour);
+        txtv_nomessgs           =   (TextView) view.findViewById(R.id.txtv_messgs);
+        txtv_likes_coach        =   (TextView)view.findViewById(R.id.tv_likes_coach);
+        txtv_nobp               =   (TextView)view.findViewById(R.id.txtv_nobp);
+
+        progressBar_bp_coach    =   (AVLoadingIndicatorView)view.findViewById(R.id.progress_bp_ch);
+        progressBar_tr_coach    =   (AVLoadingIndicatorView)view.findViewById(R.id.progress_tr_ch);
+        progressBar_msg_coach   =   (AVLoadingIndicatorView)view.findViewById(R.id.progress_coach_msg);
+
+        nextMsg     =   view.findViewById(R.id.next_msg);
+        nextTour    =   view.findViewById(R.id.next_tour);
+
+        nextMsg.setOnClickListener(this);
+        nextTour.setOnClickListener(this);
 
 
-        LinearLayoutManager layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-
+        layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         adapter = new CardAdapter(getContext(),myUpcomingTList);
-
         upcomingRecyclerview.setAdapter(adapter);
         SnapHelper snapHelper = new PagerSnapHelper();
         snapHelper.attachToRecyclerView(upcomingRecyclerview);
@@ -145,8 +173,8 @@ public class CoachHomeFragment extends Fragment {
 
         /*Message*/
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        SnapHelper snaper = new PagerSnapHelper();
+        layoutManager       = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
+        SnapHelper snaper   = new PagerSnapHelper();
         snaper.attachToRecyclerView(coachMsgRecyclerview);
 //        coachMsgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
 //        coachMsgRecyclerview.setItemAnimator(new DefaultItemAnimator());
@@ -177,12 +205,28 @@ public class CoachHomeFragment extends Fragment {
 
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.next_msg:
+                coachMsgRecyclerview.getLayoutManager().scrollToPosition(layoutManager.findLastVisibleItemPosition() + 1);
+                break;
+            case R.id.next_tour:
+                upcomingRecyclerview.getLayoutManager().scrollToPosition(layoutmnger.findLastVisibleItemPosition() + 1);
+                break;
+
+            default:
+                break;
+        }
+
+    }
+
 
     private void likesDisplay() {
 
+
         LayoutInflater inflater = getLayoutInflater();
         View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
-
 
         final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
 
@@ -221,6 +265,7 @@ public class CoachHomeFragment extends Fragment {
     //Get all my tournaments
     private void getMyTournaments() {
         myUpcomingTList.clear();
+        progressBar_tr_coach.setVisibility(View.VISIBLE);
         SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
         Date date       = Calendar.getInstance().getTime();
         String fromDate = dft.format(date);
@@ -309,37 +354,28 @@ public class CoachHomeFragment extends Fragment {
     //Get blue Bp profiles
     private void getBluebpProfiles() {
         bpList.clear();
+        progressBar_bp_coach.setVisibility(View.VISIBLE);
         JsonArrayRequest  jsonRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTIONS +"?subscriptionType=BlueBP&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null, new
                 Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
                         if(response!=null){
-                            for (int i=0;i<response.length();i++){
-                                try {
-                                    JSONObject object = response.getJSONObject(i);
-                                    JSONObject jsonObject = object.getJSONObject("user");
 
-                                    BpFinderModel bpModel = new BpFinderModel();
-                                    SwipeResultModel swipeResultModel = new SwipeResultModel();
-                                    bpModel.setBpf_id(jsonObject.getString("id"));
-                                    bpModel.setBpf_firstName(jsonObject.getString("firstName"));
-                                    bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
-                                    bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                                    bpModel.setBpf_userType(jsonObject.getString("userType"));
-                                    bpModel.setBpf_age(jsonObject.getString("age"));
-                                /*    bpModel.setBpf_daysToExpireSubscription(object.getString("daysToExpireSubscription"));
-                                    bpModel.setBpf_effectiveDate(object.getString("effectiveDate"));
-                                    bpModel.setBpf_termDate(object.getString("termDate"));
-                                    bpModel.setBpf_subscriptionType(object.getString("subscriptionType"));*/
-                                swipeResultModel.setBpFinderModel(bpModel);
-                                    bpList.add(swipeResultModel);
+                           // Log.d(TAG, "onResponse() called with: response = [" + response.toString() + "]");
+                            if(response!=null){
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
+                                Type listType = new TypeToken<List<SwipeResultModel>>() {
+                                }.getType();
+                                bpList = new Gson().fromJson(response.toString(), listType);
+
+
+                                setblueBpstrip();
+
+
                             }
-                            //new PrefManager(getContext()).savePageno(0);
-                            setblueBpstrip();
+
+
+
                         }
 
 
@@ -384,6 +420,75 @@ public class CoachHomeFragment extends Fragment {
 
     }
 
+    private void getNumberLike() {
+        noLikes.clear();
+        JsonObjectRequest arrayRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_LIKES + user_id + "?status=New&showReceived=true", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    try {
+                        no_likes_count= response.getString("list_count");
+                        if(no_likes_count==null || no_likes_count.equals("0")){
+                            txtv_likes_coach.setText("No");
+                        }
+                        else{
+                            txtv_likes_coach.setText(no_likes_count);
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+        }
+
+    }
+
     private void getLikesList() {
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=" + "New" , null, new Response.Listener<JSONArray>() {
@@ -397,18 +502,6 @@ public class CoachHomeFragment extends Fragment {
                             JSONObject obj    = jsonObject.getJSONObject("connectedUser");
                             Type type = new TypeToken<BpFinderModel>(){}.getType();
                             BpFinderModel bpfModel = new Gson().fromJson(obj.toString(),type);
-
-                            /*BpFinderModel bpModel = new BpFinderModel();
-                            bpModel.setBpf_id(jsonObject.getString("id"));
-                            bpModel.setBpf_firstName(jsonObject.getString("firstName"));
-                            bpModel.setBpf_imageUrl(jsonObject.getString("imageUrl"));
-                            bpModel.setBpf_videoUrl(jsonObject.getString("videoUrl"));
-                            bpModel.setBpf_userType(jsonObject.getString("userType"));
-                            bpModel.setBpf_age(jsonObject.getString("age"));
-                            bpModel.setBpf_daysToExpireSubscription(obj.getString("daysToExpireSubscription"));
-                            bpModel.setBpf_effectiveDate(obj.getString("effectiveDate"));
-                            bpModel.setBpf_termDate(obj.getString("termDate"));
-                            bpModel.setBpf_subscriptionType(obj.getString("subscriptionType"));*/
                             premiumLikesList.add(bpfModel);
 
 
@@ -444,9 +537,13 @@ public class CoachHomeFragment extends Fragment {
 
     }
     private void setblueBpstrip() {
+        progressBar_bp_coach.setVisibility(View.GONE);
         if(bpList!=null && bpList.size()>0){
             profileAdapter = new ProfileAdapter(getContext(),bpList);
             pRecyclerview.setAdapter(profileAdapter);
+        }
+        else {
+            txtv_nobp.setVisibility(View.VISIBLE);
         }
     }
     private void setLikesList(){
@@ -465,6 +562,7 @@ public class CoachHomeFragment extends Fragment {
     }
 
     private void setUpMyComingTournament() {
+        progressBar_tr_coach.setVisibility(View.GONE);
         if(myUpcomingTList.size()>0){
             adapter = new CardAdapter(getContext(),myUpcomingTList);
             upcomingRecyclerview.setAdapter(adapter);
@@ -493,6 +591,7 @@ public class CoachHomeFragment extends Fragment {
     //Get connections
     private void getConnections() {
         connectionList.clear();
+        progressBar_msg_coach.setVisibility(View.VISIBLE);
         String user_id = new PrefManager(getContext()).getUserId();
         final String token = new PrefManager(getContext()).getToken();
 
@@ -562,7 +661,7 @@ public class CoachHomeFragment extends Fragment {
                     }*/
 
                 }
-                if(chatCoachList.size()>0 && chatCoachList!=null){
+                /*if(chatCoachList.size()>0 && chatCoachList!=null){
                     for (int i=0;i<chatCoachList.size();i++){
                         String chatId = chatCoachList.get(i).split("-")[0];
                         String chatwith_id = chatCoachList.get(i).split("-")[1];
@@ -574,10 +673,43 @@ public class CoachHomeFragment extends Fragment {
                             }
                         }
                     }
+                    progressBar_msg_coach.setVisibility(View.GONE);
+                    messageAdapter  =  new MessageAdapter(getContext(),userCoachList);
+                    coachMsgRecyclerview.setAdapter(messageAdapter);
+                    messageAdapter.notifyDataSetChanged();*/
+                HashSet<String> hashSet = new HashSet<String>();
+                hashSet.addAll(chatCoachList);
+                chatCoachList.clear();
+                userCoachList.clear();
+                chatCoachList.addAll(hashSet);
+
+                if (connectionList != null && connectionList.size() > 0) {
+                    if (chatCoachList.size() > 0 && chatCoachList != null) {
+                        for (int i = 0; i < chatCoachList.size() ; i++) {
+                            String chatId = chatCoachList.get(i).split("-")[0];
+                            String chatwith_id = chatCoachList.get(i).split("-")[1];
+                            if (chatwith_id != null && chatId != null) {
+                                if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
+                                    if (connectionList.size() > 0 && connectionList != null) {
+                                        for (int j=0;j<connectionList.size();j++){
+                                            if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
+                                                userCoachList.add(connectionList.get(j));
+                                            }
+                                        }
+                                    }else {
+                                        progressBar_msg_coach.setVisibility(View.GONE);
+                                        txtv_nomessgs.setVisibility(View.VISIBLE);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    progressBar_msg_coach.setVisibility(View.GONE);
                     messageAdapter  =  new MessageAdapter(getContext(),userCoachList);
                     coachMsgRecyclerview.setAdapter(messageAdapter);
                     messageAdapter.notifyDataSetChanged();
                 }else {
+                    progressBar_msg_coach.setVisibility(View.GONE);
                     txtv_nomessgs.setVisibility(View.VISIBLE);
                 }
 
@@ -592,6 +724,8 @@ public class CoachHomeFragment extends Fragment {
         });
 
     }
+
+
        /* Grid item spacing and padding */
 
     public class GridSpacingItemDecoration extends RecyclerView.ItemDecoration {
