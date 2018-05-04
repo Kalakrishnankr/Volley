@@ -322,8 +322,22 @@ public class SignUpActivity extends AppCompatActivity{
                 rb =(RadioButton) findViewById(checkedId);
                 if(rb.getText().toString().trim().equals("Coach")){
                     userType="Coach";
+
+                    Date today = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(today);
+                    // Subtract 5 years
+                    c.add( Calendar.YEAR, -18 ) ;
+                    maxDate = c.getTime().getTime();
+
                 }else {
                     userType="Athlete";
+                    Date today = new Date();
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(today);
+                    c.add( Calendar.YEAR, -5 ) ;
+                    maxDate = c.getTime().getTime();
+                    // Subtract 5 years
                     if(minorStatus){
                         alertMinor();
                     }
@@ -429,12 +443,7 @@ public class SignUpActivity extends AppCompatActivity{
         };
 
         //dob date
-        Date today = new Date();
-        Calendar c = Calendar.getInstance();
-        c.setTime(today);
-        // Subtract 5 years
-        c.add( Calendar.YEAR, -5 ) ;
-        maxDate = c.getTime().getTime();
+
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -590,7 +599,7 @@ public class SignUpActivity extends AppCompatActivity{
     private void submitForm() {
 
 
-        SimpleDateFormat sim = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+        SimpleDateFormat sim = new SimpleDateFormat("MM-dd-yyyy'T'HH:mm:ss'Z'");
 
         JSONArray array = new JSONArray();
         array.put("basic");
@@ -727,7 +736,7 @@ public class SignUpActivity extends AppCompatActivity{
     }
 
     public SimpleDateFormat updateLabel() {
-        String myFormat = "yyyy-MM-dd"; //In which you need put here
+        String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         user_dob.setText(sdf.format(myCalendar.getTime()));
         return sdf;

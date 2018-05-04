@@ -9,7 +9,7 @@
     <string name="hint_userName">Username</string>
     <string name="hint_forgot">Forgot Password?</string>
     <string name="registration">REGISTER</string>
-    <string name="enter_user_type">You must choose either one user type</string>
+    <string name="enter_user_type">You must choose a user type</string>
     <string name="hint_fname">First Name</string>
     <string name="hint_lname">Last Name</string>
     <string name="hint_gender">I am</string>
