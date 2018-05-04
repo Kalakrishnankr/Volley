@@ -121,12 +121,12 @@ public class SettingsFragment extends Fragment {
         btnFemale   = (ToggleButton) view.findViewById(R.id.btnWomen);
         btnSave     = (Button) view.findViewById(R.id.saveSettings);
 
-        btnFemale.setText("Women");
-        btnMale.setText("Men");
-        btnFemale.setTextOff("Women");
-        btnMale.setTextOff("Men");
-        btnFemale.setTextOn("Women");
-        btnMale.setTextOn("Men");
+        btnFemale.setText("Female");
+        btnMale.setText("Male");
+        btnFemale.setTextOff("Female");
+        btnMale.setTextOff("Male");
+        btnFemale.setTextOn("Female");
+        btnMale.setTextOn("Male");
 
         addLocation();
 

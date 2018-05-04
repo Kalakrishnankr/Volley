@@ -254,7 +254,7 @@
                             android:id="@+id/btnMen"
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:text="MEN"
+                            android:text="Male"
                             android:background="@color/imgBacgnd"
                             android:layout_weight="1"/>
                         <Space
@@ -266,7 +266,7 @@
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:background="@color/imgBacgnd"
-                            android:text="WOMEN"
+                            android:text="Female"
                             android:layout_weight="1"/>
 
 

@@ -294,7 +294,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@color/imgBacgnd"
-                            android:text="MEN" />
+                            android:text="Male" />
 
                         <Space
                             android:layout_width="4dp"
@@ -306,7 +306,7 @@
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:background="@color/imgBacgnd"
-                            android:text="WOMEN" />
+                            android:text="Female" />
 
 
                     </LinearLayout>
