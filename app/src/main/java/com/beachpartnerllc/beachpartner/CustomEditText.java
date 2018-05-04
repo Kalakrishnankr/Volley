@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.widget.EditText;
@@ -19,6 +20,11 @@ public class CustomEditText extends EditText {
     private Drawable drawableLeft;
     private Drawable drawableTop;
     private Drawable drawableBottom;
+
+    @Override
+    public boolean setFontVariationSettings(@Nullable String fontVariationSettings) {
+        return super.setFontVariationSettings(fontVariationSettings);
+    }
 
     int actionX, actionY;
     private DrawableClickListener clickListener;

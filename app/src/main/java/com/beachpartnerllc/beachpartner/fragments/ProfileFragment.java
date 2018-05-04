@@ -3134,6 +3134,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             Intent pickIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Video.Media.INTERNAL_CONTENT_URI);
 
+            pickIntent.setType("video/*");
 
             if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
                 takeVideoIntent.putExtra(MediaStore.EXTRA_SCREEN_ORIENTATION, ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
@@ -3160,6 +3161,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
             Intent pickIntent = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            pickIntent.setType("image/*");
+
             intentList = addIntentsToList(context, intentList, pickIntent);
             intentList = addIntentsToList(context, intentList, takePictureIntent);
         /*if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
