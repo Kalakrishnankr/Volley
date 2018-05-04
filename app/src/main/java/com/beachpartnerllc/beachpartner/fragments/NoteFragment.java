@@ -12,6 +12,7 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -53,10 +54,13 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     private RecyclerView.LayoutManager layoutManager;
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle bundle = this.getArguments();
+        getActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE);
+
         if (bundle != null) {
             personId  = bundle.getString("personId");
             personName= bundle.getString("personName");
@@ -70,6 +74,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         // Inflate the layout for this fragment
         View view=inflater.inflate(R.layout.fragment_note, container, false);
         initViews(view);
+
         myID    = new PrefManager(getContext()).getUserId();
         myToken = new PrefManager(getContext()).getToken();
         //Get all notes for a particular person;
@@ -86,6 +91,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         addNewBtn   = view.findViewById(R.id.addNew);
         progressBar = view.findViewById(R.id.progress_note);
         txtv_nonotes = view.findViewById(R.id.txtv_nonotes);
+
 
        // adapter     =   new NotesAdapter(getContext(),noteList,this);
         layoutManager = new GridLayoutManager(getContext(),1);
@@ -107,6 +113,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
             }
         });
     }
+
 
     private void createNote() {
         JSONObject object = new JSONObject();
