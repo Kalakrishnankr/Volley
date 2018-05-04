@@ -180,9 +180,16 @@ public class PrefManager {
         editor.clear();
         editor.commit();*/
 
-        SharedPreferences sharedPreferenc = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
-        SharedPreferences.Editor edit       = sharedPreferenc.edit();
+        SharedPreferences sharedPreferenc = context.getSharedPreferences("settingsData", 0);
+        SharedPreferences.Editor edit = sharedPreferenc.edit();
+        edit.remove("location");
+        edit.remove("minAge");
+        edit.remove("maxAge");
+        edit.remove("gender");
+        edit.remove("isCoachActive");
         edit.clear();
+        edit.apply();
         edit.commit();
+
     }
 }
