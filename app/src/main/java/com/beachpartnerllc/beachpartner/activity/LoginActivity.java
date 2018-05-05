@@ -499,7 +499,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     SharedPreferences prefs = new PrefManager(getApplicationContext()).getSettingsData();
                                     if (prefs.getString("location",null) == null && prefs.getString("gender", null) == null) {
-                                        new PrefManager(getApplicationContext()).saveSettingData(userLocation, userDataModel.getGender().trim(), isCoach, 5, 30);
+                                        new PrefManager(getApplicationContext()).saveSettingData(userLocation, userDataModel.getGender().trim(), isCoach, 0, 0);
                                     }
 
                                     //getUserInfo();

@@ -116,6 +116,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             if(dataLists.get(position).getBpFinderModel().getBpf_imageUrl() != null){
                 if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equalsIgnoreCase("NULL"))
                     Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
+
                 //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
             }else {
                 holder.profilePic.setImageResource(R.drawable.ic_person);

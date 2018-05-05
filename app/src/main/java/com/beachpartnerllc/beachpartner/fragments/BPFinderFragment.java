@@ -299,7 +299,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             tvMin.setText(String.valueOf(minAge));
             tvMax.setText(String.valueOf(maxAge));
-            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+            age_bar.getThumb(0).setValue(0).setEnabled(true);
             age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
             if (location != null) {
                 int positions = dataAdapter.getPosition(location);

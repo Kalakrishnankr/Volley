@@ -162,14 +162,18 @@ public class SettingsFragment extends Fragment {
             if (minAge == 0 && maxAge == 0) {
                 minAge=5;
                 maxAge=30;
-                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+                age_bar.getThumb(0).setValue(0).setEnabled(true);
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
 
 
             }else {
-                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+                if (minAge == 5) {
+                    age_bar.getThumb(0).setValue(0).setEnabled(true);
+                }else {
+                    age_bar.getThumb(0).setValue(minAge).setEnabled(true);
+                }
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
