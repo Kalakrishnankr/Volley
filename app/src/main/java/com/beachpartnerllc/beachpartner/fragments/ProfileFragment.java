@@ -1072,14 +1072,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus = true;
+                //editStatus = true;
             }
         });
         moreBtnCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 InfoCancelChange();
-                editStatus = true;
+                //editStatus = true;
             }
         });
 
@@ -1100,7 +1100,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 } else {
                     // InfoCancelChange();
                     InfoSave();
-
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
                     edit_tag.setText("Edit Profile");
 
@@ -1926,7 +1925,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         topfinishes_txt_1.setEnabled(true);
         topfinishes_txt_1.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-        imageView1.setVisibility(View.VISIBLE);
+        if(finishCount!=2){
+            imageView1.setVisibility(View.VISIBLE);
+        }
 
         topfinishes_txt_2.setEnabled(true);
         topfinishes_txt_2.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -2401,6 +2402,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             appendEditOpenedTwo = false;
         }
 
+        editStatus = false;
     }
 
     @Override
@@ -3056,6 +3058,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         }
                     }
                     if (values.length == 3) {
+                        finishCount=2;
+                        imageView1.setVisibility(View.GONE);
                         imageView2.setVisibility(View.GONE);
                         imageView3.setVisibility(View.GONE);
                         if (values[0] != null) {

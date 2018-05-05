@@ -53,12 +53,15 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         final BpFinderModel message = list.get(position);
 
         holder.txv_name.setText(message.getBpf_firstName());
-        if(!list.get(position).getBpf_imageUrl().equals("null")){
-            Glide.with(mContext).load(list.get(position).getBpf_imageUrl()).into(holder.person_pic);
-            //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
-        }else {
-            holder.person_pic.setImageResource(R.drawable.ic_person);
+        if(list.get(position).getBpf_imageUrl()!=null){
+            if(!list.get(position).getBpf_imageUrl().equals("null")){
+                Glide.with(mContext).load(list.get(position).getBpf_imageUrl()).into(holder.person_pic);
+                //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
+            }else {
+                holder.person_pic.setImageResource(R.drawable.ic_person);
+            }
         }
+
 
         holder.single_item.setOnClickListener(new View.OnClickListener() {
             @Override

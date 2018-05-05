@@ -297,8 +297,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     coachList.add(connectionList.get(i));
                 }
             }
-            progress.setVisibility(View.GONE);
-            adapter = new ConnectionAdapter(getContext(), athleteList, this);
+            if (isAthleteTab) {
+                adapter = new ConnectionAdapter(getContext(), athleteList, this);
+            }else {
+                adapter = new ConnectionAdapter(getContext(), coachList, this);
+            }
             rcv_conn.setAdapter(adapter);
             adapter.notifyDataSetChanged();
 
@@ -397,40 +400,40 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
                     }
                 }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    String json = null;
-                    Log.d("error--", error.toString());
-                    NetworkResponse response = error.networkResponse;
-                    if (response != null && response.data != null) {
-                        switch (response.statusCode) {
-                            case 401:
-                                json = new String(response.data);
-                                json = trimMessage(json, "detail");
-                                if (json != null) {
-                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                                }
-                                break;
-                            case 404:
-                                json = new String(response.data);
-                                json = trimMessage(json, "title");
-                                if (json != null) {
-                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                                }
-                                break;
-                            case 500:
-                                json = new String(response.data);
-                                json = trimMessage(json, "title");
-                                if (json != null) {
-                                    Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                                }
-                                break;
-                            default:
-                                break;
-                        }
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 404:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
                     }
                 }
-            }){
+            }
+        }){
             @Override
             public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
@@ -450,14 +453,16 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     public void transition(Bundle bundle) {
 
         if (getActivity() != null) {
+            //tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
+            //tabActivity.disableFloatButtons();
             ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
-            getActivity().setTitle("Calendar");
             chatFragmentPage.setArguments(bundle);
             FragmentManager hiFiveFManager = getActivity().getSupportFragmentManager();
             FragmentTransaction hiFiveTrans = hiFiveFManager.beginTransaction();
             hiFiveTrans.replace(R.id.container, chatFragmentPage);
             hiFiveTrans.addToBackStack(null);
             hiFiveTrans.commit();
+
         }
 
     }
@@ -730,12 +735,22 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     blockCoachList.add(blockList.get(j));
                 }
             }
-            if (blockAthleteList.size() > 0) {
-                athleteList.addAll(blockAthleteList);
-                adapter = new ConnectionAdapter(getContext(), athleteList, this);
-                rcv_conn.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+            if (isAthleteTab) {
+                if (blockAthleteList.size() > 0) {
+                    athleteList.addAll(blockAthleteList);
+                    adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
+            }else {
+                if (blockCoachList.size() > 0) {
+                    coachList.addAll(blockCoachList);
+                    adapter = new ConnectionAdapter(getContext(), coachList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
             }
+
 
         }
 

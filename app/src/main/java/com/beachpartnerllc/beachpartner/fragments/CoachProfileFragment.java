@@ -295,8 +295,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         basicBtnSave.setOnClickListener(this);
         profile_img_editIcon.setOnClickListener(this);
 
+        //spinners initially disabled
         program_funding.setEnabled(false);
         program_share_athletes.setEnabled(false);
+        stateSpinner.setEnabled(false);
 
         addLocation();
 
@@ -676,6 +678,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             userInputDto.setFirstName(mFirstName);
             userInputDto.setLastName(mLastName);
             userInputDto.setPhoneNumber(mPhone);
+            userInputDto.setImageUrl(userCoachModel.getImageUrl());
             userInputDto.setGender(editGender.getText().toString());
             userInputDto.setUserType(AppConstants.USER_TYPE_COACH);
 
@@ -762,7 +765,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             mFormValidation = AppCommon.FORM_INVALID;
         }else {
             if (!Pattern.matches(AppCommon.VALID_STRING,mFirstName)){
-                editFname.setError("Please enter valid first name");
+                editFname.setError(getResources().getString(R.string.nameerror));
                 mFormValidation = AppCommon.FORM_INVALID;
             }
         }
@@ -771,12 +774,12 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             mFormValidation = AppCommon.FORM_INVALID;
         }else {
             if (!Pattern.matches(AppCommon.VALID_STRING,mLastName)){
-                editLname.setError("Please enter valid last name");
+                editLname.setError(getResources().getString(R.string.lnameerror));
                 mFormValidation = AppCommon.FORM_INVALID;
             }
         }
         if (TextUtils.isEmpty(mGender)){
-            editGender.setError("Please enter valid last name");
+            editGender.setError(getResources().getString(R.string.gendererror));
             mFormValidation = AppCommon.FORM_INVALID;
         }
         if (TextUtils.isEmpty(mDob)){
@@ -808,6 +811,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private String getValue(EditText view) {
         return view.getText().toString().trim();
     }
+
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
         Log.d(TAG,jsonObjectMore.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, ApiService.UPDATE_USER_PROFILE +""+user_id, jsonObjectMore,
@@ -816,6 +820,22 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             editStatus = false;
+                            edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                            edit_tag.setText("Edit Profile");
+                            if (userCoachModel.getImageUrl() != null) {
+                                File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
+
+                                if (myFile.exists()) {
+                                    Glide.with(CoachProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+
+                                }
+                                // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
+
+                                //  }
+                                //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                            } else {
+                                imgProfile.setImageResource(R.drawable.ic_person);
+                            }
                             if (getActivity() != null) {
                                 Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
 
@@ -877,6 +897,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         coachBtnsBottom.setVisibility(View.GONE);
         imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
         edit_tag.setTextColor(getResources().getColor(R.color.imgBacgnd));
+        edit_tag.setText("Edit Profile");
         coachMore_infoBtnsBottom.setVisibility(View.GONE);
         //BasicInfo
 
@@ -930,6 +951,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         program_share_athletes.setEnabled(false);
         program_share_athletes.setBackground(null);
 
+        editStatus = false;
+
     }
 
     private void setUp() {
@@ -941,6 +964,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                         try {
                             Gson gson = new Gson();
                             userCoachModel = gson.fromJson(response.toString(),CoachProfileResponse.class);
+
                             userDataModel = new UserDataModel();
                             userDataModel.setId(response.getString("id"));
                             userDataModel.setFirstName(response.getString("firstName"));
@@ -1051,8 +1075,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
             if (userCoachModel.getDob() != null){
                 try {
-
-
                     long dob = Long.parseLong(String.valueOf(userCoachModel.getDob()));
                     Date date_dob = new Date(dob);
                     editDob.setText(dft.format(date_dob));

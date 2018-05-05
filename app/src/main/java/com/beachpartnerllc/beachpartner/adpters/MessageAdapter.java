@@ -62,8 +62,9 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         final BpFinderModel model = dataList.get(position);
 
         holder.txtvUname.setText(model.getBpf_firstName());
-        if(!dataList.get(position).getBpf_imageUrl().equals("null")){
-            Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imgUserPic);
+        if(dataList.get(position).getBpf_imageUrl()!=null){
+            if(!dataList.get(position).getBpf_imageUrl().equals("null"))
+                Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imgUserPic);
             //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
         }else {
             holder.imgUserPic.setImageResource(R.drawable.ic_person);

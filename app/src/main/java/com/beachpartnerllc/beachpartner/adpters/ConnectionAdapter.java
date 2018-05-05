@@ -113,8 +113,9 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
             holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim());
 
-            if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equals("null")){
-                Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
+            if(dataLists.get(position).getBpFinderModel().getBpf_imageUrl() != null){
+                if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equalsIgnoreCase("NULL"))
+                    Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
                 //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
             }else {
                 holder.profilePic.setImageResource(R.drawable.ic_person);
@@ -157,7 +158,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                         String personid = model.getBpFinderModel().getBpf_id();
                         connectionInterface.unblock(personid,model.getBpFinderModel().getBpf_firstName());
                         holder.ItemChanged(position);
-                    //block
+                        //block
                     }else if(!active_status.isEmpty() && active_status.equalsIgnoreCase("Active")) {
                         String personid = model.getBpFinderModel().getBpf_id();
                         connectionInterface.block(personid,model.getBpFinderModel().getBpf_firstName());
