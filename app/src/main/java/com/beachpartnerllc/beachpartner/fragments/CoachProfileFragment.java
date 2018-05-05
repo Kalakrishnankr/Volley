@@ -217,6 +217,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         View view = inflater.inflate(R.layout.fragment_coach_profile, container, false);
+        progress = new ProgressDialog(getContext());
         initView(view);
         setUp();
 
@@ -813,45 +814,55 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     }
 
     private void postUserMoreDetails(JSONObject jsonObjectMore) {
+        if (!progress.isShowing()) {
+            progress.setTitle("Loading");
+
+            progress.setMessage("Please wait while we save your data");
+            progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
+
+            progress.show();
+        }
         Log.d(TAG,jsonObjectMore.toString());
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.PUT, ApiService.UPDATE_USER_PROFILE +""+user_id, jsonObjectMore,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            editStatus = false;
-                            edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
-                            edit_tag.setText("Edit Profile");
-                            if (userCoachModel.getImageUrl() != null) {
-                                File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
+                            if(getActivity()!=null ){
+                                editStatus = false;
+                                edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
+                                edit_tag.setText("Edit Profile");
+                                if (userCoachModel.getImageUrl() != null) {
+                                    File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
 
-                                if (myFile.exists()) {
-                                    Glide.with(CoachProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+                                    if (myFile.exists()) {
+                                        Glide.with(CoachProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
 
+
+                                    }
+                                    // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
+
+                                    //  }
+                                    //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
+                                } else {
+                                    imgProfile.setImageResource(R.drawable.ic_person);
                                 }
-                                // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
-
-                                //  }
-                                //  Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
-                            } else {
-                                imgProfile.setImageResource(R.drawable.ic_person);
-                            }
-                            if (getActivity() != null) {
+                                progress.dismiss();
                                 Toast.makeText(getActivity(), "Successfully updated your details", Toast.LENGTH_SHORT).show();
-
+                                reloadFragment();
                             }
-                           // reloadFragment();
+
                         }
                         else{
-                            if (getActivity() != null) {
-                                Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
-                            }
+                            progress.dismiss();
+                            Toast.makeText(getActivity(), "Failed to update your details", Toast.LENGTH_LONG).show();
                         }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progress.dismiss();
                 String json = null;
                 editStatus = false;
                 edit_tag.setText("Edit Profile");
@@ -1238,8 +1249,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         }
 
-    }
-
         private void downloadProfileImageAndVideo(String fileName, String fileType, String... f_url) {
             int count;
             if(getActivity()!=null) {
@@ -1283,6 +1292,18 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 }
             }
         }
+        /**
+         * After completing background task
+         **/
+        @Override
+        protected void onPostExecute(String file_url) {
+            System.out.println("Downloaded");
+
+            //pDialog.dismiss();
+        }
+
+    }
+
 
 
 
@@ -1295,6 +1316,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK || resultCode == -1) {
+
             if (requestCode == PICK_IMAGE_REQUEST) {
 
                 if (data.hasExtra("data")) {
@@ -1303,7 +1325,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                         profilePhoto = handleSamplingAndRotationBitmap(getContext(), getImageUri(getApplicationContext(), profilePhoto));
                     } catch (Exception e) {
                         Log.e(TAG, "COVERT_ERROR");
-                    } finally {
+                    }finally {
                         selectedImageUri = getImageUri(getApplicationContext(), profilePhoto);
                     }
 
@@ -1343,6 +1365,9 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 }
 
 
+            }
+            if (imageUri != null ) {
+                uploadFiles(imageUri, user_id);
             }
 
         }
@@ -1610,8 +1635,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     //Api for upload profile image and video
     private void uploadFiles(final String imagePath, final String userId) {
-
-        progress = new ProgressDialog(getContext());
         if (!progress.isShowing()) {
             progress.setTitle("Loading");
             progress.setMessage("Please wait while we save your data");
@@ -1628,7 +1651,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     imageUri = null;
                     progress.dismiss();
                     Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
-                   // reloadFragment();
+                    reloadFragment();
 
                 }
             }
@@ -1862,9 +1885,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
                     imageFile = new FileBody(new File(imagePath));
                     reqEntity.addPart("profileImg", imageFile);
-                     result = uploadToServer(reqEntity);
+                    result = uploadToServer(reqEntity);
 
                 } else {
+                    progress.dismiss();
                     Toast.makeText(getApplicationContext(), "Profile updation failed", Toast.LENGTH_LONG).show();
                 }
 
@@ -1884,7 +1908,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         @Override
         protected void onPostExecute(HttpEntity result) {
             super.onPostExecute(result);
-
 
             if (listener != null) {
 
@@ -1950,13 +1973,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             HttpEntity resEntity = response.getEntity();
             while (resEntity == null) {
-
+                progress.dismiss();
                 Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
             }
             return resEntity;
         } catch (Exception ex) {
             ex.printStackTrace();
-
+            progress.dismiss();
             Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
         }
         return null;

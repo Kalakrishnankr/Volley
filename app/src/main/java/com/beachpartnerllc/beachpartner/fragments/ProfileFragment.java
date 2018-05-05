@@ -1100,6 +1100,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 } else {
                     // InfoCancelChange();
                     InfoSave();
+
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
                     edit_tag.setText("Edit Profile");
 
@@ -2815,7 +2816,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
                                     if (myFile.exists()) {
                                         Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
-
 
                                     }
                                     // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
