@@ -1,5 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -74,6 +75,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private String token, user_id;
     private ProgressBar progress;
     TabActivity tabActivity;
+    ProgressDialog dialog;
     public ConnectionFragment() {
         // Required empty public constructor
     }
@@ -116,6 +118,13 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_coach = (TextView) view.findViewById(R.id.txtCoach);
         txtv_noconnection = (TextView) view.findViewById(R.id.txtv_conview);
         progress    =   (ProgressBar) view.findViewById(R.id.progress_connection);
+        dialog      = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // set title and message
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Loading dictionary file...");
+        // and show it
+
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         rcv_conn.setLayoutManager(layoutManager);
@@ -214,7 +223,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         blockAthleteList.clear();
         blockCoachList.clear();
         dataList.clear();
-        progress.setVisibility(View.VISIBLE);
+        //progress.setVisibility(View.VISIBLE);
+        dialog.show();
         String user_id = new PrefManager(getContext()).getUserId();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
@@ -288,7 +298,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     private void setConnections() {
-        progress.setVisibility(View.GONE);
+        //progress.setVisibility(View.GONE);
+        dialog.cancel();
         if (connectionList != null && connectionList.size() > 0) {
             for (int i = 0; i < connectionList.size(); i++) {
                 if (connectionList.get(i).getBpFinderModel().getBpf_userType().equals("Athlete")) {
@@ -455,6 +466,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         if (getActivity() != null) {
             //tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
             //tabActivity.disableFloatButtons();
+            tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
+            tabActivity.disableFloatButtons();
             ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
             chatFragmentPage.setArguments(bundle);
             FragmentManager hiFiveFManager = getActivity().getSupportFragmentManager();
@@ -570,10 +583,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             @Override
             public void onGlobalLayout() {
                 if (keyboardShown(searchView.getRootView())) {
-                    Log.d("keyboard", "keyboard UP");
+                    //Log.d("keyboard", "keyboard UP");
                     tabActivity.navigation.setVisibility(View.GONE);
                 } else {
-                    Log.d("keyboard", "keyboard Down");
+                    //Log.d("keyboard", "keyboard Down");
                     tabActivity.navigation.setVisibility(View.VISIBLE);
 
                 }

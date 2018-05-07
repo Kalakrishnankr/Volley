@@ -586,7 +586,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         cardStackView.setCardEventListener(new CardStackView.CardEventListener() {
             @Override
             public void onCardDragging(float percentX, float percentY) {
-                Log.d("CardStackView", "onCardDragging");
+               // Log.d("CardStackView", "onCardDragging");
             }
 
             @Override
@@ -595,8 +595,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
                 reverseCount = true;
                 imgv_rvsecard.setImageResource(R.drawable.ic_backcard);
-                Log.d("CardStackView", "onCardSwiped: " + direction.toString());
-                Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
+               // Log.d("CardStackView", "onCardSwiped: " + direction.toString());
+               // Log.d("CardStackView", "topIndex: " + cardStackView.getTopIndex());
                 //Methods for swipe card kalakrishnan 06/04/2018
                 if (direction.toString().equalsIgnoreCase("Right")) {
                     //Toast.makeText(getActivity(), "You right swiped : "+reqPersonId, Toast.LENGTH_SHORT).show();
@@ -625,7 +625,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount()) {
-                    Log.d("CardStackView", "Paginate: no card displayed " + cardStackView.getTopIndex());
+                   // Log.d("CardStackView", "Paginate: no card displayed " + cardStackView.getTopIndex());
                     noCrads();
                     // paginate();
                 }
@@ -635,17 +635,17 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onCardReversed() {
                 reverseCount = false;
-                Log.d("CardStackView", "onCardReversed");
+                //Log.d("CardStackView", "onCardReversed");
             }
 
             @Override
             public void onCardMovedToOrigin() {
-                Log.d("CardStackView", "onCardMovedToOrigin");
+                //Log.d("CardStackView", "onCardMovedToOrigin");
             }
 
             @Override
             public void onCardClicked(int index) {
-                Log.d("CardStackView", "onCardClicked: " + index);
+                //Log.d("CardStackView", "onCardClicked: " + index);
             }
         });
 
@@ -765,7 +765,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-                Log.d("error--", error.toString());
+                //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -799,7 +799,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("Request", jsonArrayRequest.toString());
+            //Log.d("Request", jsonArrayRequest.toString());
             jsonArrayRequest.setRetryPolicy(policy);
             requestQueue.add(jsonArrayRequest);
         }
@@ -910,6 +910,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                 if (finderModel != null) {
                                     getBpProfiles();
+                                    Log.d(TAG, "onResponse: Reverse Card ID: "+swipeResultModel.getId());
                                     if (swipeResultModel.getId() != null) {
                                         new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
                                     }
@@ -945,7 +946,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-                Log.d("error--", error.toString());
+                //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -989,7 +990,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("RequestSend", request.toString());
+            //Log.d("RequestSend", request.toString());
             requestQueue.add(request);
         }
 
@@ -1022,7 +1023,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
-                Log.d("error--", error.toString());
+               // Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -1066,7 +1067,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue queue = Volley.newRequestQueue(getActivity());
-            Log.d("RejectRequest", queue.toString());
+            //Log.d("RejectRequest", queue.toString());
             queue.add(jrequest);
         }
 
@@ -1135,7 +1136,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-                Log.d("error--", error.toString());
+                //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -1179,7 +1180,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("RequestSend", requests.toString());
+            //Log.d("RequestSend", requests.toString());
             requestQueue.add(requests);
         }
 
@@ -1210,7 +1211,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-                Log.d("error--", error.toString());
+               // Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -1254,7 +1255,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("RequestSend", request.toString());
+            //Log.d("RequestSend", request.toString());
             requestQueue.add(request);
         }
 
@@ -1325,7 +1326,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("Request", jsonArrayRqst.toString());
+            //Log.d("Request", jsonArrayRqst.toString());
             requestQueue.add(jsonArrayRqst);
         }
 
@@ -1368,7 +1369,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-                Log.d("error--", error.toString());
+                //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -1398,7 +1399,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("Request", jsonRequest.toString());
+            //Log.d("Request", jsonRequest.toString());
             requestQueue.add(jsonRequest);
         }
 
@@ -1744,6 +1745,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (getActivity() != null) {
                     alertDialog.dismiss();
                     if (cModel != null) {
+                        tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
+                        tabActivity.disableFloatButtons();
                         ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(AppConstants.CHAT_USER, cModel);
@@ -1766,6 +1769,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 //Moving to Calendar Fragment
                 if (getActivity() != null) {
                     alertDialog.dismiss();
+                    tabActivity.navigation.setSelectedItemId(R.id.navigation_calendar);
+                    tabActivity.disableFloatButtons();
                     CalendarFragment calendarFragment = new CalendarFragment();
                     FragmentManager manager = getActivity().getSupportFragmentManager();
                     FragmentTransaction ctrans = manager.beginTransaction();

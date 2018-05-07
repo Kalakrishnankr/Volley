@@ -1,5 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.ProgressDialog;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -52,6 +53,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     private ProgressBar progressBar;
     private TextView txtv_nonotes;
     private RecyclerView.LayoutManager layoutManager;
+    private ProgressDialog dialog;
 
 
 
@@ -89,8 +91,14 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
 
         rcVNotes    = view.findViewById(R.id.rcv_notes);
         addNewBtn   = view.findViewById(R.id.addNew);
-        progressBar = view.findViewById(R.id.progress_note);
+        //progressBar = view.findViewById(R.id.progress_note);
         txtv_nonotes = view.findViewById(R.id.txtv_nonotes);
+
+        dialog      = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
+        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        // set title and message
+        dialog.setTitle("Please wait");
+        dialog.setMessage("Loading data...");
 
 
        // adapter     =   new NotesAdapter(getContext(),noteList,this);
@@ -124,7 +132,13 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
             e.printStackTrace();
         }
 
+        /*NoteDataModel dm = new NoteDataModel();
+        dm.setHeaderTitle("");
+        dm.setNotes("");
+        noteList.add(dm);*/
+        dialog.show();
         postNote(object);
+
     }
 
 
@@ -142,7 +156,8 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     //Api for get all notes
     private void getNotes() {
         noteList.clear();
-        progressBar.setVisibility(View.VISIBLE);
+        //progressBar.setVisibility(View.VISIBLE);
+        dialog.show();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GETALL_NOTE_FROM + myID + "/to/" + personId, null,
                 new Response.Listener<JSONArray>() {
                     @Override
@@ -156,7 +171,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
                                     NoteDataModel noteDataModel = new NoteDataModel();
                                     noteDataModel.setNote_id(object.getString("id"));
                                     noteDataModel.setNotes(object.getString("note"));
-                                    noteList.add(noteDataModel);
+                                    noteList.add(0,noteDataModel);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
@@ -209,12 +224,13 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     }
 
     private void setNoteViews() {
-        progressBar.setVisibility(View.GONE);
+        dialog.cancel();
+        //progressBar.setVisibility(View.GONE);
         if(noteList.size()>0){
-            adapter     =   new NotesAdapter(getContext(),noteList,this);
+            adapter  = new NotesAdapter(getContext(),noteList,this);
             rcVNotes.setAdapter(adapter);
             rcVNotes.setLayoutManager(layoutManager);
-            rcVNotes.getLayoutManager().scrollToPosition(noteList.size()+1);
+            rcVNotes.getLayoutManager().scrollToPosition(noteList.size()-1);
             adapter.notifyDataSetChanged();
         }else {
             txtv_nonotes.setVisibility(View.VISIBLE);
@@ -239,7 +255,7 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
 
     //Method for post note
     private void postNote(JSONObject object) {
-        noteList.clear();
+        //noteList.clear();
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.CREATE_NOTE, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -298,6 +314,8 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     @Override
     public void removeNote(String note_id) {
         //Api for deleting note
+        //progressBar.setVisibility(View.VISIBLE);
+        dialog.show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_DELETE, ApiService.DELETE_NOTE + note_id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -366,11 +384,13 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
     }
     //Update  note Api
     private void updateNote(JSONObject object, String noteId) {
+        dialog.show();
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_NOTE + noteId, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     if(getActivity()!=null){
+                        dialog.cancel();
                         Toast.makeText(getActivity(), "Successfully Updated Note", Toast.LENGTH_SHORT).show();
                     }
                 }
