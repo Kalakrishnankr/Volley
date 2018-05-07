@@ -8,11 +8,11 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -117,6 +117,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
                     noteInterface.update(text,noteId);
                     holder.noteDisabled.setImageResource(R.drawable.ic__note);
                     holder.edit_notes.setFocusable(false);
+                    InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 }
 
 
@@ -129,10 +131,10 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
             @Override
             public void onGlobalLayout() {
                 if (keyboardShown(holder.edit_notes.getRootView())) {
-                    Log.d("keyboard", "keyboard UP");
+                    //Log.d("keyboard", "keyboard UP");
                     tabActivity.navigation.setVisibility(View.GONE);
                 } else {
-                    Log.d("keyboard", "keyboard Down");
+                    //Log.d("keyboard", "keyboard Down");
                     tabActivity.navigation.setVisibility(View.VISIBLE);
 
                 }
@@ -194,9 +196,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.ViewHolder> 
 
 
         public void removeAt(int position) {
-            dataList.remove(position);
-            notifyItemRemoved(position);
-            notifyItemRangeChanged(position, dataList.size());
+            if (dataList != null) {
+                dataList.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, dataList.size());
+            }
+
         }
 
 

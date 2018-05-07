@@ -24,6 +24,12 @@ android {
     dexOptions {
     }
     sourceSets { main { assets.srcDirs = ['src/main/assets', 'src/main/assets/fonts'] } }
+
+    configurations {
+        all {
+            exclude module: 'commons-logging'
+        }
+    }
 }
 
 

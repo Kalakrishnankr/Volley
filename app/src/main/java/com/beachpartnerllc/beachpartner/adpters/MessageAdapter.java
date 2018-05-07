@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
@@ -32,6 +33,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
     private String userType,uName;
     private ArrayList<BpFinderModel> dataList;
     MyViewHolder myViewHolder;
+    TabActivity  tabActivity;
 
     public MessageAdapter(Context context, ArrayList<BpFinderModel> allSampleData) {
         this.dataList = allSampleData;
@@ -76,7 +78,11 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
                 if (new PrefManager(mContext).getUserName() != null && new PrefManager(mContext).getUserName().equals("null") ) {
                     uName=new PrefManager(mContext).getUserName();
                 }
-
+                if (mContext instanceof TabActivity){
+                    tabActivity = (TabActivity)mContext;
+                }
+                tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
+                tabActivity.disableFloatButtons();
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(AppConstants.CHAT_USER, model);
