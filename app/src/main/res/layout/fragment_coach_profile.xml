@@ -19,103 +19,101 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="fitXY" />
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <View
-                android:id="@+id/overlay_coach"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/blur"
-                android:elevation="10dp" />
+        <!--<View-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:background="@color/blur"-->
+            <!--android:elevation="10dp" />-->
+
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:elevation="10dp"
+    android:layout_marginTop="@dimen/circular_img_marginTop_coach_profile"
+    android:background="@drawable/overlay_bg_coach">
+
+    <com.beachpartnerllc.beachpartner.CircularImageView
+        android:id="@+id/row_icon"
+        android:layout_width="@dimen/circular_img_width"
+        android:layout_height="@dimen/circular_img_height"
+        android:layout_marginLeft="@dimen/circular_img_marginLeft_coach_profile"
+        android:contentDescription="@string/app_name"
+        android:padding="10dp"
+        app:civ_border_width="10dp"
+        android:elevation="10dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/ic_person" />
+
+    <TextView
+        android:id="@+id/coachName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/row_icon"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+        android:textSize="20sp"
+        android:textColor="@color/white"
+        android:textStyle="bold"
+        android:text="user name"
+        android:background="@drawable/overlay_card" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="5dp"
+        android:layout_below="@+id/coachName"
+        android:layout_toRightOf="@+id/row_icon">
+        <com.beachpartnerllc.beachpartner.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="College Coach"
+            android:textColor="@color/colorText"
+            android:background="@drawable/coach_bg"
+            />
+    </LinearLayout>
 
 
-            <com.beachpartnerllc.beachpartner.CircularImageView
-                android:id="@+id/row_icon"
-                android:layout_width="@dimen/circular_img_width"
-                android:layout_height="@dimen/circular_img_height"
-                android:layout_marginLeft="@dimen/circular_img_marginLeft_coach_profile"
-                android:contentDescription="@string/app_name"
-                android:padding="10dp"
-                app:civ_border_width="10dp"
-                android:layout_centerVertical="true" en
-                android:elevation="10dp"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_person" />
+    <ImageView
+        android:id="@+id/edit_profile_imgCoach"
+        android:visibility="gone"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+        android:layout_marginLeft="30dp"
+        android:elevation="10dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_edit_profile"/>
 
-            <TextView
-                android:id="@+id/coachName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@+id/row_icon"
-                android:layout_marginLeft="5dp"
-                android:textSize="@dimen/textsize_header"
-                android:textColor="@color/white"
-                android:textStyle="bold"
-                android:text="username"
-                android:elevation="10dp"
-                android:background="@drawable/overlay_card" />
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_below="@+id/coachName"
-                android:elevation="10dp"
-                android:layout_toRightOf="@+id/row_icon">
-                <com.beachpartnerllc.beachpartner.CustomTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="College Coach"
-                    android:textColor="@color/colorText"
-                    android:background="@drawable/coach_bg"
-                    />
-            </LinearLayout>
+    <View
+        android:layout_width="3dp"
+        android:layout_height="50dp"
+        android:background="@color/white"
+        android:layout_toRightOf="@+id/coachName"
+        android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+        android:layout_marginLeft="5dp"
+        />
 
+    <ImageView
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
+        android:clickable="true"
+        android:src="@drawable/ic_coach_edit" />
+    <com.beachpartnerllc.beachpartner.CustomTextView
+        android:id="@+id/edit_text"
+        android:layout_below="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="12sp"
+        android:textColor="@color/imgBacgnd"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="@string/editProfile"/>
+</RelativeLayout>
 
-            <ImageView
-                android:id="@+id/edit_profile_imgCoach"
-                android:visibility="gone"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
-                android:layout_marginLeft="30dp"
-                android:elevation="10dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_edit_profile"/>
-
-            <View
-                android:layout_width="3dp"
-                android:layout_height="50dp"
-                android:background="@color/white"
-                android:layout_toRightOf="@+id/coachName"
-                android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
-                android:layout_marginLeft="5dp"
-                />
-
-            <ImageView
-                android:id="@+id/edit"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginRight="25dp"
-                android:elevation="10dp"
-                android:layout_marginTop="@dimen/coach_name_marginTop_coach_profile"
-                android:clickable="true"
-                android:src="@drawable/ic_coach_edit" />
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/edit_text"
-                android:layout_below="@+id/edit"
-                android:layout_width="wrap_content"
-                android:elevation="10dp"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/text_size"
-                android:textColor="@color/imgBacgnd"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="10dp"
-                android:text="@string/editProfile"/>
-
-        </RelativeLayout>
 
 
 

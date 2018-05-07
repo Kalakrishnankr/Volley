@@ -122,7 +122,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // set title and message
         dialog.setTitle("Please wait");
-        dialog.setMessage("Loading dictionary file...");
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
         // and show it
 
 

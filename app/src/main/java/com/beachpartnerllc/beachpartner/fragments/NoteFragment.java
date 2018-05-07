@@ -98,7 +98,8 @@ public class NoteFragment extends Fragment implements SaveNoteInterface{
         dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         // set title and message
         dialog.setTitle("Please wait");
-        dialog.setMessage("Loading data...");
+        dialog.setMessage("Loading...");
+        dialog.setCancelable(false);
 
 
        // adapter     =   new NotesAdapter(getContext(),noteList,this);

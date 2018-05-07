@@ -27,6 +27,6 @@
 	<!--coach profile-->
 	<dimen name="circular_img_marginTop_coach_profile">20dp</dimen>
     <dimen name="circular_img_marginLeft_coach_profile">10dp</dimen>
-    <dimen name="coach_name_marginTop_coach_profile">60dp</dimen>
+    <dimen name="coach_name_marginTop_coach_profile">20dp</dimen>
 
 </resources>
