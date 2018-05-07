@@ -19,6 +19,7 @@ public class ApiService {
     public static final String REDIRECT_URI ="http://beachpartner.com";
 
     public static String BASE_URL   =   "https://beachpartner.com/api/";
+  // public static String BASE_URL   =    "http://192.168.0.34:8080/api/" ;
     public static String SIGNUP     =    BASE_URL+"register";
     public static String LOGIN      =    BASE_URL+"authenticate";
 

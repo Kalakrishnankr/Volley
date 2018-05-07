@@ -87,7 +87,7 @@ public class SignUpActivity extends AppCompatActivity{
     private LinearLayout llogin;
     private RadioGroup userTypeRadio;
     private RadioButton rb;
-    private String userType;
+    private String userType ="Athlete";
     private int paymentStatus;
     private ProgressDialog progress;
     private  boolean minorStatus=false;
