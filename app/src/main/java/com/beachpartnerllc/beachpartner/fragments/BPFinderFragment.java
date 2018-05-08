@@ -224,7 +224,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 text_nocard.setText("No more Likes");
                 addUserList(noLikes);
             } else if (data.containsKey(AppConstants.BP_PROFILE)) {
-                text_nocard.setText("Please select the BP logo for more cards");
+                text_nocard.setText("Please tap the BP logo for more cards");
                 cModel = data.getParcelable(AppConstants.BP_PROFILE);
                 addASingleUser(cModel);
             } else {
@@ -299,7 +299,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
             tvMin.setText(String.valueOf(minAge));
             tvMax.setText(String.valueOf(maxAge));
-            age_bar.getThumb(0).setValue(0).setEnabled(true);
+            age_bar.getThumb(0).setValue(minAge).setEnabled(true);
             age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
             if (location != null) {
                 int positions = dataAdapter.getPosition(location);
@@ -617,11 +617,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         cardHifiSwiped(reqPersonId);
                     }
                     //r.put(reqPersonId);
-                    String r = fcmToken;
-                    String uName = new PrefManager(getContext()).getUserName();
-                    if (fcmToken != null && !fcmToken.equalsIgnoreCase("null") && uName != null && !uName.equalsIgnoreCase("null")) {
-                        sendMessage(r, "BeachPartner", uName + " sent you a high five", "");
-                    }
+//                    String r = fcmToken;
+//                    String uName = new PrefManager(getContext()).getUserName();
+//                    if (fcmToken != null && !fcmToken.equalsIgnoreCase("null") && uName != null && !uName.equalsIgnoreCase("null")) {
+//                        sendMessage(r, "BeachPartner", uName + " sent you a high five", "");
+//                    }
                 }
 
                 if (cardStackView.getTopIndex() == adapter.getCount()) {
@@ -704,8 +704,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 reverse();
                /* empty_card.setVisibility(View.GONE);
                 cardStackView.setVisibleCount(View.VISIBLE);*/
-                cardReverse(id);
-                reversecard();
+                    cardReverse(id);
+                    reversecard();
+
             }
         });
 
@@ -817,6 +818,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             } else {
                 progressBar.setVisibility(View.INVISIBLE);
                 noCrads();
+                imgv_rvsecard.setClickable(false);
             }
 
         }
@@ -905,7 +907,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             try {
                                 SwipeResultModel swipeResultModel =
                                         new Gson().fromJson(response.toString(), SwipeResultModel.class);
-                                obj = response.getJSONObject("user");
+                                obj = response.getJSONObject("connectedUser");
                                 Type type = new TypeToken<BpFinderModel>(){}.getType();
                                 BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                 if (finderModel != null) {
@@ -1009,7 +1011,20 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         getBpProfiles();
                         try {
                             if (response.has(AppConstants.ID)) {
-                                new PrefManager(getActivity()).saveReverseCardId(response.getString(AppConstants.ID));
+                                {
+                                    SwipeResultModel swipeResultModel =
+                                            new Gson().fromJson(response.toString(), SwipeResultModel.class);
+                                    JSONObject obj = response.getJSONObject("connectedUser");
+                                    Type type = new TypeToken<BpFinderModel>(){}.getType();
+                                    BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                                    if (finderModel != null) {
+                                        getBpProfiles();
+                                        //Log.d(TAG, "onResponse: 2nd : "+swipeResultModel.getId());
+                                        if (swipeResultModel.getId() != null) {
+                                            new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
+                                        }
+                                    }
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1112,7 +1127,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 try {
                                     SwipeResultModel swipeResultModel =
                                             new Gson().fromJson(response.toString(), SwipeResultModel.class);
-                                    obj = response.getJSONObject("user");
+                                    obj = response.getJSONObject("connectedUser");
                                     Type type = new TypeToken<BpFinderModel>(){}.getType();
                                     BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                     if (finderModel != null) {

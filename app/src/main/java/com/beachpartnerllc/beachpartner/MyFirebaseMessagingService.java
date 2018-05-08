@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.beachpartnerllc.beachpartner.activity.LoginActivity;
 
+import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -26,7 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String ADMIN_CHANNEL_ID="BeachPartner";
     private static final String TAG = "MyFirebaseMsgService";
 
-    @Override
+
 //    public void onMessageReceived(RemoteMessage remoteMessage) {
 
 //        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -39,16 +40,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 //        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
 //        manager.notify(1, notification);
 
-
+    @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
+
        super.onMessageReceived(remoteMessage);
         Log.d(TAG, "From: " + remoteMessage.getData().size()); // for the data size
         final Map<String, String> data = remoteMessage.getData();
         String title = data.get("title");
         String body = data.get("body");
-        if(!title.equals("") && !body.equals("")){
-            sendNotificationData(title, body); //send notification to user
+        if(title!=null&&body!=null){
+            if(!title.equals("") && !body.equals("")){
+                sendNotificationData(title, body); //send notification to user
+            }
         }
+
 //        Toast.makeText(this, "You just got a hi Five", Toast.LENGTH_SHORT).show();
     }
 
@@ -80,7 +85,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      * @param messageBody FCM message body received.
      */
     private void sendNotificationData(String messageTitle,String messageBody) {
-        Intent intent = new Intent(this, LoginActivity.class);
+        Intent intent = new Intent(this, HiFiveFragment.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 

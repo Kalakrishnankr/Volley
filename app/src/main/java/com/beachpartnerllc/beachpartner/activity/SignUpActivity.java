@@ -104,6 +104,8 @@ public class SignUpActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
 
+        //clearing when toggling between signup and login
+        sex=null;
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
         initActivity();
         android_id = Settings.Secure.getString(getApplicationContext().getContentResolver(),
@@ -296,7 +298,8 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
 
-                }else if(!hasFocus && user_mobileno.getText().toString().equals(null)){
+                }
+                else if(!hasFocus && user_mobileno.getText().toString().equals(null)){
                     txt_mobileError.setVisibility(View.VISIBLE);
                     txt_mobileError.setText(getResources().getString(R.string.mobilerror));
                 }
@@ -315,30 +318,42 @@ public class SignUpActivity extends AppCompatActivity{
             }
         });
 
+        //initially usertpe selected as athlete and date of birth's maximum date set accordingly(-5 years)
 
+        userTypeRadio.check(R.id.athlete_radio);
+        Date today = new Date();
+        Calendar c = Calendar.getInstance();
+        c.setTime(today);
+        c.add( Calendar.YEAR, -5 ) ;
+        maxDate = c.getTime().getTime();
         userTypeRadio.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener(){
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 rb =(RadioButton) findViewById(checkedId);
                 if(rb.getText().toString().trim().equals("Coach")){
                     userType="Coach";
-
+                    myCalendar = Calendar.getInstance();
+                    user_dob.setText("");
+                    dob=null;
                     Date today = new Date();
                     Calendar c = Calendar.getInstance();
                     c.setTime(today);
-                    // Subtract 5 years
+                    // Subtract 18 years
                     c.add( Calendar.YEAR, -18 ) ;
                     maxDate = c.getTime().getTime();
 
                 }else {
                     userType="Athlete";
+                    myCalendar = Calendar.getInstance();
+                    user_dob.setText("");
+                    dob=null;
                     Date today = new Date();
                     Calendar c = Calendar.getInstance();
                     c.setTime(today);
                     c.add( Calendar.YEAR, -5 ) ;
                     maxDate = c.getTime().getTime();
                     // Subtract 5 years
-                    if(minorStatus){
+                    if(minorStatus && !user_dob.getText().toString().equalsIgnoreCase("")){
                         alertMinor();
                     }
                 }
@@ -481,7 +496,7 @@ public class SignUpActivity extends AppCompatActivity{
 
                 userName = user_fname.getText().toString().trim();
                 lastName = user_lname.getText().toString().trim();
-                dob = user_dob.getText().toString().trim();
+                //dob = user_dob.getText().toString().trim();
                 email = user_email.getText().toString().trim();
                 pass = user_password.getText().toString().trim();
                 confnPass = user_confPasswd.getText().toString().trim();
@@ -542,11 +557,17 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_usrTypeError.setVisibility(View.VISIBLE);
                         txt_usrTypeError.setText(getResources().getString(R.string.enter_user_type));
                     }
-                    if (dob.length() == 0) {
+                    //dob null check
+                    if ( dob==null) {
                         txt_dobError.setVisibility(View.VISIBLE);
                         txt_dobError.setText(getResources().getString(R.string.doberror));
-
                     }
+                    else if(dob.length() == 0||dob.equalsIgnoreCase("")){
+                        txt_dobError.setVisibility(View.VISIBLE);
+                        txt_dobError.setText(getResources().getString(R.string.doberror));
+                    }
+
+
                     if (sex == null) {
                         txt_genderError.setVisibility(View.VISIBLE);
                         txt_genderError.setText(getResources().getString(R.string.gendererror));
@@ -556,8 +577,11 @@ public class SignUpActivity extends AppCompatActivity{
                     txt_mobileError.setVisibility(View.VISIBLE);
                     return;
                 }
-                    if (userType != null && dob.length() != 0 && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==10 && sex!=null &&(locationSelectedStatus!=null)) {
+                    if (userType != null && dob != null && userName.length()!=0 && lastName.length()!=0 && email.length()!=0 && pass.length()!=0 &&confnPass.length()!=0 && mobileno.length()==10 && sex!=null &&(locationSelectedStatus!=null)) {
+                        if(dob.length()!=0){
                             submitForm();
+                        }
+
                     }
 
 
@@ -739,8 +763,14 @@ public class SignUpActivity extends AppCompatActivity{
         String myFormat = "MM-dd-yyyy"; //In which you need put here
         SimpleDateFormat sdf = new SimpleDateFormat(myFormat, Locale.US);
         user_dob.setText(sdf.format(myCalendar.getTime()));
+
+        String serverFormat = "yyyy-MM-dd";
+        SimpleDateFormat server_sdf = new SimpleDateFormat(serverFormat, Locale.US);
+        dob = server_sdf.format(myCalendar.getTime());
+
         return sdf;
     }
+
 
     private void alertMinor() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);

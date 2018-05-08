@@ -77,6 +77,7 @@ public class MessageFragment extends Fragment  {
         myId = new PrefManager(getContext()).getUserId();
         myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/");
 
+        chatListAdapter=null;
         initView(view);
         getConnections();
         return view;

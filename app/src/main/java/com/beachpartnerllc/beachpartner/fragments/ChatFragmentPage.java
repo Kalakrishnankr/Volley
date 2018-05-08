@@ -96,7 +96,7 @@ public class ChatFragmentPage extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle("Chat with " + ChatWith_name);
+            tabActivity.setActionBarTitle("Messages with " + ChatWith_name);
         }
     }
 

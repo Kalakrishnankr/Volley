@@ -305,7 +305,8 @@
 
                 <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="match_parent"
+                    android:gravity="center">
 
                 <!--<ProgressBar
                     android:id="@+id/progress_msg"
@@ -338,8 +339,8 @@
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcv_message"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center">
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
 
                 </android.support.v7.widget.RecyclerView>
 
