@@ -261,8 +261,11 @@ public class TabActivity extends AppCompatActivity  {
                     coachHomeTransaction.commit();
                 }
 
-            } else {
-                {
+            }
+            else if(value.equalsIgnoreCase("hifive")){
+                activateHiFiveFragment();
+            }
+            else {
                     if (tips) {
                         if (userType.equalsIgnoreCase("Athlete")) {
                             ProfileFragment pf = new ProfileFragment();
@@ -291,7 +294,6 @@ public class TabActivity extends AppCompatActivity  {
                     }
 
 
-                }
 
             }
         }

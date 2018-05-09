@@ -603,11 +603,16 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
                                     model.setEventRegStartdate(object.getLong("eventRegStartDate"));
                                     model.setEventRegEnddate(object.getLong("eventRegEndDate"));
+                                    model.setEventAdmin(object.getString("eventAdmin"));
 
-                                    JSONObject adminObject = object.getJSONObject("eventAdmin");
 
-                                    EventAdminModel eventAdminModel = new EventAdminModel();
-                                    eventAdminModel.setFirstName(adminObject.getString("firstName"));
+//                                   -------------event admin changed from object to string change noted on 5/9/2018--------------
+
+//                                    JSONObject adminObject = object.getJSONObject("eventAdmin");
+//                                    EventAdminModel eventAdminModel = new EventAdminModel();
+//                                    eventAdminModel.setFirstName(adminObject.getString("firstName"));
+
+
 
                                     /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {
@@ -622,7 +627,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     } catch (ParseException e) {
                                         e.printStackTrace();
                                     }*/
-                                    model.setEventAdmin(eventAdminModel);
+//                                    model.setEventAdmin(eventAdminModel);
                                     eventModelList.add(model);
 
 
@@ -716,12 +721,17 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModel.setEventStartDate(jsonObject.getLong("eventStartDate"));
                                     eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
                                     eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
+                                    eventModel.setEventAdmin(jsonObject.getString("eventAdmin"));
 
-                                    JSONObject object = jsonObject.getJSONObject("eventAdmin");
 
-                                    EventAdminModel adminModel = new EventAdminModel();
-                                    adminModel.setFirstName(object.getString("firstName"));
-                                    eventModel.setEventAdmin(adminModel);
+//                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
+//                                    JSONObject object = jsonObject.getJSONObject("eventAdmin");
+//
+//                                    EventAdminModel adminModel = new EventAdminModel();
+//                                    adminModel.setFirstName(object.getString("firstName"));
+//                                    eventModel.setEventAdmin(adminModel);
+
+
                                     /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
                                     try {
                                         String mDate = jsonObject.getString("eventStartDate");

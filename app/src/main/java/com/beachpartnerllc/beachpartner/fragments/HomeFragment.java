@@ -496,11 +496,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
                             event.setEventEndDate(obj.getLong("eventEndDate"));
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventEndDate(obj.getLong("eventRegEndDate"));
+                            event.setEventAdmin(obj.getString("eventAdmin"));
 
-                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
-                            EventAdminModel adminModel = new EventAdminModel();
-                            adminModel.setFirstName(objectadmin.getString("firstName"));
-                            event.setEventAdmin(adminModel);
+//                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
+//                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
+//                            EventAdminModel adminModel = new EventAdminModel();
+//                            adminModel.setFirstName(objectadmin.getString("firstName"));
+//                            event.setEventAdmin(adminModel);
+
                             myUpcomingTList.add(event);
 
                         } catch (JSONException e) {

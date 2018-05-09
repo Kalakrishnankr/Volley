@@ -82,9 +82,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         Bundle bundle = getArguments();
         if(bundle!=null){
             Event event = (Event)bundle.getSerializable("event_clicked");
-            EventAdminModel eventAdminModel = event.getEventAdmin();
+            String eventAdmin = event.getEventAdmin();
             eventId=event.getEventId();
-            tview_eventadmin.setText(eventAdminModel.getFirstName().toString());
+            tview_eventadmin.setText(eventAdmin.toString());
 
             tview_eventname.setText(event.getEventName().toString());
             eventName   =   event.getEventName().toString();
@@ -294,7 +294,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         JSONObject registerObject =new JSONObject();
         try{
             registerObject.put("eventId",eventId);
-            registerObject.put("userId",user_id);
+            registerObject.put("userIds",user_id);
         }
         catch (JSONException e){
             e.printStackTrace();
@@ -329,7 +329,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         JSONObject registerObject =new JSONObject();
         try{
             registerObject.put("eventId",eventId);
-            registerObject.put("userId",user_id);
+            registerObject.put("userIds",user_id);
         }
         catch (JSONException e){
             e.printStackTrace();

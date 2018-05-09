@@ -36,6 +36,8 @@ public class Event implements Serializable {
     private long eventRegStartdate;
     private long eventRegEnddate;
 
+    public String eventAdmin;
+
     public long getEventRegStartdate() {
         return eventRegStartdate;
     }
@@ -118,15 +120,19 @@ public class Event implements Serializable {
         this.status = status;
     }
 
-    public EventAdminModel getEventAdmin() {
-        return eventAdmin;
-    }
+//    public EventAdminModel getEventAdmin() {
+//        return eventAdmin;
+//    }
+//
+//    public void setEventAdmin(EventAdminModel eventAdmin) {
+//        this.eventAdmin = eventAdmin;
+//    }
 
-    public void setEventAdmin(EventAdminModel eventAdmin) {
-        this.eventAdmin = eventAdmin;
-    }
+    public String getEventAdmin(){return eventAdmin;}
 
-    public EventAdminModel eventAdmin;
+    public void setEventAdmin(String EventAdmin) {
+        this.eventAdmin=EventAdmin;
+    }
 
     /*public Event() {
         this.color = color;

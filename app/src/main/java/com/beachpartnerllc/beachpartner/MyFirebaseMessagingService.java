@@ -12,6 +12,7 @@ import android.util.Log;
 
 import com.beachpartnerllc.beachpartner.activity.LoginActivity;
 
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -48,10 +49,15 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final Map<String, String> data = remoteMessage.getData();
         String title = data.get("title");
         String body = data.get("body");
+
         if(title!=null&&body!=null){
             if(!title.equals("") && !body.equals("")){
                 sendNotificationData(title, body); //send notification to user
             }
+        }
+        if(remoteMessage.getNotification()!=null){
+
+            sendNotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()); //send notification to user
         }
 
 //        Toast.makeText(this, "You just got a hi Five", Toast.LENGTH_SHORT).show();
@@ -84,17 +90,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
      *
      * @param messageBody FCM message body received.
      */
+
+
     private void sendNotificationData(String messageTitle,String messageBody) {
-        Intent intent = new Intent(this, HiFiveFragment.class);
+        Intent intent = new Intent(this, TabActivity.class);
+        intent.putExtra("reDirectPage", "hifive");
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this,0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
         long[] pattern = {500,500,500,500,500};
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
         NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
@@ -104,7 +113,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0 , notificationBuilder.build());
     }
 
 

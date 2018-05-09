@@ -59,8 +59,8 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         if(bundle!=null){
             Event event = (Event)bundle.getSerializable("mycal_event_clicked");
-            EventAdminModel adminModel = event.getEventAdmin();
-            myCal_eventadmin.setText(adminModel.getFirstName());
+            String eventAdmin = event.getEventAdmin();
+            myCal_eventadmin.setText(eventAdmin.toString());
 
             myCal_eventname.setText(event.getEventName());
             myCal_location.setText(event.getEventLocation());

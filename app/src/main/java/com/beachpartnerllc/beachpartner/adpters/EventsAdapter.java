@@ -47,7 +47,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         final Event model = list.get(position);
-        holder.tview_events.setText((CharSequence) model.getData());
+        holder.tview_events.setText((CharSequence) model.getEventName());
        // int colr= Integer.parseInt(model.event_color.trim());
         holder.event_view.setBackgroundColor(model.getColor());
 
