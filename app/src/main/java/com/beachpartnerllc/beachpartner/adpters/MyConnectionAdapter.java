@@ -45,7 +45,12 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
         ConnectionModel model = dataModelList.get(position);
+        holder.imgAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
 
         holder.tvname.setText(model.getConnected_firstName().trim());
         if(model.getConnected_isAvailable_ondate()){

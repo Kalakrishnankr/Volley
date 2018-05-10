@@ -55,10 +55,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendNotificationData(title, body); //send notification to user
             }
         }
-        if(remoteMessage.getNotification()!=null){
-
-            sendNotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()); //send notification to user
-        }
+//        if(remoteMessage.getNotification()!=null){
+//
+//            sendNotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()); //send notification to user
+//        }
 
 //        Toast.makeText(this, "You just got a hi Five", Toast.LENGTH_SHORT).show();
     }

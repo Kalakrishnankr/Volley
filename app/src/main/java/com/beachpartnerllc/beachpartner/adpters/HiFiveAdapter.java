@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.ListAdapter;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
@@ -34,7 +35,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
     private ArrayList<BpFinderModel> hiFiveList = new ArrayList<BpFinderModel>();
     private Context context;
     RelativeTimeTextView timeStamp;
-    ImageView usersImg;
+    CircularImageView usersImg;
     CardView cardView;
     private static  boolean isHifi = false;
     private static  boolean isblueBP = false;

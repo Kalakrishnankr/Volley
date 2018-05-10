@@ -238,6 +238,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean appendEditOpenedTwo = false;
     FrameLayout placeholder;
     private long maxDate;
+    private  String[] values;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -1299,9 +1300,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 finishCount -= 1;
                 topFinishes2_lt.setVisibility(View.GONE);
                 topfinishes_txt_2.setText(null);
-                if (finishCount < 1) {
+
                     imageView1.setVisibility(View.VISIBLE);
-                }
+
             }
         });
 
@@ -1926,9 +1927,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         topfinishes_txt_1.setEnabled(true);
         topfinishes_txt_1.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
-        if(finishCount!=2){
+        if(finishCount<1){
             imageView1.setVisibility(View.VISIBLE);
         }
+        imageView2.setVisibility(View.VISIBLE);
+        imageView3.setVisibility(View.VISIBLE);
 
         topfinishes_txt_2.setEnabled(true);
         topfinishes_txt_2.setBackground(getResources().getDrawable(R.drawable.edit_test_bg));
@@ -2105,6 +2108,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             topfinishes_txt_3.setEnabled(false);
             topfinishes_txt_3.setBackground(null);
             imageView3.setVisibility(View.GONE);
+
             String dateOb = editDob.getText().toString();
 
             // Log.d("date--",c);
@@ -2380,28 +2384,40 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         topfinishes_txt_2.setEnabled(false);
         imageView2.setVisibility(View.GONE);
-        topfinishes_txt_1.setBackground(null);
+        topfinishes_txt_2.setBackground(null);
 
         topfinishes_txt_3.setEnabled(false);
         imageView3.setVisibility(View.GONE);
-        topfinishes_txt_1.setBackground(null);
+        topfinishes_txt_3.setBackground(null);
 
-        if (appendEditOpenedOne){
-            topfinishes_txt_2.setEnabled(false);
-            topfinishes_txt_2.setText("");
-            topFinishes2_lt.setVisibility(View.GONE);
-            imageView2.setVisibility(View.GONE);
-            topfinishes_txt_1.setBackground(null);
-            appendEditOpenedOne = false;
+
+        if (values[1] != null) {
+            topfinishes_txt_2.setText(values[1].trim());
+            topFinishes2_lt.setVisibility(View.VISIBLE);
+            topfinishes_txt_2.setBackground(null);
         }
-        if (appendEditOpenedTwo){
-            topfinishes_txt_3.setEnabled(false);
-            topfinishes_txt_3.setText("");
-            topFinishes3_lt.setVisibility(View.GONE);
-            imageView3.setVisibility(View.GONE);
+        if (values[2] != null) {
+            topfinishes_txt_3.setText(values[2].trim());
+            topFinishes3_lt.setVisibility(View.VISIBLE);
             topfinishes_txt_3.setBackground(null);
-            appendEditOpenedTwo = false;
         }
+
+//        if (appendEditOpenedOne){
+//            topfinishes_txt_2.setEnabled(false);
+//            topfinishes_txt_2.setText("");
+//            topFinishes2_lt.setVisibility(View.GONE);
+//            imageView2.setVisibility(View.GONE);
+//            topfinishes_txt_2.setBackground(null);
+//            appendEditOpenedOne = false;
+//        }
+//        if (appendEditOpenedTwo){
+//            topfinishes_txt_3.setEnabled(false);
+//            topfinishes_txt_3.setText("");
+//            topFinishes3_lt.setVisibility(View.GONE);
+//            imageView3.setVisibility(View.GONE);
+//            topfinishes_txt_3.setBackground(null);
+//            appendEditOpenedTwo = false;
+//        }
 
         editStatus = false;
     }
@@ -3040,7 +3056,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 }
                 if (userDataModel.getTopFinishes() != null) {
 
-                    String[] values = userDataModel.getTopFinishes().split(",");
+                    values = userDataModel.getTopFinishes().split(",");
                     if (values.length == 1) {
                         if (values[0] != null) {
                             topfinishes_txt_1.setText(values[0].trim());

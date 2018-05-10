@@ -50,8 +50,9 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private ImageView upDownToggle;
     private TextView txtv_noconnection;
     ArrayList<PersonModel> dummyData =new ArrayList<>();
+    private ArrayList<ConnectionModel>myTeamList = new ArrayList<>();
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
-    private ArrayList<ConnectionModel>inviteAthleteList = new ArrayList<>();
+    private ArrayList<ConnectionModel>athleteList = new ArrayList<>();  //to sort out athletes from the connectionlist
     LinearLayoutManager layoutmnger;
     private String token;
     private long eventDate;
@@ -197,7 +198,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         eventDateToCheckAvailability=dft.format(eventDate);
         Toast.makeText(getContext(), "eventClickedDate-----"+eventDateToCheckAvailability, Toast.LENGTH_SHORT).show();
         connectionList.clear();
-        inviteAthleteList.clear();
+        athleteList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
 //18-05-2018
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability, null, new Response.Listener<JSONArray>() {
@@ -281,11 +282,11 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         if(connectionList!=null && connectionList.size()>0){
             for(int i=0;i<connectionList.size();i++){
                 if(connectionList.get(i).getConnected_userType().equals("Athlete")){
-                    inviteAthleteList.add(connectionList.get(i));
+                    athleteList.add(connectionList.get(i));
                 }
             }
 
-            mConnectionAdapter  =   new MyConnectionAdapter(getContext(),inviteAthleteList);
+            mConnectionAdapter  =   new MyConnectionAdapter(getContext(),athleteList);
             rcviewConn.setAdapter(mConnectionAdapter);
             mConnectionAdapter.notifyDataSetChanged();
             rcviewConn.setLayoutManager(layoutmnger);
