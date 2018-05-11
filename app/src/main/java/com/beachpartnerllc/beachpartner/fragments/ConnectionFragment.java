@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -323,7 +325,35 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     }
 
     @Override
-    public void block(String personid, final String person_name) {
+    public void block(final String personid, final String person_name) {
+
+
+        final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
+
+        alertadd.setTitle("Are you sure you want to block "+person_name+" from your connection?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                       blockPerson(personid,person_name);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog alert=alertadd.create();
+        alert.show();
+
+    }
+
+
+    //Api for block person
+
+    private void blockPerson(String personid, final String person_name){
 
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.BLOCK_PERSON + personid, null, new Response.Listener<JSONObject>() {
             @Override
@@ -390,11 +420,33 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         Log.d("Request", request.toString());
         requestQueue.add(request);
     }
-
     @Override
-    public void unblock(String personid, final String person_name) {
+    public void unblock(final String personid, final String person_name) {
         //Toast.makeText(getActivity(), "Unblocked"+personid, Toast.LENGTH_SHORT).show();
-        JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UNBLOCK_PERSON + personid, null,
+        final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
+
+        alertadd.setTitle("Are you sure you want to unblock "+person_name+" from your connection?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        unBlockPerson(personid,person_name);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                });
+
+        AlertDialog alert=alertadd.create();
+        alert.show();
+    }
+
+    //Api for unblock person
+    private void unBlockPerson(String persId, final String persName){
+        JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UNBLOCK_PERSON + persId, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -402,7 +454,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                             try {
                                 String unblockres_status =response.getString("status");
                                 if (unblockres_status.equals("Active")) {
-                                    Toast.makeText(getActivity(), "You have unblocked "+person_name, Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getActivity(), "You have unblocked "+persName, Toast.LENGTH_SHORT).show();
                                     getConnections();
                                 }
                             } catch (JSONException e) {
@@ -458,7 +510,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         RequestQueue queue  = Volley.newRequestQueue(getActivity());
         Log.d("unblockRequest",queue.toString());
         queue.add(jsonObjectRequest);
-
     }
 
     @Override
