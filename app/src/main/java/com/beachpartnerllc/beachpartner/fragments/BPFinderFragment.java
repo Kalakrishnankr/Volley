@@ -190,12 +190,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         user_id = new PrefManager(getContext()).getUserId();
         user_subscription = new PrefManager(getContext()).getSubscriptionType();
 
-        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
         View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
         dialogbar.setView(holder);
         //dialogbar.setMessage("please wait...");
         dialogbar.setCancelable(false);
         b = dialogbar.create();
+
         //dialogbar.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 
         allCardList.clear();
