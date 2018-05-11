@@ -127,7 +127,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private static final int PICK_IMAGE_REQUEST = 0;
     private static final String TAG = "CoachProfile";
     private static boolean editStatus = false;
-   // private static AsyncPhotoUploadTask asyncTask;
+    // private static AsyncPhotoUploadTask asyncTask;
     public UserDataModel userDataModel;
     Calendar myCalendar = Calendar.getInstance();
     String mFirstName;
@@ -1125,7 +1125,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     else
                         program_share_athletes.setSelection(1);
                 }
-        }
+            }
 
 
         }
@@ -1308,7 +1308,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
 
 
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK || resultCode == -1) {
 
             if (requestCode == PICK_IMAGE_REQUEST) {
@@ -1653,7 +1653,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         asyncTask.execute();*/
 
-       //Upload image using retrofit
+        //Upload image using retrofit
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
@@ -1838,16 +1838,16 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
 
 
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.addFlags(FLAG_GRANT_READ_URI_PERMISSION | FLAG_GRANT_WRITE_URI_PERMISSION);
 
-            Intent pickIntent = new Intent(Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            pickIntent.setType("image/*");
+        Intent pickIntent = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        pickIntent.setType("image/*");
 
 
-            intentList = addIntentsToList(context, intentList, pickIntent);
-            intentList = addIntentsToList(context, intentList, takePictureIntent);
+        intentList = addIntentsToList(context, intentList, pickIntent);
+        intentList = addIntentsToList(context, intentList, takePictureIntent);
 
         if (intentList.size() > 0) {
             chooserIntent = Intent.createChooser(intentList.remove(intentList.size() - 1), "");
