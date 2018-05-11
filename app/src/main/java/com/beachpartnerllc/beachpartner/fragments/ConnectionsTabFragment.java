@@ -3,6 +3,8 @@ package com.beachpartnerllc.beachpartner.fragments;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,12 +24,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
-//import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MyConnectionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MyTeamAdapter;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
@@ -40,10 +44,10 @@ import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+
+//import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 
 
 public class ConnectionsTabFragment extends Fragment implements View.OnClickListener,TeamMakerInterface {
@@ -63,11 +67,11 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private long eventDate;
     private String eventDateToCheckAvailability;
 
-
-
-
+    private Button btnInvitefrnd;
 
     private BottomSheetBehavior bottomSheetBehavior;
+    private String registerType;
+    private Event eventObject;
 
     public ConnectionsTabFragment() {
         // Required empty public constructor
@@ -80,8 +84,8 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setHasOptionsMenu(true);
-        eventDate= getArguments().getLong("eventDate");
-
+        eventDate   = getArguments().getLong("eventDate");
+        eventObject = getArguments().getParcelable("eventObj");
     }
 
     @Override
@@ -91,15 +95,17 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         token   = new PrefManager(getContext()).getToken();
         View view =inflater.inflate(R.layout.fragment_connections_tab, container, false);
         initActivity(view);
+        return view;
+    }
 
-
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
 
         //adapter for connections
 
-       // rcviewConn.setHasFixedSize(true);
-//        dummyData =createDummyData();
+
 
         getConnections();
         //adapter for creating my team
@@ -110,13 +116,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         rcviewTeam.setHasFixedSize(true);
 
 
-
-
-
-
-
-
-        return view;
     }
 
     private void initActivity(View view) {
@@ -129,16 +128,14 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         rcviewTeam          =       (RecyclerView)view.findViewById(R.id.rcview_myteam);
 
         upDownToggle        =       (ImageView)view.findViewById(R.id.upDown);
-
-
+        btnInvitefrnd       =       view.findViewById(R.id.btn_invite);
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottom_sheet));
 
-
-
-            // Capturing the callbacks for bottom sheet
-                    bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                        @Override
-                        public void onStateChanged(View bottomSheet, int newState) {
+        btnInvitefrnd.setOnClickListener(this);
+        // Capturing the callbacks for bottom sheet
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(View bottomSheet, int newState) {
 
                             /*if (newState == BottomSheetBehavior.STATE_EXPANDED) {
                                 bottomSheetHeading.setText(getString(R.string.text_collapse_me));
@@ -146,32 +143,32 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                                 bottomSheetHeading.setText(getString(R.string.text_expand_me));
                             }*/
 
-                            // Check Logs to see how bottom sheets behaves
-                            switch (newState) {
-                                case BottomSheetBehavior.STATE_COLLAPSED:
-                                    Log.e("Bottom Sheet Behaviour", "STATE_COLLAPSED");
-                                    break;
-                                case BottomSheetBehavior.STATE_DRAGGING:
-                                    Log.e("Bottom Sheet Behaviour", "STATE_DRAGGING");
-                                    break;
-                                case BottomSheetBehavior.STATE_EXPANDED:
-                                    Log.e("Bottom Sheet Behaviour", "STATE_EXPANDED");
-                                    break;
-                                case BottomSheetBehavior.STATE_HIDDEN:
-                                    Log.e("Bottom Sheet Behaviour", "STATE_HIDDEN");
-                                    break;
-                                case BottomSheetBehavior.STATE_SETTLING:
-                                    Log.e("Bottom Sheet Behaviour", "STATE_SETTLING");
-                                    break;
-                            }
-                        }
+                // Check Logs to see how bottom sheets behaves
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        Log.e("Bottom Sheet Behaviour", "STATE_COLLAPSED");
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        Log.e("Bottom Sheet Behaviour", "STATE_DRAGGING");
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        Log.e("Bottom Sheet Behaviour", "STATE_EXPANDED");
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        Log.e("Bottom Sheet Behaviour", "STATE_HIDDEN");
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        Log.e("Bottom Sheet Behaviour", "STATE_SETTLING");
+                        break;
+                }
+            }
 
 
-                        @Override
-                        public void onSlide(View bottomSheet, float slideOffset) {
+            @Override
+            public void onSlide(View bottomSheet, float slideOffset) {
 
-                        }
-                    });
+            }
+        });
     }
 
 
@@ -276,9 +273,12 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         }
 
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", arrayRequest.toString());
-        requestQueue.add(arrayRequest);
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+        }
+
 
 
 
@@ -329,12 +329,61 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                 }
                 break;
 */
+            case R.id.btn_invite:
+                registerEvent();
+                break;
 
             default:
                 break;
         }
     }
 
+
+
+
+    //Api for register event
+    private void registerEvent() {
+
+        registerType = "organiser";//invitee
+        JSONObject object = new JSONObject();
+        try {
+            object.put("registerType",registerType);
+            object.put("eventId",eventObject.getEventId());
+            //object.put("userIds",userArray);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders()  {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", request.toString());
+            queue.add(request);
+        }
+
+
+    }
 
     //adding member from connection list to my teamlist using interface
     @Override
@@ -343,7 +392,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         mConnectionAdapter.notifyDataSetChanged();
         myTeamAdapter.notifyDataSetChanged();
 
-        Toast.makeText(getActivity(), "id --->"+member.getConnected_uId()+"available-->"+member.getConnected_isAvailable_ondate()+" at position-->"+position, Toast.LENGTH_SHORT).show();
+        //Toast.makeText(getActivity(), "id --->"+member.getConnected_uId()+"available-->"+member.getConnected_isAvailable_ondate()+" at position-->"+position, Toast.LENGTH_SHORT).show();
     }
 
     @Override

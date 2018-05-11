@@ -4,9 +4,8 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.app.FragmentTransaction;
 
-import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionsTabFragment;
 
@@ -21,12 +20,14 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
     long eventDate;
     private static boolean isBPActive = false;
     private static boolean isPartner = false;
+    private Event eventObject;
 
-    public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs,long eventDate) {
+    public  SliderAdapter(FragmentManager fragmentManager, CharSequence[] titles, int numberOfTabs,long eventDate,Event objectevent) {
         super(fragmentManager);
         this.eventDate = eventDate;
         this.titles =titles;
         this.numberOfTabs=numberOfTabs;
+        this.eventObject=objectevent;
 
     }
     @Override
@@ -40,6 +41,7 @@ public class SliderAdapter extends FragmentStatePagerAdapter {
             ConnectionsTabFragment connectionsTabFragment = new ConnectionsTabFragment();
             Bundle argDate = new Bundle();
             argDate.putLong("eventDate",eventDate);
+            argDate.putParcelable("eventObj",eventObject);
             connectionsTabFragment.setArguments(argDate);
             return connectionsTabFragment;
 

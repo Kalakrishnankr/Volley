@@ -31,7 +31,6 @@ import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -49,8 +48,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -86,8 +83,12 @@ import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
-import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
+import com.beachpartnerllc.beachpartner.utils.ServiceClass;
+import com.beachpartnerllc.beachpartner.utils.UploadObject;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
+import com.bumptech.glide.signature.ObjectKey;
 import com.facebook.CallbackManager;
 import com.facebook.share.widget.ShareDialog;
 import com.google.android.exoplayer2.ExoPlaybackException;
@@ -116,19 +117,6 @@ import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.google.android.exoplayer2.util.Util;
 
 import org.apache.commons.io.FileUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -140,7 +128,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
@@ -157,7 +144,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import javax.net.ssl.HostnameVerifier;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
@@ -178,7 +173,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private static boolean moreUploadStatus = false;
     private static boolean editStatus = false;
     private static ProgressDialog progress;
-    private static PhotoAsyncTask asyncTask;
+    // private static PhotoAsyncTask asyncTask;
     public UserDataModel userDataModel;
     public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue, editHeightValue, imageUri, videoUri;
     Calendar myCalendar = Calendar.getInstance();
@@ -238,6 +233,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean appendEditOpenedTwo = false;
     FrameLayout placeholder;
     private long maxDate;
+    private ServiceClass uploadService;
+    private MultipartBody.Part fileToUpload,videoToUploaded;
     private  String[] values;
 
     // method for add intent to arraylist
@@ -386,6 +383,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         return bm;
     }
 
+/*
     public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
 
         HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
@@ -423,6 +421,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
         return null;
     }
+*/
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -478,7 +477,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Profile");
         }*/
-        setViews();
+        //setViews();
     }
 
     @Override
@@ -536,7 +535,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         super.onDestroy();
 
         if (exoPlayer != null) {
-
             exoPlayer.release();
             exoPlayer = null;
         }
@@ -1118,9 +1116,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 // TODO Auto-generated method stub
 
 
-                    myCalendar.set(Calendar.YEAR, year);
-                    myCalendar.set(Calendar.MONTH, monthOfYear);
-                    myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
 
 //                else{
 //                    String myFormat = "MM-dd-yyyy"; //In which you need put here
@@ -1416,7 +1414,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         menuGreen.setIconToggleAnimatorSet(set);*/
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     @Override
     public void onClick(View view) {
 
@@ -1501,7 +1498,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     private void playVideo(String videoURL) {
 
 
@@ -1945,63 +1941,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    //Get User Details Api
-
-/*
-    private void updateUserDetails(JSONObject object) {
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_PUT, ApiService.UPDATE_USER_DETAILS, object,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Updated", Toast.LENGTH_SHORT).show();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String json = null;
-                Log.d("error--", error.toString());
-                NetworkResponse response = error.networkResponse;
-                if (response != null && response.data != null) {
-                    switch (response.statusCode) {
-                        case 401:
-                            json = new String(response.data);
-                            json = trimMessage(json, "detail");
-                            if (json != null) {
-                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
-                            }
-                            break;
-
-                        default:
-                            break;
-                    }
-                }
-
-            }
-        }) {
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
-                return headers;
-            }
-
-        };
-
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        Log.d("Request", jsonObjectRequest.toString());
-        requestQueue.add(jsonObjectRequest);
-
-    }
-*/
-
-    //Update User Details
-
     //Saving information after edit
     public void InfoSave() {
 
@@ -2426,54 +2365,38 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String item = parent.getItemAtPosition(position).toString();
     }
-    //Camera Functionality
-
-    //Intent Chooser
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR1)
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK || resultCode == -1) {
-
+        if (resultCode == Activity.RESULT_OK) {
             if (requestCode == PICK_IMAGE_REQUEST) {
-
                 if (data.hasExtra("data")) {
                     profilePhoto = (Bitmap) data.getExtras().get("data");
+                    selectedImageUri = getImageUri(getApplicationContext(), profilePhoto);
                     try {
                         profilePhoto = handleSamplingAndRotationBitmap(getContext(),getImageUri(getApplicationContext(),profilePhoto));
                     } catch (Exception e) {
                         Log.e(TAG,"COVERT_ERROR");
-                    }finally {
-                        selectedImageUri = getImageUri(getApplicationContext(), profilePhoto);
                     }
 
                 } else {
-                    // CALL THIS METHOD TO GET THE URI FROM THE BITMAP
-
-
-                    // CALL THIS METHOD TO GET THE ACTUAL PATH
-                    // File finalFile = new File(getRealPathFromURI(tempUri));
-
-
-                    //Uri picUri = data.getData();
                     selectedImageUri = data.getData();
+
                 }
                 if (selectedImageUri != null) {
-
                     File imgfile = new File(getRealPathFromURI(selectedImageUri));
-                    //File imgfile = new File(String.valueOf(selectedImageUri));
+                    //Glide.with(getApplicationContext()).clear(imgProfile);
+                    //Glide.with(getApplicationContext()).load(selectedImageUri)
+                            //.apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).dontAnimate().signature(new ObjectKey(System.currentTimeMillis()))).into(imgProfile);
+                    Log.d(TAG, "Image Name: "+imgfile.getName());
                     // Get length of file in bytes
-
                     if (fileSize(imgfile.length()) <= 4) {
                         imageUri = getRealPathFromURI(selectedImageUri);
-                        Glide.with(ProfileFragment.this).load(getRealPathFromURI(selectedImageUri)).into(imgProfile);
-
                         createDirectoryAndSaveFile(selectedImageUri, imgfile.getName(), "image");
-
                     } else {
                         Toast.makeText(getActivity(), "Image size is too large", Toast.LENGTH_SHORT).show();
                     }
@@ -2488,13 +2411,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 Intent intent = new Intent();
                 intent.setType("video/*");
                 Uri picUri = data.getData();
-
 //                selectedVideoUri = Uri.parse(data.getExtras().get("data").toString());//data.getExtras().get("data");
                 selectedVideoUri = data.getData();
 
 
                 if (selectedVideoUri != null) {
-
                     // File file = new File(String.valueOf(getPath(selectedVideoUri)));
                     File file = new File(SelectedFilePath.getPath(getApplicationContext(), selectedVideoUri));
                     exoPlayer.stop();
@@ -2661,7 +2582,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         }
 
         // START AsyncTask
-        asyncTask = new PhotoAsyncTask(imagePath, videoPath, userId);
+        /*asyncTask = new PhotoAsyncTask(imagePath, videoPath, userId);
         asyncTask.setListener(new PhotoAsyncTask.PhotoAsyncTaskListener() {
             @Override
             public void onPhotoAsyncTaskFinished(HttpEntity value) {
@@ -2676,8 +2597,76 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             }
         });
 
-        asyncTask.execute();
+        asyncTask.execute();*/
 
+        /*upload image and video to server using retrofit*/
+
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+
+        // Change base URL to your upload server URL.
+        uploadService = new Retrofit.Builder()
+                .baseUrl(ApiService.BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ServiceClass.class);
+
+        uploadImageVideo(imagePath,videoPath,userId);
+
+    }
+
+
+    private void uploadImageVideo(String imagePath, String videoPath, String userId) {
+        {
+
+            File videoFile =null;
+            File imageFile = null;
+            if (imagePath != null) {
+                imageFile = new File(imagePath);
+                //Glide.with(ProfileFragment.this).load(imageFile.getAbsolutePath()).into(imgProfile);
+            }
+            if (videoPath != null) {
+                videoFile = new File(videoPath);
+                //playVideoFromFile(Uri.fromFile(videoFile.getAbsoluteFile()));
+            }
+            if (imageFile != null) {
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                fileToUpload = MultipartBody.Part.createFormData("profileImg", imageFile.getName(), mFile);
+            }
+            if (videoFile != null) {
+                RequestBody mFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), videoFile);
+                videoToUploaded = MultipartBody.Part.createFormData("profileVideo", videoFile.getName(), mFile1);
+
+            }
+            RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), userId);
+
+            Call<UploadObject> fileUpload = uploadService.uploadMultiFile(fileToUpload,videoToUploaded,descBody);
+            fileUpload.enqueue(new Callback<UploadObject>() {
+                @Override
+                public void onResponse(Call<UploadObject> call, retrofit2.Response<UploadObject> response) {
+                    //Toast.makeText(getActivity(), "Response " + response.raw().message(), Toast.LENGTH_LONG).show();
+                    //Toast.makeText(getApplicationContext(), "Success " + response.body().getSuccess(), Toast.LENGTH_LONG).show();
+                     //reloadFragment();
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
+                    Glide.with(getApplicationContext()).load(selectedImageUri)
+                           .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).dontAnimate().signature(new ObjectKey(System.currentTimeMillis()))).into(imgProfile);
+                }
+
+                @Override
+                public void onFailure(Call<UploadObject> call, Throwable t) {
+                    // progressDialog.dismiss();
+
+                    Log.d(TAG, "Error " + t.getMessage());
+                }
+
+            });
+
+
+        }
     }
 
     // UPDATED!
@@ -2831,7 +2820,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                                     File myFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1));
 
                                     if (myFile.exists()) {
-                                        Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
+                                       // Glide.with(ProfileFragment.this).load(myFile.getAbsolutePath()).into(imgProfile);
 
                                     }
                                     // if((userDataModel.getImageUrl().substring(userDataModel.getImageUrl().lastIndexOf('/') + 1).equals()){
@@ -2903,7 +2892,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     }
 
-    @SuppressLint("NewApi")
     private void setViews() {
         if (getActivity() != null) {
             if (userDataModel != null) {
@@ -2947,7 +2935,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         } else {
                             playVideo(userDataModel.getVideoUrl());
 
-                                new DownloadFileFromURL(exactVideoName, "video",userDataModel.getVideoUrl()).execute();
+                            new DownloadFileFromURL(exactVideoName, "video",userDataModel.getVideoUrl()).execute();
 
                         }
                     }
@@ -3452,6 +3440,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     }
 
 
+/*
     public static class PhotoAsyncTask extends AsyncTask<String, String, HttpEntity> {
         String userId;
         String imagePath;
@@ -3557,6 +3546,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             void onPhotoAsyncTaskFinished(HttpEntity value);
         }
     }
+*/
 
     private class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
@@ -3674,52 +3664,52 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
                 }
             }
-                return null;
+            return null;
 
         }
 
         private void downloadProfileImageAndVideo(String fileName, String fileType, String... f_url) {
             int count;
-if(getActivity()!=null) {
-    try {
-        String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
+            if(getActivity()!=null) {
+                try {
+                    String root = Environment.getExternalStorageDirectory() + "/" + getString(R.string.app_name) + "/" + fileType + "/";
 
-        System.out.println("Downloading");
-        URL url = new URL(f_url[0]);
+                    System.out.println("Downloading");
+                    URL url = new URL(f_url[0]);
 
-        URLConnection conection = url.openConnection();
-        conection.connect();
-        // getting file length
-        int lenghtOfFile = conection.getContentLength();
+                    URLConnection conection = url.openConnection();
+                    conection.connect();
+                    // getting file length
+                    int lenghtOfFile = conection.getContentLength();
 
-        // input stream to read file - with 8k buffer
-        InputStream input = new BufferedInputStream(url.openStream(), 8192);
+                    // input stream to read file - with 8k buffer
+                    InputStream input = new BufferedInputStream(url.openStream(), 8192);
 
-        // Output stream to write file
+                    // Output stream to write file
 
-        OutputStream output = new FileOutputStream(root + fileName);
-        byte data[] = new byte[1024];
+                    OutputStream output = new FileOutputStream(root + fileName);
+                    byte data[] = new byte[1024];
 
-        long total = 0;
-        while ((count = input.read(data)) != -1) {
-            total += count;
+                    long total = 0;
+                    while ((count = input.read(data)) != -1) {
+                        total += count;
 
-            // writing data to file
-            output.write(data, 0, count);
+                        // writing data to file
+                        output.write(data, 0, count);
 
-        }
+                    }
 
-        // flushing output
-        output.flush();
+                    // flushing output
+                    output.flush();
 
-        // closing streams
-        output.close();
-        input.close();
+                    // closing streams
+                    output.close();
+                    input.close();
 
-    } catch (Exception e) {
-        Log.e("Error: ", e.getMessage());
-    }
-}
+                } catch (Exception e) {
+                    Log.e("Error: ", e.getMessage());
+                }
+            }
         }
 
 

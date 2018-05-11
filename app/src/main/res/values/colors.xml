@@ -17,6 +17,8 @@
     <color name="cyan">#00FFFF</color>
     <color name="transparent">#58000000</color>
     <color name="blur">#80ffffff</color>
+    <color name="nobg">#80000000</color>
+    <color name="orange">#FFA500</color>
 
     <!-- Screens background color-->
 

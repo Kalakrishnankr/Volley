@@ -3,6 +3,7 @@ package com.beachpartnerllc.beachpartner.fragments;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.SliderAdapter;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.calendar.myowncalendar.SlidingTab;
 
 
@@ -23,6 +25,8 @@ public class PartnerInviteFragmentTab extends Fragment {
     private int numberOfTabs = 2;
     private CharSequence titles[] = {"Connections","Find Partners"};
     private long eventDateToCheck;
+    private Event eventObject;
+    private static final String TAG = "PartnerInviteFragmentTa";
     public PartnerInviteFragmentTab() {
         // Required empty public constructor
     }
@@ -40,6 +44,8 @@ public class PartnerInviteFragmentTab extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         eventDateToCheck= getArguments().getLong("eventDate");
+        eventObject     = getArguments().getParcelable("eventObject");
+        Log.d(TAG, "onCreateView: "+eventObject);
         View view   =   inflater.inflate(R.layout.fragment_partner_invite, container, false);
         initActivity(view);
         return view;
@@ -49,7 +55,7 @@ public class PartnerInviteFragmentTab extends Fragment {
 
         pager           =  (ViewPager) view.findViewById(R.id.pager);
         tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
-        slideAdapter    =  new SliderAdapter(getFragmentManager(), titles, numberOfTabs,eventDateToCheck);
+        slideAdapter    =  new SliderAdapter(getFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
 
         pager.setAdapter(slideAdapter);
 

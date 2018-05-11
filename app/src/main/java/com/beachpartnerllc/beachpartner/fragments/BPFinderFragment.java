@@ -152,6 +152,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private TabActivity tabActivity;
     private BpFinderModel cModel;
     private CustomTextView topFinishes_One, topFinishes_Two, topFinishes_Three;
+    AlertDialog b;
 
     public BPFinderFragment() {
     }
@@ -188,6 +189,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         user_subscription = new PrefManager(getContext()).getSubscriptionType();
+
+        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity(), AlertDialog.THEME_HOLO_LIGHT);
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        b = dialogbar.create();
+        //dialogbar.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 
         allCardList.clear();
         //
@@ -896,12 +905,13 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for right swipe
     private void cardRightSwiped(String reqPersonId) {
-
+        b.show();
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.RIGHT_SWIPE_REQUEST_SEND + reqPersonId, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
+                            b.dismiss();
 
                             JSONObject obj = null;
                             try {
@@ -1001,11 +1011,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Method for card left swiped
     private void cardLeftSwiped(String reqPersonId) {
-
+        b.show();
         JsonObjectRequest jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                b.dismiss();
                 if (getActivity() != null) {
                     if (response != null) {
                         getBpProfiles();
@@ -1092,13 +1102,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Api for get individual events for a particular person
 
     private void cardHifiSwiped(String reqPersonId) {
-
+        b.show();
         JsonObjectRequest requests = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.HIFI_SWIPE_UP + reqPersonId, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (getActivity() != null) {
                             if (response != null) {
+                                b.dismiss();
                                /* getBpProfiles();
                                 try {
                                     //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();

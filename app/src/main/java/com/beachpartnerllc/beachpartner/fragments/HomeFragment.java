@@ -43,7 +43,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;

@@ -1,12 +1,12 @@
 package com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
-
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 
 import java.io.Serializable;
 
-public class Event implements Serializable {
+public class Event implements Serializable, Parcelable {
 
     private int color;
 
@@ -187,5 +187,15 @@ public class Event implements Serializable {
                 ", timeInMillis=" + timeInMillis +
                 ", data=" + data +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+
     }
 }
