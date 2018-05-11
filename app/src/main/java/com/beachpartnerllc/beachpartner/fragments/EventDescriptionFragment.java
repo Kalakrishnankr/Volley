@@ -270,12 +270,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
 
-
-
-
-
-
-
     private void addToSystemCalendar(){
         Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(Intent.ACTION_INSERT);
@@ -363,7 +357,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if (requestCode == 1) {
             if(resultCode == Activity.RESULT_OK){
                 String result=data.getStringExtra("result");
-                Toast.makeText(getContext(), ""+requestCode, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getContext(), ""+requestCode, Toast.LENGTH_SHORT).show();
 
 
             }

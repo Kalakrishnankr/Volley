@@ -175,11 +175,10 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private void getConnections() {
         SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
         eventDateToCheckAvailability=dft.format(eventDate);
-        Toast.makeText(getContext(), "eventClickedDate-----"+eventDateToCheckAvailability, Toast.LENGTH_SHORT).show();
         connectionList.clear();
         athleteList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
-//18-05-2018
+        //18-05-2018
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -268,15 +267,15 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                 }
             }
 
-            mConnectionAdapter  =   new MyConnectionAdapter(getContext(),athleteList,this);
-            rcviewConn.setAdapter(mConnectionAdapter);
-            mConnectionAdapter.notifyDataSetChanged();
-            rcviewConn.setLayoutManager(layoutmnger);
+            if (athleteList.size() > 0 && athleteList != null) {
+                mConnectionAdapter  =   new MyConnectionAdapter(getContext(),athleteList,this);
+                rcviewConn.setAdapter(mConnectionAdapter);
+                mConnectionAdapter.notifyDataSetChanged();
+                rcviewConn.setLayoutManager(layoutmnger);
+            }else {
+                txtv_noconnection.setVisibility(View.VISIBLE);
+            }
 
-
-
-        }else {
-            txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 
