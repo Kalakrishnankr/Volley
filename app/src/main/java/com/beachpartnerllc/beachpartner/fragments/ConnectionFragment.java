@@ -179,13 +179,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             if (blockCoachList.size() > 0) {
                 coachList.addAll(blockCoachList);
             }
-            adapter = new ConnectionAdapter(getContext(), coachList, this);
-            rcv_conn.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            if (coachList.size() > 0) {
+                adapter = new ConnectionAdapter(getContext(), coachList, this);
+                rcv_conn.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }else {
+                txtv_noconnection.setVisibility(View.VISIBLE);
+            }
         } else {
             rcv_conn.setAdapter(null);
             //rcv_conn.setVisibility(View.GONE);
-            //txtv_noconnection.setVisibility(View.VISIBLE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
 
     }
@@ -207,13 +211,18 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             if (blockAthleteList.size() > 0) {
                 athleteList.addAll(blockAthleteList);
             }
-            adapter = new ConnectionAdapter(getContext(), athleteList, this);
-            rcv_conn.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            if (athleteList.size() > 0) {
+                adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                rcv_conn.setAdapter(adapter);
+                adapter.notifyDataSetChanged();
+            }else {
+                txtv_noconnection.setVisibility(View.VISIBLE);
+            }
+
         } else {
             rcv_conn.setAdapter(null);
             //rcv_conn.setVisibility(View.GONE);
-            //txtv_noconnection.setVisibility(View.VISIBLE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
 
     }
@@ -312,12 +321,23 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 }
             }
             if (isAthleteTab) {
-                adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                if (athleteList.size() > 0 && athleteList != null) {
+                    adapter = new ConnectionAdapter(getContext(), athleteList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }else{
+                    txtv_noconnection.setVisibility(View.VISIBLE);
+                }
             }else {
-                adapter = new ConnectionAdapter(getContext(), coachList, this);
+                if (coachList.size() > 0 && coachList != null) {
+                    adapter = new ConnectionAdapter(getContext(), coachList, this);
+                    rcv_conn.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }else{
+                txtv_noconnection.setVisibility(View.VISIBLE);
             }
-            rcv_conn.setAdapter(adapter);
-            adapter.notifyDataSetChanged();
+            }
+
 
         } else {
             //txtv_noconnection.setVisibility(View.VISIBLE);
