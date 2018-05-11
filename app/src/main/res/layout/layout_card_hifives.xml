@@ -11,11 +11,12 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <ImageView
+            <com.beachpartnerllc.beachpartner.CircularImageView
                 android:id="@+id/hifiveImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_alignParentLeft="true"
+
                 android:layout_margin="5dp" />
             <com.beachpartnerllc.beachpartner.CustomTextView
                 android:id="@+id/tvContact"

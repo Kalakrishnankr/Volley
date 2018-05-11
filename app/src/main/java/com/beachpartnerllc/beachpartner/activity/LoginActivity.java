@@ -8,9 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.PowerManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
@@ -125,6 +127,17 @@ public class LoginActivity extends AppCompatActivity {
             }
         } else {
             createAppDirectory();
+        }
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            Intent powerintent = new Intent(Intent.ACTION_SEND);
+            String packageName = getPackageName();
+            PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
+
+            if (pm != null && !pm.isIgnoringBatteryOptimizations(packageName)) {
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + packageName));
+                startActivity(new Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS, Uri.parse("package:"+getPackageName())));            }
         }
 
         FacebookSdk.sdkInitialize(this.getApplicationContext());
@@ -314,6 +327,7 @@ public class LoginActivity extends AppCompatActivity {
                                 object.put("fcmToken",refreshedFirebaseToken);
                                 object.put("deviceId",deviceId);
                                 object.put("deviceToken",deviceToken);
+                                object.put("deviceType","Android");
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
