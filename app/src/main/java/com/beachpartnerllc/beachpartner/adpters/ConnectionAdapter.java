@@ -159,12 +159,12 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     if (!active_status.isEmpty() && active_status.equalsIgnoreCase("Blocked")) {
                         String personid = model.getBpFinderModel().getBpf_id();
                         connectionInterface.unblock(personid,model.getBpFinderModel().getBpf_firstName());
-                        holder.ItemChanged(position);
+                        //holder.ItemChanged(position);
                         //block
                     }else if(!active_status.isEmpty() && active_status.equalsIgnoreCase("Active")) {
                         String personid = model.getBpFinderModel().getBpf_id();
                         connectionInterface.block(personid,model.getBpFinderModel().getBpf_firstName());
-                        holder.reMovePosition(position);
+                        //holder.reMovePosition(position);
                     }
 
                 }

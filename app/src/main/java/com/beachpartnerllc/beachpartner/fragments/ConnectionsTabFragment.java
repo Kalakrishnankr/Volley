@@ -26,7 +26,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
-import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.MyConnectionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MyTeamAdapter;
@@ -36,7 +35,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.PersonModel;
 import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
-import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +64,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private String token;
     private long eventDate;
     private String eventDateToCheckAvailability;
+    private ArrayList<String>persons = new ArrayList<>();
 
     private Button btnInvitefrnd;
 
@@ -171,29 +170,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         });
     }
 
-
-
-
-
-    public ArrayList<PersonModel> createDummyData() {
-
-        ArrayList<PersonModel> personlList = new ArrayList<>();
-        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-
-        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-        personlList.add(new PersonModel("Marti McLaurin","25",R.drawable.person2));
-        personlList.add(new PersonModel("Liz Held","30",R.drawable.person3));
-        personlList.add(new PersonModel("Alivia Orvieto","26",R.drawable.person1));
-
-
-        return personlList;
-    }
 
 
     private void getConnections() {
@@ -343,13 +319,20 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
     //Api for register event
     private void registerEvent() {
+        persons.clear();
+        if (myTeamList.size() > 0) {
+            for(int i=0;i<myTeamList.size();i++){
+                persons.add(myTeamList.get(i).Connected_uId);
+            }
+
+        }
 
         registerType = "organiser";//invitee
         JSONObject object = new JSONObject();
         try {
             object.put("registerType",registerType);
             object.put("eventId",eventObject.getEventId());
-            //object.put("userIds",userArray);
+            object.put("userIds",persons);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -358,6 +341,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+
 
             }
         }, new Response.ErrorListener() {
