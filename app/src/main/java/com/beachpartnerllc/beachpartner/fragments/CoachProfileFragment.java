@@ -70,24 +70,11 @@ import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUp
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
-import com.beachpartnerllc.beachpartner.utils.SimpleSSLSocketFactory;
+import com.beachpartnerllc.beachpartner.utils.ServiceClass;
+import com.beachpartnerllc.beachpartner.utils.UploadObject;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.conn.ssl.X509HostnameVerifier;
-import org.apache.http.entity.mime.MultipartEntity;
-import org.apache.http.entity.mime.content.FileBody;
-import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -98,11 +85,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-
-import java.security.KeyStore;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -114,7 +98,15 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import javax.net.ssl.HostnameVerifier;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION;
 import static android.content.Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
@@ -135,7 +127,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private static final int PICK_IMAGE_REQUEST = 0;
     private static final String TAG = "CoachProfile";
     private static boolean editStatus = false;
-    private static AsyncPhotoUploadTask asyncTask;
+   // private static AsyncPhotoUploadTask asyncTask;
     public UserDataModel userDataModel;
     Calendar myCalendar = Calendar.getInstance();
     String mFirstName;
@@ -175,6 +167,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     Bitmap profilePhoto = null;
     private ImageView imgBgCoach;
     private static ProgressDialog progress;
+    private ServiceClass uploadService;
+    private MultipartBody.Part fileImageToUpload,filevideoToUploaded;
 
 
     public CoachProfileFragment() {
@@ -1643,7 +1637,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             progress.show();
         }
         // START AsyncTask
-        asyncTask = new AsyncPhotoUploadTask(imagePath, userId);
+       /* asyncTask = new AsyncPhotoUploadTask(imagePath, userId);
         asyncTask.setListener(new AsyncPhotoUploadTask.PhotoAsyncTaskListener() {
             @Override
             public void onPhotoAsyncTaskFinished(HttpEntity value) {
@@ -1657,10 +1651,76 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             }
         });
 
-        asyncTask.execute();
+        asyncTask.execute();*/
 
+       //Upload image using retrofit
+        HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
+
+        // Change base URL to your upload server URL.
+        uploadService = new Retrofit.Builder()
+                .baseUrl(ApiService.BASE_URL)
+                .client(client)
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(ServiceClass.class);
+
+        uploadVideoSever(imagePath,userId);
 
     }
+
+    private void uploadVideoSever(String imgPath,String user_id ) {
+        {
+
+            File videoFile =null;
+            File imageFile = null;
+            String videoPath=null;
+
+
+            if (imgPath != null) {
+                imageFile = new File(imgPath);
+                //Glide.with(ProfileFragment.this).load(imageFile.getAbsolutePath()).into(imgProfile);
+            }
+            if (videoPath != null) {
+                videoFile = new File(videoPath);
+                //playVideoFromFile(Uri.fromFile(videoFile.getAbsoluteFile()));
+            }
+            if (imageFile != null) {
+                RequestBody mFile = RequestBody.create(MediaType.parse("multipart/form-data"), imageFile);
+                fileImageToUpload = MultipartBody.Part.createFormData("profileImg", imageFile.getName(), mFile);
+            }
+            if (videoFile != null) {
+                RequestBody mFile1 = RequestBody.create(MediaType.parse("multipart/form-data"), videoFile);
+                filevideoToUploaded = MultipartBody.Part.createFormData("profileVideo", videoFile.getName(), mFile1);
+
+            }
+            RequestBody descBody = RequestBody.create(MediaType.parse("text/plain"), user_id);
+
+            Call<UploadObject> fileUpload = uploadService.uploadMultiFile(fileImageToUpload,filevideoToUploaded,descBody);
+            fileUpload.enqueue(new Callback<UploadObject>() {
+                @Override
+                public void onResponse(Call<UploadObject> call, retrofit2.Response<UploadObject> response) {
+                    reloadFragment();
+                    progress.dismiss();
+                    Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
+                }
+
+                @Override
+                public void onFailure(Call<UploadObject> call, Throwable t) {
+                    // progressDialog.dismiss();
+
+                    Log.d(TAG, "Error " + t.getMessage());
+                }
+
+            });
+
+
+        }
+
+    }
+
 
 
     private String trimMessage(String json, String detail) {
@@ -1857,6 +1917,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
 
 
+/*
     public static class AsyncPhotoUploadTask extends AsyncTask<String, String, HttpEntity> {
         String userId;
         String imagePath;
@@ -1945,9 +2006,10 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             void onPhotoAsyncTaskFinished(HttpEntity value);
         }
     }
+*/
 
 
-    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
+    /*public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
 
         HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
         try {
@@ -1983,6 +2045,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
         }
         return null;
-    }
+    }*/
 
 }

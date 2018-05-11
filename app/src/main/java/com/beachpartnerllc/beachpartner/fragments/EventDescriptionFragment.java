@@ -28,7 +28,6 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,6 +47,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private LinearLayout athleteBtnLt,coachBtnLt;
     private String user_id,user_token,userType,eventName,eventId;
     private Boolean registerCompleted = false;
+    private Event event;
 
     private long event_start;
 
@@ -81,7 +81,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
         Bundle bundle = getArguments();
         if(bundle!=null){
-            Event event = (Event)bundle.getSerializable("event_clicked");
+            event = (Event)bundle.getSerializable("event_clicked");
             String eventAdmin = event.getEventAdmin();
             eventId=event.getEventId();
             tview_eventadmin.setText(eventAdmin.toString());
@@ -156,6 +156,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 //call partner Invite Page
                 PartnerInviteFragmentTab fragment   =   new PartnerInviteFragmentTab();
                 Bundle argDate = new Bundle();
+                argDate.putParcelable("eventObject",event);
                 argDate.putLong("eventDate",event_start);
                 fragment.setArguments(argDate);
                 FragmentTransaction transaction     =   getActivity().getSupportFragmentManager().beginTransaction();
