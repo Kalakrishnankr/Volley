@@ -8,8 +8,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.PersonModel;
+import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -19,10 +23,12 @@ import java.util.ArrayList;
 
 public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHolder> {
     Context mContext;
-    ArrayList<PersonModel>mList;
-    public MyTeamAdapter(Context context, ArrayList<PersonModel> allSampleData) {
+    ArrayList<ConnectionModel>mList;
+    private TeamMakerInterface makerInterface;
+    public MyTeamAdapter(Context context, ArrayList<ConnectionModel> allSampleData,TeamMakerInterface teamMakerInterface) {
         this.mContext   = context;
         this.mList      = allSampleData;
+        this.makerInterface = teamMakerInterface;
     }
 
     @Override
@@ -35,12 +41,31 @@ public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHold
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        PersonModel model = mList.get(position);
+        ConnectionModel model = mList.get(position);
 
-        holder.imgPic.setImageResource(model.getImage());
-        holder.tv_name.setText(model.getUname());
+        //image check
+        if(model.getConnected_imageUrl()!=null){
+            if(!model.getConnected_imageUrl().equals("null")){
+                Glide.with(mContext).load(model.getConnected_imageUrl()).into(holder.imgPic);
+                //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
+            }else {
+                holder.imgPic.setImageResource(R.drawable.ic_person);
+            }
+        }
+        else {
+            holder.imgPic.setImageResource(R.drawable.ic_person);
+
+        }
+        holder.tv_name.setText(model.getConnected_firstName());
+
+        holder.imgRemove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                makerInterface.onRemoveListener(mList.get(position),position);
+            }
+        });
 
 
     }
@@ -54,15 +79,16 @@ public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHold
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView tv_name;
-        public ImageView imgAdd,imgRemove,imgPic;
-        public MyViewHolder(View itemView) {
+        public  TextView tv_name;
+        public  ImageView imgAdd,imgRemove;
+        private CircularImageView imgPic;
+        public  MyViewHolder(View itemView) {
             super(itemView);
 
             tv_name     =   (TextView) itemView.findViewById(R.id.tview_name);
             imgAdd      =   (ImageView)itemView.findViewById(R.id.addBtn);
             imgRemove   =   (ImageView)itemView.findViewById(R.id.removeBtn);
-            imgPic      =   (ImageView)itemView.findViewById(R.id.imgProfilePic);
+            imgPic      =   (CircularImageView)itemView.findViewById(R.id.imgProfilePic);
 
         }
     }

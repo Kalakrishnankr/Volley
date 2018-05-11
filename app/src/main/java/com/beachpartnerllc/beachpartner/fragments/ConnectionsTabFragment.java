@@ -1,5 +1,7 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
@@ -20,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 //import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MyConnectionAdapter;
@@ -28,6 +31,8 @@ import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.PersonModel;
+import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
+import com.bumptech.glide.Glide;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -41,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class ConnectionsTabFragment extends Fragment implements View.OnClickListener {
+public class ConnectionsTabFragment extends Fragment implements View.OnClickListener,TeamMakerInterface {
 
     private RelativeLayout rlTop,rlTeam;
     private RecyclerView rcviewConn,rcviewTeam;
@@ -57,6 +62,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private String token;
     private long eventDate;
     private String eventDateToCheckAvailability;
+
 
 
 
@@ -93,12 +99,12 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         //adapter for connections
 
        // rcviewConn.setHasFixedSize(true);
-        dummyData =createDummyData();
+//        dummyData =createDummyData();
 
         getConnections();
         //adapter for creating my team
         LinearLayoutManager mnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        myTeamAdapter       =   new MyTeamAdapter(getContext(),dummyData);
+        myTeamAdapter       =   new MyTeamAdapter(getContext(),myTeamList,this);
         rcviewTeam.setAdapter(myTeamAdapter);
         rcviewTeam.setLayoutManager(mnger);
         rcviewTeam.setHasFixedSize(true);
@@ -286,7 +292,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                 }
             }
 
-            mConnectionAdapter  =   new MyConnectionAdapter(getContext(),athleteList);
+            mConnectionAdapter  =   new MyConnectionAdapter(getContext(),athleteList,this);
             rcviewConn.setAdapter(mConnectionAdapter);
             mConnectionAdapter.notifyDataSetChanged();
             rcviewConn.setLayoutManager(layoutmnger);
@@ -330,8 +336,45 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     }
 
 
+    //adding member from connection list to my teamlist using interface
+    @Override
+    public void onAddListener(ConnectionModel member,int position) {
+        myTeamList.add(athleteList.remove(position));
+        mConnectionAdapter.notifyDataSetChanged();
+        myTeamAdapter.notifyDataSetChanged();
 
+        Toast.makeText(getActivity(), "id --->"+member.getConnected_uId()+"available-->"+member.getConnected_isAvailable_ondate()+" at position-->"+position, Toast.LENGTH_SHORT).show();
+    }
 
+    @Override
+    public void onRemoveListener(ConnectionModel removedMember, int position) {
+        removeConfirmation(myTeamList.get(position).getConnected_firstName(),position);
 
+        //Toast.makeText(getActivity(), "You removed "+myTeamList.get(position).Connected_firstName+" from your potential partners" , Toast.LENGTH_SHORT).show();
+    }
 
+    private void removeConfirmation(String firstname, final int position){
+        final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
+
+        alertadd.setTitle("Are you sure you want to remove "+firstname+" from your potential partners?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        athleteList.add(myTeamList.remove(position));
+                        mConnectionAdapter.notifyDataSetChanged();
+                        myTeamAdapter.notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+                dialogInterface.cancel();
+            }
+        });
+
+        AlertDialog alert=alertadd.create();
+        alert.show();
+
+    }
 }

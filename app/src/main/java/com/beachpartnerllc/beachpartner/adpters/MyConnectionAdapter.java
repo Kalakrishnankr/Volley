@@ -13,6 +13,7 @@ import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
 import com.beachpartnerllc.beachpartner.models.PersonModel;
+import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -23,13 +24,15 @@ import java.util.ArrayList;
 
 public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapter.MyViewHolder> {
     Context mContext;
+    private TeamMakerInterface makerInterface;
 
     private ArrayList<ConnectionModel>dataModelList = new ArrayList<>();
 
-    public MyConnectionAdapter(Context context, ArrayList<ConnectionModel>allSampleData) {
+    public MyConnectionAdapter(Context context, ArrayList<ConnectionModel>allSampleData,TeamMakerInterface teamMakerInterface) {
 
         this.mContext       =   context;
         this.dataModelList  =   allSampleData;
+        this.makerInterface =   teamMakerInterface;
 
     }
 
@@ -42,13 +45,13 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         ConnectionModel model = dataModelList.get(position);
         holder.imgAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                makerInterface.onAddListener(dataModelList.get(position),position);
             }
         });
 
@@ -63,12 +66,21 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
             holder.imgAdd.setVisibility(View.GONE);
             holder.tv_unavailable.setVisibility(View.VISIBLE);
         }
-        if(!model.getConnected_imageUrl().equals("null")){
-            Glide.with(mContext).load(model.getConnected_imageUrl()).into(holder.imgPic);
-            //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
-        }else {
-            holder.imgPic.setImageResource(R.drawable.ic_person);
+
+        //image check
+        if(model.getConnected_imageUrl()!=null){
+            if(!model.getConnected_imageUrl().equals("null")){
+                Glide.with(mContext).load(model.getConnected_imageUrl()).into(holder.imgPic);
+                //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
+            }else {
+                holder.imgPic.setImageResource(R.drawable.ic_person);
+            }
         }
+        else {
+            holder.imgPic.setImageResource(R.drawable.ic_person);
+
+        }
+
 
     }
 

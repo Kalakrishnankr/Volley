@@ -10,7 +10,7 @@
         android:orientation="horizontal"
         android:weightSum="2">
 
-        <ImageView
+        <com.beachpartnerllc.beachpartner.CircularImageView
             android:id="@+id/imgProfilePic"
             android:layout_width="50dp"
             android:layout_height="50dp"
