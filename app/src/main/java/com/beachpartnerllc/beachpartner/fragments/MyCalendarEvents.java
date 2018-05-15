@@ -122,8 +122,8 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         btn_myCalCourt.setText("Check In");
         btn_myCalBack.setText("Decline");
 
-        myNoteAdapter       =   new MyNoteAdapter(getContext(),partnerResultModel);
-        rcv_mycalendar.setAdapter(myNoteAdapter);
+
+
 
         btn_myCalCourt.setOnClickListener(this);
         btn_myCalBack.setOnClickListener(this);
@@ -138,6 +138,8 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getEvent(eventId);
+        myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
+        rcv_mycalendar.setAdapter(myNoteAdapter);
     }
 
     @Override
@@ -200,9 +202,11 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
 
+    //api for listing event partners in mycalendar
+
     public void getEvent(String event_Id) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=\"mycalendar",null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 JSONObject obj = null;
