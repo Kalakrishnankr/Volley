@@ -342,7 +342,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
 
         } else {
-            //txtv_noconnection.setVisibility(View.VISIBLE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 

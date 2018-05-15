@@ -171,6 +171,9 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private void getConnections() {
         SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
         eventDateToCheckAvailability=dft.format(eventDate);
+
+       // Toast.makeText(getContext(), "eventClickedDate-----"+eventDateToCheckAvailability, Toast.LENGTH_SHORT).show();
+
         connectionList.clear();
         athleteList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
