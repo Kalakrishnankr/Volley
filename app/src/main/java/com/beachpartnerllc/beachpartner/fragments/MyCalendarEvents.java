@@ -26,10 +26,16 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONObject;
 
+import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +51,8 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     private String user_token;
 
     private MyNoteAdapter myNoteAdapter;
-
+    private ArrayList<PartnerResultModel> model = new ArrayList<>();
+    private PartnerResultModel partnerResultModel;
 
 
     public MyCalendarEvents() {
@@ -115,11 +122,12 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         btn_myCalCourt.setText("Check In");
         btn_myCalBack.setText("Decline");
 
-        //myNoteAdapter       =   new MyNoteAdapter(getContext(),list);
+        myNoteAdapter       =   new MyNoteAdapter(getContext(),partnerResultModel);
         rcv_mycalendar.setAdapter(myNoteAdapter);
 
         btn_myCalCourt.setOnClickListener(this);
         btn_myCalBack.setOnClickListener(this);
+
 
 
 
@@ -194,12 +202,17 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     public void getEvent(String event_Id) {
 
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=\"mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                JSONObject obj = null;
                 if(response!=null){
                     try{
-                        Object object = response.get("invitationList");
+                        InvitationsModel invitationsModel = new Gson().fromJson(response.toString(), InvitationsModel.class);
+                        obj = response.getJSONObject("invitationList");
+                        Type type = new TypeToken<PartnerResultModel>(){}.getType();
+                            partnerResultModel = new Gson().fromJson(obj.toString(),type);
+
                     }catch (Exception e){
                         e.printStackTrace();
                     }
