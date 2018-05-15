@@ -46,6 +46,7 @@ import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.EventReultModel;
+import com.beachpartnerllc.beachpartner.models.InvitationResponseModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
@@ -150,12 +151,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         getConnections();
         getNumberLike();
         setViewBasedOnUserType();
+        getAllSendOrReceiveInvitation();
         //setUpMessage();
 
         /*getRequests();
         getPeopleWhoLiked();*/
 
     }
+
+
 
 
     private void setViewBasedOnUserType(){
@@ -237,10 +241,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
 
         /*Tournament Requests*/
-
-        layoutmngerReqst = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-//        partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData,clickListner);
-        SnapHelper snap = new PagerSnapHelper();
+        layoutmngerReqst =  new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
+        partnerAdapter  =   new PartnerAdapter(getContext(),myUpcomingTList,clickListner);
+        SnapHelper snap =   new PagerSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerReqst);
         parRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
@@ -356,8 +359,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     public void getEvent(Event eventModel) {
 
         event_Id = eventModel.getEventId();
-
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
@@ -726,6 +728,62 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             requestQueue.add(arrayRequest);
         }
 
+    }
+
+    //Get all user invitation sendor receive
+    private void getAllSendOrReceiveInvitation() {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_SENDORRECIVE_REQUEST, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    Log.d(TAG, "onResponse: "+response.toString());
+                    InvitationResponseModel responseModel = new Gson().fromJson(response.toString(),InvitationResponseModel.class);
+                    Type type = new TypeToken<InvitationResponseModel>(){}.getType();
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            Log.d("Request Send/Receive", objectRequest.toString());
+            queue.add(objectRequest);
+        }
     }
 
 
