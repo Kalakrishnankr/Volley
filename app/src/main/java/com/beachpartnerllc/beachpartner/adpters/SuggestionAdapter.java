@@ -1,5 +1,6 @@
 package com.beachpartnerllc.beachpartner.adpters;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -36,14 +37,14 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
 
 
 
         holder.txtv_team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               // Toast.makeText(mContext, "View Teams", Toast.LENGTH_SHORT).show();
+               showPartnerDialogue(holder);
 
             }
         });
@@ -51,6 +52,8 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
         holder.txtv_name.setText(sList.get(position));
 
     }
+
+
 
     @Override
     public int getItemCount() {
@@ -81,5 +84,22 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
             txtv_name   = itemView.findViewById(R.id.txtv_name);
 
         }
+    }
+
+
+    private void showPartnerDialogue(MyViewHolder holder) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
+        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.partnerlist_view, null);
+        alert.setView(layout);
+        final AlertDialog alertDialog = alert.create();
+
+        final ImageView imageView       = layout.findViewById(R.id.partnerImg);
+        final TextView  textView_name   = layout.findViewById(R.id.partner_name);
+        final TextView  textView_status = layout.findViewById(R.id.partner_status);
+
+
+
+        alertDialog.show();
     }
 }

@@ -43,6 +43,7 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.EventReultModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
@@ -356,15 +357,47 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                if (response != null) {
+                    EventReultModel eventReultModel = new Gson().fromJson(response.toString(),EventReultModel.class);
+
+                }
 
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }){
-
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());

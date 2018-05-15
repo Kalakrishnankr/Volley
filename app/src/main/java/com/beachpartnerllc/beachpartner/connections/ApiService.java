@@ -53,7 +53,6 @@ public class ApiService {
     public static String  REVERSE_SWIPE_CARD       =   BASE_URL+"users/undo-request/";
 
 
-
     public static String BLOCK_PERSON              =    BASE_URL+"users/block-user/";
     public static String UNBLOCK_PERSON            =    BASE_URL+"users/unblock-user/";
 
