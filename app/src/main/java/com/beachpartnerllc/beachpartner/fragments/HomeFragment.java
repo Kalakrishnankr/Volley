@@ -521,6 +521,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
+                progressBar_tour.setVisibility(View.INVISIBLE);
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
