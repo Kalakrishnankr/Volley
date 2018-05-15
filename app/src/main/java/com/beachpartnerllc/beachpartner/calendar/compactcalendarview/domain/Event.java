@@ -5,6 +5,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Event implements Serializable, Parcelable {
 
@@ -36,7 +37,10 @@ public class Event implements Serializable, Parcelable {
     private long eventRegStartdate;
     private long eventRegEnddate;
 
+
     public String eventAdmin;
+
+
 
     public long getEventRegStartdate() {
         return eventRegStartdate;

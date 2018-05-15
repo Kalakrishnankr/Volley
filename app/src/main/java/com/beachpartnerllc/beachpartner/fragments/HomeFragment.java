@@ -359,7 +359,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     EventReultModel eventReultModel = new Gson().fromJson(response.toString(),EventReultModel.class);
-                    
+
                 }
 
             }
