@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.models.PersonModel;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.beachpartnerllc.beachpartner.utils.EventClickListner;
 
 import java.util.ArrayList;
 
@@ -21,11 +21,13 @@ import java.util.ArrayList;
 
 public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<PersonModel> dataList;
+    private ArrayList<Event> dataList;
+    private EventClickListner eventlistner;
 
-    public PartnerAdapter(Context context, ArrayList<PersonModel> allSampleData) {
+    public PartnerAdapter(Context context, ArrayList<Event> allSampleData,EventClickListner eventClickListner) {
         this.dataList = allSampleData;
         this.mContext = context;
+        this.eventlistner = eventClickListner;
     }
 
     @Override
@@ -39,15 +41,17 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final PersonModel model = dataList.get(position);
+        final Event model = dataList.get(position);
 
-        holder.txtvPartnerName.setText(model.getUname());
-        holder.imgPartnerPic.setBackgroundResource(model.getImage());
+        holder.txtvPartnerName.setText(model.getEventAdmin());
+        //holder.imgPartnerPic.setBackgroundResource(model.getImage());
 
         holder.card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
+                eventlistner.getEvent(model);
+
             }
         });
 

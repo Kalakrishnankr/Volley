@@ -20,6 +20,7 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.AboutUsFragment;
+import com.beachpartnerllc.beachpartner.fragments.AcceptRejectRequestFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;
@@ -382,6 +383,14 @@ public class TabActivity extends AppCompatActivity  {
             case R.id.logout:
                 //Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();
                 alertLogout();
+                break;
+
+            case R.id.demofragment:
+                AcceptRejectRequestFragment fragment = new AcceptRejectRequestFragment();
+                FragmentManager sett = getSupportFragmentManager();
+                FragmentTransaction settingsTran = sett.beginTransaction().addToBackStack(null);
+                settingsTran.replace(R.id.container, fragment, YOUR_FRAGMENT_STRING_TAG);
+                settingsTran.commit();
                 break;
             default:
                 break;

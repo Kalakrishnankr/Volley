@@ -322,6 +322,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }
             if (isAthleteTab) {
                 if (athleteList.size() > 0 && athleteList != null) {
+                    txtv_noconnection.setVisibility(View.INVISIBLE);
                     adapter = new ConnectionAdapter(getContext(), athleteList, this);
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -330,6 +331,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 }
             }else {
                 if (coachList.size() > 0 && coachList != null) {
+                    txtv_noconnection.setVisibility(View.INVISIBLE);
                     adapter = new ConnectionAdapter(getContext(), coachList, this);
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();

@@ -1007,7 +1007,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            //Log.d("RequestSend", request.toString());
+            Log.d("RequestSend", request.toString());
             requestQueue.add(request);
         }
 
@@ -1099,7 +1099,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue queue = Volley.newRequestQueue(getActivity());
-            //Log.d("RejectRequest", queue.toString());
+            Log.d("RejectRequest", queue.toString());
             queue.add(jrequest);
         }
 
@@ -1217,7 +1217,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            Log.d("RequestSend", requests.toString());
+            Log.d("HifiRequestSend", requests.toString());
             requestQueue.add(requests);
         }
 

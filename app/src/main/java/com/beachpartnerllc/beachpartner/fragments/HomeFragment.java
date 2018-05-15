@@ -45,6 +45,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.EventClickListner;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -68,7 +69,7 @@ import java.util.List;
 import java.util.Map;
 
 
-public class HomeFragment extends Fragment implements View.OnClickListener {
+public class HomeFragment extends Fragment implements View.OnClickListener,EventClickListner {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
@@ -82,7 +83,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private TabActivity tabActivity;
     private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
     private AVLoadingIndicatorView progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
-    private String user_id,user_token,userType,no_likes_count,subScriptions;
+    private String user_id,user_token,userType,no_likes_count,subScriptions,event_Id;
     private PrefManager prefManager;
     private LinearLayout ucoming_next,message_next,request_next;
     private LinearLayoutManager layoutManagerBluebp,layoutManagerUp,layoutManagerMsg,layoutmngerReqst;
@@ -97,6 +98,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
     private ArrayList<BpFinderModel> userList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
+    private EventClickListner clickListner;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -234,12 +236,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
         /*Tournament Requests*/
 
         layoutmngerReqst = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        //partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData);
+//        partnerAdapter  =   new PartnerAdapter(getContext(),allSampleData,clickListner);
         SnapHelper snap = new PagerSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerReqst);
         parRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
-        //parRecyclerview.setAdapter(partnerAdapter);
+        parRecyclerview.setAdapter(partnerAdapter);
         parRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
 
@@ -344,6 +346,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener {
             bpFinderFragment.setArguments(bundle);
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
         }*/
+    }
+
+    //view all event invitation list api //15-05-2018
+    @Override
+    public void getEvent(Event eventModel) {
+        event_Id = eventModel.getEventId();
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonObjectRequest.toString());
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 
 
