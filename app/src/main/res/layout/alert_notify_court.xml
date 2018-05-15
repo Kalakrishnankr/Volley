@@ -6,10 +6,10 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="300dp"
         android:orientation="vertical"
         android:layout_margin="10dp"
-        android:weightSum="8.5">
+        android:weightSum="5">
 
         <!--Heading-->
         <LinearLayout
@@ -31,7 +31,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="4">
+            android:layout_weight="1.5">
 
             <com.beachpartnerllc.beachpartner.CustomTextView
                 android:layout_width="match_parent"
@@ -45,12 +45,14 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="2">
+            android:layout_weight="1">
 
             <com.beachpartnerllc.beachpartner.CustomEditText
                 android:id="@+id/edt_notify"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:maxLines="1"
+                android:inputType="number"
                 android:hint="Enter your court number"/>
         </LinearLayout>
 
@@ -61,6 +63,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:weightSum="2.1"
+            android:gravity="center"
             android:layout_margin="5dp"
             android:orientation="horizontal">
 

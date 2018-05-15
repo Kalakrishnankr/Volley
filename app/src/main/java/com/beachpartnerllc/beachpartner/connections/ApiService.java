@@ -37,6 +37,8 @@ public class ApiService {
     public static String GET_ALL_EVENTS         =  BASE_URL+"events/all";
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
     public static String GET_INVITATION_LIST    =  BASE_URL+"events/user/invitations/";
+    public static String GET_ALL_SENDORRECIVE_REQUEST = BASE_URL +"events/user/invitations";
+
 
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String GET_ALL_LIKES           =  BASE_URL+"users/connected-count/";

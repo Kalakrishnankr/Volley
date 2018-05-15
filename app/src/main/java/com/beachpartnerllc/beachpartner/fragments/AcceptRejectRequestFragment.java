@@ -124,6 +124,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                 position =  viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     //Toast.makeText(getActivity(), "Left swiped", Toast.LENGTH_SHORT).show();
+                    //acceptInvitation();
                     suggestionAdapter.removeItem(position);
                     undoLayout.setVisibility(View.VISIBLE);
                 }
@@ -169,6 +170,12 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     ItemTouchHelper itemTouchHelper = new ItemTouchHelper(simpleItemTouchCallback);
         itemTouchHelper.attachToRecyclerView(rcv_requests);
     }
+
+    //api for accept invitation
+   /* private void acceptInvitation() {
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(APi)
+    }*/
 
     @Override
     public void showPartnerDialogue() {
