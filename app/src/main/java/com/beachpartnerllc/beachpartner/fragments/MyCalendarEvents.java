@@ -28,6 +28,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
     private String userType;
+    private String eventId;
 
     private MyNoteAdapter myNoteAdapter;
 
@@ -59,6 +60,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         Bundle bundle = getArguments();
         if(bundle!=null){
             Event event = (Event)bundle.getSerializable("mycal_event_clicked");
+            eventId = event.getEventId();
             String eventAdmin = event.getEventAdmin();
             myCal_eventadmin.setText(eventAdmin.toString());
 
@@ -126,6 +128,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         }
 
     }
+
 
     private void courtAlert() {
 
