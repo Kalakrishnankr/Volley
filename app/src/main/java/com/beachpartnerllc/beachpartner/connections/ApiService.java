@@ -36,7 +36,7 @@ public class ApiService {
 
     public static String GET_ALL_EVENTS         =  BASE_URL+"events/all";
     public static String GET_USER_EVENTS        =  BASE_URL+"events/user/";
-    public static String GET_INVITATION_LIST    =  BASE_URL+"user/invitations/";
+    public static String GET_INVITATION_LIST    =  BASE_URL+"events/user/invitations/";
 
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String GET_ALL_LIKES           =  BASE_URL+"users/connected-count/";
@@ -52,7 +52,6 @@ public class ApiService {
     public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
     public static String  REVERSE_SWIPE_CARD       =   BASE_URL+"users/undo-request/";
 
-    public static String GET_INVITATION_LIST = BASE_URL+"user/invitations/";
 
 
     public static String BLOCK_PERSON              =    BASE_URL+"users/block-user/";

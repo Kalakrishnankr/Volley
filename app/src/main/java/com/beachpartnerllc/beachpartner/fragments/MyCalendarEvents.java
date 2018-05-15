@@ -2,8 +2,11 @@ package com.beachpartnerllc.beachpartner.fragments;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +15,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.MyNoteAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 
+import org.json.JSONObject;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
@@ -29,6 +42,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     private RecyclerView rcv_mycalendar;
     private String userType;
     private String eventId;
+    private String user_token;
 
     private MyNoteAdapter myNoteAdapter;
 
@@ -55,6 +69,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         userType = new PrefManager(getContext()).getUserType();
+        user_token  = new PrefManager(getContext()).getToken();
         View view = inflater.inflate(R.layout.fragment_mycalendar_events, container, false);
         initViews(view);
         Bundle bundle = getArguments();
@@ -111,6 +126,11 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        getEvent(eventId);
+    }
 
     @Override
     public void onClick(View view) {
@@ -170,5 +190,42 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         });
         alertDialog.show();
 
+    }
+
+    public void getEvent(String event_Id) {
+
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if(response!=null){
+                    try{
+                        Object object = response.get("invitationList");
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonObjectRequest.toString());
+            requestQueue.add(jsonObjectRequest);
+        }
     }
 }
