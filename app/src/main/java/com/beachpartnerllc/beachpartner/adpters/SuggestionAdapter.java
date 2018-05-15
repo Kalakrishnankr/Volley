@@ -1,6 +1,5 @@
 package com.beachpartnerllc.beachpartner.adpters;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -10,6 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.models.EventReultModel;
+import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
 
 import java.util.ArrayList;
 
@@ -20,12 +21,15 @@ import java.util.ArrayList;
 public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.MyViewHolder> {
 
     private Context mContext;
-    private ArrayList<String>sList;
+    private ArrayList<EventReultModel>sList;
+    private EventReultModel eventModel;
+    private AcceptRejectInvitationListener invitationListener;
 
 
-    public SuggestionAdapter(Context context, ArrayList<String> suggestionList) {
+    public SuggestionAdapter(Context context, ArrayList<EventReultModel> suggestionList,AcceptRejectInvitationListener acceptRejectInvitationListener) {
         this.mContext = context;
         this.sList    = suggestionList;
+        this.invitationListener = acceptRejectInvitationListener;
     }
 
     @Override
@@ -37,20 +41,19 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(final MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-
+        eventModel = sList.get(position);
 
         holder.txtv_team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               showPartnerDialogue(holder);
+                invitationListener.showPartnerDialogue();
 
             }
         });
 
-        holder.txtv_name.setText(sList.get(position));
-
+        holder.txtv_name.setText(eventModel.getEventName());
     }
 
 
@@ -68,7 +71,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
     }
 
     public void addItem(String word, int position) {
-        sList.add(word);
+        //sList.add(word);
         notifyItemInserted(position);
         notifyItemRangeChanged(position, sList.size());
     }
@@ -87,19 +90,5 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
     }
 
 
-    private void showPartnerDialogue(MyViewHolder holder) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(mContext);
-        LayoutInflater inflater = (LayoutInflater)mContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View layout = inflater.inflate(R.layout.partnerlist_view, null);
-        alert.setView(layout);
-        final AlertDialog alertDialog = alert.create();
 
-        final ImageView imageView       = layout.findViewById(R.id.partnerImg);
-        final TextView  textView_name   = layout.findViewById(R.id.partner_name);
-        final TextView  textView_status = layout.findViewById(R.id.partner_status);
-
-
-
-        alertDialog.show();
-    }
 }

@@ -1,5 +1,7 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -16,26 +18,34 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.SuggestionAdapter;
+import com.beachpartnerllc.beachpartner.models.EventReultModel;
+import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
+import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
 
-public class AcceptRejectRequestFragment extends Fragment {
+public class AcceptRejectRequestFragment extends Fragment implements AcceptRejectInvitationListener {
 
     private RecyclerView rcv_requests;
     private TextView eventTitle,eventStart,eventEnd;
     private SuggestionAdapter suggestionAdapter;
-    private ArrayList<String>suggestionList = new ArrayList<>();
+    private ArrayList<EventReultModel>suggestionList = new ArrayList<>();
     private LinearLayout undoLayout;
     private Paint p = new Paint();
     private int position;
     private String word;
-
+    private EventReultModel eventReultModel =null;
+    private ArrayList<PartnerResultModel>partnerList = new ArrayList<>();
+    private AcceptRejectInvitationListener invitationListener;
 
     public AcceptRejectRequestFragment() {
         // Required empty public constructor
@@ -46,6 +56,14 @@ public class AcceptRejectRequestFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (getArguments() != null) {
+            eventReultModel = getArguments().getParcelable(AppConstants.EVENT_OBJECT);
+            if (eventReultModel != null) {
+                suggestionList.clear();
+                suggestionList.add(eventReultModel);
+            }
+        }
     }
 
     @Override
@@ -70,14 +88,11 @@ public class AcceptRejectRequestFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        suggestionList.add("Australia");
-        suggestionList.add("India");
-        suggestionList.add("United States of America");
-        suggestionList.add("Germany");
-        suggestionList.add("Russia");
-
+        eventTitle.setText(eventReultModel.getEventName());
+        eventStart.setText(eventReultModel.getEventStartDate());
+        eventEnd.setText(eventReultModel.getEventEndDate());
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        suggestionAdapter = new SuggestionAdapter(getContext(),suggestionList);
+        suggestionAdapter = new SuggestionAdapter(getContext(),suggestionList,invitationListener);
         rcv_requests.setLayoutManager(manager);
         rcv_requests.setAdapter(suggestionAdapter);
         suggestionAdapter.notifyDataSetChanged();
@@ -155,4 +170,32 @@ public class AcceptRejectRequestFragment extends Fragment {
         itemTouchHelper.attachToRecyclerView(rcv_requests);
     }
 
+    @Override
+    public void showPartnerDialogue() {
+        AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        View layout = inflater.inflate(R.layout.partnerlist_view, null);
+        alert.setView(layout);
+        final AlertDialog alertDialog = alert.create();
+        alertDialog.setCanceledOnTouchOutside(true);
+
+        final ImageView imageView       = layout.findViewById(R.id.partnerImg);
+        final TextView  textView_name   = layout.findViewById(R.id.partner_name);
+        final TextView  textView_status = layout.findViewById(R.id.partner_status);
+
+        if (suggestionList != null) {
+            partnerList.clear();
+            for(int i=0;i<suggestionList.size();i++){
+                partnerList.add(suggestionList.get(i).getInvitationList().get(i).getPartnerList().get(i));
+            }
+            if (partnerList.size() > 0) {
+                for(int j=0;j<partnerList.size();j++){
+                    Glide.with(getActivity()).load(partnerList.get(j).getPartnerImageUrl()).into(imageView);
+                    textView_name.setText(partnerList.get(j).getPartnerName());
+                }
+            }
+        }
+
+        alertDialog.show();
+    }
 }
