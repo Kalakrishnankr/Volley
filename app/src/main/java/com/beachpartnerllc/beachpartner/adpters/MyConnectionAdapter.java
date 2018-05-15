@@ -12,7 +12,6 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
-import com.beachpartnerllc.beachpartner.models.PersonModel;
 import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
 import com.bumptech.glide.Glide;
 

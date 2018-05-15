@@ -64,8 +64,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private String token;
     private long eventDate;
     private String eventDateToCheckAvailability;
-    private ArrayList<String>persons = new ArrayList<>();
-
+    private ArrayList<Integer>persons = new ArrayList<>();
     private Button btnInvitefrnd;
 
     private BottomSheetBehavior bottomSheetBehavior;
@@ -103,9 +102,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
 
         //adapter for connections
-
-
-
         getConnections();
         //adapter for creating my team
         LinearLayoutManager mnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
@@ -324,17 +320,17 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         persons.clear();
         if (myTeamList.size() > 0) {
             for(int i=0;i<myTeamList.size();i++){
-                persons.add(myTeamList.get(i).Connected_uId);
+                persons.add(Integer.valueOf(myTeamList.get(i).Connected_uId));
             }
 
         }
-
-        registerType = "organiser";//invitee
+        JSONArray array = new JSONArray(persons);
+        registerType = "invitee";//"organizer";//invitee
         JSONObject object = new JSONObject();
         try {
             object.put("registerType",registerType);
             object.put("eventId",eventObject.getEventId());
-            object.put("userIds",persons);
+            object.put("userIds",array);
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -343,7 +339,9 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                if (response != null) {
+                    Toast.makeText(getActivity(), "Request send successfully", Toast.LENGTH_SHORT).show();
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -356,7 +354,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             public Map<String, String> getHeaders()  {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + token);
-                //headers.put("Content-Type", "application/json; charset=utf-8");
+                headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
 
             }
@@ -364,7 +362,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         };
         if (getActivity() != null) {
             RequestQueue queue = Volley.newRequestQueue(getActivity());
-            Log.d("Request", request.toString());
+            Log.d("TournamentInviteRequest", request.toString());
             queue.add(request);
         }
 
