@@ -51,8 +51,6 @@ public class ApiService {
     public static String  LEFT_SWIPE_DISLIKE       =   BASE_URL+"users/reject-friendship/";
     public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
     public static String  REVERSE_SWIPE_CARD       =   BASE_URL+"users/undo-request/";
-  
-
     public static String BLOCK_PERSON              =    BASE_URL+"users/block-user/";
     public static String UNBLOCK_PERSON            =    BASE_URL+"users/unblock-user/";
 
