@@ -8,8 +8,8 @@
 
     <com.wang.avi.AVLoadingIndicatorView
         android:id="@+id/pgBar"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         style="@style/AVLoadingIndicatorView"
         app:indicatorName="LineScaleIndicator"
         app:indicatorColor="@color/orange"

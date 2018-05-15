@@ -9,6 +9,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -196,6 +198,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         //dialogbar.setMessage("please wait...");
         dialogbar.setCancelable(false);
         b = dialogbar.create();
+        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         //dialogbar.setProgressStyle(ProgressDialog.THEME_HOLO_DARK);
 
@@ -765,7 +768,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 new Response.Listener<JSONArray>() {
                     @Override
                     public void onResponse(JSONArray response) {
-                       // Log.d(TAG, "onResponse: " + response.toString());
+                       Log.d(TAG, "onResponse all cards: " + response.toString());
                         Type listType = new TypeToken<List<BpFinderModel>>() {
                         }.getType();
                         allCardList = new Gson().fromJson(response.toString(), listType);
@@ -810,7 +813,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                     DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            //Log.d("Request", jsonArrayRequest.toString());
+            Log.d("Request", jsonArrayRequest.toString());
             jsonArrayRequest.setRetryPolicy(policy);
             requestQueue.add(jsonArrayRequest);
         }
@@ -829,6 +832,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 progressBar.setVisibility(View.INVISIBLE);
                 noCrads();
                 imgv_rvsecard.setClickable(false);
+                b.dismiss();
             }
 
         }
@@ -912,7 +916,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            b.dismiss();
 
                             JSONObject obj = null;
                             try {
@@ -923,7 +926,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
                                 if (finderModel != null) {
                                     getBpProfiles();
-                                    Log.d(TAG, "onResponse: Reverse Card ID: "+swipeResultModel.getId());
+                                    //Log.d(TAG, "onResponse: Reverse Card ID: "+swipeResultModel.getId());
                                     if (swipeResultModel.getId() != null) {
                                         new PrefManager(getActivity()).saveReverseCardId(swipeResultModel.getId());
                                     }
@@ -933,6 +936,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
+                                b.dismiss();
                             }
 
 
@@ -952,12 +956,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
                         }
-
+                        b.dismiss();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                b.dismiss();
                 String json = null;
                 //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -1016,7 +1020,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         JsonObjectRequest jrequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.LEFT_SWIPE_DISLIKE + reqPersonId, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                b.dismiss();
                 if (getActivity() != null) {
                     if (response != null) {
                         getBpProfiles();
@@ -1039,10 +1042,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            b.dismiss();
                         }
 
                     }
                 }
+                b.dismiss();
 
             }
         }, new Response.ErrorListener() {
@@ -1050,6 +1055,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
                 String json = null;
                // Log.d("error--", error.toString());
+                b.dismiss();
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
@@ -1110,7 +1116,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     public void onResponse(JSONObject response) {
                         if (getActivity() != null) {
                             if (response != null) {
-                                b.dismiss();
+
                                /* getBpProfiles();
                                 try {
                                     //  Toast.makeText(getActivity(), "ID :" + response.getString("id"), Toast.LENGTH_SHORT).show();
@@ -1153,8 +1159,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();
+                                    b.dismiss();
                                 }
                             }
+                            b.dismiss();
                         }
 
                     }
@@ -1163,6 +1171,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
+                b.dismiss();
+
                 //Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -1207,7 +1217,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         };
         if (getActivity() != null) {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-            //Log.d("RequestSend", requests.toString());
+            Log.d("RequestSend", requests.toString());
             requestQueue.add(requests);
         }
 
@@ -1216,13 +1226,12 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     //Card Reverse Api
     private void cardReverse(String id) {
-
+        b.show();
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.REVERSE_SWIPE_CARD + id, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-
                             SwipeResultModel swipeResultModel =
                                     new Gson().fromJson(response.toString(), SwipeResultModel.class);
 
@@ -1231,14 +1240,15 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                 cModel = swipeResultModel.getBpFinderModel();
                             }
                         }
-
+                        b.dismiss();
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
                 String json = null;
-               // Log.d("error--", error.toString());
+                b.dismiss();
+                // Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
