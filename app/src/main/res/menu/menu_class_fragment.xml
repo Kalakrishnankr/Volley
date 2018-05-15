@@ -26,7 +26,7 @@
         android:title="@string/hint_title"
         app:showAsAction="collapseActionView"/>
 
-    <item android:id="@+id/demofragment"
+    <!--<item android:id="@+id/demofragment"
         android:title="Swipe"
-        app:showAsAction="collapseActionView"/>
+        app:showAsAction="collapseActionView"/>-->
 </menu>
