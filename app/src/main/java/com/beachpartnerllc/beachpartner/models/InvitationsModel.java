@@ -5,13 +5,14 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by seq-kala on 15/5/18.
  */
 
-public class InvitationsModel implements Parcelable {
+public class InvitationsModel extends ArrayList<EventReultModel> implements Parcelable {
     @SerializedName("inviterUserId")
     String inviterUserId;
     @SerializedName("inviterImageUrl")
@@ -49,5 +50,21 @@ public class InvitationsModel implements Parcelable {
         parcel.writeString(inviterUserId);
         parcel.writeString(inviterImageUrl);
         parcel.writeString(inviterName);
+    }
+
+    public String getInviterUserId() {
+        return inviterUserId;
+    }
+
+    public String getInviterImageUrl() {
+        return inviterImageUrl;
+    }
+
+    public String getInviterName() {
+        return inviterName;
+    }
+
+    public List<PartnerResultModel> getPartnerList() {
+        return partnerList;
     }
 }

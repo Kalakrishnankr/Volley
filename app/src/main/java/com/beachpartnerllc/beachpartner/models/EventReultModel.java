@@ -34,12 +34,57 @@ public class EventReultModel implements Parcelable {
     @SerializedName("invitationList")
     List<InvitationsModel>invitationList;
 
+    public String getEventId() {
+        return eventId;
+    }
+
+    public String getEventName() {
+        return eventName;
+    }
+
+    public String getEventDescription() {
+        return eventDescription;
+    }
+
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public String getEventVenue() {
+        return eventVenue;
+    }
+
+    public String getEventStartDate() {
+        return eventStartDate;
+    }
+
+    public String getEventEndDate() {
+        return eventEndDate;
+    }
+
+    public String getEventAdmin() {
+        return eventAdmin;
+    }
+
+    public String getTeamSize() {
+        return teamSize;
+    }
+
+    public List<InvitationsModel> getInvitationList() {
+        return invitationList;
+    }
+
+    public static Creator<EventReultModel> getCREATOR() {
+        return CREATOR;
+    }
+
     protected EventReultModel(Parcel in) {
         eventId = in.readString();
         eventName = in.readString();
         eventDescription = in.readString();
         eventLocation = in.readString();
         eventVenue = in.readString();
+
         eventStartDate = in.readString();
         eventEndDate = in.readString();
         eventAdmin = in.readString();

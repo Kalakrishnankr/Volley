@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
@@ -352,6 +354,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     //view all event invitation list api //15-05-2018
     @Override
     public void getEvent(Event eventModel) {
+
         event_Id = eventModel.getEventId();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id, null, new Response.Listener<JSONObject>() {
@@ -359,6 +362,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     EventReultModel eventReultModel = new Gson().fromJson(response.toString(),EventReultModel.class);
+                    if (eventReultModel != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(AppConstants.EVENT_OBJECT,eventReultModel);
+                        AcceptRejectRequestFragment rejectRequestFragment = new AcceptRejectRequestFragment();
+                        rejectRequestFragment.setArguments(bundle);
+                        getActivity().getActionBar().setTitle("Accept/Reject");
+                        FragmentManager mangFeed = getActivity().getSupportFragmentManager();
+                        FragmentTransaction transFeed = mangFeed.beginTransaction();
+                        transFeed.replace(R.id.container, rejectRequestFragment);
+                        transFeed.commit();
+                    }
 
                 }
 

@@ -46,4 +46,16 @@ public class PartnerResultModel implements Parcelable {
         parcel.writeString(partnerUserId);
         parcel.writeString(partnerImageUrl);
     }
+
+    public String getPartnerName() {
+        return partnerName;
+    }
+
+    public String getPartnerUserId() {
+        return partnerUserId;
+    }
+
+    public String getPartnerImageUrl() {
+        return partnerImageUrl;
+    }
 }
