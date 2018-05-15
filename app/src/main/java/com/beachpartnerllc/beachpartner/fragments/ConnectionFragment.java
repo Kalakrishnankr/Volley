@@ -185,7 +185,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         } else {
             rcv_conn.setAdapter(null);
             //rcv_conn.setVisibility(View.GONE);
-            //txtv_noconnection.setVisibility(View.VISIBLE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
 
     }
@@ -320,7 +320,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             adapter.notifyDataSetChanged();
 
         } else {
-            //txtv_noconnection.setVisibility(View.VISIBLE);
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
     }
 
