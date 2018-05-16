@@ -604,6 +604,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setEventRegStartdate(object.getLong("eventRegStartDate"));
                                     model.setEventRegEnddate(object.getLong("eventRegEndDate"));
                                     model.setEventAdmin(object.getString("eventAdmin"));
+                                    model.setRegType(object.getString("registerType"));
+                                    model.setUserMessage(object.getString("userMessage"));
 
 
 //                                   -------------event admin changed from object to string change noted on 5/9/2018--------------

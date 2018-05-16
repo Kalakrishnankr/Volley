@@ -12,7 +12,7 @@ import java.util.List;
  * Created by seq-kala on 15/5/18.
  */
 
-public class InvitationsModel extends ArrayList<EventReultModel> implements Parcelable {
+public class InvitationsModel implements Parcelable {
     @SerializedName("inviterUserId")
     String inviterUserId;
     @SerializedName("inviterImageUrl")

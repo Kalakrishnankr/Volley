@@ -45,7 +45,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private Button btnInvitePartner,btnRegister,btnBack,btnCoachGoing,btnCoachNotGoing;
     private PrefManager prefManager;
     private LinearLayout athleteBtnLt,coachBtnLt;
-    private String user_id,user_token,userType,eventName,eventId;
+    private String user_id,user_token,userType,eventName,eventId,regType;
     private Boolean registerCompleted = false;
     private Event event;
 
@@ -83,6 +83,13 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if(bundle!=null){
             event = (Event)bundle.getSerializable("event_clicked");
             String eventAdmin = event.getEventAdmin();
+            regType = event.getRegType();
+
+            //disabling event register button till the team size is met
+            if (regType != null) {
+                btnRegister.setClickable(false);
+                btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+            }
             eventId=event.getEventId();
             tview_eventadmin.setText(eventAdmin.toString());
 
