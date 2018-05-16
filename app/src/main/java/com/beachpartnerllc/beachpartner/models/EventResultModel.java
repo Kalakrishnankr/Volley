@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -33,7 +32,7 @@ public class EventResultModel implements Parcelable {
     @SerializedName("teamSize")
     String teamSize;
     @SerializedName("invitationList")
-    List<InvitationsModel>invitationList= new ArrayList<>();
+    List<InvitationsModel>invitationList;
 
 
     protected EventResultModel(Parcel in) {
@@ -48,6 +47,7 @@ public class EventResultModel implements Parcelable {
         teamSize = in.readString();
         invitationList = in.createTypedArrayList(InvitationsModel.CREATOR);
     }
+
 
     public static final Creator<EventResultModel> CREATOR = new Creator<EventResultModel>() {
         @Override

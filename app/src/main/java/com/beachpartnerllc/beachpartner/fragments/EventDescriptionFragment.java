@@ -28,6 +28,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,7 +46,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private Button btnInvitePartner,btnRegister,btnBack,btnCoachGoing,btnCoachNotGoing;
     private PrefManager prefManager;
     private LinearLayout athleteBtnLt,coachBtnLt;
-    private String user_id,user_token,userType,eventName,eventId,regType;
+    private String user_id,user_token,userType,eventName,eventId,regType,sendCount;
     private Boolean registerCompleted = false;
     private Event event;
 
@@ -81,7 +82,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
         Bundle bundle = getArguments();
         if(bundle!=null){
-            event = (Event)bundle.getSerializable("event_clicked");
+            event = (Event)bundle.getSerializable(AppConstants.EVENT_DETAIL);
+            sendCount = bundle.getString(AppConstants.REQUEST_SEND_COUNT);
             String eventAdmin = event.getEventAdmin();
             regType = event.getRegType();
 

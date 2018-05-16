@@ -5,5 +5,5 @@ package com.beachpartnerllc.beachpartner.utils;
  */
 
 public interface EventClickListner {
-    void getEvent(String eventID);
+    void getEvent(String eventID,String sendCount);
 }

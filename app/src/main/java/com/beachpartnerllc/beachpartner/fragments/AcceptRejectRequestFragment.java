@@ -127,14 +127,14 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         initswipe();
 
 
-        undoLayout.setOnClickListener(new View.OnClickListener() {
+       /* undoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 undoLayout.setVisibility(View.GONE);
                 //suggestionAdapter.addItem();
                 suggestionAdapter.notifyDataSetChanged();
             }
-        });
+        });*/
 
 
     }
@@ -153,7 +153,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                 position =  viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     //Toast.makeText(getActivity(), "Left swiped", Toast.LENGTH_SHORT).show();
-                   /* responseType = "Reject";
+                    responseType = "Reject";
                     JSONObject objectReject = new JSONObject();
                     try {
                         objectReject.put("eventId",eventModel.getEventId());
@@ -162,13 +162,13 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    eventHandler(objectReject);*/
+                    eventHandler(objectReject);
                     suggestionAdapter.removeItem(position);
-                    undoLayout.setVisibility(View.VISIBLE);
+                    //undoLayout.setVisibility(View.VISIBLE);
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
                     //Toast.makeText(getActivity(), "Right swiped", Toast.LENGTH_SHORT).show();
-                    /*responseType = "Accept";
+                    responseType = "Accept";
                     JSONObject object = new JSONObject();
                     try {
                         object.put("eventId",eventModel.getEventId());
@@ -177,9 +177,9 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    eventHandler(object);*/
-                    suggestionAdapter.removeItem(position);
-                    undoLayout.setVisibility(View.VISIBLE);
+                    eventHandler(object);
+                    //suggestionAdapter.removeItem(position);
+                    //undoLayout.setVisibility(View.VISIBLE);
 
                 }
 
@@ -224,7 +224,10 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.HANDLE_EVENT, object, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-
+                if (response != null) {
+                    Log.d(TAG, "onResponse:Accept/Reject");
+                    //Toast.makeText(getActivity(), "Accepted", Toast.LENGTH_SHORT).show();
+                }
 
             }
         }, new Response.ErrorListener() {
