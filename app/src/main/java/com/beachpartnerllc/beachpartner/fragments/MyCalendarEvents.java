@@ -40,6 +40,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -214,11 +215,11 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                JSONArray obj = null;
+                List<PartnerResultModel> obj = null;
                 if(response!=null){
                     try{
                         InvitationsModel invitationsModel = new Gson().fromJson(response.toString(), InvitationsModel.class);
-                        obj = response.getJSONArray("invitationList");
+                        obj = invitationsModel.getPartnerList();
                         Type type = new TypeToken<PartnerResultModel>(){}.getType();
                         model = new Gson().fromJson(obj.toString(),type);
                         setUpEventPartners();
