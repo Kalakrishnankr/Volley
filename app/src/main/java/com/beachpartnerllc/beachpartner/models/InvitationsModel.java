@@ -5,20 +5,21 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by seq-kala on 15/5/18.
  */
 
-public class InvitationsModel extends ArrayList<EventReultModel> implements Parcelable {
+public class InvitationsModel implements Parcelable {
     @SerializedName("inviterUserId")
     String inviterUserId;
     @SerializedName("inviterImageUrl")
     String inviterImageUrl;
     @SerializedName("inviterName")
     String inviterName;
+    @SerializedName("eventStatus")
+    String eventStatus;
     @SerializedName("partnerList")
     List<PartnerResultModel>partnerList;
 
@@ -26,6 +27,22 @@ public class InvitationsModel extends ArrayList<EventReultModel> implements Parc
         inviterUserId = in.readString();
         inviterImageUrl = in.readString();
         inviterName = in.readString();
+        eventStatus = in.readString();
+        partnerList = in.createTypedArrayList(PartnerResultModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(inviterUserId);
+        dest.writeString(inviterImageUrl);
+        dest.writeString(inviterName);
+        dest.writeString(eventStatus);
+        dest.writeTypedList(partnerList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<InvitationsModel> CREATOR = new Creator<InvitationsModel>() {
@@ -40,18 +57,6 @@ public class InvitationsModel extends ArrayList<EventReultModel> implements Parc
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(inviterUserId);
-        parcel.writeString(inviterImageUrl);
-        parcel.writeString(inviterName);
-    }
-
     public String getInviterUserId() {
         return inviterUserId;
     }
@@ -62,6 +67,10 @@ public class InvitationsModel extends ArrayList<EventReultModel> implements Parc
 
     public String getInviterName() {
         return inviterName;
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
     }
 
     public List<PartnerResultModel> getPartnerList() {

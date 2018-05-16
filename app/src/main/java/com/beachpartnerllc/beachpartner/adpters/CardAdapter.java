@@ -46,7 +46,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
         final Event model = dataList.get(position);
 
-        SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
         long esDate  = model.getEventStartDate();
         String date = dft.format(esDate);
         holder.txtv_date.setText(date);

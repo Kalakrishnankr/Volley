@@ -19,4 +19,5 @@ public class AppConstants {
     public static final String CHAT_USER ="chatUser";
     public static final String ID = "id";
     public static final String EVENT_OBJECT = "eventObject";
+    public static final String EVENT_DETAIL = "event_clicked";
 }
