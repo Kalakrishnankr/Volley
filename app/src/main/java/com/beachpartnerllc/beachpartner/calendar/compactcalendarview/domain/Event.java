@@ -36,6 +36,8 @@ public class Event implements Serializable, Parcelable {
     private String status;
     private long eventRegStartdate;
     private long eventRegEnddate;
+    private String regType;
+    private String userMessage;
 
 
     public String eventAdmin;
@@ -123,7 +125,22 @@ public class Event implements Serializable, Parcelable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public void setRegType(String registerType) {
+        this.regType = registerType;
+    }
 
+    public String getRegType() {
+        return regType;
+    }
+
+    public void setUserMessage(String userMsg) {
+        this.userMessage = userMsg;
+    }
+
+
+    public String getUserMessage() {
+        return userMessage;
+    }
 //    public EventAdminModel getEventAdmin() {
 //        return eventAdmin;
 //    }
@@ -202,4 +219,7 @@ public class Event implements Serializable, Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
 
     }
+
+
+
 }

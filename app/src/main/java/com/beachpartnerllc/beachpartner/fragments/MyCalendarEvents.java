@@ -29,8 +29,10 @@ import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -133,13 +135,16 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
 
     }
+    private void setUpEventPartners(){
+        myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
+        rcv_mycalendar.setAdapter(myNoteAdapter);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getEvent(eventId);
-        myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
-        rcv_mycalendar.setAdapter(myNoteAdapter);
+
     }
 
     @Override
@@ -209,13 +214,14 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                JSONObject obj = null;
+                JSONArray obj = null;
                 if(response!=null){
                     try{
                         InvitationsModel invitationsModel = new Gson().fromJson(response.toString(), InvitationsModel.class);
-                        obj = response.getJSONObject("invitationList");
+                        obj = response.getJSONArray("invitationList");
                         Type type = new TypeToken<PartnerResultModel>(){}.getType();
-                            partnerResultModel = new Gson().fromJson(obj.toString(),type);
+                        model = new Gson().fromJson(obj.toString(),type);
+                        setUpEventPartners();
 
                     }catch (Exception e){
                         e.printStackTrace();
