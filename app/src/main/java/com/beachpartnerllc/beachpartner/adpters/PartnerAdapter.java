@@ -63,7 +63,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
                 public void onClick(View view) {
                     //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
                     String eventID = model.getEventId();
-                    eventlistner.getEvent(eventID);
+                    eventlistner.getEvent(eventID,model.getSendCount());
 
                 }
             });
@@ -82,7 +82,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
-                    eventlistner.getEvent(model.getEventId());
+                    eventlistner.getEvent(model.getEventId(),model.getSendCount());
 
                 }
             });

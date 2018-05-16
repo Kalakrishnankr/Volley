@@ -40,6 +40,7 @@ public class Event implements Serializable, Parcelable {
     private String userMessage;
 
 
+
     public String eventAdmin;
 
 

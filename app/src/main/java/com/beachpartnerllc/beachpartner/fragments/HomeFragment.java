@@ -365,12 +365,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //view all event invitation list api //15-05-2018
     @Override
-    public void getEvent(String eventID ) {
+    public void getEvent(String eventID,String sendCount ) {
 
         if (isRequestReceive) {
             receiveRequetHandler(eventID);
         }else {
-            sendRequestHandler(eventID);
+            sendRequestHandler(eventID,sendCount);
         }
 
 
@@ -385,15 +385,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                 if (response != null) {
                     EventResultModel eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
                     if (eventResultModel != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(AppConstants.EVENT_OBJECT,eventResultModel);
-                        AcceptRejectRequestFragment rejectRequestFragment = new AcceptRejectRequestFragment();
-                        rejectRequestFragment.setArguments(bundle);
-                        //getActivity().getActionBar().setTitle("Accept/Reject");
-                        FragmentManager mangFeed = getActivity().getSupportFragmentManager();
-                        FragmentTransaction transFeed = mangFeed.beginTransaction();
-                        transFeed.replace(R.id.container, rejectRequestFragment);
-                        transFeed.commit();
+                        if (getActivity() != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(AppConstants.EVENT_OBJECT,eventResultModel);
+                            AcceptRejectRequestFragment rejectRequestFragment = new AcceptRejectRequestFragment();
+                            rejectRequestFragment.setArguments(bundle);
+                            //getActivity().getActionBar().setTitle("Accept/Reject");
+                            FragmentManager mangFeed = getActivity().getSupportFragmentManager();
+                            FragmentTransaction transFeed = mangFeed.beginTransaction();
+                            transFeed.replace(R.id.container, rejectRequestFragment);
+                            transFeed.commit();
+                        }
+
                     }
 
                 }
@@ -443,7 +446,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     }
 
     //Handle the send requests here
-    private void sendRequestHandler(String event_Id){
+    private void sendRequestHandler(String event_Id, final String send_count){
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -452,6 +455,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                     if (eventModel != null) {
                         if (getActivity() != null) {
                             Bundle bundle = new Bundle();
+                            bundle.putString(AppConstants.REQUEST_SEND_COUNT,send_count);
                             bundle.putParcelable(AppConstants.EVENT_DETAIL,eventModel);
                             EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
                             eventDescriptionFragment.setArguments(bundle);

@@ -5,13 +5,11 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
-
 /**
  * Created by seq-kala on 15/5/18.
  */
 
-public class PartnerResultModel extends ArrayList implements Parcelable {
+public class PartnerResultModel implements Parcelable {
     @SerializedName("partnerName")
     String partnerName;
     @SerializedName("partnerUserId")
