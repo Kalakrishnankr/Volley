@@ -46,7 +46,7 @@ import java.util.Map;
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
-    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate;
+    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv;
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
     private String userType;
@@ -55,7 +55,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     private MyNoteAdapter myNoteAdapter;
     private ArrayList<PartnerResultModel> model = new ArrayList<>();
-    private PartnerResultModel partnerResultModel;
+
 
 
     public MyCalendarEvents() {
@@ -119,6 +119,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         btn_myCalBack       =   (Button) view.findViewById(R.id.my_btn_back);
 
         rcv_mycalendar      =   (RecyclerView) view.findViewById(R.id.rcv_partner_notes);
+        no_partners_txtv    =   (TextView) view.findViewById(R.id.no_partners_txtv);
 
 
 //        Button change according to coach or athlete
@@ -137,8 +138,16 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
     private void setUpEventPartners(){
-        myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
-        rcv_mycalendar.setAdapter(myNoteAdapter);
+        if(model!=null){
+            myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
+            rcv_mycalendar.setAdapter(myNoteAdapter);
+            no_partners_txtv.setVisibility(View.VISIBLE);
+        }
+        else{
+            no_partners_txtv.setVisibility(View.VISIBLE);
+            rcv_mycalendar.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -215,13 +224,11 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                List<PartnerResultModel> obj = null;
+                model = null;
                 if(response!=null){
                     try{
                         InvitationsModel invitationsModel = new Gson().fromJson(response.toString(), InvitationsModel.class);
-                        obj = invitationsModel.getPartnerList();
-                        Type type = new TypeToken<PartnerResultModel>(){}.getType();
-                        model = new Gson().fromJson(obj.toString(),type);
+                        model = (ArrayList<PartnerResultModel>) invitationsModel.getPartnerList();
                         setUpEventPartners();
 
                     }catch (Exception e){

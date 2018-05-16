@@ -394,12 +394,21 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="3.2">
+                    android:layout_weight="3.2"
+                    android:orientation="vertical">
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv_partner_notes"
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"/>
+                        android:layout_height="match_parent" />
+                    <com.beachpartnerllc.beachpartner.CustomTextView
+                        android:id="@+id/no_partners_txtv"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="No Event Partners"
+                        android:textSize="@dimen/text_size"
+                        android:visibility="gone"
+                        android:gravity="center"/>
 
 
 
