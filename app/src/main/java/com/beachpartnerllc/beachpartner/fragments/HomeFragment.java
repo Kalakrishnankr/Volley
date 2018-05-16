@@ -450,17 +450,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                 if (response != null) {
                     Event eventModel = new Gson().fromJson(response.toString(),Event.class);
                     if (eventModel != null) {
-                        Bundle bundle = new Bundle();
-                        bundle.putParcelable(AppConstants.EVENT_DETAIL,eventModel);
-                        EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
-                        eventDescriptionFragment.setArguments(bundle);
-                        FragmentManager manager = getActivity().getSupportFragmentManager();
-                        FragmentTransaction ctrans = manager.beginTransaction();
-                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                        ctrans.replace(R.id.container,eventDescriptionFragment);
-                        //ctrans.addToBackStack(null);
-                        ctrans.commit();
-
+                        if (getActivity() != null) {
+                            Bundle bundle = new Bundle();
+                            bundle.putParcelable(AppConstants.EVENT_DETAIL,eventModel);
+                            EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+                            eventDescriptionFragment.setArguments(bundle);
+                            FragmentManager manager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction ctrans = manager.beginTransaction();
+                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                            ctrans.replace(R.id.container,eventDescriptionFragment);
+                            //ctrans.addToBackStack(null);
+                            ctrans.commit();
+                        }
                     }
 
 

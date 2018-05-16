@@ -153,7 +153,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                 position =  viewHolder.getAdapterPosition();
                 if (direction == ItemTouchHelper.LEFT) {
                     //Toast.makeText(getActivity(), "Left swiped", Toast.LENGTH_SHORT).show();
-                    responseType = "Reject";
+                   /* responseType = "Reject";
                     JSONObject objectReject = new JSONObject();
                     try {
                         objectReject.put("eventId",eventModel.getEventId());
@@ -162,13 +162,13 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    eventHandler(objectReject);
+                    eventHandler(objectReject);*/
                     suggestionAdapter.removeItem(position);
                     undoLayout.setVisibility(View.VISIBLE);
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
                     //Toast.makeText(getActivity(), "Right swiped", Toast.LENGTH_SHORT).show();
-                    responseType = "Accept";
+                    /*responseType = "Accept";
                     JSONObject object = new JSONObject();
                     try {
                         object.put("eventId",eventModel.getEventId());
@@ -177,7 +177,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    eventHandler(object);
+                    eventHandler(object);*/
                     suggestionAdapter.removeItem(position);
                     undoLayout.setVisibility(View.VISIBLE);
 
