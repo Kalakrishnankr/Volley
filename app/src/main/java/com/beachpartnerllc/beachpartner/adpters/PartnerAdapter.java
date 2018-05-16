@@ -43,7 +43,6 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
 
         final Event model = dataList.get(position);
 
-        holder.txtvPartnerName.setText(model.getEventAdmin());
         //holder.imgPartnerPic.setBackgroundResource(model.getImage());
 
         holder.card.setOnClickListener(new View.OnClickListener() {
@@ -64,15 +63,16 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtvPartnerName;
+        public TextView txtvrequestDate,txtvRequestPlace,txtvCount;
         public ImageView imgPartnerPic;
         public CardView card;
         public MyViewHolder(View vi) {
             super(vi);
 
-            txtvPartnerName     =   (TextView)vi.findViewById(R.id.txtPartnerName);
-            imgPartnerPic       =   (ImageView)vi.findViewById(R.id.imgPartnerpic);
-            card                =   (CardView)vi.findViewById(R.id.cardview);
+            txtvrequestDate     =   (TextView)vi.findViewById(R.id.txtv_date_request);
+            txtvRequestPlace       =   (TextView)vi.findViewById(R.id.txtv_place_request);
+            card                =   (CardView)vi.findViewById(R.id.uptournament_card);
+            txtvCount           =   (TextView)vi.findViewById(R.id.count);
         }
     }
 }

@@ -31,7 +31,7 @@
                 android:layout_gravity="center"/>
 
             <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/txtv_date"
+                android:id="@+id/txtv_date_request"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
@@ -44,7 +44,7 @@
                 android:background="@android:color/black"/>
 
             <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/txtv_place"
+                android:id="@+id/txtv_place_request"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.7"
@@ -68,6 +68,7 @@
             android:weightSum="3">
 
             <TextView
+                android:id="@+id/count"
                 android:layout_marginLeft="4dp"
                 android:gravity="center"
                 android:text="2"
@@ -75,11 +76,13 @@
                 android:layout_height="35dp"/>
 
             <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/txtv_players"
+                android:id="@+id/requests"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="3"
+                android:textSize="@dimen/text_size"
                 android:gravity="center_vertical"
+                android:text="requests received"
                 android:layout_marginLeft="5dp"
                 android:textAlignment="viewStart"/>
 
