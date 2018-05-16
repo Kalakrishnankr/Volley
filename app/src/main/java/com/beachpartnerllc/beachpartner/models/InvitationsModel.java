@@ -5,7 +5,6 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +18,8 @@ public class InvitationsModel implements Parcelable {
     String inviterImageUrl;
     @SerializedName("inviterName")
     String inviterName;
+    @SerializedName("eventStatus")
+    String eventStatus;
     @SerializedName("partnerList")
     List<PartnerResultModel>partnerList;
 
@@ -26,6 +27,22 @@ public class InvitationsModel implements Parcelable {
         inviterUserId = in.readString();
         inviterImageUrl = in.readString();
         inviterName = in.readString();
+        eventStatus = in.readString();
+        partnerList = in.createTypedArrayList(PartnerResultModel.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(inviterUserId);
+        dest.writeString(inviterImageUrl);
+        dest.writeString(inviterName);
+        dest.writeString(eventStatus);
+        dest.writeTypedList(partnerList);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<InvitationsModel> CREATOR = new Creator<InvitationsModel>() {
@@ -40,18 +57,6 @@ public class InvitationsModel implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(inviterUserId);
-        parcel.writeString(inviterImageUrl);
-        parcel.writeString(inviterName);
-    }
-
     public String getInviterUserId() {
         return inviterUserId;
     }
@@ -62,6 +67,10 @@ public class InvitationsModel implements Parcelable {
 
     public String getInviterName() {
         return inviterName;
+    }
+
+    public String getEventStatus() {
+        return eventStatus;
     }
 
     public List<PartnerResultModel> getPartnerList() {

@@ -6,4 +6,5 @@ package com.beachpartnerllc.beachpartner.utils;
 
 public interface AcceptRejectInvitationListener {
     void showPartnerDialogue();
+
 }

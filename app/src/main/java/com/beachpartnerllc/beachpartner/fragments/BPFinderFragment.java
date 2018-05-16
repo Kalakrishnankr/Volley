@@ -769,8 +769,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     @Override
                     public void onResponse(JSONArray response) {
                        Log.d(TAG, "onResponse all cards: " + response.toString());
-                        Type listType = new TypeToken<List<BpFinderModel>>() {
-                        }.getType();
+                        Type listType = new TypeToken<List<BpFinderModel>>() {}.getType();
                         allCardList = new Gson().fromJson(response.toString(), listType);
                         addCards();
                     }

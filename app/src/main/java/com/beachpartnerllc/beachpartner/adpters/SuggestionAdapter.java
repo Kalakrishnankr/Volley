@@ -9,7 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.models.EventReultModel;
+import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
 
 import java.util.ArrayList;
@@ -21,12 +21,12 @@ import java.util.ArrayList;
 public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.MyViewHolder> {
 
     private Context mContext;
-    private ArrayList<EventReultModel>sList;
-    private EventReultModel eventModel;
+    private ArrayList<EventResultModel>sList;
+    private EventResultModel eventModel;
     private AcceptRejectInvitationListener invitationListener;
 
 
-    public SuggestionAdapter(Context context, ArrayList<EventReultModel> suggestionList,AcceptRejectInvitationListener acceptRejectInvitationListener) {
+    public SuggestionAdapter(Context context, ArrayList<EventResultModel> suggestionList, AcceptRejectInvitationListener acceptRejectInvitationListener) {
         this.mContext = context;
         this.sList    = suggestionList;
         this.invitationListener = acceptRejectInvitationListener;

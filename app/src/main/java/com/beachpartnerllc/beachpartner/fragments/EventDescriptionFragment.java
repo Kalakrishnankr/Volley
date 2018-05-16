@@ -92,7 +92,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             }
             eventId=event.getEventId();
             tview_eventadmin.setText(eventAdmin.toString());
-
             tview_eventname.setText(event.getEventName().toString());
             eventName   =   event.getEventName().toString();
             tview_location.setText(event.getEventLocation());

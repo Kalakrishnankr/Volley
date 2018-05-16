@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.beachpartnerllc.beachpartner.fragments.HomeFragment;
+import com.beachpartnerllc.beachpartner.models.EventDetailsModel;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -21,13 +23,17 @@ import java.util.ArrayList;
 
 public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<Event> dataList;
+    private ArrayList<EventDetailsModel> dataList;
     private EventClickListner eventlistner;
+    private boolean isReceive=false;
+    private boolean isSend =false;
 
-    public PartnerAdapter(Context context, ArrayList<Event> allSampleData,EventClickListner eventClickListner) {
+    public PartnerAdapter(Context context, ArrayList<EventDetailsModel> allSampleData, HomeFragment eventClickListner, boolean isRequestReceive, boolean isRequestSend) {
         this.dataList = allSampleData;
         this.mContext = context;
         this.eventlistner = eventClickListner;
+        this.isReceive = isRequestReceive;
+        this.isSend    = isRequestSend;
     }
 
     @Override
@@ -41,18 +47,49 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-        final Event model = dataList.get(position);
+        final EventDetailsModel model = dataList.get(position);
+
+        if (isReceive) {
+            SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+            long esDate  = Long.parseLong(model.getEventStartDate());
+            String date = dft.format(esDate);
+            holder.txtvCount.setText(model.getSendCount());
+            holder.txtvrequestDate.setText(date);
+            holder.txtvRequestPlace.setText(model.getEventLocation());
+            holder.txtvgameName.setText(model.getEventName());
+
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
+                    String eventID = model.getEventId();
+                    eventlistner.getEvent(eventID);
+
+                }
+            });
+        }
+
+        if (isSend) {
+            SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+            long esDate  = Long.parseLong(model.getEventStartDate());
+            String date = dft.format(esDate);
+            holder.txtvCount.setText(model.getSendCount());
+            holder.txtvrequestDate.setText(date);
+            holder.txtvRequestPlace.setText(model.getEventLocation());
+            holder.txtvgameName.setText(model.getEventName());
+
+            holder.card.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
+                    eventlistner.getEvent(model.getEventId());
+
+                }
+            });
+        }
 
         //holder.imgPartnerPic.setBackgroundResource(model.getImage());
 
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
-                eventlistner.getEvent(model);
-
-            }
-        });
 
 
     }
@@ -63,16 +100,17 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView txtvrequestDate,txtvRequestPlace,txtvCount;
+        public TextView txtvrequestDate,txtvRequestPlace,txtvCount,txtvgameName;
         public ImageView imgPartnerPic;
         public CardView card;
         public MyViewHolder(View vi) {
             super(vi);
 
             txtvrequestDate     =   (TextView)vi.findViewById(R.id.txtv_date_request);
-            txtvRequestPlace       =   (TextView)vi.findViewById(R.id.txtv_place_request);
+            txtvRequestPlace    =   (TextView)vi.findViewById(R.id.txtv_place_request);
             card                =   (CardView)vi.findViewById(R.id.uptournament_card);
             txtvCount           =   (TextView)vi.findViewById(R.id.count);
+            txtvgameName        =   (TextView)vi.findViewById(R.id.requests);
         }
     }
 }

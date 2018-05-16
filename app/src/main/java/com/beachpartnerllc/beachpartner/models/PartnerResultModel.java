@@ -18,11 +18,27 @@ public class PartnerResultModel extends ArrayList implements Parcelable {
     String partnerUserId;
     @SerializedName("partnerImageUrl")
     String partnerImageUrl;
+    @SerializedName("invitationStatus")
+    String invitationStatus;
 
     protected PartnerResultModel(Parcel in) {
         partnerName = in.readString();
         partnerUserId = in.readString();
         partnerImageUrl = in.readString();
+        invitationStatus = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(partnerName);
+        dest.writeString(partnerUserId);
+        dest.writeString(partnerImageUrl);
+        dest.writeString(invitationStatus);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<PartnerResultModel> CREATOR = new Creator<PartnerResultModel>() {
@@ -37,18 +53,6 @@ public class PartnerResultModel extends ArrayList implements Parcelable {
         }
     };
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(partnerName);
-        parcel.writeString(partnerUserId);
-        parcel.writeString(partnerImageUrl);
-    }
-
     public String getPartnerName() {
         return partnerName;
     }
@@ -59,5 +63,9 @@ public class PartnerResultModel extends ArrayList implements Parcelable {
 
     public String getPartnerImageUrl() {
         return partnerImageUrl;
+    }
+
+    public String getInvitationStatus() {
+        return invitationStatus;
     }
 }

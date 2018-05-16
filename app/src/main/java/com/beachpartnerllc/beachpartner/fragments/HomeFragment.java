@@ -45,7 +45,8 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.EventReultModel;
+import com.beachpartnerllc.beachpartner.models.EventDetailsModel;
+import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationResponseModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
@@ -100,9 +101,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private ArrayList<String> chatList = new ArrayList<>();
     private ArrayList<BpFinderModel> likesList = new ArrayList<>();
     private ArrayList<BpFinderModel> userList = new ArrayList<>();
+    private List<EventDetailsModel>sendInvitationList = new ArrayList<>();
+    private List<EventDetailsModel>receiveInvitationList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
-    private EventClickListner clickListner;
+    private boolean isRequestSend = false;
+    private boolean isRequestReceive =false;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -242,12 +246,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
         /*Tournament Requests*/
         layoutmngerReqst =  new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        partnerAdapter  =   new PartnerAdapter(getContext(),myUpcomingTList,clickListner);
+
         SnapHelper snap =   new PagerSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerReqst);
         parRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
-        parRecyclerview.setAdapter(partnerAdapter);
         parRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
 
@@ -264,12 +267,18 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         switch(view.getId()){
             case R.id.imgview_send:
                 txt_head.setText("Tournament Requests Sent");
-                txtv_noreqsts.setText("No requests sent");
+                isRequestSend=true;
+                isRequestReceive=false;
+                sendInvitationTab();
+                //txtv_noreqsts.setText("No requests received");
                 break;
 
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
-                txtv_noreqsts.setText("No requests received");
+                isRequestReceive=true;
+                isRequestSend=false;
+                receiveInvitationTab();
+                //txtv_noreqsts.setText("No requests received");
                 break;
             case R.id.no_of_likes_card:
                   likesDisplay();
@@ -356,20 +365,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //view all event invitation list api //15-05-2018
     @Override
-    public void getEvent(Event eventModel) {
+    public void getEvent(String eventID ) {
 
-        event_Id = eventModel.getEventId();
+        if (isRequestReceive) {
+            receiveRequetHandler(eventID);
+        }else {
+            sendRequestHandler(eventID);
+        }
+
+
+    }
+
+    //Handle the receive requests here
+    private void receiveRequetHandler(String event_Id) {
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
-                    EventReultModel eventReultModel = new Gson().fromJson(response.toString(),EventReultModel.class);
-                    if (eventReultModel != null) {
+                    EventResultModel eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
+                    if (eventResultModel != null) {
                         Bundle bundle = new Bundle();
-                        bundle.putParcelable(AppConstants.EVENT_OBJECT,eventReultModel);
+                        bundle.putParcelable(AppConstants.EVENT_OBJECT,eventResultModel);
                         AcceptRejectRequestFragment rejectRequestFragment = new AcceptRejectRequestFragment();
                         rejectRequestFragment.setArguments(bundle);
-                        getActivity().getActionBar().setTitle("Accept/Reject");
+                        //getActivity().getActionBar().setTitle("Accept/Reject");
                         FragmentManager mangFeed = getActivity().getSupportFragmentManager();
                         FragmentTransaction transFeed = mangFeed.beginTransaction();
                         transFeed.replace(R.id.container, rejectRequestFragment);
@@ -422,7 +442,73 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }
     }
 
+    //Handle the send requests here
+    private void sendRequestHandler(String event_Id){
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    Event eventModel = new Gson().fromJson(response.toString(),Event.class);
+                    if (eventModel != null) {
+                        Bundle bundle = new Bundle();
+                        bundle.putParcelable(AppConstants.EVENT_DETAIL,eventModel);
+                        EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+                        eventDescriptionFragment.setArguments(bundle);
+                        FragmentManager manager = getActivity().getSupportFragmentManager();
+                        FragmentTransaction ctrans = manager.beginTransaction();
+                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                        ctrans.replace(R.id.container,eventDescriptionFragment);
+                        //ctrans.addToBackStack(null);
+                        ctrans.commit();
 
+                    }
+
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonObjectRequest.toString());
+            requestQueue.add(jsonObjectRequest);
+        }
+    }
 
 
    /* Grid item spacing and padding */
@@ -732,20 +818,23 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Get all user invitation sendor receive
     private void getAllSendOrReceiveInvitation() {
+        progressBar_rqsts.setVisibility(View.VISIBLE);
         JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_SENDORRECIVE_REQUEST, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     Log.d(TAG, "onResponse: "+response.toString());
                     InvitationResponseModel responseModel = new Gson().fromJson(response.toString(),InvitationResponseModel.class);
-                    Type type = new TypeToken<InvitationResponseModel>(){}.getType();
-
+                    sendInvitationList = responseModel.getInvitationSendModels();
+                    receiveInvitationList = responseModel.getInvitationReceivedModels();
                 }
-
+                isRequestSend =true;
+                setInvitationAdpater();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                progressBar_rqsts.setVisibility(View.INVISIBLE);
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -786,7 +875,42 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }
     }
 
+    private void setInvitationAdpater() {
+        progressBar_rqsts.setVisibility(View.GONE);
+        //Send Invitation
+        if (isRequestSend) {
+            sendInvitationTab();
+        }else {
+            receiveInvitationTab();
+        }
 
+
+    }
+
+    //Receive Invitation Tab
+    private void receiveInvitationTab() {
+        txtv_noreqsts.setVisibility(View.GONE);
+        parRecyclerview.setVisibility(View.VISIBLE);
+        if (receiveInvitationList != null && receiveInvitationList.size() > 0) {
+            partnerAdapter = new PartnerAdapter(getContext(),(ArrayList<EventDetailsModel>) receiveInvitationList,this,isRequestReceive,isRequestSend);
+            parRecyclerview.setAdapter(partnerAdapter);
+        }else {
+            parRecyclerview.setVisibility(View.GONE);
+            txtv_noreqsts.setVisibility(View.VISIBLE);
+        }
+    }
+    //Send Invitation Tab
+    private void sendInvitationTab() {
+        txtv_noreqsts.setVisibility(View.GONE);
+        parRecyclerview.setVisibility(View.VISIBLE);
+        if (sendInvitationList != null && sendInvitationList.size() > 0) {
+            partnerAdapter  =  new PartnerAdapter(getContext(), (ArrayList<EventDetailsModel>) sendInvitationList,this,isRequestSend,isRequestReceive);
+            parRecyclerview.setAdapter(partnerAdapter);
+        }else {
+            parRecyclerview.setVisibility(View.GONE);
+            txtv_noreqsts.setVisibility(View.VISIBLE);
+        }
+    }
 
     //Get connections
     private void getConnections() {
