@@ -37,7 +37,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCale
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,7 +153,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
-                    eventsAdapter = new EventsAdapter(getContext(), toDayEvents,isMycal);
+                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
                     rview.setAdapter(eventsAdapter);
                     rview.invalidate();
                     eventsAdapter.notifyDataSetChanged();
@@ -817,6 +816,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         return trimmedString;
     }
+
 
 
 }

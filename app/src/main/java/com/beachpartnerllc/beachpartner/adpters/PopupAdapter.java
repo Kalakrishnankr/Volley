@@ -13,6 +13,7 @@ import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 16/5/18.
@@ -20,9 +21,9 @@ import java.util.ArrayList;
 
 public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder> {
     public Context mContext;
-    private ArrayList<PartnerResultModel> dataList;
+    private List<PartnerResultModel> dataList= new ArrayList<>();
 
-    public PopupAdapter(Context context, ArrayList<PartnerResultModel> dataList) {
+    public PopupAdapter(Context context, List<PartnerResultModel> dataList) {
         this.dataList = dataList;
         this.mContext = context;
     }
