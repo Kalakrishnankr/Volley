@@ -246,7 +246,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
         /*Tournament Requests*/
         layoutmngerReqst =  new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-
         SnapHelper snap =   new PagerSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerReqst);
@@ -378,10 +377,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Handle the receive requests here
     private void receiveRequetHandler(String event_Id) {
-
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                progressBar_rqsts.setVisibility(View.INVISIBLE);
                 if (response != null) {
                     EventResultModel eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
                     if (eventResultModel != null) {
@@ -447,6 +446,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Handle the send requests here
     private void sendRequestHandler(String event_Id, final String send_count){
+
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -457,6 +457,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             Bundle bundle = new Bundle();
                             bundle.putString(AppConstants.REQUEST_SEND_COUNT,send_count);
                             bundle.putParcelable(AppConstants.EVENT_DETAIL,eventModel);
+                            tabActivity.navigation.setSelectedItemId(R.id.navigation_calendar);
                             EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
                             eventDescriptionFragment.setArguments(bundle);
                             FragmentManager manager = getActivity().getSupportFragmentManager();

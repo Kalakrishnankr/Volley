@@ -4,18 +4,20 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+
 import java.io.Serializable;
 import java.util.List;
 
 public class Event implements Serializable, Parcelable {
 
-    private int color;
+
 
     public void setTimeInMillis(long timeInMillis) {
         this.timeInMillis = timeInMillis;
     }
 
-    private long timeInMillis;
+
 
     public void setColor(int color) {
         this.color = color;
@@ -34,31 +36,36 @@ public class Event implements Serializable, Parcelable {
     private long eventStartDate;
     private long eventEndDate;
     private String status;
-    private long eventRegStartdate;
-    private long eventRegEnddate;
+    private long eventRegStartDate;
+    private long eventRegEndDate;
     private String regType;
     private String userMessage;
-
-
-
+    private long timeInMillis;
+    private int color;
     public String eventAdmin;
+    List<InvitationsModel>invitationList;
+
+    public List<InvitationsModel> getInvitationList() {
+        return invitationList;
+    }
+
 
 
 
     public long getEventRegStartdate() {
-        return eventRegStartdate;
+        return eventRegStartDate;
     }
 
     public void setEventRegStartdate(long eventRegStartdate) {
-        this.eventRegStartdate = eventRegStartdate;
+        this.eventRegStartDate = eventRegStartdate;
     }
 
     public long getEventRegEnddate() {
-        return eventRegEnddate;
+        return eventRegEndDate;
     }
 
     public void setEventRegEnddate(long eventRegEnddate) {
-        this.eventRegEnddate = eventRegEnddate;
+        this.eventRegEndDate = eventRegEnddate;
     }
 
 
