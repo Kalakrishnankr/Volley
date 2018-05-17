@@ -43,20 +43,20 @@ import java.util.HashSet;
 import java.util.Map;
 
 
-public class MessageFragment extends Fragment  {
+public class MessageFragment extends Fragment {
 
 
+    ArrayList<String> chatList = new ArrayList<>();
+    ArrayList<BpFinderModel> userList = new ArrayList<>();
+    TabActivity tabActivity;
     private RecyclerView recyclerView;
     private ChatListAdapter chatListAdapter;
     private Firebase myFirebaseRef;
     private String myId;
     private ProgressBar progressBar;
     private TextView tv_nomsgs;
-    ArrayList<String> chatList = new ArrayList<>();
-    ArrayList<BpFinderModel> userList = new ArrayList<>();
     private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
 
-    TabActivity tabActivity;
     public MessageFragment() {
         // Required empty public constructor
     }
@@ -76,10 +76,9 @@ public class MessageFragment extends Fragment  {
         View view = inflater.inflate(R.layout.fragment_message, container, false);
         myId = new PrefManager(getContext()).getUserId();
         myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/");
-
-        chatListAdapter=null;
+        chatListAdapter = null;
+        userList.clear();
         initView(view);
-        getConnections();
         return view;
     }
 
@@ -88,8 +87,8 @@ public class MessageFragment extends Fragment  {
 
 
         recyclerView = (RecyclerView) view.findViewById(R.id.rcv_chat);
-        progressBar  = (ProgressBar)  view.findViewById(R.id.msg_progress);
-        tv_nomsgs    = (TextView) view.findViewById(R.id.txtv_nomsgs);
+        progressBar = (ProgressBar) view.findViewById(R.id.msg_progress);
+        tv_nomsgs = (TextView) view.findViewById(R.id.txtv_nomsgs);
         //chatListAdapter =   new ChatListAdapter(getContext(),list);
         RecyclerView.LayoutManager mLayoutmanger = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutmanger);
@@ -102,13 +101,14 @@ public class MessageFragment extends Fragment  {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if (getActivity() instanceof TabActivity){
-            tabActivity = (TabActivity)getActivity();
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity) getActivity();
             tabActivity.setActionBarTitle("Messages");
         }
+        getConnections();
     }
 
-    public void disableMenu(){
+    public void disableMenu() {
         tabActivity.disableFloatButtons();
     }
 
@@ -127,8 +127,9 @@ public class MessageFragment extends Fragment  {
                         try {
                             JSONObject object = response.getJSONObject(i);
                             JSONObject obj = object.getJSONObject("connectedUser");
-                            Type type = new TypeToken<BpFinderModel>(){}.getType();
-                            BpFinderModel finderModel = new Gson().fromJson(obj.toString(),type);
+                            Type type = new TypeToken<BpFinderModel>() {
+                            }.getType();
+                            BpFinderModel finderModel = new Gson().fromJson(obj.toString(), type);
                             connectionList.add(finderModel);
 
 
@@ -168,6 +169,7 @@ public class MessageFragment extends Fragment  {
     private void setUpMessage() {
         userList.clear();
         chatList.clear();
+        progressBar.setVisibility(View.VISIBLE);
         final Firebase myFirebaseRef = new Firebase("https://beachpartner-6cd7a.firebaseio.com/messages");
         myFirebaseRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -183,68 +185,42 @@ public class MessageFragment extends Fragment  {
                     }*/
 
                 }
+
                 HashSet<String> hashSet = new HashSet<String>();
                 hashSet.addAll(chatList);
                 chatList.clear();
                 userList.clear();
                 chatList.addAll(hashSet);
-               /* if(chatList.size()>0 && chatList!=null){
-                    for (int i=0;i<chatList.size();i++){
-                        String chatId = chatList.get(i).split("-")[0];
-                        String chatwith_id = chatList.get(i).split("-")[1];
-                        if(chatId.equals(myId) || chatwith_id.equals(myId)){
-                            if (connectionList.size() > 0 && connectionList != null) {
-                                for (int j=0;j<connectionList.size();j++){
-                                    if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
-                                        userList.add(connectionList.get(j));
-                                    }
-                                }
-                            }else {
-                                tv_nomsgs.setVisibility(View.VISIBLE);
-                            }
-
-                        }*//*else {
-                            tv_nomsgs.setVisibility(View.VISIBLE);
-                        }*//*
-                    }
-                    progressBar.setVisibility(View.GONE);
-                    chatListAdapter = new ChatListAdapter(MessageFragment.this,getContext(), userList);
-                    recyclerView.setAdapter(chatListAdapter);
-                    chatListAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar.setVisibility(View.GONE);
-                    tv_nomsgs.setVisibility(View.VISIBLE);
-                }*/
-
                 if (connectionList != null && connectionList.size() > 0) {
                     if (chatList.size() > 0 && chatList != null) {
-                        for (int i = 0; i < chatList.size() ; i++) {
+                        for (int i = 0; i < chatList.size(); i++) {
                             String chatId = chatList.get(i).split("-")[0];
                             String chatwith_id = chatList.get(i).split("-")[1];
                             if (chatwith_id != null && chatId != null) {
-                                if(chatId.equals(myId) || chatwith_id.equals(myId)){
+                                if (chatId.equals(myId) || chatwith_id.equals(myId)) {
                                     if (connectionList.size() > 0 && connectionList != null) {
-                                        for (int j=0;j<connectionList.size();j++){
-                                            if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
+                                        for (int j = 0; j < connectionList.size(); j++) {
+                                            if (chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())) {
                                                 userList.add(connectionList.get(j));
                                             }
                                         }
-                                    }else {
+                                    } else {
                                         tv_nomsgs.setVisibility(View.VISIBLE);
                                     }
                                 }
                             }
                         }
+                        progressBar.setVisibility(View.GONE);
+                        chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                        recyclerView.setAdapter(chatListAdapter);
+                        recyclerView.invalidate();
+                        chatListAdapter.notifyDataSetChanged();
                     }
-                    progressBar.setVisibility(View.GONE);
-                    chatListAdapter  =  new ChatListAdapter(MessageFragment.this,getContext(), userList);
-                    recyclerView.setAdapter(chatListAdapter);
-                    chatListAdapter.notifyDataSetChanged();
-                }else {
+
+                } else {
                     progressBar.setVisibility(View.GONE);
                     tv_nomsgs.setVisibility(View.VISIBLE);
                 }
-
 
 
             }
@@ -256,7 +232,6 @@ public class MessageFragment extends Fragment  {
         });
 
     }
-
 
 
 }
