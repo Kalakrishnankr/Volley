@@ -36,6 +36,18 @@ public class PrefManager {
         editor.commit();
     }
 
+    public void saveFCMToken(String FCM){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("FCM", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("FCMToken",FCM);
+        editor.commit();
+    }
+
+    public String getFCMToken(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("FCM", Context.MODE_PRIVATE);
+        return sharedPreferences.getString("FCMToken", "");
+    }
+
     public void saveRegistrationStatus(String status){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -190,6 +202,13 @@ public class PrefManager {
         edit.clear();
         edit.apply();
         edit.commit();
+
+        SharedPreferences sharedPreferencesFCM = context.getSharedPreferences("FCM", 0);
+        SharedPreferences.Editor FCMDetails = sharedPreferencesFCM.edit();
+        FCMDetails.remove("FCMToken");
+        FCMDetails.clear();
+        FCMDetails.apply();
+        FCMDetails.commit();
 
     }
 }

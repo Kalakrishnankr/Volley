@@ -212,6 +212,7 @@ public class TabActivity extends AppCompatActivity  {
 
         userType = new PrefManager(getApplicationContext()).getUserType().trim();
         tips = new PrefManager(getApplicationContext()).getTips();
+        String fcm = new PrefManager(getApplicationContext()).getFCMToken();
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();

@@ -150,6 +150,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                         playVideo(holder);
                     }
                     else{
+                        Toast toast = Toast.makeText(mContext, R.string.no_video, Toast.LENGTH_SHORT);
+                        toast.setGravity(Gravity.CENTER, 0, 0);
+                        toast.show();
                         holder.progress.setVisibility(View.GONE);
                     }
 

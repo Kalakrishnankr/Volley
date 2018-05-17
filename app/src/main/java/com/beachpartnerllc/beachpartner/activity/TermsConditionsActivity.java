@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
 public class TermsConditionsActivity extends AppCompatActivity implements View.OnClickListener {
 
@@ -35,9 +36,25 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
             initActivity();
         }
         else {
-            Intent intent= new Intent(this,LoginActivity.class);
-            startActivity(intent);
-            finish();
+            if(new PrefManager(getApplicationContext()).getFCMToken()!=null){
+                if(!new PrefManager(getApplicationContext()).getFCMToken().equalsIgnoreCase("")){
+                    Intent intent = new Intent(TermsConditionsActivity.this,TabActivity.class);
+                    intent.putExtra("reDirectPage","home");
+                    startActivity(intent);
+                    finish();
+                }
+                else{
+                    Intent intent= new Intent(this,LoginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            }
+            else {
+                Intent intent= new Intent(this,LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+
         }
 
     }

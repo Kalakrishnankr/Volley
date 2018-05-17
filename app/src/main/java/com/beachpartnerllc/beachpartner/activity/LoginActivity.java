@@ -111,6 +111,8 @@ public class LoginActivity extends AppCompatActivity {
         FirebaseApp.initializeApp(LoginActivity.this);
 
         refreshedFirebaseToken = FirebaseInstanceId.getInstance().getToken();
+
+
        // Log.d("refreshedToken----",refreshedFirebaseToken);
         deviceId = Settings.Secure.getString(getApplicationContext().getContentResolver(),
                 Settings.Secure.ANDROID_ID);
@@ -522,7 +524,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                     if(uProfileStatus!=null && !uProfileStatus.equalsIgnoreCase("null")){
 //                                        already user updated the profile
-
+                                        new PrefManager(getApplicationContext()).saveFCMToken(refreshedFirebaseToken);//saving the firebasetoken on login inorder to autologin
                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                         intent.putExtra("reDirectPage","home");
                                         startActivity(intent);
@@ -546,6 +548,8 @@ public class LoginActivity extends AppCompatActivity {
                                                         FragmentTransaction transaction = mang.beginTransaction();
                                                         transaction.add(R.id.container,pfragment);
                                                         transaction.commit();*/
+
+                                                        new PrefManager(getApplicationContext()).saveFCMToken(refreshedFirebaseToken);//saving the firebasetoken on login inorder to autologin
                                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                                         intent.putExtra("reDirectPage","profile");
                                                         startActivity(intent);
@@ -560,6 +564,7 @@ public class LoginActivity extends AppCompatActivity {
                                                     public void onClick(DialogInterface dialog, int id) {
                                                         dialog.cancel();
                                                         //Goto home fragment
+                                                        new PrefManager(getApplicationContext()).saveFCMToken(refreshedFirebaseToken);//saving the firebasetoken on login inorder to autologin
                                                         Intent intent = new Intent(LoginActivity.this,TabActivity.class);
                                                         intent.putExtra("reDirectPage","home");
                                                         startActivity(intent);
