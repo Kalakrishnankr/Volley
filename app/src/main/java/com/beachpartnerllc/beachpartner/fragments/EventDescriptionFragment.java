@@ -58,7 +58,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private Button btnInvitePartner, btnRegister, btnBack, btnCoachGoing, btnCoachNotGoing;
     private PrefManager prefManager;
     private LinearLayout athleteBtnLt, coachBtnLt;
-    private String user_id, user_token, userType, eventName, eventId, regType, sendCount;
+    private String user_id, user_token, userType, eventName, eventId, regType, sendCount,eventUrl;
     private Boolean registerCompleted = false;
     private boolean isPartnerbtnActive = false;
     private Event event;
@@ -101,10 +101,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             sendCount = bundle.getString(AppConstants.REQUEST_SEND_COUNT);
             String eventAdmin = event.getEventAdmin();
             regType = event.getRegType();
+            eventUrl = event.getEventUrl();
 
             //disabling event register button till the team size is met
-            if (regType != null) {
-                if (regType.equalsIgnoreCase("Organizer")) {
+            if (regType != null ) {
+                if (regType.equalsIgnoreCase("Organizer") && event.getEventStatus().equalsIgnoreCase("Active")) {
                     btnRegister.setClickable(true);
                 }else {
                     btnRegister.setClickable(false);
@@ -215,15 +216,25 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 transaction.commit();
                 break;
             case R.id.btn_register:
-                registerCompleted = true;
-                RegistrationFragment registrationFragment = new RegistrationFragment();
-                Bundle args = new Bundle();
-                args.putString("Url", "http://aaubeach.org/");
-                registrationFragment.setArguments(args);
-                FragmentManager mng = getActivity().getSupportFragmentManager();
-                FragmentTransaction tran = mng.beginTransaction().addToBackStack(null);
-                tran.replace(R.id.container, registrationFragment);
-                tran.commit();
+                if(eventUrl!=null){
+                    if(!eventUrl.equalsIgnoreCase("")){
+                        registerCompleted = true;
+                        RegistrationFragment registrationFragment = new RegistrationFragment();
+                        Bundle args = new Bundle();
+                        args.putString("Url",eventUrl);
+                        registrationFragment.setArguments(args);
+                        FragmentManager mng = getActivity().getSupportFragmentManager();
+                        FragmentTransaction tran = mng.beginTransaction().addToBackStack(null);
+                        tran.replace(R.id.container, registrationFragment);
+                        tran.commit();
+                    }
+                    else{
+                        Toast.makeText(getContext(), "Registration site under maintainence", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    Toast.makeText(getContext(), "Registration site under maintainence", Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.btn_back:
                 //Back button
@@ -334,7 +345,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Toast.makeText(getActivity(), "User Details Posted Successfully", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
+                            addToSystemCalendar();
+
                         }
 
                     }
@@ -396,7 +409,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public void onResume() {
         super.onResume();
         if (registerCompleted) {
-            alertAddToSystemCalendar();
+            //alertAddToSystemCalendar();
+            successfulRegisterationPrompt();
             registerCompleted = false;
         }
         Log.d("Create", "onResume");
@@ -418,7 +432,43 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
 
-    private void alertAddToSystemCalendar() {
+
+
+    private void successfulRegisterationPrompt() {
+        //Register Event Api
+        final JSONObject registerObject = new JSONObject();
+        try {
+            registerObject.put("eventId", eventId);
+            registerObject.put("registerType", "Organizer");
+            registerObject.put("userIds", "[]");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Registration")
+                .setMessage("Did you successfully completed the event registration?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        registerEvent(registerObject);
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+
+
+    private void alertAddToSystemCalendarCoach() {
         //Register Event Api
         JSONObject registerObject = new JSONObject();
         try {
@@ -430,58 +480,24 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
         registerEvent(registerObject);
 
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Add to Your Calendar")
-                .setMessage("Would you like to add it to your Device's calendar?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        addToSystemCalendar();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        registerCompleted = false;
-        dialog.show();
-
-    }
-
-
-    private void alertAddToSystemCalendarCoach() {
-        //Register Event Api
-        JSONObject registerObject = new JSONObject();
-        try {
-            registerObject.put("eventId", eventId);
-            registerObject.put("userIds", user_id);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        registerEvent(registerObject);
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Add to Your Calendar")
-                .setMessage("Would you like to add it to your calendar?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        addToSystemCalendar();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+//        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+//        builder.setTitle("Add to Your Calendar")
+//                .setMessage("Would you like to add it to your calendar?")
+//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//                        addToSystemCalendar();
+//                    }
+//                })
+//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    @Override
+//                    public void onClick(DialogInterface dialogInterface, int i) {
+//
+//                        dialogInterface.cancel();
+//                    }
+//                });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
 
     }
 

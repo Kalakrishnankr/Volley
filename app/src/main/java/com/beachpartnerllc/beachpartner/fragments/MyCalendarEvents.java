@@ -30,10 +30,12 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -50,16 +52,19 @@ import java.util.Map;
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
-    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv;
+    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv,headingPartnersAthletes;
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
     private String userType;
     private String eventId;
     private String user_token;
     private String courtNo;
+    private AVLoadingIndicatorView loadingIndicatorView;
 
     private MyNoteAdapter myNoteAdapter;
-    private ArrayList<PartnerResultModel> model = new ArrayList<>();
+    private ArrayList<InvitationsModel> model = new ArrayList<>();
+    private ArrayList<MyCalendarPartnerModel> partners = new ArrayList<MyCalendarPartnerModel>();
+
     private EventResultModel eventResultModel;
 
 
@@ -126,11 +131,22 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
         rcv_mycalendar      =   (RecyclerView) view.findViewById(R.id.rcv_partner_notes);
         no_partners_txtv    =   (TextView) view.findViewById(R.id.no_partners_txtv);
+        loadingIndicatorView=   (AVLoadingIndicatorView)view.findViewById(R.id.progress_partners);
+        headingPartnersAthletes =(TextView)view.findViewById(R.id.heading_who_are_going);
+
+        if (userType.equalsIgnoreCase("Athlete")) {
+            headingPartnersAthletes.setText("Event Partners");
+            btn_myCalCourt.setText("Check In");
+            btn_myCalBack.setText("Back");
+        }
+        if (userType.equalsIgnoreCase("Coach")) {
+            headingPartnersAthletes.setText("Athletes");
+            btn_myCalCourt.setText("Check In");
+            btn_myCalBack.setText("Decline");
+        }
 
 
 //        Button change according to coach or athlete
-        btn_myCalCourt.setText("Check In");
-        btn_myCalBack.setText("Decline");
 
 
 
@@ -144,9 +160,33 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
     private void setUpEventPartners(){
+        loadingIndicatorView.setVisibility(View.GONE);
+        partners.clear();
+        List<PartnerResultModel> tempModel = new ArrayList<PartnerResultModel>();
         if(model!=null){
+            MyCalendarPartnerModel partnerObject1 =new MyCalendarPartnerModel();
+            partnerObject1.setpartner_Id(model.get(0).getInviterUserId());
+            partnerObject1.setPartner_ImageUrl(model.get(0).getInviterImageUrl());
+            partnerObject1.setpartner_Name(model.get(0).getInviterName());
+            partnerObject1.setpartner_role("Organizer");
+
+            partners.add(partnerObject1);//organizer
+            if(model.get(0).getPartnerList()!=null){
+                if(model.get(0).getPartnerList().size()>0){
+                     tempModel = model.get(0).getPartnerList();
+                    for(int i=0;i<tempModel.size();i++){
+                        MyCalendarPartnerModel partnerObject2 =new MyCalendarPartnerModel();
+                        partnerObject2.setpartner_Id(tempModel.get(i).getPartnerUserId());
+                        partnerObject2.setPartner_ImageUrl(tempModel.get(i).getPartnerImageUrl());
+                        partnerObject2.setpartner_Name(tempModel.get(i).getPartnerName());
+                        partnerObject2.setpartner_role("Invitee");
+
+                        partners.add(partnerObject2);//invitees
+                    }
+                }
+            }
             rcv_mycalendar.setLayoutManager(new LinearLayoutManager(getContext()));
-            myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
+            myNoteAdapter       =   new MyNoteAdapter(getContext(),partners);
             rcv_mycalendar.setAdapter(myNoteAdapter);
             no_partners_txtv.setVisibility(View.GONE);
         }
@@ -237,7 +277,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     //api for listing event partners in mycalendar
 
     public void getEvent(String event_Id) {
-
+        loadingIndicatorView.setVisibility(View.VISIBLE);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -245,7 +285,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                 if(response!=null){
                     try{
                         eventResultModel = new Gson().fromJson(response.toString(), EventResultModel.class);
-                        model = (ArrayList<PartnerResultModel>) eventResultModel.getInvitationList().get(0).getPartnerList();
+                        model = (ArrayList<InvitationsModel>) eventResultModel.getInvitationList();
                         setUpEventPartners();
 
                     }catch (Exception e){

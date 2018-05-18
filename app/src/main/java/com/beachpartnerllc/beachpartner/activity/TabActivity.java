@@ -218,7 +218,7 @@ public class TabActivity extends AppCompatActivity  {
         Bundle bundle = intent.getExtras();
         if (bundle != null) {
             String value = bundle.getString("reDirectPage");
-            if (value.equals("home")) {
+            if (value.equalsIgnoreCase("home")) {
                 /*Load default HomeFragment*/
                 if(!tips){
                     Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);

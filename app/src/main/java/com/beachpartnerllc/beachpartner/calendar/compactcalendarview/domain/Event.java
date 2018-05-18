@@ -44,6 +44,7 @@ public class Event implements Serializable, Parcelable {
     private int color;
     public String eventAdmin;
     private String invitationStatus;
+    private String eventUrl;
     List<InvitationsModel>invitationList;
 
     public List<InvitationsModel> getInvitationList() {
@@ -159,6 +160,13 @@ public class Event implements Serializable, Parcelable {
     public String getUserMessage() {
         return userMessage;
     }
+
+    public void setEventUrl(String Url) {
+        this.eventUrl = Url;
+    }
+    public String getEventUrl() {
+        return eventUrl;
+    }
 //    public EventAdminModel getEventAdmin() {
 //        return eventAdmin;
 //    }
@@ -238,4 +246,7 @@ public class Event implements Serializable, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
 
     }
+
+
+
 }
