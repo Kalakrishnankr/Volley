@@ -113,10 +113,16 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             }
 
             eventId = event.getEventId();
-            tview_eventadmin.setText(eventAdmin.toString());
-            tview_eventname.setText(event.getEventName().toString());
-            eventName = event.getEventName().toString();
-            tview_location.setText(event.getEventLocation());
+            if (event.getEventAdmin() != null) {
+                tview_eventadmin.setText(eventAdmin);
+            }
+            if (event.getEventName() != null) {
+                tview_eventname.setText(event.getEventName());
+            }
+            if (event.getEventLocation()!=null) {
+                tview_location.setText(event.getEventLocation());
+            }
+            eventName = event.getEventName();
             if (event.getUserMessage() != null && !event.getUserMessage().isEmpty()) {
                 tview_title.setVisibility(View.VISIBLE);
                 tview_title.setText(event.getUserMessage());
@@ -146,7 +152,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-          getEvent(eventId);
+        getEvent(eventId);
     }
 
 

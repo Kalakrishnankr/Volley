@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -33,6 +35,7 @@ import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.PopupAdapter;
 import com.beachpartnerllc.beachpartner.adpters.SuggestionAdapter;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
@@ -40,6 +43,7 @@ import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -61,7 +65,8 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     private Paint p = new Paint();
     private int position;
     private String word,eventID,oranizerID,responseType,user_token;
-    private EventResultModel eventReultModel =null;
+    private EventResultModel eventResultModel;
+    private String notAcceptedId =null;
     private ArrayList<InvitationsModel>invitationsModels = new ArrayList<>();
     private ArrayList<PartnerResultModel>partnerList = new ArrayList<>();
     private AcceptRejectInvitationListener invitationListener;
@@ -78,14 +83,9 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         super.onCreate(savedInstanceState);
 
         user_token  =  new PrefManager(getActivity()).getToken();
-        if (getArguments() != null) {
-            eventReultModel = getArguments().getParcelable(AppConstants.EVENT_OBJECT);
-            if (eventReultModel != null) {
-                suggestionList.clear();
-                suggestionList.add(eventReultModel);
-            }
-        }
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,6 +93,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_accept_reject_request, container, false);
         initviews(view);
+
         return view;
     }
 
@@ -109,21 +110,25 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if (getArguments() != null) {
+            if(getArguments().getParcelable(AppConstants.EVENT_OBJECT)!=null){
+                eventResultModel = getArguments().getParcelable(AppConstants.EVENT_OBJECT);
+            }
+            if(getArguments().getSerializable("notAcceptedInvitee")!=null){
+                notAcceptedId   = getArguments().getSerializable("notAcceptedInvitee").toString();
+            }
+            if (eventResultModel != null) {
+                suggestionList.clear();
+                suggestionList.add(eventResultModel);
+                setUpView();
+            }
+            else if(notAcceptedId!=null){
+                requestHandler(notAcceptedId);
 
-        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
-        long event_startdate  = Long.parseLong(eventReultModel.getEventStartDate());
-        long event_endDate = Long.parseLong(eventReultModel.getEventEndDate());
-        Date date_start   = new Date(event_startdate);
-        Date date_end  = new Date(event_endDate);
+            }
+        }
 
-        eventTitle.setText(eventReultModel.getEventName());
-        eventStart.setText(dft.format(date_start));
-        eventEnd.setText(dft.format(date_end));
-        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        suggestionAdapter = new SuggestionAdapter(getContext(),suggestionList,this);
-        rcv_requests.setLayoutManager(manager);
-        rcv_requests.setAdapter(suggestionAdapter);
-        suggestionAdapter.notifyDataSetChanged();
+
         initswipe();
 
 
@@ -138,6 +143,87 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
 
 
     }
+
+    private void setUpView() {
+        SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
+        long event_startdate  = Long.parseLong(eventResultModel.getEventStartDate());
+        long event_endDate = Long.parseLong(eventResultModel.getEventEndDate());
+        Date date_start   = new Date(event_startdate);
+        Date date_end  = new Date(event_endDate);
+
+        eventTitle.setText(eventResultModel.getEventName());
+        eventStart.setText(dft.format(date_start));
+        eventEnd.setText(dft.format(date_end));
+        LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
+        suggestionAdapter = new SuggestionAdapter(getContext(),suggestionList,this);
+        rcv_requests.setLayoutManager(manager);
+        rcv_requests.setAdapter(suggestionAdapter);
+        suggestionAdapter.notifyDataSetChanged();
+    }
+
+    private void requestHandler(String notAcceptedId) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+notAcceptedId+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //progressBar_rqsts.setVisibility(View.INVISIBLE);
+                if (response != null) {
+                    eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
+                    if (eventResultModel != null) {
+                        suggestionList.clear();
+                        suggestionList.add(eventResultModel);
+                        setUpView();
+
+                    }
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("Request", jsonObjectRequest.toString());
+            requestQueue.add(jsonObjectRequest);
+        }
+        // return eventResultModel;
+
+    }
+
+
 
     private void initswipe() {
 
@@ -273,6 +359,11 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
             requestQueue.add(objectRequest);
         }
     }
+
+    //Handle the receive requests here
+  /*  private receiveRequestHandler(String event_Id) {
+
+    }*/
 
     //api for accept invitation
    /* private void acceptInvitation() {

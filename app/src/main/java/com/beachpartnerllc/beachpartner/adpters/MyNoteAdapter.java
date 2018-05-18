@@ -35,15 +35,17 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.MyViewHold
         View itemView   = LayoutInflater.from(parent.getContext()).inflate(R.layout.myevent_note_item,parent,false);
         MyViewHolder myViewHolder    = new MyViewHolder(itemView);
 
-
         return myViewHolder;
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
+        if(partnerResultModel!=null){
+            holder.tv_name.setText(partnerResultModel.get(position).getPartnerName());
+            Glide.with(mContext).load(partnerResultModel.get(position).getPartnerImageUrl()).into(holder.my_pic);
+        }
+        notifyDataSetChanged();
 
-        holder.tv_name.setText(partnerResultModel.get(position).getPartnerName());
-        Glide.with(mContext).load(partnerResultModel.get(position).getPartnerImageUrl()).into(holder.my_pic);
     }
 
 
@@ -56,6 +58,7 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.MyViewHold
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView my_pic;
         public TextView tv_name;
+
         public MyViewHolder(View itemView) {
             super(itemView);
 
