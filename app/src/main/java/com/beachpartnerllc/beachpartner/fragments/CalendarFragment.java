@@ -309,8 +309,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         switch (item.getItemId()) {
             case R.id.search_filter:
-
-
                 Dialog filterDialogue = new Dialog(getContext());
                 //filterDialogue.getWindow().setBackgroundDrawable(new ColorDrawable(Color.argb(100, 0, 0, 0)));
                 filterDialogue.setContentView(R.layout.popup_filter);
@@ -337,13 +335,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         final Spinner spinner_events = (Spinner) filterDialogue.findViewById(R.id.event_spinner);
         final Spinner spinner_subEvents = (Spinner) filterDialogue.findViewById(R.id.subtypes_spinner);
-        Spinner spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
-        Spinner spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
+        final Spinner spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
+        final Spinner spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
 
         final AutoCompleteTextView tv_state = (AutoCompleteTextView) filterDialogue.findViewById(R.id.state_List);
         AutoCompleteTextView tv_region = (AutoCompleteTextView) filterDialogue.findViewById(R.id.region_list);
 
-        Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
+        final Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
 
 
         /*Events*/
@@ -570,6 +568,17 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
 
+            }
+        });
+
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String eventType = spinner_events.getSelectedItem().toString();
+                String sunType = spinner_subEvents.getSelectedItem().toString();
+                String year = spinner_year.getSelectedItem().toString();
+                String month = spinner_month.getSelectedItem().toString();
+                String state    = tv_state.getText().toString();
             }
         });
 

@@ -965,29 +965,7 @@ class CompactCalendarController {
     }
 
     private void drawTextEvents(Canvas canvas, float xPosition, float yPosition, List<Event> eventsList) {
-        if (eventsList.size() == 1) {
-            drawSingleEvent(1,canvas,xPosition,yPosition,eventsList);
-
-
-        } else if (eventsList.size() == 2) {
-            drawSingleEvent(2,canvas, xPosition, yPosition, eventsList);
-        } else if (eventsList.size() == 3) {
-            drawSingleEvent(3,canvas, xPosition, yPosition, eventsList);
-        }
-        else if(eventsList.size()==4){
-            drawSingleEvent(4,canvas, xPosition, yPosition, eventsList);
-        }else if(eventsList.size()==5){
-            drawSingleEvent(5,canvas, xPosition, yPosition, eventsList);
-
-        }else if(eventsList.size()==6){
-            drawSingleEvent(6,canvas, xPosition, yPosition, eventsList);
-
-        }else if(eventsList.size()==7){
-            drawSingleEvent(7,canvas, xPosition, yPosition, eventsList);
-
-        }
-
-
+        drawSingleEvent(eventsList.size(),canvas,xPosition,yPosition,eventsList);
     }
 
     private void drawCircle(Canvas canvas, float radius, float x, float y) {
