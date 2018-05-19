@@ -44,6 +44,27 @@ public class Event implements Serializable, Parcelable {
     private int color;
     public String eventAdmin;
     private String invitationStatus;
+
+    public long getEventRegStartDate() {
+        return eventRegStartDate;
+    }
+
+    public void setEventRegStartDate(long eventRegStartDate) {
+        this.eventRegStartDate = eventRegStartDate;
+    }
+
+    public long getEventRegEndDate() {
+        return eventRegEndDate;
+    }
+
+    public void setEventRegEndDate(long eventRegEndDate) {
+        this.eventRegEndDate = eventRegEndDate;
+    }
+
+    public void setInvitationList(List<InvitationsModel> invitationList) {
+        this.invitationList = invitationList;
+    }
+
     private String eventUrl;
     List<InvitationsModel>invitationList;
 

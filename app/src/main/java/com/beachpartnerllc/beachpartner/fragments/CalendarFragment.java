@@ -37,6 +37,7 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCale
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.utils.MyJsonArrayRequest;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -331,7 +332,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    private void initView(Dialog filterDialogue) {
+    private void initView(final Dialog filterDialogue) {
 
         final Spinner spinner_events = (Spinner) filterDialogue.findViewById(R.id.event_spinner);
         final Spinner spinner_subEvents = (Spinner) filterDialogue.findViewById(R.id.subtypes_spinner);
@@ -575,14 +576,34 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 String eventType = spinner_events.getSelectedItem().toString();
-                String sunType = spinner_subEvents.getSelectedItem().toString();
+                String subType = spinner_subEvents.getSelectedItem().toString();
                 String year = spinner_year.getSelectedItem().toString();
                 String month = spinner_month.getSelectedItem().toString();
                 String state    = tv_state.getText().toString();
+                String eventType_clear = eventType.replaceAll("\\s", "");
+                String stateAdapter = state.replaceAll("\\s", "");
+
+                JSONObject objects = new JSONObject();
+                try {
+                    objects.put("eventType",eventType_clear);
+                    objects.put("month",month);
+                    objects.put("region","");
+                    objects.put("state",stateAdapter);
+                    objects.put("subType",subType);
+                    objects.put("year",year);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                searchEvents(objects);
+                filterDialogue.dismiss();
             }
         });
 
     }
+
+
 
 
     //Get all Master Calendar events Api
@@ -595,6 +616,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     @Override
                     public void onResponse(JSONArray response) {
                         if (response != null) {
+                            /*Log.d(TAG, "onResponse Get all Events: " + response.toString());
+                            Type listType = new TypeToken<List<Event>>() {}.getType();
+                            eventModelList = new Gson().fromJson(response.toString(), listType);
+                            setupCalendar();*/
                             for (int i = 0; i < response.length(); i++) {
                                 try {
 
@@ -617,37 +642,11 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setEventStatus(object.getString("eventStatus"));
                                     model.setInvitationStatus(object.getString("invitationStatus"));
                                     model.setEventUrl(object.getString("eventurl"));
-
-
-//                                   -------------event admin changed from object to string change noted on 5/9/2018--------------
-
-//                                    JSONObject adminObject = object.getJSONObject("eventAdmin");
-//                                    EventAdminModel eventAdminModel = new EventAdminModel();
-//                                    eventAdminModel.setFirstName(adminObject.getString("firstName"));
-
-
-
-                                    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-                                    try {
-                                        String mDate = object.getString("eventStartDate");
-                                        Date date = sdf.parse(mDate);
-                                        date.setHours(0);
-                                        date.setMinutes(0);
-                                        date.setSeconds(0);
-                                        long timeInMilliseconds = date.getTime();
-                                        System.out.println("Date in milli :: " + timeInMilliseconds);
-                                        model.setTimeInMillis(timeInMilliseconds);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }*/
-//                                    model.setEventAdmin(eventAdminModel);
                                     eventModelList.add(model);
 
+                                } catch (Exception e) {
 
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
                                 }
-
                             }
                             setupCalendar();
                         }
@@ -813,6 +812,67 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 compactCalendarView.addEvent(myeventModelList.get(i));
             }
         }
+    }
+
+    //Api for search events
+    private void searchEvents(JSONObject obj) {
+        eventModelList.clear();
+        MyJsonArrayRequest arrayRequest = new MyJsonArrayRequest(ApiService.REQUEST_METHOD_POST, ApiService.SEARCH_EVENTS,obj,
+                new Response.Listener<JSONArray> () {
+                @Override
+                public void onResponse(JSONArray response) {
+                   /* Log.d(TAG, "onResponse Search: " + response.toString());
+                    Type listType = new TypeToken<List<Event>>() {}.getType();
+                    eventModelList = new Gson().fromJson(response.toString(), listType);
+                    setupCalendar();*/
+                    for (int i = 0; i < response.length(); i++) {
+                        try {
+
+                            JSONObject object = response.getJSONObject(i);
+
+                            Event model = new Event();
+                            model.setEventId(object.getString("id"));
+                            model.setEventName(object.getString("eventName"));
+                            model.setData(object.getString("eventDescription"));
+                            model.setEventLocation(object.getString("eventLocation"));
+                            model.setEventVenue(object.getString("eventVenue"));
+                            model.setEventStartDate(object.getLong("eventStartDate"));
+                            model.setEventEndDate(object.getLong("eventEndDate"));
+                            model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
+                            model.setEventRegStartdate(object.getLong("eventRegStartDate"));
+                            model.setEventRegEnddate(object.getLong("eventRegEndDate"));
+                            model.setEventAdmin(object.getString("eventAdmin"));
+                            model.setRegType(object.getString("registerType"));
+                            model.setUserMessage(object.getString("userMessage"));
+                            model.setEventStatus(object.getString("eventStatus"));
+                            model.setInvitationStatus(object.getString("invitationStatus"));
+                            model.setEventUrl(object.getString("eventurl"));
+                            eventModelList.add(model);
+
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    setupCalendar();
+                }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", arrayRequest.toString());
+        requestQueue.add(arrayRequest);
     }
 
     private String trimMessage(String json, String detail) {

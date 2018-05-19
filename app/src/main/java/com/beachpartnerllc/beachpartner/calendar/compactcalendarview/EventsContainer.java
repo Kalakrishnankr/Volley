@@ -24,7 +24,7 @@ public class EventsContainer {
     }
 
     void addEvent(Event event) {
-        eventsCalendar.setTimeInMillis(event.getTimeInMillis());
+        eventsCalendar.setTimeInMillis(event.getEventStartDate());
         String key = getKeyForCalendarEvent(eventsCalendar);
 //        List<CalendarContract.Events> eventsForMonth = eventsByMonthAndYearMap.get(key);
         List<Events> eventsForMonth = eventsByMonthAndYearMap.get(key);

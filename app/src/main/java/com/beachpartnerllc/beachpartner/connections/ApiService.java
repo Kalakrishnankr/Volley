@@ -40,6 +40,7 @@ public class ApiService {
     public static String GET_ALL_SENDORRECIVE_REQUEST = BASE_URL +"events/user/invitations";
     public static String HANDLE_EVENT           =  BASE_URL+"events/user/invitationResponse";
     public static String COURT_NOTIFY           =  BASE_URL + "events/user/notifyCourtNumber";
+    public static String SEARCH_EVENTS          =  BASE_URL +"events/search";
 
 
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
