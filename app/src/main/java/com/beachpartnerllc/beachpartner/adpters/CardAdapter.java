@@ -15,9 +15,12 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.fragments.MyCalendarEvents;
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 20/2/18.
@@ -26,6 +29,9 @@ import java.util.ArrayList;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
     public Context mContext;
     private ArrayList<Event> dataList;
+    private List<PartnerResultModel>partnerList;
+    private List<InvitationsModel> invitationList;
+
 
     public CardAdapter(Context context, ArrayList<Event> dataList) {
         this.dataList = dataList;
@@ -51,7 +57,16 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         String date = dft.format(esDate);
         holder.txtv_date.setText(date);
         holder.txtv_place.setText(model.getEventVenue());
-        holder.txtv_players.setText("Martin, David, John, Hari");
+        if (model.getInvitationList() != null) {
+            invitationList = model.getInvitationList();
+            if (invitationList.size() > 0) {
+                for(int i=0;i<invitationList.size();i++){
+                    partnerList.addAll(invitationList.get(i).getPartnerList());
+                }
+            }
+        }else{
+            holder.txtv_players.setText("");
+        }
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -68,8 +83,6 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
             }
         });
-
-
     }
 
     @Override
