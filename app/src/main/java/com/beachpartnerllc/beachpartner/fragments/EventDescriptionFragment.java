@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +42,7 @@ import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.google.gson.Gson;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -65,6 +68,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private List<InvitationsModel> invitationList = new ArrayList<>();
     private List<PartnerResultModel> partnerList = new ArrayList<>();
 
+    private android.app.AlertDialog transparentAlert;
 
     private long event_start;
 
@@ -78,7 +82,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("Create", "onCreate");
-
+        ForegroundLoader();
     }
 
     @Override
@@ -103,7 +107,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             regType = event.getRegType();
             eventUrl = event.getEventUrl();
 
-            //disabling event register button till the team size is met
+            //Case1:coming from MAstercalendar to Eventdescription--->disabling event register button till the team size is met that is when the event status is Active
             if (regType != null ) {
                 if (regType.equalsIgnoreCase("Organizer") && event.getEventStatus().equalsIgnoreCase("Active")) {
                     btnRegister.setClickable(true);
@@ -112,6 +116,23 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                 }
             }
+
+            //Case2:coming from HomePage to Eventdescription(In case of sent request)--->check invitationlist to retrieve eventStatus<-->
+            // only taking first array element, as of now user can register for a particular event only once
+            if(event.getInvitationList()!=null){
+                if(event.getInvitationList().get(0).getEventStatus()!=null){
+                    if(event.getInvitationList().get(0).getEventStatus().equalsIgnoreCase("Active")){
+                        btnRegister.setClickable(true);
+                    }
+                    else{
+                        btnRegister.setClickable(false);
+                        btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    }
+                }
+                //transparentAlert.dismiss();
+            }
+
+
 
             eventId = event.getEventId();
             if (event.getEventAdmin() != null) {
@@ -147,6 +168,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             tview_venue.setText(event.getEventVenue());
         }
 
+
         return view;
     }
 
@@ -154,6 +176,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getEvent(eventId);
+
+
     }
 
 
@@ -259,6 +283,16 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
 
+    private void ForegroundLoader(){
+        android.app.AlertDialog.Builder dialogbar=new android.app.AlertDialog.Builder(getActivity());
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        transparentAlert = dialogbar.create();
+        transparentAlert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        transparentAlert.show();
+    }
 
     private void getEvent(String eventId) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST + eventId + "?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
@@ -268,6 +302,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     try {
                         Event eventModel = new Gson().fromJson(response.toString(), Event.class);
                         invitationList = eventModel.getInvitationList();
+                        transparentAlert.dismiss();
                         viewPartners();
 
                     } catch (Exception e) {
@@ -301,7 +336,13 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     private void viewPartners() {
         partnerList.clear();
+
+
         if (invitationList != null && invitationList.size() > 0) {
+            if(invitationList.get(0).getEventStatus().equalsIgnoreCase("Active")||invitationList.get(0).getEventStatus().equalsIgnoreCase("Registered")){
+                btnInvitePartner.setClickable(false);
+                btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+            }
             for (int i = 0; i < invitationList.size(); i++) {
                 partnerList.addAll(invitationList.get(i).getPartnerList());
             }
@@ -309,8 +350,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if (partnerList.size() > 0) {
             btnBack.setText("VIEW PARTNERS");
             isPartnerbtnActive = true;
-            btnInvitePartner.setClickable(false);
-            btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
         }
 
     }
@@ -474,7 +513,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         try {
             registerObject.put("eventId", eventId);
             registerObject.put("registerType", "Organizer");
-            registerObject.put("userIds", "[]");
+            registerObject.put("userIds",new JSONArray());
         } catch (JSONException e) {
             e.printStackTrace();
         }
