@@ -18,7 +18,7 @@
             android:id="@+id/event_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1"/>
+            android:layout_weight="0.1" />
 
         <com.beachpartnerllc.beachpartner.CustomTextView
             android:id="@+id/event"
@@ -29,16 +29,15 @@
             android:layout_weight="2.6"/>
         
         <LinearLayout
+            android:id="@+id/bg_status"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="wrap_content"
             android:layout_weight="0.3"
-            android:layout_gravity="center"
-            android:background="@color/light_blue">
+            android:layout_gravity="center">
         <ImageView
             android:id="@+id/requests_img"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"/>
+            android:layout_width="40dp"
+            android:layout_height="40dp"/>
         </LinearLayout>
 
         <ImageView

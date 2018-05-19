@@ -52,7 +52,6 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.PartnerLis
     public void onBindViewHolder(PartnerListHolder holder, int position) {
         final MyCalendarPartnerModel model = partnerResultModel.get(position);
         if(model!=null){
-            if(!model.getpartner_Id().equalsIgnoreCase(user_Id)){
                 if(model.getpartner_role().equalsIgnoreCase("Organizer")){
                     holder.tv_name.setText(model.getpartner_Name());
                     Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.my_pic);
@@ -64,12 +63,10 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.PartnerLis
                     Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.my_pic);
                     holder.tv_role.setVisibility(View.GONE);
                 }
-            }
-            else{
-                holder.itemView.setVisibility(View.GONE);
-            }
+
 
         }
+
 
         holder.partnerCard.setOnClickListener(new View.OnClickListener() {
             @Override
