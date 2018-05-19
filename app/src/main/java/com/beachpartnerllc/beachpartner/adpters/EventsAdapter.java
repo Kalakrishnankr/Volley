@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
@@ -17,8 +18,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.fragments.AcceptRejectRequestFragment;
 import com.beachpartnerllc.beachpartner.fragments.EventDescriptionFragment;
 import com.beachpartnerllc.beachpartner.fragments.MyCalendarEvents;
-import com.beachpartnerllc.beachpartner.models.EventResultModel;
-import com.beachpartnerllc.beachpartner.utils.AppConstants;
 
 import java.util.List;
 
@@ -51,6 +50,18 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
         final Event model = list.get(position);
         holder.tview_events.setText((CharSequence) model.getEventName());
+        if (model.getEventStatus()!=null && model.getRegType()!=null) {
+            //Check event status =active register type =Organizer
+            if (model.getEventStatus().equalsIgnoreCase("Active") && model.getRegType().equalsIgnoreCase("Organizer")) {
+                holder.inviteStatus.setBackground(mContext.getResources().getDrawable(R.drawable.ic_msg_send));
+            }
+            if (model.getEventStatus().equalsIgnoreCase("Invited") && model.getRegType().equalsIgnoreCase("Invitee")) {
+                holder.inviteStatus.setBackground(mContext.getResources().getDrawable(R.drawable.ic_msg_receive));
+            }
+        }else {
+
+        }
+
        // int colr= Integer.parseInt(model.event_color.trim());
         holder.event_view.setBackgroundColor(model.getColor());
 
@@ -128,14 +139,15 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         TextView tview_events;
         View event_view;
         CardView cardview;
+        ImageView inviteStatus;
 
         public MyViewHolder(View itemView) {
             super(itemView);
 
-        tview_events    =   (TextView) itemView.findViewById(R.id.event);
-        event_view      =   (View)itemView.findViewById(R.id.event_color);
-        cardview        =   (CardView)itemView.findViewById(R.id.cardview_item);
-
+        tview_events    =   itemView.findViewById(R.id.event);
+        event_view      =   itemView.findViewById(R.id.event_color);
+        cardview        =   itemView.findViewById(R.id.cardview_item);
+        inviteStatus    =   itemView.findViewById(R.id.requests_img);
 
         }
     }
