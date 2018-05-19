@@ -573,6 +573,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
             adapter = new CardAdapter(getContext(),myUpcomingTList);
             upcomingRecyclerview.setAdapter(adapter);
             SnapHelper snapHelper = new PagerSnapHelper();
+            upcomingRecyclerview.setOnFlingListener(null);
             snapHelper.attachToRecyclerView(upcomingRecyclerview);
         }else {
             txtv_notour.setVisibility(View.VISIBLE);

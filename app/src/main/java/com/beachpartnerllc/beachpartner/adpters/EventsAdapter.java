@@ -14,8 +14,11 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.beachpartnerllc.beachpartner.fragments.AcceptRejectRequestFragment;
 import com.beachpartnerllc.beachpartner.fragments.EventDescriptionFragment;
 import com.beachpartnerllc.beachpartner.fragments.MyCalendarEvents;
+import com.beachpartnerllc.beachpartner.models.EventResultModel;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 
 import java.util.List;
 
@@ -72,18 +75,39 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
                 }else {
                     //Activate Master Calendar
+                    try{
+                        if(!model.getInvitationStatus().equalsIgnoreCase("Accepted") && model.getRegType().equalsIgnoreCase("Invitee")){
+                            AcceptRejectRequestFragment ARFragment =new AcceptRejectRequestFragment();
+                            Bundle bundlemodel =new Bundle();
+                            bundlemodel.putString("notAcceptedInvitee",model.getEventId());
+                            ARFragment.setArguments(bundlemodel);
+                            FragmentManager ARmanager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                            FragmentTransaction ARtrans = ARmanager.beginTransaction();
+                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                            ARtrans.replace(R.id.container,ARFragment);
+                            ARtrans.addToBackStack(null);
+                            ARtrans.commit();
 
-                    EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
-                    //add bundle
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("event_clicked",model);
-                    eventDescriptionFragment.setArguments(bundle);
-                    FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
-                    FragmentTransaction ctrans = manager.beginTransaction();
-                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                    ctrans.replace(R.id.container,eventDescriptionFragment);
-                    ctrans.addToBackStack(null);
-                    ctrans.commit();
+                        }
+                        else{
+                            EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+                            //add bundle
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("event_clicked",model);
+                            eventDescriptionFragment.setArguments(bundle);
+                            FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                            FragmentTransaction ctrans = manager.beginTransaction();
+                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                            ctrans.replace(R.id.container,eventDescriptionFragment);
+                            ctrans.addToBackStack(null);
+                            ctrans.commit();
+                        }
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+
 
                 }
 

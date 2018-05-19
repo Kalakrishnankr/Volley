@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -26,13 +28,17 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventAdminModel;
+import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
@@ -46,15 +52,20 @@ import java.util.Map;
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
-    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv;
+    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv,headingPartnersAthletes;
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
     private String userType;
     private String eventId;
     private String user_token;
+    private String courtNo;
+    private AVLoadingIndicatorView loadingIndicatorView;
 
     private MyNoteAdapter myNoteAdapter;
-    private ArrayList<PartnerResultModel> model = new ArrayList<>();
+    private ArrayList<InvitationsModel> model = new ArrayList<>();
+    private ArrayList<MyCalendarPartnerModel> partners = new ArrayList<MyCalendarPartnerModel>();
+
+    private EventResultModel eventResultModel;
 
 
 
@@ -120,11 +131,22 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
         rcv_mycalendar      =   (RecyclerView) view.findViewById(R.id.rcv_partner_notes);
         no_partners_txtv    =   (TextView) view.findViewById(R.id.no_partners_txtv);
+        loadingIndicatorView=   (AVLoadingIndicatorView)view.findViewById(R.id.progress_partners);
+        headingPartnersAthletes =(TextView)view.findViewById(R.id.heading_who_are_going);
+
+        if (userType.equalsIgnoreCase("Athlete")) {
+            headingPartnersAthletes.setText("Event Partners");
+            btn_myCalCourt.setText("Check In");
+            btn_myCalBack.setText("Back");
+        }
+        if (userType.equalsIgnoreCase("Coach")) {
+            headingPartnersAthletes.setText("Athletes");
+            btn_myCalCourt.setText("Check In");
+            btn_myCalBack.setText("Decline");
+        }
 
 
 //        Button change according to coach or athlete
-        btn_myCalCourt.setText("Check In");
-        btn_myCalBack.setText("Decline");
 
 
 
@@ -138,10 +160,35 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
     private void setUpEventPartners(){
+        loadingIndicatorView.setVisibility(View.GONE);
+        partners.clear();
+        List<PartnerResultModel> tempModel = new ArrayList<PartnerResultModel>();
         if(model!=null){
-            myNoteAdapter       =   new MyNoteAdapter(getContext(),model);
+            MyCalendarPartnerModel partnerObject1 =new MyCalendarPartnerModel();
+            partnerObject1.setpartner_Id(model.get(0).getInviterUserId());
+            partnerObject1.setPartner_ImageUrl(model.get(0).getInviterImageUrl());
+            partnerObject1.setpartner_Name(model.get(0).getInviterName());
+            partnerObject1.setpartner_role("Organizer");
+
+            partners.add(partnerObject1);//organizer
+            if(model.get(0).getPartnerList()!=null){
+                if(model.get(0).getPartnerList().size()>0){
+                     tempModel = model.get(0).getPartnerList();
+                    for(int i=0;i<tempModel.size();i++){
+                        MyCalendarPartnerModel partnerObject2 =new MyCalendarPartnerModel();
+                        partnerObject2.setpartner_Id(tempModel.get(i).getPartnerUserId());
+                        partnerObject2.setPartner_ImageUrl(tempModel.get(i).getPartnerImageUrl());
+                        partnerObject2.setpartner_Name(tempModel.get(i).getPartnerName());
+                        partnerObject2.setpartner_role("Invitee");
+
+                        partners.add(partnerObject2);//invitees
+                    }
+                }
+            }
+            rcv_mycalendar.setLayoutManager(new LinearLayoutManager(getContext()));
+            myNoteAdapter       =   new MyNoteAdapter(getContext(),partners);
             rcv_mycalendar.setAdapter(myNoteAdapter);
-            no_partners_txtv.setVisibility(View.VISIBLE);
+            no_partners_txtv.setVisibility(View.GONE);
         }
         else{
             no_partners_txtv.setVisibility(View.VISIBLE);
@@ -192,7 +239,17 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 if(!((txtv_notify.getText().toString().trim().length()) == 0)){
+                    courtNo = txtv_notify.getText().toString().trim();
+                    JSONObject objectCourtNotification = new JSONObject();
+                    try {
+                        objectCourtNotification.put("eventId",eventResultModel.getEventId());
+                        objectCourtNotification.put("orgUserId",eventResultModel.getInvitationList().get(0).getInviterUserId());
+                        objectCourtNotification.put("courtNumber",courtNo);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
 
+                    }
+                    CourtNotifier(objectCourtNotification);
                     //something do here
                     alertDialog.cancel();
 
@@ -220,15 +277,15 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     //api for listing event partners in mycalendar
 
     public void getEvent(String event_Id) {
-
+        loadingIndicatorView.setVisibility(View.VISIBLE);
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mycalendar",null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 model = null;
                 if(response!=null){
                     try{
-                        InvitationsModel invitationsModel = new Gson().fromJson(response.toString(), InvitationsModel.class);
-                        model = (ArrayList<PartnerResultModel>) invitationsModel.getPartnerList();
+                        eventResultModel = new Gson().fromJson(response.toString(), EventResultModel.class);
+                        model = (ArrayList<InvitationsModel>) eventResultModel.getInvitationList();
                         setUpEventPartners();
 
                     }catch (Exception e){
@@ -258,5 +315,74 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
             Log.d("Request", jsonObjectRequest.toString());
             requestQueue.add(jsonObjectRequest);
         }
+    }
+
+    //Handle the event
+    private void CourtNotifier(JSONObject object) {
+        JsonObjectRequest objectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.COURT_NOTIFY, object, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    //Toast.makeText(getActivity(), "Accepted", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders(){
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("calendar_courtnotifier", "eventHandler: "+requestQueue.toString());
+            requestQueue.add(objectRequest);
+        }
+    }
+
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 }

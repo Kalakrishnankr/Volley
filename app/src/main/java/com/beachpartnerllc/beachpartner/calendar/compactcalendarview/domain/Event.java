@@ -35,7 +35,7 @@ public class Event implements Serializable, Parcelable {
     private String eventVenue;
     private long eventStartDate;
     private long eventEndDate;
-    private String status;
+    private String eventStatus;
     private long eventRegStartDate;
     private long eventRegEndDate;
     private String regType;
@@ -43,6 +43,8 @@ public class Event implements Serializable, Parcelable {
     private long timeInMillis;
     private int color;
     public String eventAdmin;
+    private String invitationStatus;
+    private String eventUrl;
     List<InvitationsModel>invitationList;
 
     public List<InvitationsModel> getInvitationList() {
@@ -126,13 +128,22 @@ public class Event implements Serializable, Parcelable {
         this.eventEndDate = eventEndDate;
     }
 
-    public String getStatus() {
-        return status;
+    public String getEventStatus() {
+        return eventStatus;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setEventStatus(String status) {
+        this.eventStatus = status;
     }
+
+    public void setInvitationStatus(String mInvitationStatus) {
+        this.invitationStatus = mInvitationStatus;
+    }
+
+    public String getInvitationStatus() {
+        return invitationStatus;
+    }
+
     public void setRegType(String registerType) {
         this.regType = registerType;
     }
@@ -148,6 +159,13 @@ public class Event implements Serializable, Parcelable {
 
     public String getUserMessage() {
         return userMessage;
+    }
+
+    public void setEventUrl(String Url) {
+        this.eventUrl = Url;
+    }
+    public String getEventUrl() {
+        return eventUrl;
     }
 //    public EventAdminModel getEventAdmin() {
 //        return eventAdmin;
@@ -218,13 +236,14 @@ public class Event implements Serializable, Parcelable {
                 '}';
     }
 
+
     @Override
     public int describeContents() {
         return 0;
     }
 
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
+    public void writeToParcel(Parcel dest, int flags) {
 
     }
 

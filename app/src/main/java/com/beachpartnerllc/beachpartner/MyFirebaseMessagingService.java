@@ -26,6 +26,7 @@ import java.util.Map;
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     NotificationManager notificationManager;
     String ADMIN_CHANNEL_ID="BeachPartner";
+    private String redirect;
     private static final String TAG = "MyFirebaseMsgService";
 
 
@@ -49,6 +50,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         final Map<String, String> data = remoteMessage.getData();
         String title = data.get("title");
         String body = data.get("body");
+        redirect = data.get("click_action");
+
 
         if(title!=null&&body!=null){
             if(!title.equals("") && !body.equals("")){
@@ -94,7 +97,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendNotificationData(String messageTitle,String messageBody) {
         Intent intent = new Intent(this, TabActivity.class);
-        intent.putExtra("reDirectPage", "hifive");
+        if(redirect!=null){
+            if(redirect.equalsIgnoreCase("HOME")){
+                intent.putExtra("reDirectPage", "HOME");
+            }
+            else{
+                intent.putExtra("reDirectPage", "hifive");
+            }
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0 /* request code */, intent,PendingIntent.FLAG_UPDATE_CURRENT);
 
