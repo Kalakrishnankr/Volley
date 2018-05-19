@@ -68,7 +68,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     CompactCalendarView compactCalendarView;
     SimpleDateFormat dateFormatForDisplaying = new SimpleDateFormat("dd-M-yyyy hh:mm:ss a", Locale.getDefault());
     SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
-    SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
     String toDayDate;
     private TextView tview_master, tview_mycalendar, tview_month, tview_date;
     private ImageButton btn_previous, btn_next;
@@ -172,12 +172,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
 
         });
+
         tview_month.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
         tview_date.setText("Events for " + dateFormat.format(new Date()));
 
 
     }
-
 
     @Override
     public void onClick(View view) {
