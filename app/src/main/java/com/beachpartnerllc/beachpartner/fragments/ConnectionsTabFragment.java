@@ -7,6 +7,8 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -27,6 +29,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.MyConnectionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MyTeamAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
@@ -70,6 +73,8 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private BottomSheetBehavior bottomSheetBehavior;
     private String registerType;
     private Event eventObject;
+    private TabActivity tabActivity;
+    private String YOUR_FRAGMENT_STRING_TAG;
 
     public ConnectionsTabFragment() {
         // Required empty public constructor
@@ -99,6 +104,11 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity) getActivity();
+            //tabActivity.setActionBarTitle("Messages with ");
+        }
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
 
         //adapter for connections
@@ -341,6 +351,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     Toast.makeText(getActivity(), "Request send successfully", Toast.LENGTH_SHORT).show();
+                     moveToMasterCalendar();
                 }
 
             }
@@ -366,6 +377,19 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             queue.add(request);
         }
 
+
+    }
+
+    private void moveToMasterCalendar() {
+        if (getActivity() != null) {
+            CalendarFragment calendarFragment = new CalendarFragment();
+            tabActivity.getSupportActionBar().setTitle("Calendar");
+            FragmentManager cmngr = getActivity().getSupportFragmentManager();
+            FragmentTransaction ctrans = cmngr.beginTransaction();
+            ctrans.replace(R.id.container, calendarFragment);
+            ctrans.commit();
+            tabActivity.disableFloatButtons();
+        }
 
     }
 

@@ -192,6 +192,7 @@ public class MessageFragment extends Fragment {
                 userList.clear();
                 chatList.addAll(hashSet);
                 if (connectionList != null && connectionList.size() > 0) {
+                   
                     if (chatList.size() > 0 && chatList != null) {
                         for (int i = 0; i < chatList.size(); i++) {
                             String chatId = chatList.get(i).split("-")[0];
@@ -216,6 +217,7 @@ public class MessageFragment extends Fragment {
                         recyclerView.invalidate();
                         chatListAdapter.notifyDataSetChanged();
                     }
+
 
                 } else {
                     progressBar.setVisibility(View.GONE);

@@ -99,45 +99,48 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if (bundle != null) {
             event = (Event) bundle.getSerializable(AppConstants.EVENT_DETAIL);
             sendCount = bundle.getString(AppConstants.REQUEST_SEND_COUNT);
-            String eventAdmin = event.getEventAdmin();
-            regType = event.getRegType();
+            if (event != null && !event.equals(null)) {
+                String eventAdmin = event.getEventAdmin();
+                regType = event.getRegType();
 
-            //disabling event register button till the team size is met
-            if (regType != null) {
-                if (regType.equalsIgnoreCase("Organizer")) {
-                    btnRegister.setClickable(true);
-                }else {
-                    btnRegister.setClickable(false);
-                    btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                //disabling event register button till the team size is met
+                if (regType != null) {
+                    if (regType.equalsIgnoreCase("Organizer")) {
+                        btnRegister.setClickable(true);
+                    }else {
+                        btnRegister.setClickable(false);
+                        btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    }
                 }
+
+                eventId = event.getEventId();
+                tview_eventadmin.setText(eventAdmin.toString());
+                tview_eventname.setText(event.getEventName().toString());
+                eventName = event.getEventName().toString();
+                tview_location.setText(event.getEventLocation());
+                if (event.getUserMessage() != null && !event.getUserMessage().isEmpty()) {
+                    tview_title.setVisibility(View.VISIBLE);
+                    tview_title.setText(event.getUserMessage());
+                }else{
+                    tview_title.setVisibility(View.GONE);
+                }
+
+                SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
+                event_start = event.getEventStartDate();
+                long event_enddate = event.getEventEndDate();
+                long event_regStart = event.getEventRegStartdate();
+                long event_regEnd = event.getEventRegEnddate();
+                Date date = new Date(event_start);
+                Date e_end = new Date(event_enddate);
+                Date reg_startDate = new Date(event_regStart);
+                Date reg_endDate = new Date(event_regEnd);
+                tview_startDate.setText(dft.format(date));
+                tview_endDate.setText(dft.format(e_end));
+                tview_regStart.setText(dft.format(reg_startDate));
+                tview_regClose.setText(dft.format(reg_endDate));
+                tview_venue.setText(event.getEventVenue());
             }
 
-            eventId = event.getEventId();
-            tview_eventadmin.setText(eventAdmin.toString());
-            tview_eventname.setText(event.getEventName().toString());
-            eventName = event.getEventName().toString();
-            tview_location.setText(event.getEventLocation());
-            if (event.getUserMessage() != null && !event.getUserMessage().isEmpty()) {
-                tview_title.setVisibility(View.VISIBLE);
-                tview_title.setText(event.getUserMessage());
-            }else{
-                tview_title.setVisibility(View.GONE);
-            }
-
-            SimpleDateFormat dft = new SimpleDateFormat("MMM dd, yyyy");
-            event_start = event.getEventStartDate();
-            long event_enddate = event.getEventEndDate();
-            long event_regStart = event.getEventRegStartdate();
-            long event_regEnd = event.getEventRegEnddate();
-            Date date = new Date(event_start);
-            Date e_end = new Date(event_enddate);
-            Date reg_startDate = new Date(event_regStart);
-            Date reg_endDate = new Date(event_regEnd);
-            tview_startDate.setText(dft.format(date));
-            tview_endDate.setText(dft.format(e_end));
-            tview_regStart.setText(dft.format(reg_startDate));
-            tview_regClose.setText(dft.format(reg_endDate));
-            tview_venue.setText(event.getEventVenue());
         }
 
         return view;
