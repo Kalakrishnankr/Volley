@@ -20,6 +20,9 @@
     <color name="nobg">#80000000</color>
     <color name="orange">#FFA500</color>
     <color name="undo">#e3413c3b</color>
+    <color name="green">#7746c26b</color>
+    <color name="waitin_orange">#77ffa500</color>
+
 
     <!-- Screens background color-->
 

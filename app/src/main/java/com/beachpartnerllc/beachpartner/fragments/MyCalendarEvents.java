@@ -66,7 +66,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     private ArrayList<MyCalendarPartnerModel> partners = new ArrayList<MyCalendarPartnerModel>();
 
     private EventResultModel eventResultModel;
-
+    private String user_Id;
 
 
     public MyCalendarEvents() {
@@ -89,6 +89,8 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+
+        user_Id=new PrefManager(getContext()).getUserId();
         userType = new PrefManager(getContext()).getUserType();
         user_token  = new PrefManager(getContext()).getToken();
         View view = inflater.inflate(R.layout.fragment_mycalendar_events, container, false);
@@ -164,13 +166,15 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         partners.clear();
         List<PartnerResultModel> tempModel = new ArrayList<PartnerResultModel>();
         if(model!=null){
-            MyCalendarPartnerModel partnerObject1 =new MyCalendarPartnerModel();
-            partnerObject1.setpartner_Id(model.get(0).getInviterUserId());
-            partnerObject1.setPartner_ImageUrl(model.get(0).getInviterImageUrl());
-            partnerObject1.setpartner_Name(model.get(0).getInviterName());
-            partnerObject1.setpartner_role("Organizer");
+            if(!model.get(0).getInviterUserId().equalsIgnoreCase(user_Id)){
+                MyCalendarPartnerModel partnerObject1 =new MyCalendarPartnerModel();
+                partnerObject1.setpartner_Id(model.get(0).getInviterUserId());
+                partnerObject1.setPartner_ImageUrl(model.get(0).getInviterImageUrl());
+                partnerObject1.setpartner_Name(model.get(0).getInviterName());
+                partnerObject1.setpartner_role("Organizer");
+                partners.add(partnerObject1);//organizer
+            }
 
-            partners.add(partnerObject1);//organizer
             if(model.get(0).getPartnerList()!=null){
                 if(model.get(0).getPartnerList().size()>0){
                      tempModel = model.get(0).getPartnerList();
@@ -180,8 +184,9 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                         partnerObject2.setPartner_ImageUrl(tempModel.get(i).getPartnerImageUrl());
                         partnerObject2.setpartner_Name(tempModel.get(i).getPartnerName());
                         partnerObject2.setpartner_role("Invitee");
-
-                        partners.add(partnerObject2);//invitees
+                        if(!tempModel.get(i).getPartnerUserId().equalsIgnoreCase(user_Id)){
+                            partners.add(partnerObject2);//invitees
+                        }
                     }
                 }
             }
