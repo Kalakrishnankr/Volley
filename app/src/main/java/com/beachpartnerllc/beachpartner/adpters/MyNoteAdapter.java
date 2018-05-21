@@ -58,7 +58,6 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.PartnerLis
                     holder.tv_role.setVisibility(View.VISIBLE);
                 }
                 else{
-
                     holder.tv_name.setText(model.getpartner_Name());
                     Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.my_pic);
                     holder.tv_role.setVisibility(View.GONE);

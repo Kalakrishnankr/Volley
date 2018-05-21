@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
@@ -52,13 +53,13 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
 
         //holder.profileImg.setImageURI(Uri.parse(model.getPartnerImageUrl()));
         holder.txtv_name.setText(model.getpartner_Name());
-        holder.txtv_status.setText(model.getPartner_ivitationStatus());
+        //holder.txtv_status.setText(model.getPartner_ivitationStatus());
         if(model.getpartner_role()!=null){
             if(model.getpartner_role().equalsIgnoreCase("Organizer")){
-               holder.txtv_role.setVisibility(View.VISIBLE);
+               holder.txtv_role.setText("Organizer");
             }
             else{
-                holder.txtv_role.setVisibility(View.GONE);
+                holder.txtv_role.setText(model.getPartner_ivitationStatus());
             }
         }
 
@@ -70,7 +71,7 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public ImageView profileImg;
+        public CircularImageView profileImg;
         public TextView txtv_name,txtv_status,txtv_role;
 
         public MyViewHolder(View v) {
