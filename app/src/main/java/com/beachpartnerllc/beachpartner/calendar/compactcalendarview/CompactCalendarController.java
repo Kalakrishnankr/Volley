@@ -739,7 +739,7 @@ class CompactCalendarController {
         int todayDayOfMonth = todayCalender.get(Calendar.DAY_OF_MONTH);
         int currentYear = todayCalender.get(Calendar.YEAR);
         int selectedDayOfMonth = currentCalender.get(Calendar.DAY_OF_MONTH);
-        float indicatorOffset = bigCircleIndicatorRadius / 2;
+        float indicatorOffset = bigCircleIndicatorRadius / 1;
         if (uniqEvents != null) {
             for (int i = 0; i < uniqEvents.size(); i++) {
                 Events events = uniqEvents.get(i);
@@ -796,9 +796,8 @@ class CompactCalendarController {
 //        drawEventIndicatorCircle(canvas, xPosition, yPosition, event.getColor());
 
         dayPaint.setColor(Color.RED);
-//        dayPaint.setTextSize(30);
-        canvas.drawText(String.valueOf(eventSize),xPosition , yPosition+indicatorOffset,dayPaint);
-        drawEventCircleIndicator(NO_FILL_LARGE_INDICATOR, canvas, xPosition, yPosition+indicatorOffset,Color.parseColor("#FFFF00") );
+        canvas.drawText(String.valueOf(eventSize),xPosition , yPosition/*+indicatorOffset*/,dayPaint);
+        drawEventCircleIndicator(NO_FILL_LARGE_INDICATOR, canvas, xPosition, yPosition/*+indicatorOffset*/,0/*Color.parseColor("#FFFF00")*/ );
 //        dayPaint.setTextSize(40);
 
     }

@@ -44,15 +44,18 @@ public class Event implements Serializable, Parcelable {
     private int color;
     public String eventAdmin;
     private String invitationStatus;
-    private List<Long>eventDates;
 
-    public List<Long> getEventDates() {
+    public long[] getEventDates() {
         return eventDates;
     }
 
-    public void setEventDates(List<Long> eventDates) {
+    public void setEventDates(long[] eventDates) {
         this.eventDates = eventDates;
     }
+
+    private long [] eventDates;
+
+
 
 
 
