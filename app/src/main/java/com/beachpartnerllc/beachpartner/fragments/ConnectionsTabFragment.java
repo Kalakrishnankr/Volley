@@ -1,7 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,7 +35,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
-import com.beachpartnerllc.beachpartner.models.PersonModel;
 import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
 
 import org.json.JSONArray;
@@ -59,7 +57,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private MyTeamAdapter myTeamAdapter;;
     private ImageView upDownToggle;
     private TextView txtv_noconnection;
-    ArrayList<PersonModel> dummyData =new ArrayList<>();
     private ArrayList<ConnectionModel>myTeamList = new ArrayList<>();
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();  //to sort out athletes from the connectionlist
@@ -75,6 +72,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private Event eventObject;
     private TabActivity tabActivity;
     private String YOUR_FRAGMENT_STRING_TAG;
+    private AlertDialog alertDialog;
 
     public ConnectionsTabFragment() {
         // Required empty public constructor
@@ -110,7 +108,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             //tabActivity.setActionBarTitle("Messages with ");
         }
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-
         //adapter for connections
         getConnections();
         //adapter for creating my team
@@ -119,8 +116,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         rcviewTeam.setAdapter(myTeamAdapter);
         rcviewTeam.setLayoutManager(mnger);
         rcviewTeam.setHasFixedSize(true);
-
-
     }
 
     private void initActivity(View view) {
@@ -175,7 +170,6 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             }
         });
     }
-
 
 
     private void getConnections() {
@@ -303,6 +297,13 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        if (alertDialog != null) {
+            alertDialog.dismiss();
+        }
+    }
+    @Override
     public void onClick(View view) {
         switch (view.getId()){
            /* case R.id.btnExpand:
@@ -411,27 +412,35 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     }
 
     private void removeConfirmation(String firstname, final int position){
-        final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
-
-        alertadd.setTitle("Are you sure you want to remove "+firstname+" from your potential partners?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        athleteList.add(myTeamList.remove(position));
-                        mConnectionAdapter.notifyDataSetChanged();
-                        myTeamAdapter.notifyDataSetChanged();
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+        final AlertDialog.Builder alerts = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater   = getActivity().getLayoutInflater();
+        View view     = inflater.inflate(R.layout.alert_confirm,null);
+        alerts.setView(view);
+        TextView txtview    =    (TextView)view.findViewById(R.id.txtview) ;
+        Button   btn_confirm =   (Button) view.findViewById(R.id.btn_resetOk);
+        Button   btn_cancel  =   (Button) view.findViewById(R.id.btn_resetCancel);
+        txtview.setText("Are you sure you want to remove "+firstname+" from your potential partners?");
+        btn_confirm.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
+            public void onClick(View view) {
+                alertDialog.dismiss();
+                athleteList.add(myTeamList.remove(position));
+                mConnectionAdapter.notifyDataSetChanged();
+                myTeamAdapter.notifyDataSetChanged();
 
-                dialogInterface.cancel();
             }
         });
-
-        AlertDialog alert=alertadd.create();
-        alert.show();
-
+        btn_cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                alertDialog.dismiss();
+            }
+        });
+        alertDialog  = alerts.create();
+        alertDialog.show();
+        alertDialog.setCancelable(false);
+        alertDialog.setCanceledOnTouchOutside(true);
     }
+
+
 }

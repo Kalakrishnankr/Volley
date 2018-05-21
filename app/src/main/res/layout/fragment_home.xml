@@ -381,13 +381,6 @@
                         android:textColor="@color/white"
                         android:text="@string/partnerintrest" />
 
-                    <ImageView
-                        android:id="@+id/imgview_send"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="1dp"
-                        android:background="@drawable/ic_msg_send"/>
 
                     <ImageView
                         android:id="@+id/imgview_received"
@@ -397,7 +390,13 @@
                         android:layout_marginTop="1dp"
                         android:background="@drawable/ic_msg_receive"/>
 
-
+                    <ImageView
+                        android:id="@+id/imgview_send"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="1dp"
+                        android:background="@drawable/ic_msg_send"/>
 
                     <LinearLayout
                         android:id="@+id/req_next_button"

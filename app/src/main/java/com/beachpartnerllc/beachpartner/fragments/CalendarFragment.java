@@ -3,6 +3,8 @@ package com.beachpartnerllc.beachpartner.fragments;
 import android.app.Dialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.EventsAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
@@ -77,6 +80,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private String token;
     private List<Event> toDayEvents = new ArrayList<>();
     private static boolean isMycal = false;
+    private TabActivity tabActivity;
     public CalendarFragment() {
         // Required empty public constructor
     }
@@ -177,6 +181,16 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         tview_date.setText("Events for " + dateFormat.format(new Date()));
 
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Calendar");
+            tabActivity.disableFloatButtons();
+        }
     }
 
     @Override
