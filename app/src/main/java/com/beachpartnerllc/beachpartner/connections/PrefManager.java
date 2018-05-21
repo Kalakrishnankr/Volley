@@ -36,6 +36,14 @@ public class PrefManager {
         editor.commit();
     }
 
+    public void saveProfileImage(String imgUrl){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("userProfilePic",imgUrl);
+        editor.commit();
+
+    }
+
     public void saveFCMToken(String FCM){
         SharedPreferences sharedPreferences = context.getSharedPreferences("FCM", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

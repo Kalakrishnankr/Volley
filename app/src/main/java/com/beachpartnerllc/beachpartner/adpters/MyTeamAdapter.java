@@ -11,7 +11,6 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.ConnectionModel;
-import com.beachpartnerllc.beachpartner.models.PersonModel;
 import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
 import com.bumptech.glide.Glide;
 
@@ -86,7 +85,7 @@ public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHold
             super(itemView);
 
             tv_name     =   (TextView) itemView.findViewById(R.id.tview_name);
-            imgAdd      =   (ImageView)itemView.findViewById(R.id.addBtn);
+            //imgAdd      =   (ImageView)itemView.findViewById(R.id.addBtn);
             imgRemove   =   (ImageView)itemView.findViewById(R.id.removeBtn);
             imgPic      =   (CircularImageView)itemView.findViewById(R.id.imgProfilePic);
 

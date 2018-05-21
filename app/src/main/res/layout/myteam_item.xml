@@ -26,17 +26,7 @@
             android:text="Liz Held"
             android:layout_marginLeft="20dp"
             android:layout_weight="1.7"/>
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="0.1"/>
 
-        <ImageView
-            android:id="@+id/addBtn"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_gravity="center"
-            android:background="@drawable/ic_tick"/>
         <Space
             android:layout_width="0dp"
             android:layout_height="match_parent"

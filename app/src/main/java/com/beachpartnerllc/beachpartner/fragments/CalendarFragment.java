@@ -198,6 +198,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         switch (view.getId()) {
             case R.id.txtMaster:
+                tabActivity.setActionBarTitle("Master Calendar");
                 compactCalendarView.removeAllEvents();
                 compactCalendarView.invalidate();
                 if(eventsAdapter!=null){
@@ -210,6 +211,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 break;
 
             case R.id.txtMycalendar:
+                tabActivity.setActionBarTitle("My Calendar");
                 compactCalendarView.removeAllEvents();
                 compactCalendarView.invalidate();
                 if(eventsAdapter!=null){
@@ -662,8 +664,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                         for (int j = 0; j < dateArray.length() ; j++) {
                                             datearray [j]= dateArray.getLong(j);
                                         }
+                                        model.setEventDates(datearray);
                                     }
-                                    model.setEventDates(datearray);
                                     eventModelList.add(model);
 
                                 } catch (Exception e) {
@@ -756,26 +758,14 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
                                     eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
                                     eventModel.setEventAdmin(jsonObject.getString("eventAdmin"));
-
-
-//                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
-//                                    JSONObject object = jsonObject.getJSONObject("eventAdmin");
-//
-//                                    EventAdminModel adminModel = new EventAdminModel();
-//                                    adminModel.setFirstName(object.getString("firstName"));
-//                                    eventModel.setEventAdmin(adminModel);
-
-
-                                    /*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-                                    try {
-                                        String mDate = jsonObject.getString("eventStartDate");
-                                        Date date = sdf.parse(mDate);
-                                        long timeInMilliseconds = date.getTime();
-                                        System.out.println("Date in milli :: " + timeInMilliseconds);
-                                        eventModel.setTimeInMillis(timeInMilliseconds);
-                                    } catch (ParseException e) {
-                                        e.printStackTrace();
-                                    }*/
+                                    JSONArray dateArray = obj.getJSONArray("eventDates");
+                                    long [] mydatearray = new long[dateArray.length()];
+                                    if (dateArray.length()>0 ) {
+                                        for (int j = 0; j < dateArray.length() ; j++) {
+                                            mydatearray [j]= dateArray.getLong(j);
+                                        }
+                                     eventModel.setEventDates(mydatearray);
+                                    }
                                     myeventModelList.add(eventModel);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
