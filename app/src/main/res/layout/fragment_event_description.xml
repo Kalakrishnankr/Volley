@@ -9,14 +9,14 @@
         android:orientation="vertical"
         android:weightSum="3">
 
-        <com.beachpartnerllc.beachpartner.CustomTextView
+        <TextView
             android:id="@+id/top_title"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.3"
             android:gravity="center_vertical"
             android:textSize="@dimen/text_size"
-            android:textStyle="bold"
+            android:textStyle="italic"
             android:layout_marginLeft="20dp"
             android:textColor="@android:color/black"
             android:text="General Event Details" />

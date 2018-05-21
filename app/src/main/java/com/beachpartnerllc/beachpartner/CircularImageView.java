@@ -54,7 +54,7 @@ public class CircularImageView extends ImageView
         paint.setAntiAlias(true);
 
         paintBorder = new Paint();
-        setBorderColor(Color.GREEN);
+        setBorderColor(getResources().getColor(R.color.com_facebook_button_background_color));
         paintBorder.setAntiAlias(true);
         this.setLayerType(LAYER_TYPE_SOFTWARE, paintBorder);
         paintBorder.setShadowLayer(4.0f, 0.0f, 2.0f, Color.BLACK);

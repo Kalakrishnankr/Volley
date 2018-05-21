@@ -18,7 +18,7 @@
             android:orientation="horizontal"
             android:weightSum="3">
 
-            <ImageView
+            <com.beachpartnerllc.beachpartner.CircularImageView
                 android:id="@+id/partnerImg"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
@@ -36,14 +36,14 @@
                     android:layout_gravity="center"
                     android:layout_marginLeft="5dp"
                     android:layout_height="wrap_content" />
-                <com.beachpartnerllc.beachpartner.CustomTextView
+                <TextView
                     android:id="@+id/my_role"
                     android:layout_below="@id/partner_name"
                     android:layout_width="wrap_content"
                     android:layout_gravity="center"
+                    android:layout_marginTop="3dp"
+                    android:textStyle="italic"
                     android:layout_marginLeft="5dp"
-                    android:text="Organizer"
-                    android:visibility="gone"
                     android:layout_height="wrap_content" />
             </RelativeLayout>
 
