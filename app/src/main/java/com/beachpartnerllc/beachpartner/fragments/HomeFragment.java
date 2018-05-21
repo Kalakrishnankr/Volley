@@ -107,6 +107,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     View ln_layout_tournamentrequestcontent;
     private boolean isRequestSend = false;
     private boolean isRequestReceive =false;
+    private static final String TAG = "HomeFragment";
+
 
     public HomeFragment() {
         // Required empty public constructor
@@ -264,19 +266,19 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     @Override
     public void onClick(View view) {
         switch(view.getId()){
-            case R.id.imgview_send:
-                txt_head.setText("Tournament Requests Sent");
-                isRequestSend=true;
-                isRequestReceive=false;
-                sendInvitationTab();
-                //txtv_noreqsts.setText("No requests received");
-                break;
-
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
                 isRequestReceive=true;
                 isRequestSend=false;
                 receiveInvitationTab();
+                //txtv_noreqsts.setText("No requests received");
+                break;
+
+            case R.id.imgview_send:
+                txt_head.setText("Tournament Requests Sent");
+                isRequestSend=true;
+                isRequestReceive=false;
+                sendInvitationTab();
                 //txtv_noreqsts.setText("No requests received");
                 break;
             case R.id.no_of_likes_card:
@@ -750,7 +752,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     }
 
-    private static final String TAG = "HomeFragment";
 
     //Get 20+ Likes
     private void getNumberLike() {
@@ -834,7 +835,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                     sendInvitationList = responseModel.getInvitationSendModels();
                     receiveInvitationList = responseModel.getInvitationReceivedModels();
                 }
-                isRequestSend =true;
+                isRequestReceive = true;//Default activate received requests
                 setInvitationAdpater();
             }
         }, new Response.ErrorListener() {

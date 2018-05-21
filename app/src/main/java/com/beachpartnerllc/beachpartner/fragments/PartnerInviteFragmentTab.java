@@ -83,14 +83,8 @@ public class PartnerInviteFragmentTab extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        slideAdapter    =  new SliderAdapter(getChildFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
-        pager.setAdapter(slideAdapter);
-
-        // Setting the ViewPager For the SlidingTabsLayout
-        tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
-        tabs.setViewPager(pager);
         slideAdapter.notifyDataSetChanged();
-        pager.setAdapter(slideAdapter);
+        //pager.setAdapter(slideAdapter);
     }
 
     @Override

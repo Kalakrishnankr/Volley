@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +41,6 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.firebase.client.DataSnapshot;
@@ -98,10 +96,6 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
     public CoachHomeFragment() {
         // Required empty public constructor
     }
-
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -136,7 +130,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
         getMyTournaments();//Api for getting my tournament lists
         getConnections();//Api for getting all connections
         getNumberLike();//Api for number of likes
-
+        getLikesList();
     }
 
     private void initView(View view){
@@ -494,7 +488,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
 
     private void getLikesList() {
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=" + "New" , null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS  + user_id + "?status=New&showReceived=true" , null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
@@ -553,18 +547,18 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
 
 
     private void setLikesList(){
-        getLikesList();
-        if(premiumLikesList!=null && premiumLikesList.size()>0){
-            boolean isblueBP = false;
-            boolean isPartner = true;
-            AppCompatActivity activity = (AppCompatActivity) getContext();
-            BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList(AppConstants.BLUE_BP_LIST, premiumLikesList);
-            bpFinderFragment.setArguments(bundle);
-            activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
-        }
 
+        if(premiumLikesList!=null && premiumLikesList.size()>0){
+            if (getActivity() != null) {
+                boolean isblueBP = true;
+                boolean isPartner = false;
+                BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
+                Bundle bundle = new Bundle();
+                bundle.putParcelableArrayList(AppConstants.NO_LIKES_LIST, premiumLikesList);
+                bpFinderFragment.setArguments(bundle);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+            }
+        }
     }
 
     private void setUpMyComingTournament() {

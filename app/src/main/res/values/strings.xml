@@ -51,7 +51,7 @@
     <string name="messages">Messages</string>
     <string name="start">GOT IT</string>
     <string name="skip">Skip</string>
-    <string name="partnerintrest">Tournament Requests Sent</string>
+    <string name="partnerintrest">Tournament Requests Received</string>
     <string name="nameerror">Please enter your first name (No special characters allowed)</string>
     <string name="lnameerror">Please enter your last name (NO special characters allowed)</string>
     <string name="doberror">Please enter your date of birth</string>

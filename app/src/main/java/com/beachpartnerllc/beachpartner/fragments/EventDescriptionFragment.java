@@ -33,6 +33,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.PopupAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
@@ -73,7 +74,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private android.app.AlertDialog transparentAlert;
 
     private long event_start;
-
+    private TabActivity tabActivity;
 
     public EventDescriptionFragment() {
         // Required empty public constructor
@@ -178,7 +179,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         getEvent(eventId);
-
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Calendar");
+            tabActivity.disableFloatButtons();
+        }
 
     }
 
