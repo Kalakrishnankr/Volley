@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.bumptech.glide.Glide;
 
@@ -21,9 +22,9 @@ import java.util.List;
 
 public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder> {
     public Context mContext;
-    private List<PartnerResultModel> dataList= new ArrayList<>();
+    private List<MyCalendarPartnerModel> dataList= new ArrayList<>();
 
-    public PopupAdapter(Context context, List<PartnerResultModel> dataList) {
+    public PopupAdapter(Context context, List<MyCalendarPartnerModel> dataList) {
         this.dataList = dataList;
         this.mContext = context;
     }
@@ -38,10 +39,10 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
 
-        PartnerResultModel model = dataList.get(position);
-        if (model.getPartnerImageUrl() != null) {
-            if (!model.getPartnerImageUrl().equals("null")) {
-                Glide.with(mContext).load(model.getPartnerImageUrl()).into(holder.profileImg);
+        MyCalendarPartnerModel model = dataList.get(position);
+        if (model.getPartner_ImageUrl() != null) {
+            if (!model.getPartner_ImageUrl().equals("null")) {
+                Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.profileImg);
             }else {
                 holder.profileImg.setImageResource(R.drawable.ic_person);
             }
@@ -50,8 +51,16 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
         }
 
         //holder.profileImg.setImageURI(Uri.parse(model.getPartnerImageUrl()));
-        holder.txtv_name.setText(model.getPartnerName());
-        holder.txtv_status.setText(model.getInvitationStatus());
+        holder.txtv_name.setText(model.getpartner_Name());
+        holder.txtv_status.setText(model.getPartner_ivitationStatus());
+        if(model.getpartner_role()!=null){
+            if(model.getpartner_role().equalsIgnoreCase("Organizer")){
+               holder.txtv_role.setVisibility(View.VISIBLE);
+            }
+            else{
+                holder.txtv_role.setVisibility(View.GONE);
+            }
+        }
 
     }
 
@@ -62,7 +71,7 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public ImageView profileImg;
-        public TextView txtv_name,txtv_status;
+        public TextView txtv_name,txtv_status,txtv_role;
 
         public MyViewHolder(View v) {
             super(v);
@@ -70,6 +79,7 @@ public class PopupAdapter extends RecyclerView.Adapter<PopupAdapter.MyViewHolder
             profileImg = v.findViewById(R.id.partnerImg);
             txtv_name  = v.findViewById(R.id.partner_name);
             txtv_status = v.findViewById(R.id.partner_status);
+            txtv_role   = v.findViewById(R.id.my_role);
 
 
         }
