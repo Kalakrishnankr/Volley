@@ -5,6 +5,9 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
+
+import org.json.JSONArray;
 
 import java.io.Serializable;
 import java.util.List;
@@ -54,7 +57,7 @@ public class Event implements Serializable, Parcelable {
     }
 
     private long [] eventDates;
-
+    private List<PartnerResultModel>partnerList;
 
 
 
@@ -216,6 +219,12 @@ public class Event implements Serializable, Parcelable {
         this.eventAdmin=EventAdmin;
     }
 
+    public void setPartnerList(JSONArray pList) {
+        this.partnerList = (List<PartnerResultModel>) pList;
+    }
+    public List<InvitationsModel> getPartnerList() {
+        return invitationList;
+    }
     /*public Event() {
         this.color = color;
         this.timeInMillis = timeInMillis;

@@ -666,6 +666,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
+                            event.setPartnerList(obj.getJSONArray("partnerList"));
 
 //                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
 //                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
