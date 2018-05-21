@@ -18,28 +18,37 @@ public class EventsContainer {
     private Map<String, List<Events>> eventsByMonthAndYearMap = new HashMap<>();
     private Comparator<Event> eventsComparator = new EventComparator();
     private Calendar eventsCalendar;
+    private long [] allDates;
 
     public EventsContainer(Calendar eventsCalendar) {
         this.eventsCalendar = eventsCalendar;
     }
 
     void addEvent(Event event) {
-        eventsCalendar.setTimeInMillis(event.getEventStartDate());
+        allDates = null;
+        allDates = event.getEventDates();
+        if (allDates != null) {
+            for (long da : allDates){
+                eventsCalendar.setTimeInMillis(da);
+
+       // eventsCalendar.setTimeInMillis(event.getEventStartDate());
         String key = getKeyForCalendarEvent(eventsCalendar);
 //        List<CalendarContract.Events> eventsForMonth = eventsByMonthAndYearMap.get(key);
         List<Events> eventsForMonth = eventsByMonthAndYearMap.get(key);
         if (eventsForMonth == null) {
             eventsForMonth = new ArrayList<>();
         }
-        Events eventsForTargetDay = getEventDayEvent(event.getTimeInMillis());
+        Events eventsForTargetDay = getEventDayEvent(da);
         if (eventsForTargetDay == null) {
             List<Event> events = new ArrayList<>();
             events.add(event);
-            eventsForMonth.add(new Events(event.getTimeInMillis(), events));
+            eventsForMonth.add(new Events(da, events));
         } else {
             eventsForTargetDay.getEvents().add(event);
         }
         eventsByMonthAndYearMap.put(key, eventsForMonth);
+            }
+        }
     }
 
     void removeAllEvents() {

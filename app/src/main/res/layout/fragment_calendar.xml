@@ -116,18 +116,17 @@
                         android:id="@+id/compactcalendar"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:compactCalendarTextSize="12sp"
+                        app:compactCalendarTextSize="13sp"
                         app:compactCalendarBackgroundColor="#fff"
                         app:compactCalendarTextColor="#534c4c"
-                        app:compactCalendarCurrentSelectedDayBackgroundColor="#283873"
+                        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/blue"
                         app:compactCalendarCurrentSelectedDayTextColor="#fff"
                         app:compactCalendarCurrentDayTextColor="#fff"
-                        app:compactCalendarCurrentDayBackgroundColor="#283873"
+                        app:compactCalendarCurrentDayBackgroundColor="#8B0000"
                         app:compactCalendarCurrentDayIndicatorStyle="fill_large_indicator"
                         app:compactCalendarEventIndicatorStyle="small_indicator"
                         app:compactCalendarOtherMonthDaysTextColor="#534c4c"
-                        app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="true"
-                        />
+                        app:compactCalendarShouldSelectFirstDayOfMonthOnScroll="true"/>
                 </LinearLayout>
 
             </LinearLayout>
