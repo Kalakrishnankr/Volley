@@ -1,6 +1,8 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -12,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.SliderAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.calendar.myowncalendar.SlidingTab;
@@ -27,6 +30,7 @@ public class PartnerInviteFragmentTab extends Fragment {
     private long eventDateToCheck;
     private Event eventObject;
     private static final String TAG = "PartnerInviteFragmentTa";
+    private TabActivity tabActivity;
     public PartnerInviteFragmentTab() {
         // Required empty public constructor
     }
@@ -37,6 +41,7 @@ public class PartnerInviteFragmentTab extends Fragment {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+
     }
 
     @Override
@@ -45,6 +50,10 @@ public class PartnerInviteFragmentTab extends Fragment {
         // Inflate the layout for this fragment
         eventDateToCheck= getArguments().getLong("eventDate");
         eventObject     = getArguments().getParcelable("eventObject");
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity) getActivity();
+            tabActivity.setActionBarTitle("Events "+eventObject.getEventName());
+        }
         Log.d(TAG, "onCreateView: "+eventObject);
         View view   =   inflater.inflate(R.layout.fragment_partner_invite, container, false);
         initActivity(view);
@@ -67,6 +76,11 @@ public class PartnerInviteFragmentTab extends Fragment {
 
     }
 
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -74,17 +88,12 @@ public class PartnerInviteFragmentTab extends Fragment {
 
         inflater.inflate(R.menu.menu_search,menu);
         super.onCreateOptionsMenu(menu, inflater);
-
-
-        /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
-        inflater.inflate(R.menu.sample_menu, menu);*/
     }
 
     @Override
     public void onResume() {
         super.onResume();
         slideAdapter.notifyDataSetChanged();
-        //pager.setAdapter(slideAdapter);
     }
 
     @Override
@@ -92,7 +101,6 @@ public class PartnerInviteFragmentTab extends Fragment {
 
         switch (item.getItemId()){
             case R.id.action_search:
-
                 break;
             default:
                 break;

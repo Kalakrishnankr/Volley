@@ -181,7 +181,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         getEvent(eventId);
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
-            tabActivity.setActionBarTitle("Calendar");
+            tabActivity.setActionBarTitle("Events");
             tabActivity.disableFloatButtons();
         }
 

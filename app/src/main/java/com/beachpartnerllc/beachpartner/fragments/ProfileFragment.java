@@ -2655,6 +2655,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
                     Glide.with(getApplicationContext()).load(selectedImageUri)
                            .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).dontAnimate().signature(new ObjectKey(System.currentTimeMillis()))).into(imgProfile);
+                    new PrefManager(getContext()).saveProfileImage(String.valueOf(selectedImageUri));
+
                 }
 
                 @Override
@@ -2912,7 +2914,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                             Glide.with(ProfileFragment.this).load(myProfileImageFile.getAbsolutePath()).into(imgProfile);
                         } else {
                             Glide.with(ProfileFragment.this).load(userDataModel.getImageUrl()).into(imgProfile);
-
                             new DownloadFileFromURL(exactImageName, "image",userDataModel.getImageUrl()).execute();
 
 
@@ -3441,113 +3442,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     }
 
 
-/*
-    public static class PhotoAsyncTask extends AsyncTask<String, String, HttpEntity> {
-        String userId;
-        String imagePath;
-        String videoPath;
-        private PhotoAsyncTaskListener listener;
 
-
-        public PhotoAsyncTask(final String imagePath, final String videoPath, final String userId) {
-            super();
-            this.userId = userId;
-            this.imagePath = imagePath;
-            this.videoPath = videoPath;
-
-            // do stuff
-        }
-
-        @Override
-        protected HttpEntity doInBackground(String... voids) {
-            try {
-                FileBody imageFile, videoFile;
-                MultipartEntity reqEntity = new MultipartEntity();
-                StringBody user_Id = new StringBody(userId);
-                reqEntity.addPart("userId", user_Id);
-
-                if (imagePath != null && videoPath != null) {
-
-                    imageFile = new FileBody(new File(imagePath));
-                    videoFile = new FileBody(new File(videoPath));
-
-
-                    reqEntity.addPart("profileImg", imageFile);
-
-
-                    reqEntity.addPart("profileVideo", videoFile);
-
-                } else if (imagePath != null && videoPath == null) {
-                    imageFile = new FileBody(new File(imagePath));
-
-                    reqEntity.addPart("profileImg", imageFile);
-
-
-                } else if (imagePath == null && videoPath != null) {
-                    videoFile = new FileBody(new File(videoPath));
-
-                    reqEntity.addPart("profileVideo", videoFile);
-
-                } else {
-                    progress.dismiss();
-                    Toast.makeText(getApplicationContext(), "Profile updation failed", Toast.LENGTH_LONG).show();
-                }
-
-
-                HttpEntity result = uploadToServer(reqEntity);
-                return result;
-
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(HttpEntity result) {
-            super.onPostExecute(result);
-
-
-            if (listener != null) {
-
-                try {
-                    if (result != null) {
-                        System.out.println(EntityUtils.toString(result));
-                    } // end if
-
-                    if (result != null) {
-                        result.consumeContent();
-
-
-                    } // end if
-
-                    int success, failure;
-                    // success = resultJson.getInt("success");
-                    //failure = resultJson.getInt("failure");
-                    //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                }
-            }
-
-
-            listener.onPhotoAsyncTaskFinished(result);
-        }
-
-        public void setListener(PhotoAsyncTaskListener listener) {
-            this.listener = listener;
-        }
-
-        public interface PhotoAsyncTaskListener {
-            void onPhotoAsyncTaskFinished(HttpEntity value);
-        }
-    }
-*/
 
     private class Adapter extends FragmentPagerAdapter {
         private final List<Fragment> mFragmentList = new ArrayList<>();
