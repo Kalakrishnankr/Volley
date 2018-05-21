@@ -9,6 +9,7 @@ public class MyCalendarPartnerModel {
     public String partner_ImageUrl;
     public String partner_Name;
     public String partner_role;
+    public String invitationStatus;
 
 
 
@@ -42,5 +43,13 @@ public class MyCalendarPartnerModel {
 
     public void setpartner_role(String role) {
         this.partner_role = role;
+    }
+
+    public void setPartner_ivitationStatus(String status){
+        this.invitationStatus = status;
+    }
+
+    public String getPartner_ivitationStatus(){
+        return invitationStatus;
     }
 }

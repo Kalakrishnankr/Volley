@@ -24,13 +24,28 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"/>
 
-            <TextView
-                android:id="@+id/partner_name"
+            <RelativeLayout
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:gravity="center|left"
                 android:paddingLeft="5dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2.2"/>
+                android:layout_weight="2.2">
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/partner_name"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:layout_height="wrap_content" />
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/my_role"
+                    android:layout_below="@id/partner_name"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="5dp"
+                    android:text="Organizer"
+                    android:visibility="gone"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/partner_status"

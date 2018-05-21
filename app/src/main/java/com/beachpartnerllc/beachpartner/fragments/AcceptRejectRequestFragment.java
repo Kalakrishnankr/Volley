@@ -40,6 +40,7 @@ import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
@@ -64,11 +65,12 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     private LinearLayout undoLayout;
     private Paint p = new Paint();
     private int position;
-    private String word,eventID,oranizerID,responseType,user_token;
+    private String word,eventID,oranizerID,responseType,user_token,user_id;
     private EventResultModel eventResultModel;
     private String notAcceptedId =null;
     private ArrayList<InvitationsModel>invitationsModels = new ArrayList<>();
     private ArrayList<PartnerResultModel>partnerList = new ArrayList<>();
+    private ArrayList<MyCalendarPartnerModel>partnerAdapterList = new ArrayList<>();
     private AcceptRejectInvitationListener invitationListener;
     private PrefManager prefManager;
     private static final String TAG = "AcceptRejectRequestFrag";
@@ -83,6 +85,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         super.onCreate(savedInstanceState);
 
         user_token  =  new PrefManager(getActivity()).getToken();
+        user_id     =  new PrefManager(getActivity()).getUserId();
 
     }
 
@@ -172,7 +175,6 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                         suggestionList.clear();
                         suggestionList.add(eventResultModel);
                         setUpView();
-
                     }
 
                 }
@@ -398,8 +400,31 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                    partnerList.addAll(invitationsModels.get(j).getPartnerList());
                 }
             }
-            if (partnerList.size() > 0) {
-                PopupAdapter cardArrayAdapter = new PopupAdapter (getActivity(),partnerList);
+
+            if(invitationsModels!=null) {
+                if (!invitationsModels.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
+                    MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
+                    partnerObject1.setpartner_Id(invitationsModels.get(0).getInviterUserId());
+                    partnerObject1.setPartner_ImageUrl(invitationsModels.get(0).getInviterImageUrl());
+                    partnerObject1.setpartner_Name(invitationsModels.get(0).getInviterName());
+                    partnerObject1.setpartner_role("Organizer");
+                    partnerAdapterList.add(partnerObject1);//organizer
+                }
+            }
+
+            for(int i=0;i<partnerList.size();i++){
+                MyCalendarPartnerModel partnerObject2 =new MyCalendarPartnerModel();
+                partnerObject2.setpartner_Id(partnerList.get(i).getPartnerUserId());
+                partnerObject2.setPartner_ImageUrl(partnerList.get(i).getPartnerImageUrl());
+                partnerObject2.setpartner_Name(partnerList.get(i).getPartnerName());
+                partnerObject2.setpartner_role("Invitee");
+                partnerObject2.setPartner_ivitationStatus(partnerList.get(i).getInvitationStatus());
+                if(!partnerList.get(i).getPartnerUserId().equalsIgnoreCase(user_id)){
+                    partnerAdapterList.add(partnerObject2);//invitees
+                }
+            }
+            if (partnerAdapterList.size() > 0) {
+                PopupAdapter cardArrayAdapter = new PopupAdapter (getActivity(),partnerAdapterList);
                 listView.setAdapter(cardArrayAdapter);
             }
         }

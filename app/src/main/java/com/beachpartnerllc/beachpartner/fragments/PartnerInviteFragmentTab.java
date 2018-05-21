@@ -55,7 +55,7 @@ public class PartnerInviteFragmentTab extends Fragment {
 
         pager           =  (ViewPager) view.findViewById(R.id.pager);
         tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
-        slideAdapter    =  new SliderAdapter(getFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
+        slideAdapter    =  new SliderAdapter(getChildFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
 
         pager.setAdapter(slideAdapter);
 

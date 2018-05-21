@@ -38,6 +38,7 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Even
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.google.gson.Gson;
@@ -67,6 +68,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private Event event;
     private List<InvitationsModel> invitationList = new ArrayList<>();
     private List<PartnerResultModel> partnerList = new ArrayList<>();
+    private List<MyCalendarPartnerModel> partnerResultModelList = new ArrayList<>();
 
     private android.app.AlertDialog transparentAlert;
 
@@ -369,8 +371,32 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         listView.setLayoutManager(layoutManager);
 
-        if (partnerList.size() > 0) {
-            PopupAdapter cardArrayAdapter = new PopupAdapter(getActivity(), partnerList);
+        if(invitationList!=null) {
+            partnerResultModelList.clear();
+            if (!invitationList.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
+                MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
+                partnerObject1.setpartner_Id(invitationList.get(0).getInviterUserId());
+                partnerObject1.setPartner_ImageUrl(invitationList.get(0).getInviterImageUrl());
+                partnerObject1.setpartner_Name(invitationList.get(0).getInviterName());
+                partnerObject1.setpartner_role("Organizer");
+                partnerResultModelList.add(partnerObject1);//organizer
+            }
+        }
+
+        for(int i=0;i<partnerList.size();i++){
+            MyCalendarPartnerModel partnerObject2 =new MyCalendarPartnerModel();
+            partnerObject2.setpartner_Id(partnerList.get(i).getPartnerUserId());
+            partnerObject2.setPartner_ImageUrl(partnerList.get(i).getPartnerImageUrl());
+            partnerObject2.setpartner_Name(partnerList.get(i).getPartnerName());
+            partnerObject2.setpartner_role("Invitee");
+            partnerObject2.setPartner_ivitationStatus(partnerList.get(i).getInvitationStatus());
+            if(!partnerList.get(i).getPartnerUserId().equalsIgnoreCase(user_id)){
+                partnerResultModelList.add(partnerObject2);//invitees
+            }
+        }
+
+        if (partnerResultModelList.size() > 0) {
+            PopupAdapter cardArrayAdapter = new PopupAdapter(getActivity(), partnerResultModelList);
             listView.setAdapter(cardArrayAdapter);
         }
 
