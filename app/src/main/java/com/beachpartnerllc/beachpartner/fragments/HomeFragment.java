@@ -48,6 +48,7 @@ import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.EventDetailsModel;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationResponseModel;
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
@@ -103,6 +104,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private ArrayList<BpFinderModel> userList = new ArrayList<>();
     private List<EventDetailsModel>sendInvitationList = new ArrayList<>();
     private List<EventDetailsModel>receiveInvitationList = new ArrayList<>();
+    private ArrayList<InvitationsModel>inviteList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
     private boolean isRequestSend = false;
@@ -666,13 +668,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
-                            event.setPartnerList(obj.getJSONArray("partnerList"));
+                            //event.setPartnerList(object .getJSONArray("invitationList"));
 
-//                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
-//                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
-//                            EventAdminModel adminModel = new EventAdminModel();
-//                            adminModel.setFirstName(objectadmin.getString("firstName"));
-//                            event.setEventAdmin(adminModel);
+
+                            JSONArray contacts = new JSONArray(object.getString("invitationList"));
+                            Type type = new TypeToken<List<InvitationsModel>>(){}.getType();
+                            inviteList = new Gson().fromJson(contacts.toString(), type);
+                            event.setInvitationList(inviteList);
 
                             myUpcomingTList.add(event);
 

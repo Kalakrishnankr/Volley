@@ -61,7 +61,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             invitationList = model.getInvitationList();
             if (invitationList.size() > 0) {
                 for(int i=0;i<invitationList.size();i++){
-                    partnerList.addAll(invitationList.get(i).getPartnerList());
+                    //partnerList.addAll(invitationList.get(i).getPartnerList());
                 }
             }
         }else{

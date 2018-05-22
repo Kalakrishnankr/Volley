@@ -1320,6 +1320,14 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                                     eventModel.setEventStartDate(jsonObject.getLong("eventStartDate"));
                                     eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
                                     eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
+                                    JSONArray dateArray = obj.getJSONArray("eventDates");
+                                    long [] mydatearray = new long[dateArray.length()];
+                                    if (dateArray.length()>0 ) {
+                                        for (int j = 0; j < dateArray.length() ; j++) {
+                                            mydatearray [j]= dateArray.getLong(j);
+                                        }
+                                        eventModel.setEventDates(mydatearray);
+                                    }
                                     personEventList.add(eventModel);
 
                                 } catch (JSONException e) {
