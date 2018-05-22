@@ -169,6 +169,14 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
             }
         });
+
+        rcviewConn.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            }
+        });
     }
 
 
@@ -397,6 +405,9 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     //adding member from connection list to my teamlist using interface
     @Override
     public void onAddListener(ConnectionModel member,int position) {
+        if(bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
         myTeamList.add(athleteList.remove(position));
         mConnectionAdapter.notifyDataSetChanged();
         myTeamAdapter.notifyDataSetChanged();

@@ -29,8 +29,9 @@ import java.util.List;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> {
     public Context mContext;
     private ArrayList<Event> dataList;
-    private List<PartnerResultModel>partnerList;
+    private List<PartnerResultModel>partnerList = new ArrayList<>();
     private List<InvitationsModel> invitationList;
+    private  String partners;
 
 
     public CardAdapter(Context context, ArrayList<Event> dataList) {
@@ -59,11 +60,30 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         holder.txtv_place.setText(model.getEventVenue());
         if (model.getInvitationList() != null) {
             invitationList = model.getInvitationList();
-            if (invitationList.size() > 0) {
+            if (invitationList!=null) {
                 for(int i=0;i<invitationList.size();i++){
-                    //partnerList.addAll(invitationList.get(i).getPartnerList());
+                    if(invitationList.get(i).getInviterName()!=null){
+                        if(!invitationList.get(i).getInviterName().equalsIgnoreCase("")||!invitationList.get(i).getInviterName().equalsIgnoreCase("null")){
+                            partners+=(invitationList.get(i).getInviterName()+",");
+                        }
+                    }
+                    partnerList.addAll(invitationList.get(i).getPartnerList());
                 }
             }
+            if(partnerList.size()>0){
+                for(int i=0;i<partnerList.size();i++){
+                    if(i!=partnerList.size()){
+                            partners+=(partnerList.get(i).getPartnerName()+",");
+                    }
+                    else{
+                            partners+=(partnerList.get(i).getPartnerName());
+                    }
+
+                }
+
+            }
+
+            holder.txtv_players.setText(partners);
         }else{
             holder.txtv_players.setText("");
         }

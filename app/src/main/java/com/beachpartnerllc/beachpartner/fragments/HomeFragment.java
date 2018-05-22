@@ -104,12 +104,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private ArrayList<BpFinderModel> userList = new ArrayList<>();
     private List<EventDetailsModel>sendInvitationList = new ArrayList<>();
     private List<EventDetailsModel>receiveInvitationList = new ArrayList<>();
-    private ArrayList<InvitationsModel>inviteList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
     private boolean isRequestSend = false;
     private boolean isRequestReceive =false;
     private static final String TAG = "HomeFragment";
+    private List<InvitationsModel>inviteList = new ArrayList<InvitationsModel>();
 
 
     public HomeFragment() {
@@ -637,6 +637,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     //Get all my tournaments
     private void getMyTournaments() {
         progressBar_tour.setVisibility(View.VISIBLE);
+        inviteList.clear();
         myUpcomingTList.clear();
         SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
         Date date       = Calendar.getInstance().getTime();
@@ -668,13 +669,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
-                            //event.setPartnerList(object .getJSONArray("invitationList"));
+
+
 
 
                             JSONArray contacts = new JSONArray(object.getString("invitationList"));
                             Type type = new TypeToken<List<InvitationsModel>>(){}.getType();
                             inviteList = new Gson().fromJson(contacts.toString(), type);
                             event.setInvitationList(inviteList);
+
+
+//                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
+//                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
+//                            EventAdminModel adminModel = new EventAdminModel();
+//                            adminModel.setFirstName(objectadmin.getString("firstName"));
+//                            event.setEventAdmin(adminModel);
 
                             myUpcomingTList.add(event);
 
