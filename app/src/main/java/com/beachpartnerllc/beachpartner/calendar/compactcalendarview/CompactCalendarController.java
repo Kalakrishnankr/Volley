@@ -188,11 +188,11 @@ class CompactCalendarController {
         dayPaint.setTextAlign(Paint.Align.CENTER);
         dayPaint.setStyle(Paint.Style.STROKE);
         dayPaint.setFlags(Paint.ANTI_ALIAS_FLAG);
-        dayPaint.setTypeface(Typeface.SANS_SERIF);
+        dayPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         dayPaint.setTextSize(textSize);
         dayPaint.setColor(calenderTextColor);
         dayPaint.getTextBounds("31", 0, "31".length(), textSizeRect);
-        textHeight = textSizeRect.height() * 3;
+        textHeight = (int) (textSizeRect.height() * 0.5);
         textWidth = textSizeRect.width() * 2;
 
         todayCalender.setTime(new Date());
@@ -739,7 +739,7 @@ class CompactCalendarController {
         int todayDayOfMonth = todayCalender.get(Calendar.DAY_OF_MONTH);
         int currentYear = todayCalender.get(Calendar.YEAR);
         int selectedDayOfMonth = currentCalender.get(Calendar.DAY_OF_MONTH);
-        float indicatorOffset = bigCircleIndicatorRadius / 1;
+        double indicatorOffset = bigCircleIndicatorRadius / 1.3;
         if (uniqEvents != null) {
             for (int i = 0; i < uniqEvents.size(); i++) {
                 Events events = uniqEvents.get(i);
@@ -769,7 +769,7 @@ class CompactCalendarController {
                 boolean isSameDayAsCurrentDay = shouldDrawCurrentDayCircle && (todayDayOfMonth == dayOfMonth) && (eventYear == currentYear);
                 boolean isCurrentSelectedDay = shouldDrawSelectedDayCircle && (selectedDayOfMonth == dayOfMonth);
 
-                if (shouldDrawIndicatorsBelowSelectedDays || (!shouldDrawIndicatorsBelowSelectedDays && !isSameDayAsCurrentDay && !isCurrentSelectedDay) || animationStatus == EXPOSE_CALENDAR_ANIMATION) {
+                if (shouldDrawIndicatorsBelowSelectedDays || (!shouldDrawIndicatorsBelowSelectedDays /*&& !isSameDayAsCurrentDay && !isCurrentSelectedDay*/) || animationStatus == EXPOSE_CALENDAR_ANIMATION) {
                     if (eventIndicatorStyle == FILL_LARGE_INDICATOR || eventIndicatorStyle == NO_FILL_LARGE_INDICATOR) {
                         Event event = eventsList.get(0);
                         drawEventIndicatorCircle(canvas, xPosition, yPosition, event.getColor());
