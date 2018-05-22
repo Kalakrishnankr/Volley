@@ -48,6 +48,7 @@ import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.EventDetailsModel;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationResponseModel;
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
@@ -108,6 +109,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private boolean isRequestSend = false;
     private boolean isRequestReceive =false;
     private static final String TAG = "HomeFragment";
+    private List<InvitationsModel>inviteList = new ArrayList<InvitationsModel>();
 
 
     public HomeFragment() {
@@ -635,6 +637,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     //Get all my tournaments
     private void getMyTournaments() {
         progressBar_tour.setVisibility(View.VISIBLE);
+        inviteList.clear();
         myUpcomingTList.clear();
         SimpleDateFormat dft= new SimpleDateFormat("dd-MM-yyyy");
         Date date       = Calendar.getInstance().getTime();
@@ -666,7 +669,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
-                            event.setPartnerList(obj.getJSONArray("partnerList"));
+
+
+
+
+                            JSONArray contacts = new JSONArray(object.getString("invitationList"));
+                            Type type = new TypeToken<List<InvitationsModel>>(){}.getType();
+                            inviteList = new Gson().fromJson(contacts.toString(), type);
+                            event.setInvitationList(inviteList);
+
 
 //                                    -------------event admin changed from object to string change noted on 5/9/2018--------------
 //                            JSONObject objectadmin = obj.getJSONObject("eventAdmin");
