@@ -880,6 +880,14 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                             model.setEventStatus(object.getString("eventStatus"));
                             model.setInvitationStatus(object.getString("invitationStatus"));
                             model.setEventUrl(object.getString("eventurl"));
+                            JSONArray dateArray = object.getJSONArray("eventDates");
+                            long [] mydatearray = new long[dateArray.length()];
+                            if (dateArray.length()>0 ) {
+                                for (int j = 0; j < dateArray.length() ; j++) {
+                                    mydatearray [j]= dateArray.getLong(j);
+                                }
+                                model.setEventDates(mydatearray);
+                            }
                             eventModelList.add(model);
 
                         } catch (Exception e) {
