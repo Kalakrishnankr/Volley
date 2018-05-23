@@ -32,6 +32,8 @@ public class CompactCalendarView extends View {
     private CompactCalendarController compactCalendarController;
     private GestureDetectorCompat gestureDetector;
     private boolean horizontalScrollEnabled = true;
+    private Calendar currentCalender;
+
 
     public interface CompactCalendarViewListener {
         public void onDayClick(Date dateClicked);
@@ -170,6 +172,25 @@ public class CompactCalendarView extends View {
         compactCalendarController.setCurrentDate(dateTimeMonth);
         invalidate();
     }
+    public Date getCurrentDate(){
+        Date tempDate=compactCalendarController.currentDate;
+        try{
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(tempDate);
+            cal.set(Calendar.HOUR_OF_DAY, 0);
+            cal.set(Calendar.MINUTE, 0);
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
+            tempDate=cal.getTime();
+
+//            setToMidnight(currentCalender);
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return tempDate;
+    }
+
 
     public int getWeekNumberForCurrentMonth(){
         return compactCalendarController.getWeekNumberForCurrentMonth();

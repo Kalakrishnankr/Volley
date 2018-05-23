@@ -85,7 +85,7 @@ class CompactCalendarController {
     private CompactCalendarViewListener listener;
     private VelocityTracker velocityTracker = null;
     private Direction currentDirection = Direction.NONE;
-    private Date currentDate = new Date();
+    public Date currentDate = new Date();
     private Locale locale;
     private Calendar currentCalender;
     private Calendar todayCalender;
@@ -636,6 +636,10 @@ class CompactCalendarController {
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
+    }
+    public Date getCurrentDate(){
+        setCurrentDate(currentDate);
+        return currentDate;
     }
 
     void addEvent(Event event) {

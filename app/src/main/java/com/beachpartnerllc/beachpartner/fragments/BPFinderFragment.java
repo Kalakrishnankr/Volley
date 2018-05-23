@@ -1576,8 +1576,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
     private LinkedList<BpFinderModel> extractRemainingTouristSpots() {
         LinkedList<BpFinderModel> spots = new LinkedList<>();
-        for (int i = cardStackView.getTopIndex(); i < adapter.getCount(); i++) {
-            spots.add(adapter.getItem(i));
+        if (adapter != null) {
+            for (int i = cardStackView.getTopIndex(); i < adapter.getCount(); i++) {
+                spots.add(adapter.getItem(i));
+            }
         }
         return spots;
     }

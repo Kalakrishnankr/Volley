@@ -102,7 +102,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         getAllEvents();
         initActivity(view);
 
-
         return view;
     }
 
@@ -137,6 +136,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         //load events for today date
         activeMasterTab();
+
+
 
         compactCalendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
@@ -238,7 +239,25 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
     }
 
+    private void currentDateEventSetter(){
+        if(dateFormat.format(compactCalendarView.getCurrentDate()).equalsIgnoreCase(dateFormat.format(new Date()))){
+            List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getCurrentDate());
+            if (bookingsFromMap != null) {
 
+                for (int i = 0; i < bookingsFromMap.size(); i++) {
+
+                    if ((DatetoMilli(compactCalendarView.getCurrentDate())) == (DatetoMilli(new Date(bookingsFromMap.get(i).getTimeInMillis())))) {
+                        toDayEvents.add(bookingsFromMap.get(i));
+                    }
+                }
+                eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+                rview.setAdapter(eventsAdapter);
+                rview.invalidate();
+                eventsAdapter.notifyDataSetChanged();
+            }
+
+        }
+    }
     private void activeMasterTab() {
         tview_master.setTextColor(getResources().getColor(R.color.blueDark));
         tview_master.setBackgroundColor(getResources().getColor(R.color.white));
@@ -729,6 +748,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 compactCalendarView.addEvent(eventModelList.get(i));
             }
         }
+
+        currentDateEventSetter();
     }
 
 
