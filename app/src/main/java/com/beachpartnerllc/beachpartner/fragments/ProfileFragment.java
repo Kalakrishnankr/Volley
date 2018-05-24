@@ -1095,16 +1095,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
-                    edit_tag.setText("Save Profile");
+                    edit_tag.setText("Edit Profile");
                     editStatus = !editStatus;
-                } else {
+                } /*else {
                     // InfoCancelChange();
-                    InfoSave();
-
+                    //InfoSave();
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit));
+                    edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
                     edit_tag.setText("Edit Profile");
 
-                }
+                }*/
             }
         });
 
@@ -1514,8 +1514,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     }
 
     private void playVideoFromFile(Uri fileURL) {
-
-
+        placeholder.setVisibility(View.GONE);
         DataSpec dataSpec = new DataSpec(fileURL);
         final FileDataSource fileDataSource = new FileDataSource();
         try {
@@ -1534,8 +1533,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 factory, new DefaultExtractorsFactory(), null, null);
 
         exoPlayer.prepare(audioSource);
-
-
         playerView.setPlayer(exoPlayer);
         exoPlayer.prepare(audioSource);
         exoPlayer.setPlayWhenReady(true);
@@ -2238,7 +2235,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         edit_tag.setText("Edit Profile");
         more_info_btns_bottom.setVisibility(View.GONE);
         //BasicInfo
-
         editFname.setEnabled(false);
         editFname.setBackground(null);
 
@@ -2331,7 +2327,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         topfinishes_txt_3.setBackground(null);
 
 
-        if (values[1] != null) {
+       /* if (values[1] != null) {
             topfinishes_txt_2.setText(values[1].trim());
             topFinishes2_lt.setVisibility(View.VISIBLE);
             topfinishes_txt_2.setBackground(null);
@@ -2340,7 +2336,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             topfinishes_txt_3.setText(values[2].trim());
             topFinishes3_lt.setVisibility(View.VISIBLE);
             topfinishes_txt_3.setBackground(null);
-        }
+        }*/
 
 //        if (appendEditOpenedOne){
 //            topfinishes_txt_2.setEnabled(false);
@@ -2358,7 +2354,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 //            topfinishes_txt_3.setBackground(null);
 //            appendEditOpenedTwo = false;
 //        }
-
+        reloadFragment();
         editStatus = false;
     }
 
@@ -2405,6 +2401,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
                     if(editStatus){
+                        userDataModel.setImageUrl(imageUri);
                         InfoSave();
                     }
                 }
@@ -2439,6 +2436,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 if (imageUri != null || videoUri != null) {
                     uploadImgFiles(imageUri, videoUri, user_id);
                     if(editStatus){
+                        userDataModel.setVideoUrl(videoUri);
                         InfoSave();
                     }
                 }
@@ -2447,6 +2445,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             }
 
             if (imageUri != null || videoUri != null) {
+                userDataModel.setImageUrl(imageUri);
+                userDataModel.setVideoUrl(videoUri);
                 uploadImgFiles(imageUri, videoUri, user_id);
 
             }
@@ -2578,7 +2578,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             progress.setTitle("Loading");
             progress.setMessage("Please wait while we save your data");
             progress.setCancelable(false); // disable dismiss by tapping outside of the dialog
-
             progress.show();
         }
 
@@ -2620,7 +2619,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     }
 
 
-    private void uploadImageVideo(String imagePath, String videoPath, String userId) {
+    private void uploadImageVideo(final String imagePath, final String videoPath, String userId) {
         {
 
             File videoFile =null;
@@ -2650,12 +2649,25 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 public void onResponse(Call<UploadObject> call, retrofit2.Response<UploadObject> response) {
                     //Toast.makeText(getActivity(), "Response " + response.raw().message(), Toast.LENGTH_LONG).show();
                     //Toast.makeText(getApplicationContext(), "Success " + response.body().getSuccess(), Toast.LENGTH_LONG).show();
-                     //reloadFragment();
                     progress.dismiss();
-                    Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
-                    Glide.with(getApplicationContext()).load(selectedImageUri)
-                           .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).dontAnimate().signature(new ObjectKey(System.currentTimeMillis()))).into(imgProfile);
-                    new PrefManager(getContext()).saveProfileImage(String.valueOf(selectedImageUri));
+                    if (imagePath != null) {
+                        Log.d(TAG, "image Url"+selectedImageUri);
+                        Glide.with(getApplicationContext()).load(selectedImageUri)
+                                .apply(new RequestOptions().diskCacheStrategy(DiskCacheStrategy.NONE).dontAnimate().signature(new ObjectKey(System.currentTimeMillis()))).into(imgProfile);
+                        if (getActivity() != null) {
+                            new PrefManager(getContext()).saveProfileImage(String.valueOf(selectedImageUri));
+                        }
+                        userDataModel.setImageUrl(String.valueOf(selectedImageUri));
+                    }
+                    if (videoPath != null) {
+                        playVideoFromFile(Uri.parse(videoPath));
+                        userDataModel.setVideoUrl(videoPath);
+                    }
+
+                    //reloadFragment();
+                    if (!editStatus){
+                        Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
+                    }
 
                 }
 

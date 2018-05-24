@@ -59,6 +59,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         holder.txtv_date.setText(date);
         holder.txtv_place.setText(model.getEventVenue());
         if (model.getInvitationList() != null) {
+            partners="";
+            partnerList.clear();
             invitationList = model.getInvitationList();
             if (invitationList!=null) {
                 for(int i=0;i<invitationList.size();i++){
@@ -73,10 +75,11 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             if(partnerList.size()>0){
                 for(int i=0;i<partnerList.size();i++){
                     if(i!=partnerList.size()){
-                            partners+=(partnerList.get(i).getPartnerName()+",");
+                        partners+=(partnerList.get(i).getPartnerName());
+
                     }
                     else{
-                            partners+=(partnerList.get(i).getPartnerName());
+                        partners+=(partnerList.get(i).getPartnerName()+",");
                     }
 
                 }
@@ -84,6 +87,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             }
 
             holder.txtv_players.setText(partners);
+            partners="";
         }else{
             holder.txtv_players.setText("");
         }
