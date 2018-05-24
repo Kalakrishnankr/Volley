@@ -43,8 +43,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:scrollbars="none">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
             <LinearLayout
+                android:id="@+id/linearLt_signup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
@@ -52,289 +56,295 @@
                 android:weightSum="10">
 
 
+                <!--First Name-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/fnameWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
 
-
-                    <!--First Name-->
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/fnameWrapper"
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_firstname"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_firstname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/hint_fname"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:inputType="textPersonName|textCapWords"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_fnameError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                        android:hint="@string/hint_fname"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:inputType="textPersonName|textCapWords"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_fnameError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
 
-                    <!--Last Name-->
+                <!--Last Name-->
 
-                    <android.support.design.widget.TextInputLayout
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_lastname"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_lastname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/hint_lname"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:inputType="textCapWords"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_lnameError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                        android:hint="@string/hint_lname"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:inputType="textCapWords"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_lnameError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
 
 
-                    <!--Athlete-Coach Radio Button-->
-                    <RadioGroup
-                        android:id="@+id/user_type"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
+                <!--Athlete-Coach Radio Button-->
+                <RadioGroup
+                    android:id="@+id/user_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                        <RadioButton
-                            android:id="@+id/athlete_radio"
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Athlete" />
-
-                        <RadioButton
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:gravity="center"
-                            android:text="Coach" />
-                    </RadioGroup>
-                    <TextView
-                        android:id="@+id/txt_athleteError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
-
-                    <!--Date of Birth-->
-
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/dobWrapper"
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_dob"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:focusable="false"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:hint="@string/hint_dob"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_dobError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
-                    <!--Gender-->
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="0dp"
+                    <RadioButton
+                        android:id="@+id/athlete_radio"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
+                        android:text="Athlete" />
 
-                        <com.beachpartnerllc.beachpartner.CustomButton
-                            android:id="@+id/btnMale"
-                            android:layout_width="0dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="1"
-                            android:background="@color/imgBacgnd"
-                            android:text="@string/hint_male"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/text_size" />
-
-                        <Space
-                            android:layout_width="5dp"
-                            android:layout_height="wrap_content" />
-
-                        <com.beachpartnerllc.beachpartner.CustomButton
-                            android:id="@+id/btnFemale"
-                            android:layout_width="0dp"
-                            android:layout_height="30dp"
-                            android:layout_weight="1"
-                            android:background="@color/imgBacgnd"
-                            android:text="@string/hint_female"
-                            android:textAlignment="center"
-                            android:textSize="@dimen/text_size" />
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/txt_genderError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
-                    <!--Contact Email-->
-
-                    <android.support.design.widget.TextInputLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="0dp"
+                    <RadioButton
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+                        android:gravity="center"
+                        android:text="Coach" />
+                </RadioGroup>
+                <TextView
+                    android:id="@+id/txt_athleteError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
 
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_email"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/hint_email"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:inputType="textEmailAddress"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_emailError"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                <!--Date of Birth-->
 
-                    <!--Password-->
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/pwd_wrapper"
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/dobWrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_dob"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:hint="@string/hint_password"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-                        app:passwordToggleTintMode="src_atop">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:drawableRight="@drawable/ic_pwd_toggle"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:inputType="textPassword"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_passwordError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                        android:focusable="false"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:hint="@string/hint_dob"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_dobError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
+                <!--Gender-->
 
-                    <!-- Confirm Password-->
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
 
-                    <android.support.design.widget.TextInputLayout
+                    <com.beachpartnerllc.beachpartner.CustomButton
+                        android:id="@+id/btnMale"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@color/imgBacgnd"
+                        android:text="@string/hint_male"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/text_size" />
+
+                    <Space
+                        android:layout_width="5dp"
+                        android:layout_height="wrap_content" />
+
+                    <com.beachpartnerllc.beachpartner.CustomButton
+                        android:id="@+id/btnFemale"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_weight="1"
+                        android:background="@color/imgBacgnd"
+                        android:text="@string/hint_female"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/text_size" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txt_genderError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
+                <!--Contact Email-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_email"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_confirm_password"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/hint_confirmpwd"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:inputType="textPassword"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-
-                    <TextView
-                        android:id="@+id/txt_conformError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
-                    <!--Phone Number-->
+                        android:hint="@string/hint_email"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:inputType="textEmailAddress"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_emailError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
 
-                    <android.support.design.widget.TextInputLayout
+                <!--Password-->
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/pwd_wrapper"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:hint="@string/hint_password"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+                    app:passwordToggleTintMode="src_atop">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_password"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_mobile"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:clickable="true"
-                            android:focusable="true"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:hint="@string/hint_mobile"
-                            android:inputType="number"
-                            android:focusableInTouchMode="true"
-                            android:maxLength="10"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_mobileError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                        android:drawableRight="@drawable/ic_pwd_toggle"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_passwordError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
 
-                    <!--City-->
+                <!-- Confirm Password-->
 
-                    <android.support.design.widget.TextInputLayout
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_confirm_password"
                         android:layout_width="match_parent"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
-
-                        <com.beachpartnerllc.beachpartner.CustomEditText
-                            android:id="@+id/input_city"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:hint="@string/hintLocation"
-                            android:textSize="@dimen/text_size"
-                            android:layout_marginBottom="-5dp"
-                            android:clickable="true"
-                            android:focusable="false"
-                            android:textColor="@color/colorPrimary" />
-                    </android.support.design.widget.TextInputLayout>
-                    <TextView
-                        android:id="@+id/txt_cityError"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dot_dark_screen1"
-                        android:visibility="gone"/>
+                        android:hint="@string/hint_confirmpwd"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:inputType="textPassword"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/txt_conformError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
+                <!--Phone Number-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_mobile"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:hint="@string/hint_mobile"
+                        android:inputType="number"
+                        android:focusableInTouchMode="true"
+                        android:maxLength="10"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_mobileError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
+
+                <!--City-->
+
+                <android.support.design.widget.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout">
+
+                    <com.beachpartnerllc.beachpartner.CustomEditText
+                        android:id="@+id/input_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/hintLocation"
+                        android:textSize="@dimen/text_size"
+                        android:layout_marginBottom="-5dp"
+                        android:clickable="true"
+                        android:focusable="false"
+                        android:textColor="@color/colorPrimary" />
+                </android.support.design.widget.TextInputLayout>
+                <TextView
+                    android:id="@+id/txt_cityError"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/dot_dark_screen1"
+                    android:visibility="gone"/>
             </LinearLayout>
+
+            <View
+                android:id="@+id/scroll_space1"
+                android:layout_width="match_parent"
+                android:layout_below="@+id/linearLt_signup"
+                android:layout_height="140dp"/>
+        </RelativeLayout>
+
 
         </ScrollView>
 
