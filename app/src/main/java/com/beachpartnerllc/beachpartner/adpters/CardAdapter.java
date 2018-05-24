@@ -50,21 +50,21 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
-        partners="";
-        partnerList.clear();
+
         final Event model = dataList.get(position);
 
         SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
         long esDate  = model.getEventStartDate();
         String date = dft.format(esDate);
         holder.txtv_date.setText(date);
-        holder.txtv_place.setText(model.getEventVenue());
+        holder.txtv_place.setText(model.getEventName());
         if (model.getInvitationList() != null) {
             partners="";
             partnerList.clear();
             invitationList = model.getInvitationList();
             if (invitationList!=null) {
                 partnerList.addAll(invitationList.get(0).getPartnerList());
+                partners+= invitationList.get(0).getInviterName()+",";
             }
 
             if(partnerList.size()>0){
