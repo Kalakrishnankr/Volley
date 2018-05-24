@@ -50,7 +50,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(CardAdapter.MyViewHolder holder, int position) {
-
+        partners="";
+        partnerList.clear();
         final Event model = dataList.get(position);
 
         SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
@@ -61,25 +62,19 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         if (model.getInvitationList() != null) {
             invitationList = model.getInvitationList();
             if (invitationList!=null) {
-                for(int i=0;i<invitationList.size();i++){
-                    if(invitationList.get(i).getInviterName()!=null){
-                        if(!invitationList.get(i).getInviterName().equalsIgnoreCase("")||!invitationList.get(i).getInviterName().equalsIgnoreCase("null")){
-                            partners+=(invitationList.get(i).getInviterName()+",");
-                        }
-                    }
-                    partnerList.addAll(invitationList.get(i).getPartnerList());
-                }
+                partnerList.addAll(invitationList.get(0).getPartnerList());
             }
-            if(partnerList.size()>0){
-                for(int i=0;i<partnerList.size();i++){
-                    if(i!=partnerList.size()){
+            for(int i=0;i<partnerList.size();i++){
+                    if(partnerList.get(i).getPartnerName()!=null){
+                        if(i!=partnerList.size()-1){
                             partners+=(partnerList.get(i).getPartnerName()+",");
-                    }
-                    else{
-                            partners+=(partnerList.get(i).getPartnerName());
-                    }
 
-                }
+                        }
+                        else{
+                            partners+=(partnerList.get(i).getPartnerName());
+                        }
+
+                    }
 
             }
 
