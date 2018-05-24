@@ -966,6 +966,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
                 } else {
                     int travelValuePos = distanceAdapter.getPosition(spinnerWTValue);
+
                     spinnerWtoTravel.setSelection(travelValuePos);
                     spinnerWTValue = "";
                 }
@@ -1092,6 +1093,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
+                    addingPleaseSelect();
 
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
                     edit_tag.setTextColor(getResources().getColor(R.color.btnColor));
@@ -1317,6 +1319,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             }
         });
 
+
+    }
+
+    private void addingPleaseSelect() {
 
     }
 

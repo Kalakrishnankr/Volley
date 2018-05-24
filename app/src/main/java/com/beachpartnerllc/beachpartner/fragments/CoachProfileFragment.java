@@ -1095,7 +1095,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     editCollege.setText(userCoachModel.getUserProfile().getCollage());
 
                 if(userCoachModel.getUserProfile().getDescription() != null){
-                    if(userCoachModel.getUserProfile().getDescription().equals("null")){
+                    if(!userCoachModel.getUserProfile().getDescription().equals("null")){
                         description.setText(userCoachModel.getUserProfile().getDescription().toString());
                     }
                 }

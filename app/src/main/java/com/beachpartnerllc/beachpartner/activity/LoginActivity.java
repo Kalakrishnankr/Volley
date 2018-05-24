@@ -641,7 +641,7 @@ public class LoginActivity extends AppCompatActivity {
 
         };
 
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
         Log.d("Request", objectRequest.toString());
         requestQueue.add(objectRequest);
 
