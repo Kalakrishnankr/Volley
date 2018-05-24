@@ -5,12 +5,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
-import com.beachpartnerllc.beachpartner.models.EventResultModel;
+import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
+import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
@@ -21,12 +22,11 @@ import java.util.ArrayList;
 public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.MyViewHolder> {
 
     private Context mContext;
-    private ArrayList<EventResultModel>sList;
-    private EventResultModel eventModel;
+    private ArrayList<InvitationsModel>sList;
     private AcceptRejectInvitationListener invitationListener;
 
 
-    public SuggestionAdapter(Context context, ArrayList<EventResultModel> suggestionList, AcceptRejectInvitationListener acceptRejectInvitationListener) {
+    public SuggestionAdapter(Context context, ArrayList<InvitationsModel> suggestionList, AcceptRejectInvitationListener acceptRejectInvitationListener) {
         this.mContext = context;
         this.sList    = suggestionList;
         this.invitationListener = acceptRejectInvitationListener;
@@ -43,17 +43,24 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
-        eventModel = sList.get(position);
-
+        final InvitationsModel eventModel = sList.get(position);
         holder.txtv_team.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                invitationListener.showPartnerDialogue();
+                invitationListener.showPartnerDialogue(eventModel);
 
             }
         });
-
-        holder.txtv_name.setText(eventModel.getEventName());
+        if (eventModel.getInviterImageUrl() != null) {
+            if (!eventModel.getInviterImageUrl().equals("null")) {
+                Glide.with(mContext).load(eventModel.getInviterImageUrl()).into(holder.imgv_pic);
+            }else {
+                holder.imgv_pic.setImageResource(R.drawable.ic_person);
+            }
+        }else{
+            holder.imgv_pic.setImageResource(R.drawable.ic_person);
+        }
+        holder.txtv_name.setText(eventModel.getInviterName());
     }
 
 
@@ -78,7 +85,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView txtv_team,txtv_name;
-        public ImageView imgv_pic;
+        public CircularImageView imgv_pic;
         public MyViewHolder(View itemView) {
             super(itemView);
 

@@ -554,46 +554,46 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         //Region
         List<String> regionList = new ArrayList<>();
-        regionList.add("Alaska Region (AK)");
-        regionList.add("Aloha Region (AH)");
-        regionList.add("Arizona Region (AZ)");
-        regionList.add("Badger Region (BG)");
-        regionList.add("Bayou Region (BY)");
-        regionList.add("Carolina Region (CR)");
-        regionList.add("Chesapeake Region (CH)");
-        regionList.add("Columbia Empire Region (CE)");
-        regionList.add("Delta Region (DE)");
-        regionList.add("Evergreen Region (EV)");
-        regionList.add("Florida Region (FL)");
-        regionList.add("Garden Empire Region (GE)");
-        regionList.add("Gateway Region (GW)");
-        regionList.add("Great Lakes Region (GL)");
-        regionList.add("Great Plains Region (GP)");
-        regionList.add("Gulf Coast Region (GC)");
-        regionList.add("Heart of America Region (HA)");
-        regionList.add("Hoosier Region (HO)");
-        regionList.add("Intermountain Region (IM)");
-        regionList.add("Iowa Region (IA)");
-        regionList.add("Iroquois Empire Region (IE)");
-        regionList.add("Keystone Region (KE)");
-        regionList.add("Lakeshore Region (LK)");
-        regionList.add("Lone Star Region (LS)");
-        regionList.add("Moku O Keawe Region (MK)");
-        regionList.add("New England Region (NE)");
-        regionList.add("North Country Region (NO)");
-        regionList.add("North Texas Region (NT)");
-        regionList.add("Northern California Region (NC)");
-        regionList.add("Ohio Valley Region (OV)");
-        regionList.add("Oklahoma Region (OK)");
-        regionList.add("Old Dominion Region (OD)");
-        regionList.add("Palmetto Region (PM)");
-        regionList.add("Pioneer Region (PR)");
-        regionList.add("Puget Sound Region (PS)");
-        regionList.add("Rocky Mountain Region (RM)");
-        regionList.add("Southern Region (SO)");
-        regionList.add("Southern California Region (SC)");
-        regionList.add("Sun Country Region (SU)");
-        regionList.add("Western Empire Region (WE)");
+        regionList.add("Alaska Region");
+        regionList.add("Aloha Region");
+        regionList.add("Arizona Region");
+        regionList.add("Badger Region");
+        regionList.add("Bayou Region");
+        regionList.add("Carolina Region");
+        regionList.add("Chesapeake Region");
+        regionList.add("Columbia Empire Region");
+        regionList.add("Delta Region");
+        regionList.add("Evergreen Region");
+        regionList.add("Florida Region");
+        regionList.add("Garden Empire Region");
+        regionList.add("Gateway Region");
+        regionList.add("Great Lakes Region");
+        regionList.add("Great Plains Region");
+        regionList.add("Gulf Coast Region");
+        regionList.add("Heart of America Region");
+        regionList.add("Hoosier Region");
+        regionList.add("Intermountain Region");
+        regionList.add("Iowa Region");
+        regionList.add("Iroquois Empire Region");
+        regionList.add("Keystone Region");
+        regionList.add("Lakeshore Region");
+        regionList.add("Lone Star Region");
+        regionList.add("Moku O Keawe Region");
+        regionList.add("New England Region");
+        regionList.add("North Country Region");
+        regionList.add("North Texas Region");
+        regionList.add("Northern California Region");
+        regionList.add("Ohio Valley Region");
+        regionList.add("Oklahoma Region");
+        regionList.add("Old Dominion Region");
+        regionList.add("Palmetto Region");
+        regionList.add("Pioneer Region");
+        regionList.add("Puget Sound Region");
+        regionList.add("Rocky Mountain Region");
+        regionList.add("Southern Region");
+        regionList.add("Southern California Region");
+        regionList.add("Sun Country Region");
+        regionList.add("Western Empire Region");
 
 
         ArrayAdapter<String> adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
@@ -618,7 +618,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 String eventType_clear = eventType.replaceAll("\\s", "");
                 String stateAdapter = state.replaceAll("\\s", "");
 
-               /* String dateYear = month+" "+ year;
+                String dateYear = month+" "+ year;
                 Date startDate = null;
                 DateFormat df = new SimpleDateFormat("MMMM yyyy");
                 try {
@@ -627,7 +627,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     e.printStackTrace();
                 }
                 compactCalendarView.setCurrentDate(startDate);
-                compactCalendarView.invalidate();*/
+                compactCalendarView.invalidate();
+
                 JSONObject objects = new JSONObject();
                 try {
                     objects.put("eventType",eventType_clear);

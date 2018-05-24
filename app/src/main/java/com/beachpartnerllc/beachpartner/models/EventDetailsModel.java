@@ -14,23 +14,39 @@ public class EventDetailsModel implements Parcelable {
     String eventId;
     @SerializedName("eventEndDate")
     String eventEndDate;
+    @SerializedName("eventurl")
+    String eventurl;
     @SerializedName("teamSize")
     String teamSize;
+    @SerializedName("acceptedCount")
+    String acceptedCount;
     @SerializedName("eventLocation")
     String eventLocation;
     @SerializedName("eventName")
     String eventName;
+    @SerializedName("invitationCount")
+    String invitationCount;
+    @SerializedName("pendingCount")
+    String pendingCount;
+    @SerializedName("rejectedCount")
+    String rejectedCount;
     @SerializedName("sendCount")
     String sendCount;
     @SerializedName("eventStartDate")
     String eventStartDate;
 
+
     protected EventDetailsModel(Parcel in) {
         eventId = in.readString();
         eventEndDate = in.readString();
+        eventurl = in.readString();
         teamSize = in.readString();
+        acceptedCount = in.readString();
         eventLocation = in.readString();
         eventName = in.readString();
+        invitationCount = in.readString();
+        pendingCount = in.readString();
+        rejectedCount = in.readString();
         sendCount = in.readString();
         eventStartDate = in.readString();
     }
@@ -56,9 +72,14 @@ public class EventDetailsModel implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(eventId);
         parcel.writeString(eventEndDate);
+        parcel.writeString(eventurl);
         parcel.writeString(teamSize);
+        parcel.writeString(acceptedCount);
         parcel.writeString(eventLocation);
         parcel.writeString(eventName);
+        parcel.writeString(invitationCount);
+        parcel.writeString(pendingCount);
+        parcel.writeString(rejectedCount);
         parcel.writeString(sendCount);
         parcel.writeString(eventStartDate);
     }
@@ -71,8 +92,16 @@ public class EventDetailsModel implements Parcelable {
         return eventEndDate;
     }
 
+    public String getEventurl() {
+        return eventurl;
+    }
+
     public String getTeamSize() {
         return teamSize;
+    }
+
+    public String getAcceptedCount() {
+        return acceptedCount;
     }
 
     public String getEventLocation() {
@@ -81,6 +110,18 @@ public class EventDetailsModel implements Parcelable {
 
     public String getEventName() {
         return eventName;
+    }
+
+    public String getInvitationCount() {
+        return invitationCount;
+    }
+
+    public String getPendingCount() {
+        return pendingCount;
+    }
+
+    public String getRejectedCount() {
+        return rejectedCount;
     }
 
     public String getSendCount() {

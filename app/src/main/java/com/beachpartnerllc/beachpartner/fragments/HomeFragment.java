@@ -269,16 +269,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         switch(view.getId()){
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
-                isRequestReceive=true;
-                isRequestSend=false;
                 receiveInvitationTab();
                 //txtv_noreqsts.setText("No requests received");
                 break;
 
             case R.id.imgview_send:
                 txt_head.setText("Tournament Requests Sent");
-                isRequestSend=true;
-                isRequestReceive=false;
                 sendInvitationTab();
                 //txtv_noreqsts.setText("No requests received");
                 break;
@@ -359,7 +355,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     public void getEvent(String eventID,String sendCount ) {
 
         if (isRequestReceive) {
-            receiveRequetHandler(eventID);
+            receiveRequetHandler(eventID,sendCount);
         }else {
             sendRequestHandler(eventID,sendCount);
         }
@@ -368,7 +364,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     }
 
     //Handle the receive requests here
-    private void receiveRequetHandler(String event_Id) {
+    private void receiveRequetHandler(String event_Id,String count_no) {
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_INVITATION_LIST+event_Id+"?calendarType=mastercalendar", null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
@@ -893,6 +889,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Receive Invitation Tab
     private void receiveInvitationTab() {
+        isRequestReceive=true;
+        isRequestSend=false;
         txtv_noreqsts.setVisibility(View.GONE);
         parRecyclerview.setVisibility(View.VISIBLE);
         if (receiveInvitationList != null && receiveInvitationList.size() > 0) {
@@ -905,10 +903,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     }
     //Send Invitation Tab
     private void sendInvitationTab() {
+        isRequestSend=true;
+        isRequestReceive=false;
         txtv_noreqsts.setVisibility(View.GONE);
         parRecyclerview.setVisibility(View.VISIBLE);
         if (sendInvitationList != null && sendInvitationList.size() > 0) {
-            partnerAdapter  =  new PartnerAdapter(getContext(), (ArrayList<EventDetailsModel>) sendInvitationList,this,isRequestSend,isRequestReceive);
+            partnerAdapter  =  new PartnerAdapter(getContext(), (ArrayList<EventDetailsModel>) sendInvitationList,this,isRequestReceive,isRequestSend);
             parRecyclerview.setAdapter(partnerAdapter);
         }else {
             parRecyclerview.setVisibility(View.GONE);

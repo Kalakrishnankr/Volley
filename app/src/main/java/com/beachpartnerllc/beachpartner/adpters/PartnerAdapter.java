@@ -53,7 +53,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
             SimpleDateFormat dft = new SimpleDateFormat("MM-dd-yyyy");
             long esDate  = Long.parseLong(model.getEventStartDate());
             String date = dft.format(esDate);
-            holder.txtvCount.setText(model.getSendCount());
+            holder.txtvCount.setText(model.getInvitationCount());
             holder.txtvrequestDate.setText(date);
             holder.txtvRequestPlace.setText(model.getEventLocation());
             holder.txtvgameName.setText(model.getEventName());
@@ -63,7 +63,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
                 public void onClick(View view) {
                     //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
                     String eventID = model.getEventId();
-                    eventlistner.getEvent(eventID,model.getSendCount());
+                    eventlistner.getEvent(eventID,model.getInvitationCount());
 
                 }
             });
@@ -82,7 +82,7 @@ public class PartnerAdapter extends RecyclerView.Adapter<PartnerAdapter.MyViewHo
                 @Override
                 public void onClick(View view) {
                     //Toast.makeText(mContext, "Clicked "+position, Toast.LENGTH_SHORT).show();
-                    eventlistner.getEvent(model.getEventId(),model.getSendCount());
+                    eventlistner.getEvent(model.getEventId(),model.getInvitationCount());
 
                 }
             });

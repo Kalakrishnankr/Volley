@@ -74,6 +74,10 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     private PrefManager prefManager;
     private String message;
     private static final String TAG = "AcceptRejectRequestFrag";
+
+
+    private ArrayList<PartnerResultModel>listPartner= new ArrayList<>();
+    private ArrayList<InvitationsModel>listInvitation= new ArrayList<>();
     public AcceptRejectRequestFragment() {
         // Required empty public constructor
     }
@@ -157,8 +161,21 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         eventTitle.setText(eventResultModel.getEventName());
         eventStart.setText(dft.format(date_start));
         eventEnd.setText(dft.format(date_end));
+        if (suggestionList != null) {
+            for (int i = 0; i < suggestionList.size(); i++) {
+                listInvitation.addAll(suggestionList.get(i).getInvitationList());
+            }
+
+        }
+        if (listInvitation != null) {
+            for (int j = 0; j < listInvitation.size(); j++) {
+                listPartner.addAll(listInvitation.get(j).getPartnerList());
+            }
+        }
+
+
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
-        suggestionAdapter = new SuggestionAdapter(getContext(),suggestionList,this);
+        suggestionAdapter = new SuggestionAdapter(getContext(),listInvitation,this);
         rcv_requests.setLayoutManager(manager);
         rcv_requests.setAdapter(suggestionAdapter);
         suggestionAdapter.notifyDataSetChanged();
@@ -391,19 +408,9 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         }
     }
 
-    //Handle the receive requests here
-  /*  private receiveRequestHandler(String event_Id) {
-
-    }*/
-
-    //api for accept invitation
-   /* private void acceptInvitation() {
-
-        JsonObjectRequest objectRequest = new JsonObjectRequest(APi)
-    }*/
 
     @Override
-    public void showPartnerDialogue() {
+    public void showPartnerDialogue(InvitationsModel  model) {
         AlertDialog.Builder alert = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = (LayoutInflater)getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.partnerlist_view, null);
@@ -418,27 +425,37 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         listView.setLayoutManager(layoutManager);
 
+        partnerList.clear();
         if (suggestionList != null) {
-            partnerList.clear();
-            invitationsModels.clear();
-            partnerAdapterList.clear();
-            for(int i =0;i<suggestionList.get(0).getInvitationList().size();i++){
-                invitationsModels.addAll(suggestionList.get(0).getInvitationList());
+            listInvitation.clear();
+            listInvitation.add(model);
+            for (int k=0;k<listInvitation.size();k++){
+                partnerList.addAll(listInvitation.get(k).getPartnerList());
             }
-            if (invitationsModels.size() > 0) {
+
+            //invitationsModels.clear();
+            partnerAdapterList.clear();
+            /*for(int i =0;i<suggestionList.get(0).getInvitationList().size();i++){
+                invitationsModels.addAll(suggestionList.get(0).getInvitationList());
+            }*/
+
+            /*if (invitationsModels.size() > 0) {
                 for(int j=0;j<invitationsModels.size();j++){
                    partnerList.addAll(invitationsModels.get(j).getPartnerList());
                 }
-            }
+            }*/
 
-            if(invitationsModels!=null) {
-                if (!invitationsModels.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
-                    MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
-                    partnerObject1.setpartner_Id(invitationsModels.get(0).getInviterUserId());
-                    partnerObject1.setPartner_ImageUrl(invitationsModels.get(0).getInviterImageUrl());
-                    partnerObject1.setpartner_Name(invitationsModels.get(0).getInviterName());
-                    partnerObject1.setpartner_role("Organizer");
-                    partnerAdapterList.add(partnerObject1);//organizer
+
+            if(listInvitation!=null) {
+                for(int j=0;j<listInvitation.size();j++){
+                    if (!listInvitation.get(j).getInviterUserId().equalsIgnoreCase(user_id)) {
+                        MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
+                        partnerObject1.setpartner_Id(listInvitation.get(j).getInviterUserId());
+                        partnerObject1.setPartner_ImageUrl(listInvitation.get(j).getInviterImageUrl());
+                        partnerObject1.setpartner_Name(listInvitation.get(j).getInviterName());
+                        partnerObject1.setpartner_role("Organizer");
+                        partnerAdapterList.add(partnerObject1);//organizer
+                    }
                 }
             }
 
