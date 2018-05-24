@@ -148,7 +148,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ArrayList<BpFinderModel> hifiList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> bluebpList = new ArrayList<>();
-    private ArrayList<BpFinderModel> connectionList = new ArrayList<BpFinderModel>();//Connected people list
     private String item_location;
     private List<Event> personEventList = new ArrayList<Event>();
     private TabActivity tabActivity;
@@ -186,7 +185,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         } else {
             view = inflater.inflate(R.layout.fragment_bpfinder1, container, false);
-
         }
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
@@ -204,7 +202,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         allCardList.clear();
         //
-
         setUp(view);
         getPreferences();
         btnFemale.setText("Female");
@@ -394,18 +391,18 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         collapsingToolbarLayout = (CollapsingToolbarLayout) view.findViewById(R.id.CollapsingToolbarLayout1);
 
 
-        imgv_rvsecard = view.findViewById(R.id.ic_rvsecard);
-        imgv_highfi = view.findViewById(R.id.ic_high);
-        imgv_location = view.findViewById(R.id.ic_location);
+        imgv_rvsecard   = view.findViewById(R.id.ic_rvsecard);
+        imgv_highfi     = view.findViewById(R.id.ic_high);
+        imgv_location   = view.findViewById(R.id.ic_location);
 
         topFinishes_One = view.findViewById(R.id.topOne_finishes);
         topFinishes_Two = view.findViewById(R.id.topTwo_finishes);
         topFinishes_Three = view.findViewById(R.id.topThree_finishes);
 
-        text_nocard = view.findViewById(R.id.text_nocard);
+        text_nocard     = view.findViewById(R.id.text_nocard);
 
 
-        rcv_bpProfiles = (RecyclerView) view.findViewById(R.id.rrv_topbpProfiles);
+        rcv_bpProfiles  = (RecyclerView) view.findViewById(R.id.rrv_topbpProfiles);
         //recycler for top bp profiles
         LinearLayoutManager lmnger = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         rcv_bpProfiles.setLayoutManager(lmnger);
@@ -430,13 +427,10 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         //choose Location
         if (getActivity() != null) {
             dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style_bp, stateList);
-
-
             spinner_location.setAdapter(dataAdapter);
         }
         spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
                 String Slocaton = spinner_location.getSelectedItem().toString().trim();
                 location = Slocaton.replaceAll("\\s", "");
 

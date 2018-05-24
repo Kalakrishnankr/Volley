@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">BeachPartner</string>
+    <string name="app_name">Beach Partner</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
@@ -146,7 +146,7 @@
 
     <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile)will also be notified</string>
     <string name="reg_success_msg">To complete registration, please check your email and click on the activation link. </string>
-    <string name="reg_success_return">Return to Log in</string>
+    <string name="reg_success_return">Return to login</string>
     <string name="reg_success_never">I never got the email</string>
     <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
     <string name="title_activity_application">ApplicationActivity</string>

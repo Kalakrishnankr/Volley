@@ -700,36 +700,36 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
-private void neverGotEmailAlertTextUnderline(){
-    SpannableString ss = new SpannableString(getResources().getString(R.string.never_got_the_email_msg));
-    ClickableSpan clickableSpan = new ClickableSpan() {
-        @Override
-        public void onClick(View textView) {
-            //Toast.makeText(LoginActivity.this, "Clicked on contact Us ", Toast.LENGTH_SHORT).show();
+    private void neverGotEmailAlertTextUnderline(){
+        SpannableString ss = new SpannableString(getResources().getString(R.string.never_got_the_email_msg));
+        ClickableSpan clickableSpan = new ClickableSpan() {
+            @Override
+            public void onClick(View textView) {
+                //Toast.makeText(LoginActivity.this, "Clicked on contact Us ", Toast.LENGTH_SHORT).show();
 
-            Intent intent = new Intent(Intent.ACTION_SEND);
-            intent.setType("message/rfc822");
-            intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"kara@beachpartner.com"});
+                Intent intent = new Intent(Intent.ACTION_SEND);
+                intent.setType("message/rfc822");
+                intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"kara@beachpartner.com"});
 
-            intent.putExtra(Intent.EXTRA_SUBJECT, "Beach Partner: Activation Email not received");
-            intent.putExtra(Intent.EXTRA_TEXT, "Hello,\n" +
-                    "I did not receive an email from Beach Partner yet. Can you please help?");
+                intent.putExtra(Intent.EXTRA_SUBJECT, "Beach Partner: Activation Email not received");
+                intent.putExtra(Intent.EXTRA_TEXT, "Hello,\n" +
+                        "I did not receive an email from Beach Partner yet. Can you please help?");
 
-            startActivity(Intent.createChooser(intent, "Send Email"));
-        }
+                startActivity(Intent.createChooser(intent, "Send Email"));
+            }
 
-        public void updateDrawState(TextPaint ds) {
-            super.updateDrawState(ds);
-            ds.setUnderlineText(true);
-        }
-    };
-    ss.setSpan(clickableSpan, 103, 124, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            public void updateDrawState(TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setUnderlineText(true);
+            }
+        };
+        ss.setSpan(clickableSpan, 103, 124, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
-    never_got_email_tv.setText(ss);
-    never_got_email_tv.setMovementMethod(LinkMovementMethod.getInstance());
+        never_got_email_tv.setText(ss);
+        never_got_email_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
-}
+    }
     //Method for get Login user info
     /*private void getUserInfo() {
 

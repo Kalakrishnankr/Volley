@@ -618,6 +618,16 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 String eventType_clear = eventType.replaceAll("\\s", "");
                 String stateAdapter = state.replaceAll("\\s", "");
 
+               /* String dateYear = month+" "+ year;
+                Date startDate = null;
+                DateFormat df = new SimpleDateFormat("MMMM yyyy");
+                try {
+                    startDate = df.parse(dateYear);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                compactCalendarView.setCurrentDate(startDate);
+                compactCalendarView.invalidate();*/
                 JSONObject objects = new JSONObject();
                 try {
                     objects.put("eventType",eventType_clear);

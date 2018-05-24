@@ -35,7 +35,6 @@ import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.adpters.PopupAdapter;
 import com.beachpartnerllc.beachpartner.adpters.SuggestionAdapter;
-import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
@@ -73,6 +72,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     private ArrayList<MyCalendarPartnerModel>partnerAdapterList = new ArrayList<>();
     private AcceptRejectInvitationListener invitationListener;
     private PrefManager prefManager;
+    private String message;
     private static final String TAG = "AcceptRejectRequestFrag";
     public AcceptRejectRequestFragment() {
         // Required empty public constructor
@@ -252,6 +252,10 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     }
                     eventHandler(objectReject);
                     suggestionAdapter.removeItem(position);
+                    if (!suggestionList.isEmpty()) {
+                        EventResultModel last = suggestionList.get(suggestionList.size()-1);
+
+                    }
                     //undoLayout.setVisibility(View.VISIBLE);
                 }
                 if (direction == ItemTouchHelper.RIGHT) {
@@ -313,8 +317,33 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
-                    Log.d(TAG, "onResponse:Accept/Reject");
-                    //Toast.makeText(getActivity(), "Accepted", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, "onResponse:Accept/Reject"+response.toString());
+                    try {
+                        message = response.getString("message").trim();
+                        if (message.equalsIgnoreCase("Invitation accepted succesfully")) {
+                            //Move to calendar fragment here
+                            if (getActivity() != null) {
+                                CalendarFragment calendarFragment = new CalendarFragment();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.container, calendarFragment);
+                                transaction.commit();
+                            }
+                        }
+                        if(message.equalsIgnoreCase("Invitation rejected succesfully")){
+                            if (getActivity() != null) {
+                                HomeFragment homeFragment =  new HomeFragment();
+                                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                                transaction.replace(R.id.container, homeFragment);
+                                transaction.commit();
+                            }
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
                 }
 
             }
@@ -392,6 +421,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         if (suggestionList != null) {
             partnerList.clear();
             invitationsModels.clear();
+            partnerAdapterList.clear();
             for(int i =0;i<suggestionList.get(0).getInvitationList().size();i++){
                 invitationsModels.addAll(suggestionList.get(0).getInvitationList());
             }

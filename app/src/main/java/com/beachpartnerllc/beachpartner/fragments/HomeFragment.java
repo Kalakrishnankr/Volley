@@ -154,12 +154,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Beach Partner");
         }
-        getBluebpProfiles();
-        getMyTournaments();
-        getConnections();
-        getNumberLike();
+        getBluebpProfiles();//Method for getting all bluebp profiles
+        getMyTournaments();//Method for getting my upcoming tournamentslist(upcoming tournament current date to future 5 months)
+        getConnections();//Method for getting all blocked/unblocked connections
+        getNumberLike();//Method for getting number of likes
         setViewBasedOnUserType();
-        getAllSendOrReceiveInvitation();
+        getAllSendOrReceiveInvitation();//Method for getting send/Receive invitations
         //setUpMessage();
 
         /*getRequests();
@@ -257,7 +257,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         parRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
 
-        //setting the no. of likes inside the card
 
 
     }
@@ -305,6 +304,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }
     }
 
+    //Getting the number of likes
     private void likesDisplay() {
 
         if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
@@ -315,33 +315,21 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             LayoutInflater inflater = getLayoutInflater();
             View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
 
-
             final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
-
             android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-
-
             // Initialize a new foreground color span instance
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
-
-
             alert.setView(alertLayout);
             alert.setCancelable(true);
-
-
-
             final android.app.AlertDialog dialog = alert.create();
-
             dialog.setOnShowListener(new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface arg0) {
-
                     dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
                     dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
                 }
             });
             dialog.show();
-
             save_btn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -578,14 +566,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
                         Log.d(TAG, "onResponse() called with: response = [" + response.toString() + "]");
                         if(response!=null){
-
-
                             Type listType = new TypeToken<List<SwipeResultModel>>() {
                             }.getType();
                             bpList = new Gson().fromJson(response.toString(), listType);
 
-
-                         setblueBpstrip();
+                         setblueBpstrip();//Set BlueBP views
 
 
                         }
@@ -931,7 +916,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }
     }
 
-    //Get connections
+    //Get all blocked/unblocked connections
     private void getConnections() {
         connectionList.clear();
         progressBar_msg.setVisibility(View.VISIBLE);
@@ -1099,39 +1084,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                     progressBar_msg.setVisibility(View.GONE);
                     txtv_nomsgs.setVisibility(View.VISIBLE);
                 }
-
-               /* if(chatList.size()>0 && chatList!=null){
-                    for (int i=0;i<chatList.size();i++){
-                        String chatId = chatList.get(i).split("-")[0];
-                        String chatwith_id = chatList.get(i).split("-")[1];
-                        if (chatwith_id != null && chatId != null) {
-                            if(chatId.equals(user_id) || chatwith_id.equals(user_id)){
-                                if (connectionList.size() > 0 && connectionList != null) {
-                                    for (int j=0;j<connectionList.size();j++){
-                                        if(chatwith_id.equals(connectionList.get(j).getBpf_id()) || chatId.equals(connectionList.get(j).getBpf_id())){
-                                            userList.add(connectionList.get(j));
-                                        }
-                                    }
-                                }else {
-                                    txtv_nomsgs.setVisibility(View.VISIBLE);
-                                }
-                            }else {
-                                txtv_nomsgs.setVisibility(View.VISIBLE);
-                            }
-                        }
-
-                    }
-                    progressBar_msg.setVisibility(View.GONE);
-                    messageAdapter  =  new MessageAdapter(getContext(),userList);
-                    msgRecyclerview.setAdapter(messageAdapter);
-                    messageAdapter.notifyDataSetChanged();
-                }else {
-                    progressBar_msg.setVisibility(View.GONE);
-                    txtv_nomsgs.setVisibility(View.VISIBLE);
-                }*/
-
-
-
             }
 
             @Override
