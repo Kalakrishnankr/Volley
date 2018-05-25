@@ -22,7 +22,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,10 +57,10 @@ import java.util.Map;
 public class AcceptRejectRequestFragment extends Fragment implements AcceptRejectInvitationListener {
 
     private RecyclerView rcv_requests;
-    private TextView eventTitle,eventStart,eventEnd;
+    private TextView eventTitle,eventStart,eventEnd,eventLocation,eventVenue,eventAdmin;
     private SuggestionAdapter suggestionAdapter;
     private ArrayList<EventResultModel>suggestionList = new ArrayList<>();
-    private LinearLayout undoLayout;
+    //private LinearLayout undoLayout;
     private Paint p = new Paint();
     private int position;
     private String word,eventID,oranizerID,responseType,user_token,user_id;
@@ -106,11 +105,15 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
 
     private void initviews(View view) {
 
-        eventTitle   = view.findViewById(R.id.event_title);
-        eventStart   = view.findViewById(R.id.txtevent_start);
-        eventEnd     = view.findViewById(R.id.txtevent_end);
-        undoLayout   = view.findViewById(R.id.layout_undo);
+        eventTitle      = view.findViewById(R.id.event_title);
+        eventStart      = view.findViewById(R.id.txtevent_start);
+        eventEnd        = view.findViewById(R.id.txtevent_end);
+        eventLocation   = view.findViewById(R.id.txtv_location);
+        eventVenue      = view.findViewById(R.id.textv_venue);
+        eventAdmin      = view.findViewById(R.id.txtv_admin);
+        //undoLayout   = view.findViewById(R.id.layout_undo);
         rcv_requests  = view.findViewById(R.id.rcv_requests);
+
     }
 
     @Override
@@ -159,6 +162,9 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         Date date_end  = new Date(event_endDate);
 
         eventTitle.setText(eventResultModel.getEventName());
+        eventLocation.setText(eventResultModel.getEventLocation());
+        eventVenue.setText(eventResultModel.getEventVenue());
+        eventAdmin.setText(eventResultModel.getEventAdmin());
         eventStart.setText(dft.format(date_start));
         eventEnd.setText(dft.format(date_end));
         if (suggestionList != null) {
@@ -337,7 +343,15 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     Log.d(TAG, "onResponse:Accept/Reject"+response.toString());
                     try {
                         message = response.getString("message").trim();
-                        if (message.equalsIgnoreCase("Invitation accepted succesfully")) {
+                        if (getActivity() != null) {
+                            HomeFragment homeFragment =  new HomeFragment();
+                            FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+                            FragmentTransaction transaction = fragmentManager.beginTransaction();
+                            transaction.replace(R.id.container, homeFragment);
+                            transaction.commit();
+                        }
+
+                        /*if (message.equalsIgnoreCase("Invitation accepted succesfully")) {
                             //Move to calendar fragment here
                             if (getActivity() != null) {
                                 CalendarFragment calendarFragment = new CalendarFragment();
@@ -355,7 +369,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                                 transaction.replace(R.id.container, homeFragment);
                                 transaction.commit();
                             }
-                        }
+                        }*/
 
                     } catch (JSONException e) {
                         e.printStackTrace();

@@ -27,21 +27,16 @@ import com.beachpartnerllc.beachpartner.adpters.MyNoteAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.models.EventAdminModel;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.reflect.TypeToken;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Type;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -117,6 +112,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         }
         return view;
     }
+
 
     private void initViews(View view) {
 
@@ -207,6 +203,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         getEvent(eventId);
 
+
     }
 
     @Override
@@ -238,6 +235,18 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         final EditText txtv_notify  =   (EditText) layout.findViewById(R.id.edt_notify);
         final Button   btn_cancel   =   (Button) layout.findViewById(R.id.btn_ntfy_cancel);
         final Button   btn_notify   =   (Button) layout.findViewById(R.id.btn_ntfy_ok);
+
+       /* txtv_notify.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    Toast.makeText(getContext(), "Opend", Toast.LENGTH_SHORT).show();
+                }else {
+                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
+
+                }
+            }
+        });*/
 
         /*button notify*/
         btn_notify.setOnClickListener(new View.OnClickListener() {
