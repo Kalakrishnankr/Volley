@@ -857,6 +857,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 compactCalendarView.addEvent(myeventModelList.get(i));
             }
         }
+        currentDateEventSetter();
+
     }
 
     //Api for search events

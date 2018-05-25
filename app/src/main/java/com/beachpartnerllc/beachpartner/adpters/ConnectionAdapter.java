@@ -115,7 +115,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             holder.txtv_age.setText("Age: "+dataLists.get(position).getBpFinderModel().getBpf_age());
 
             if(dataLists.get(position).getBpFinderModel().getBpf_imageUrl() != null){
-                if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equalsIgnoreCase("NULL"))
+                if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equalsIgnoreCase(""))
                     Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
                 else
                     holder.profilePic.setImageResource(R.drawable.ic_person);
