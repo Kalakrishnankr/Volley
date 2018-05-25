@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">Beach Partner&#8482; v32</string>
+    <string name="app_name">Beach Partner&#8482;</string>
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
-    <string name="dntaccount">Don\'t have an account?</string>
+    <string name="dntaccount">Don\'t have an account? </string>
     <string name="signup"><u>Sign Up</u></string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Username</string>
@@ -150,5 +150,5 @@
     <string name="reg_success_never">I never got the email</string>
     <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
     <string name="title_activity_application">ApplicationActivity</string>
-
+    <string name="version">Beach Partner v32</string>
 </resources>

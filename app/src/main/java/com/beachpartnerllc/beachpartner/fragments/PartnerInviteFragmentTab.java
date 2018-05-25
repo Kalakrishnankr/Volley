@@ -52,7 +52,7 @@ public class PartnerInviteFragmentTab extends Fragment {
         eventObject     = getArguments().getParcelable("eventObject");
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle("Events "+eventObject.getEventName());
+            tabActivity.setActionBarTitle(eventObject.getEventName());
         }
         Log.d(TAG, "onCreateView: "+eventObject);
         View view   =   inflater.inflate(R.layout.fragment_partner_invite, container, false);
