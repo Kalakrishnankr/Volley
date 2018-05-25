@@ -87,7 +87,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         }
 
 
-       // int colr= Integer.parseInt(model.event_color.trim());
+        // int colr= Integer.parseInt(model.event_color.trim());
 
 
         //item click on individual card

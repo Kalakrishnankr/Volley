@@ -280,7 +280,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle("Beach Partner");
+            //tabActivity.setActionBarTitle("Beach Partner");
         }
     }
 

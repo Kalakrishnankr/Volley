@@ -152,7 +152,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
-            tabActivity.setActionBarTitle("Beach Partner");
+            //tabActivity.getSupportActionBar().setCustomView(R.layout.header);
+           // tabActivity.getSupportActionBar().setStackedBackgroundDrawable(getResources().getDrawable(R.drawable.bp_header));
+           // tabActivity.setActionBarTitle("Beach Partner");
         }
         getBluebpProfiles();//Method for getting all bluebp profiles
         getMyTournaments();//Method for getting my upcoming tournamentslist(upcoming tournament current date to future 5 months)
