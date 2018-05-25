@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -29,13 +30,14 @@ public class WelcomeActivity extends AppCompatActivity {
 
     private String YOUR_FRAGMENT_STRING_TAG;
     private ViewPager viewPager;
-    private MyViewPagerAdapter myViewPagerAdapter;
+    public MyViewPagerAdapter myViewPagerAdapter;
     private LinearLayout dotsLayout;
     private TextView[] dots;
     private int[] layouts;
     private Button btnSkip, btnNext;
     private PrefManager prefManager;
     private String userType,fromHelp;
+    private View view;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -194,13 +196,18 @@ public class WelcomeActivity extends AppCompatActivity {
         public MyViewPagerAdapter() {
         }
 
+        @NonNull
         @Override
-        public Object instantiateItem(ViewGroup container, int position) {
+        public Object instantiateItem(@NonNull ViewGroup container, int position) {
             layoutInflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            assert layoutInflater != null;
+            try {
+                view = layoutInflater.inflate(layouts[position], container, false);
+                container.addView(view);
 
-            View view = layoutInflater.inflate(layouts[position], container, false);
-            container.addView(view);
+            }catch (OutOfMemoryError error){
 
+            }
             return view;
         }
 
@@ -210,13 +217,13 @@ public class WelcomeActivity extends AppCompatActivity {
         }
 
         @Override
-        public boolean isViewFromObject(View view, Object obj) {
+        public boolean isViewFromObject(@NonNull View view, @NonNull Object obj) {
             return view == obj;
         }
 
 
         @Override
-        public void destroyItem(ViewGroup container, int position, Object object) {
+        public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
             View view = (View) object;
             container.removeView(view);
         }

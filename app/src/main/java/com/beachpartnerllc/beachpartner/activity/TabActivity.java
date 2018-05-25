@@ -59,7 +59,7 @@ public class TabActivity extends AppCompatActivity  {
                 case R.id.navigation_home:
                     if (userType.equalsIgnoreCase("Athlete")) {
                         HomeFragment homeFragment = new HomeFragment();
-                        getSupportActionBar().setTitle("Beach Partner");
+                        getSupportActionBar().setTitle(R.string.app_name);
                         FragmentManager manager = getSupportFragmentManager();
                         FragmentTransaction transaction = manager.beginTransaction();
                         transaction.replace(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
@@ -69,7 +69,7 @@ public class TabActivity extends AppCompatActivity  {
                     }
                     if (userType.equalsIgnoreCase("Coach")) {
                         CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
-                        getSupportActionBar().setTitle("Beach Partner");
+                        getSupportActionBar().setTitle(R.string.app_name);
                         FragmentManager coachHomeManager = getSupportFragmentManager();
                         FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
                         coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
@@ -82,7 +82,7 @@ public class TabActivity extends AppCompatActivity  {
                 case R.id.navigation_bp:
                     isPartnerFinder = false;
                     BPFinderFragment bpFinderFragment = new BPFinderFragment(isBPActive, isPartnerFinder);
-                    getSupportActionBar().setTitle("Beach Partner");
+                    getSupportActionBar().setTitle(R.string.app_name);
                     FragmentManager mng = getSupportFragmentManager();
                     FragmentTransaction tran = mng.beginTransaction();
                     tran.replace(R.id.container, bpFinderFragment, YOUR_FRAGMENT_STRING_TAG);
@@ -229,14 +229,15 @@ public class TabActivity extends AppCompatActivity  {
                     if (userType.equalsIgnoreCase("Athlete")) {
                         HomeFragment homeFragment = new HomeFragment();
                         FragmentManager manager = getSupportFragmentManager();
-                        getSupportActionBar().setTitle("Beach Partner");
+                        //getSupportActionBar().setTitle("Beach Partner");
+                        getSupportActionBar().setTitle(R.string.app_name);
                         FragmentTransaction transaction = manager.beginTransaction();
                         transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
                         transaction.commit();
                     }
                     if (userType.equalsIgnoreCase("Coach")) {
                         CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
-                        getSupportActionBar().setTitle("Beach Partner");
+                        getSupportActionBar().setTitle(R.string.app_name);
                         FragmentManager coachHomeManager = getSupportFragmentManager();
                         FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
                         coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
@@ -248,14 +249,15 @@ public class TabActivity extends AppCompatActivity  {
                 if (userType.equalsIgnoreCase("Athlete")) {
                     HomeFragment homeFragment = new HomeFragment();
                     FragmentManager manager = getSupportFragmentManager();
-                    getSupportActionBar().setTitle("Beach Partner");
+                    //getSupportActionBar().setTitle("Beach Partner");
+                    getSupportActionBar().setTitle(R.string.app_name);
                     FragmentTransaction transaction = manager.beginTransaction();
                     transaction.add(R.id.container, homeFragment, YOUR_FRAGMENT_STRING_TAG);
                     transaction.commit();
                 }
                 if (userType.equalsIgnoreCase("Coach")) {
                     CoachHomeFragment coachHomeFragment = new CoachHomeFragment();
-                    getSupportActionBar().setTitle("Beach Partner");
+                    getSupportActionBar().setTitle(R.string.app_name);
                     FragmentManager coachHomeManager = getSupportFragmentManager();
                     FragmentTransaction coachHomeTransaction = coachHomeManager.beginTransaction();
                     coachHomeTransaction.replace(R.id.container, coachHomeFragment, YOUR_FRAGMENT_STRING_TAG);
