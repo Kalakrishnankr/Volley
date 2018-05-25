@@ -31,6 +31,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
     Context mContext;
     List<Event>list;
     boolean isMycalActive;
+    Event model;
 
     public EventsAdapter(Context context, List<Event> eventList, boolean isMycal){
         this.mContext   =context;
@@ -42,49 +43,40 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
         View itemview    = LayoutInflater.from(parent.getContext()).inflate(R.layout.events_list_items,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(itemview);
-
+        myViewHolder.setIsRecyclable(false);
         return myViewHolder;
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-
-        final Event model = list.get(position);
+        model = list.get(position);
         holder.tview_events.setText((CharSequence) model.getEventName());
         if(!isMycalActive){
             if (model.getEventStatus()!=null && model.getRegType()!=null) {
                 //Check event status =active register type =Organizer
                 if (model.getRegType().equalsIgnoreCase("Organizer")) {
                     holder.inviteStatus.setBackground(mContext.getResources().getDrawable(R.drawable.ic_send_request));
-                    //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
 
                     if(model.getEventStatus().equalsIgnoreCase("Registered")){
-                        //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.green));
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.green));
                     }
-                    if(model.getEventStatus().equalsIgnoreCase("Invited")){
-                        //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
+                    else if(model.getEventStatus().equalsIgnoreCase("Invited")){
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
                     }
-                    if(model.getEventStatus().equalsIgnoreCase("Active")){
-                        //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
+                    else if(model.getEventStatus().equalsIgnoreCase("Active")){
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
                     }
                 }
                 else if(model.getRegType().equalsIgnoreCase("Invitee")){
                     holder.inviteStatus.setBackground(mContext.getResources().getDrawable(R.drawable.ic_request_receive));
-                    //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.lightGrey));
 
                     if(model.getEventStatus().equalsIgnoreCase("Registered")){
-                       // holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.green));
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.green));
                     }
-                    if(model.getEventStatus().equalsIgnoreCase("Invited")){
-                       // holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
+                    else if(model.getEventStatus().equalsIgnoreCase("Invited")){
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
                     }
-                    if(model.getEventStatus().equalsIgnoreCase("Active")){
-                        //holder.bg_layout.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
+                    else if(model.getEventStatus().equalsIgnoreCase("Active")){
                         holder.event_view.setBackgroundColor(mContext.getResources().getColor(R.color.waitin_orange));
                     }
 
@@ -94,7 +86,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         }
 
 
-       // int colr= Integer.parseInt(model.event_color.trim());
+        // int colr= Integer.parseInt(model.event_color.trim());
 
 
         //item click on individual card
@@ -177,11 +169,11 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         public MyViewHolder(View itemView) {
             super(itemView);
 
-        tview_events    =   itemView.findViewById(R.id.event);
-        event_view      =   itemView.findViewById(R.id.event_color);
-        cardview        =   itemView.findViewById(R.id.cardview_item);
-        inviteStatus    =   itemView.findViewById(R.id.requests_img);
-        bg_layout       =   itemView.findViewById(R.id.bg_status);
+            tview_events    =   itemView.findViewById(R.id.event);
+            event_view      =   itemView.findViewById(R.id.event_color);
+            cardview        =   itemView.findViewById(R.id.cardview_item);
+            inviteStatus    =   itemView.findViewById(R.id.requests_img);
+            bg_layout       =   itemView.findViewById(R.id.bg_status);
 
         }
     }

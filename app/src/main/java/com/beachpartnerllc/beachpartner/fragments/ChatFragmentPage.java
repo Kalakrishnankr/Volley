@@ -45,7 +45,7 @@ public class ChatFragmentPage extends Fragment {
     private LinearLayout rootview;
     private ScrollView scrollview;
     Firebase reference1, ref;
-    private String myId, ChatWith_id, ChatWith_name, myName, chatPicture;
+    private String myId, ChatWith_id, ChatWith_name, myName, chatPicture,chatwith_secondName;
     private int idLeft, idRight;
     private Date currentTime;
     TabActivity tabActivity;
@@ -67,6 +67,7 @@ public class ChatFragmentPage extends Fragment {
             if (bpFinderModel != null) {
                 ChatWith_id    = String.valueOf(bpFinderModel.getBpf_id());
                 ChatWith_name  = bpFinderModel.getBpf_firstName();
+                chatwith_secondName = bpFinderModel.getBpf_lastName();
                 myName = new PrefManager(getActivity()).getUserName();
                 chatPicture = bpFinderModel.getBpf_imageUrl();
             }
@@ -86,7 +87,6 @@ public class ChatFragmentPage extends Fragment {
         getConnections();
         initView(view);
 
-
         return view;
     }
 
@@ -96,7 +96,7 @@ public class ChatFragmentPage extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle("Messages with " + ChatWith_name);
+            tabActivity.setActionBarTitle("Messages with " + ChatWith_name+" "+chatwith_secondName);
         }
     }
 

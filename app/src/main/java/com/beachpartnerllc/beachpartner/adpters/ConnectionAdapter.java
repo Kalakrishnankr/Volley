@@ -52,6 +52,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.connection_card,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(view);
+        myViewHolder.setIsRecyclable(false);
         return myViewHolder;
     }
 

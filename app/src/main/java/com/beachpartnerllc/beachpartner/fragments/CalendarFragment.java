@@ -241,6 +241,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
     private void currentDateEventSetter(){
         if(dateFormat.format(compactCalendarView.getCurrentDate()).equalsIgnoreCase(dateFormat.format(new Date()))){
+            toDayEvents.clear();
             List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getCurrentDate());
             if (bookingsFromMap != null) {
 
