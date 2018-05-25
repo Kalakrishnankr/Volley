@@ -124,7 +124,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
 
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
-            tabActivity.setActionBarTitle("Beach Partner");
+            //tabActivity.setActionBarTitle("Beach Partner");
         }
         getBluebpProfiles();//Api for getting blueBP Strip
         getMyTournaments();//Api for getting my tournament lists
@@ -705,10 +705,16 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
                             }
                         }
                     }
-                    progressBar_msg_coach.setVisibility(View.GONE);
-                    messageAdapter  =  new MessageAdapter(getContext(),userCoachList);
-                    coachMsgRecyclerview.setAdapter(messageAdapter);
-                    messageAdapter.notifyDataSetChanged();
+                    if (userCoachList.size() > 0) {
+                        progressBar_msg_coach.setVisibility(View.GONE);
+                        messageAdapter  =  new MessageAdapter(getContext(),userCoachList);
+                        coachMsgRecyclerview.setAdapter(messageAdapter);
+                        messageAdapter.notifyDataSetChanged();
+                    }else {
+                        progressBar_msg_coach.setVisibility(View.GONE);
+                        txtv_nomessgs.setVisibility(View.VISIBLE);
+                    }
+
                 }else {
                     progressBar_msg_coach.setVisibility(View.GONE);
                     txtv_nomessgs.setVisibility(View.VISIBLE);
