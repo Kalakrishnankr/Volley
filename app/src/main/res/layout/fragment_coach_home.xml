@@ -335,7 +335,7 @@
                     android:visibility="gone"
                     android:textColor="@color/white"
                     android:layout_gravity="center_vertical"
-                    android:text="You have no messages" />
+                    android:text="When you get connected with other users they'll appear here, where you can send them a message" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcv_message"
