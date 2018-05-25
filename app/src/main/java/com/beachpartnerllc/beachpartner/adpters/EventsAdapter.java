@@ -44,6 +44,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         View itemview    = LayoutInflater.from(parent.getContext()).inflate(R.layout.events_list_items,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(itemview);
         myViewHolder.setIsRecyclable(false);
+
         return myViewHolder;
     }
 
@@ -90,65 +91,65 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 
 
         //item click on individual card
-
-        holder.cardview.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                //Activate My calendar
-                if(isMycalActive){
-
-                    MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
-                    Bundle bundle = new Bundle();
-                    bundle.putSerializable("mycal_event_clicked",model);
-                    myCalendarEvents.setArguments(bundle);
-                    FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
-                    FragmentTransaction ctrans = fragmentManager.beginTransaction();
-                    ctrans.replace(R.id.container,myCalendarEvents);
-                    ctrans.addToBackStack(null);
-                    ctrans.commit();
-
-                }else {
-                    //Activate Master Calendar
-                    try{
-                        if(!model.getInvitationStatus().equalsIgnoreCase("Accepted") && model.getRegType().equalsIgnoreCase("Invitee")){
-                            AcceptRejectRequestFragment ARFragment =new AcceptRejectRequestFragment();
-                            Bundle bundlemodel =new Bundle();
-                            bundlemodel.putString("notAcceptedInvitee",model.getEventId());
-                            ARFragment.setArguments(bundlemodel);
-                            FragmentManager ARmanager = ((FragmentActivity)mContext).getSupportFragmentManager();
-                            FragmentTransaction ARtrans = ARmanager.beginTransaction();
-                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                            ARtrans.replace(R.id.container,ARFragment);
-                            ARtrans.addToBackStack(null);
-                            ARtrans.commit();
-
-                        }
-                        else{
-                            EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
-                            //add bundle
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("event_clicked",model);
-                            eventDescriptionFragment.setArguments(bundle);
-                            FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
-                            FragmentTransaction ctrans = manager.beginTransaction();
-                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                            ctrans.replace(R.id.container,eventDescriptionFragment);
-                            ctrans.addToBackStack(null);
-                            ctrans.commit();
-                        }
-
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-
-
-                }
-
-
-            }
-        });
+//
+//        holder.cardview.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//
+//                //Activate My calendar
+//                if(isMycalActive){
+//
+//                    MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
+//                    Bundle bundle = new Bundle();
+//                    bundle.putSerializable("mycal_event_clicked",model);
+//                    myCalendarEvents.setArguments(bundle);
+//                    FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
+//                    FragmentTransaction ctrans = fragmentManager.beginTransaction();
+//                    ctrans.replace(R.id.container,myCalendarEvents);
+//                    ctrans.addToBackStack(null);
+//                    ctrans.commit();
+//
+//                }else {
+//                    //Activate Master Calendar
+//                    try{
+//                        if(!model.getInvitationStatus().equalsIgnoreCase("Accepted") && model.getRegType().equalsIgnoreCase("Invitee")){
+//                            AcceptRejectRequestFragment ARFragment =new AcceptRejectRequestFragment();
+//                            Bundle bundlemodel =new Bundle();
+//                            bundlemodel.putString("notAcceptedInvitee",model.getEventId());
+//                            ARFragment.setArguments(bundlemodel);
+//                            FragmentManager ARmanager = ((FragmentActivity)mContext).getSupportFragmentManager();
+//                            FragmentTransaction ARtrans = ARmanager.beginTransaction();
+//                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+//                            ARtrans.replace(R.id.container,ARFragment);
+//                            ARtrans.addToBackStack(null);
+//                            ARtrans.commit();
+//
+//                        }
+//                        else{
+//                            EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+//                            //add bundle
+//                            Bundle bundle = new Bundle();
+//                            bundle.putSerializable("event_clicked",model);
+//                            eventDescriptionFragment.setArguments(bundle);
+//                            FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+//                            FragmentTransaction ctrans = manager.beginTransaction();
+//                            //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+//                            ctrans.replace(R.id.container,eventDescriptionFragment);
+//                            ctrans.addToBackStack(null);
+//                            ctrans.commit();
+//                        }
+//
+//                    }catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//
+//
+//
+//                }
+//
+//
+//            }
+//        });
 
     }
 
@@ -158,7 +159,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         return list.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView tview_events;
         View event_view;
@@ -169,11 +170,69 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
         public MyViewHolder(View itemView) {
             super(itemView);
 
-            tview_events    =   itemView.findViewById(R.id.event);
-            event_view      =   itemView.findViewById(R.id.event_color);
-            cardview        =   itemView.findViewById(R.id.cardview_item);
-            inviteStatus    =   itemView.findViewById(R.id.requests_img);
-            bg_layout       =   itemView.findViewById(R.id.bg_status);
+        tview_events    =   itemView.findViewById(R.id.event);
+        event_view      =   itemView.findViewById(R.id.event_color);
+        cardview        =   itemView.findViewById(R.id.cardview_item);
+        inviteStatus    =   itemView.findViewById(R.id.requests_img);
+        bg_layout       =   itemView.findViewById(R.id.bg_status);
+        itemView.setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            int position = getLayoutPosition(); // gets item position
+            model = list.get(position);
+            //Activate My calendar
+            if(isMycalActive){
+
+                MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mycal_event_clicked",model);
+                myCalendarEvents.setArguments(bundle);
+                FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
+                FragmentTransaction ctrans = fragmentManager.beginTransaction();
+                ctrans.replace(R.id.container,myCalendarEvents);
+                ctrans.addToBackStack(null);
+                ctrans.commit();
+
+            }else {
+                //Activate Master Calendar
+                try{
+                    if(!model.getInvitationStatus().equalsIgnoreCase("Accepted") && model.getRegType().equalsIgnoreCase("Invitee")){
+                        AcceptRejectRequestFragment ARFragment =new AcceptRejectRequestFragment();
+                        Bundle bundlemodel =new Bundle();
+                        bundlemodel.putString("notAcceptedInvitee",model.getEventId());
+                        ARFragment.setArguments(bundlemodel);
+                        FragmentManager ARmanager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                        FragmentTransaction ARtrans = ARmanager.beginTransaction();
+                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                        ARtrans.replace(R.id.container,ARFragment);
+                        ARtrans.addToBackStack(null);
+                        ARtrans.commit();
+
+                    }
+                    else{
+                        EventDescriptionFragment eventDescriptionFragment = new EventDescriptionFragment();
+                        //add bundle
+                        Bundle bundle = new Bundle();
+                        bundle.putSerializable("event_clicked",model);
+                        eventDescriptionFragment.setArguments(bundle);
+                        FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                        FragmentTransaction ctrans = manager.beginTransaction();
+                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                        ctrans.replace(R.id.container,eventDescriptionFragment);
+                        ctrans.addToBackStack(null);
+                        ctrans.commit();
+                    }
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
+            }
 
         }
     }

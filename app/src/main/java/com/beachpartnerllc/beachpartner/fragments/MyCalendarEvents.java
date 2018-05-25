@@ -161,6 +161,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         loadingIndicatorView.setVisibility(View.GONE);
         partners.clear();
         List<PartnerResultModel> tempModel = new ArrayList<PartnerResultModel>();
+        tempModel.clear();
         if(model!=null){
             if(!model.get(0).getInviterUserId().equalsIgnoreCase(user_Id)){
                 MyCalendarPartnerModel partnerObject1 =new MyCalendarPartnerModel();
