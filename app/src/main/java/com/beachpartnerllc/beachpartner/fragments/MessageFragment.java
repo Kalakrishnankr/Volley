@@ -211,11 +211,17 @@ public class MessageFragment extends Fragment {
                                 }
                             }
                         }
-                        progressBar.setVisibility(View.GONE);
-                        chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
-                        recyclerView.setAdapter(chatListAdapter);
-                        recyclerView.invalidate();
-                        chatListAdapter.notifyDataSetChanged();
+                        if (userList.size() > 0) {
+                            progressBar.setVisibility(View.GONE);
+                            chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                            recyclerView.setAdapter(chatListAdapter);
+                            recyclerView.invalidate();
+                            chatListAdapter.notifyDataSetChanged();
+                        }else {
+                            progressBar.setVisibility(View.GONE);
+                            tv_nomsgs.setVisibility(View.VISIBLE);
+                        }
+
                     }
 
 

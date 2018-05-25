@@ -1079,9 +1079,14 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                         }
                     }
                     progressBar_msg.setVisibility(View.GONE);
-                    messageAdapter  =  new MessageAdapter(getContext(),userList);
-                    msgRecyclerview.setAdapter(messageAdapter);
-                    messageAdapter.notifyDataSetChanged();
+                    if (userList.size() > 0) {
+                        messageAdapter  =  new MessageAdapter(getContext(),userList);
+                        msgRecyclerview.setAdapter(messageAdapter);
+                        messageAdapter.notifyDataSetChanged();
+                    }else {
+                        txtv_nomsgs.setVisibility(View.VISIBLE);
+                    }
+
                 }else {
                     progressBar_msg.setVisibility(View.GONE);
                     txtv_nomsgs.setVisibility(View.VISIBLE);
