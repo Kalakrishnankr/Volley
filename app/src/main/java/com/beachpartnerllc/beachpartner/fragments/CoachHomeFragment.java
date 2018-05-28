@@ -124,6 +124,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
 
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
+            tabActivity.getSupportActionBar().setTitle((R.string.app_name));
             //tabActivity.setActionBarTitle("Beach Partner");
         }
         getBluebpProfiles();//Api for getting blueBP Strip

@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.MyCalendarEvents;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
@@ -32,6 +33,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     private List<PartnerResultModel>partnerList = new ArrayList<>();
     private List<InvitationsModel> invitationList;
     private  String partners;
+    private String myname;
+    private PrefManager prefManager;
 
 
     public CardAdapter(Context context, ArrayList<Event> dataList) {
@@ -64,7 +67,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             invitationList = model.getInvitationList();
             if (invitationList!=null) {
                 partnerList.addAll(invitationList.get(0).getPartnerList());
-                partners+= invitationList.get(0).getInviterName()+",";
+                //partners+= invitationList.get(0).getInviterName()+", ";
             }
 
             if(partnerList.size()>0){
@@ -74,7 +77,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
 
                     }
                     else{
-                        partners+=(partnerList.get(i).getPartnerName()+",");
+                        partners+=(partnerList.get(i).getPartnerName()+", ");
                     }
 
                     }

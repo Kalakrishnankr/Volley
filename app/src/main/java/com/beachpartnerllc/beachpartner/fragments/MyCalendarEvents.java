@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.MyNoteAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
@@ -62,6 +63,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     private EventResultModel eventResultModel;
     private String user_Id;
+    private TabActivity tabActivity;
 
 
     public MyCalendarEvents() {
@@ -202,6 +204,10 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity){
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Events");
+        }
         getEvent(eventId);
 
 

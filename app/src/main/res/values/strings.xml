@@ -150,5 +150,5 @@
     <string name="reg_success_never">I never got the email</string>
     <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
     <string name="title_activity_application">ApplicationActivity</string>
-    <string name="version">Beach Partner v32</string>
+    <string name="version">Beach Partner v33</string>
 </resources>

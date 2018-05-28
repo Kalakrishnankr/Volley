@@ -334,6 +334,7 @@
                     android:gravity="center"
                     android:visibility="gone"
                     android:textColor="@color/white"
+                    android:padding="15dp"
                     android:layout_gravity="center_vertical"
                     android:text="When you get connected with other users they'll appear here, where you can send them a message" />
 
