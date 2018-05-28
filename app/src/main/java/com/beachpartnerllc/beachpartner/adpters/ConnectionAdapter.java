@@ -112,7 +112,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 }
             });
 
-            holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim());
+            holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim()+ " " +dataLists.get(position).getBpFinderModel().getBpf_lastName().trim());
             holder.txtv_age.setText("Age: "+dataLists.get(position).getBpFinderModel().getBpf_age());
 
             if(dataLists.get(position).getBpFinderModel().getBpf_imageUrl() != null){
