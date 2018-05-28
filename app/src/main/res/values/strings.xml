@@ -150,5 +150,34 @@
     <string name="reg_success_never">I never got the email</string>
     <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
     <string name="title_activity_application">ApplicationActivity</string>
+
+    <!--subscription texts here-->
+
+    <string name="reg">Registration fee</string>
+    <string name="swipes">Swipes</string>
+    <string name="swipe_visiblity">Swipe visiblity</string>
+    <string name="high_five">High-fives</string>
+    <string name="connection">Connections</string>
+    <string name="chat">Chat</string>
+    <string name="master">Master calendar</string>
+    <string name="mycal">My calendar</string>
+    <string name="myupcoming">My upcoming tournaments</string>
+    <string name="event_invite">Event invitation</string>
+    <string name="event_search">Event search</string>
+    <string name="court">Court notification</string>
+    <string name="partner">Partner  requests</string>
+    <string name="bluebpboost">Blue BP profile boost</string>
+    <string name="bluebp_sub">(feature atleast once/month)</string>
+    <string name="likeplayer">Visiblity to players who "like" you</string>
+    <string name="likecoach">Visiblity to coaches who "like" you</string>
+    <string name="location_change">Passport search location change</string>
+    <string name="undolast">Undo last swipe option</string>
+    <string name="buy_now">BUY NOW</string>
+    <string name="standard_sub">STANDARD</string>
+    <string name="lite_sub">LITE</string>
+    <string name="recruiting_sub">RECRUITING</string>
+    <string name="free_sub">FREE</string>
+
+
     <string name="version">Beach Partner v33</string>
 </resources>

@@ -387,8 +387,8 @@ public class TabActivity extends AppCompatActivity  {
                 alertLogout();
                 break;
 
-            /*case R.id.demofragment:
-                AcceptRejectRequestFragment fragment = new AcceptRejectRequestFragment();
+            /*case R.id.subscribe:
+                SubscriptionFragment fragment = new SubscriptionFragment();
                 FragmentManager sett = getSupportFragmentManager();
                 FragmentTransaction settingsTran = sett.beginTransaction().addToBackStack(null);
                 settingsTran.replace(R.id.container, fragment, YOUR_FRAGMENT_STRING_TAG);

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +51,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     private Context mContext;
     private Integer ageInt;
     MyInterface myInterface;
-
+    private static final String TAG = "TouristSpotCardAdapter";
 
     public TouristSpotCardAdapter(Context context, MyInterface inter) {
         super(context, 0);
@@ -75,13 +76,13 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         }
 
         final BpFinderModel spot = getItem(position);
-
         holder.exoPlayerView.setVisibility(View.INVISIBLE);
         holder.spinnerView.setVisibility(View.INVISIBLE);
         holder.progress.setVisibility(View.INVISIBLE);
         holder.image.setVisibility(View.VISIBLE);
         holder.progressBar.setVisibility(View.VISIBLE);
         holder.progressBar.start();
+        
 
         if (spot != null) {
             if (spot.getBpf_age() != null) {
@@ -117,7 +118,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             holder.image.setBackground(ContextCompat.getDrawable(getContext(), R.drawable.user_img));
         }
 
-
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
         TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
         holder.exoPlayer = ExoPlayerFactory.newSimpleInstance(mContext, trackSelector);
@@ -145,6 +145,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                 if (spot.getBpf_videoUrl() != null) {
                     if(!spot.getBpf_videoUrl().equalsIgnoreCase("null")){
                         holder.progress.setVisibility(View.VISIBLE);
+                        Log.d(TAG, "onDoubleClick: "+spot.getBpf_videoUrl());
                         MediaSource mediaSource = new ExtractorMediaSource(Uri.parse(spot.getBpf_videoUrl()), dataSourceFactory, extractorsFactory, null, null);
                         holder.exoPlayer.prepare(mediaSource);
                         playVideo(holder);
@@ -186,7 +187,6 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
     }
 
     private void playVideo(final ViewHolder holder) {
-
         holder.exoPlayerView.setPlayer(holder.exoPlayer);
         holder.exoPlayer.setPlayWhenReady(true);
         holder.exoPlayer.setVolume(0);

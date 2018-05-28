@@ -180,6 +180,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 coachList.addAll(blockCoachList);
             }
             if (coachList.size() > 0) {
+                txtv_noconnection.setVisibility(View.INVISIBLE);
                 adapter = new ConnectionAdapter(getContext(), coachList, this);
                 rcv_conn.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -212,6 +213,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 athleteList.addAll(blockAthleteList);
             }
             if (athleteList.size() > 0) {
+                txtv_noconnection.setVisibility(View.INVISIBLE);
                 adapter = new ConnectionAdapter(getContext(), athleteList, this);
                 rcv_conn.setAdapter(adapter);
                 adapter.notifyDataSetChanged();
@@ -825,6 +827,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             if (isAthleteTab) {
                 if (blockAthleteList.size() > 0) {
                     athleteList.addAll(blockAthleteList);
+                    txtv_noconnection.setVisibility(View.INVISIBLE);
                     adapter = new ConnectionAdapter(getContext(), athleteList, this);
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -832,6 +835,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }else {
                 if (blockCoachList.size() > 0) {
                     coachList.addAll(blockCoachList);
+                    txtv_noconnection.setVisibility(View.INVISIBLE);
                     adapter = new ConnectionAdapter(getContext(), coachList, this);
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
@@ -839,6 +843,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             }
 
 
+        }else{
+            txtv_noconnection.setVisibility(View.VISIBLE);
         }
 
     }

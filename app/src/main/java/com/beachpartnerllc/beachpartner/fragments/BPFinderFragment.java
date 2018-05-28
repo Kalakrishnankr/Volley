@@ -409,6 +409,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         rcv_bpProfiles.setLayoutManager(lmnger);
         rcv_bpProfiles.setHasFixedSize(true);
 
+        stateList.clear();
         addLocation();
 
         showPreviousMonthButton.setOnClickListener(new View.OnClickListener() {
@@ -831,6 +832,8 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
         }
     }
+
+
 
     public void addLocation() {
         stateList.add("Alabama");

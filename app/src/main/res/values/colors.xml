@@ -23,6 +23,11 @@
     <color name="undo">#e3413c3b</color>
     <color name="green">#7746c26b</color>
     <color name="waitin_orange">#77ffa500</color>
+    <color name="subscription_btn">#a323e6</color>
+    <color name="standard_sub">#7a1a79</color>
+    <color name="price_ring">#01177e</color>
+    <color name="free_sub">#c98cf9eb</color>
+
 
 
     <!-- Screens background color-->
