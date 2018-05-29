@@ -1496,7 +1496,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //Method for card reverse
 
     @Override
-    public void addView(String url, String nm,String finder_age,String type) {
+    public void addView(String url, String firtName,String lastName,String finder_age,String type) {
         rr.setVisibility(View.GONE);
         llv.setVisibility(View.VISIBLE);
         Glide.with(getContext()).load(url).into(imgv_profilepic);
@@ -1515,7 +1515,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         }
        // Log.d(TAG, "age FRom Server: "+player_age+"age from Calculation:"+age);
         //collapsingToolbarLayout.setTitle(nm+", "+bp_ageInt);
-        tv_title.setText(nm+", "+bp_ageInt);
+        tv_title.setText(firtName+" "+lastName+", "+bp_ageInt);
         type_user.setText(type);
         rrvBottom.setVisibility(View.GONE);
 

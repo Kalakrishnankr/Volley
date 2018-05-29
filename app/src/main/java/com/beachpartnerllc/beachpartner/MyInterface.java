@@ -6,6 +6,6 @@ package com.beachpartnerllc.beachpartner;
 
 public interface MyInterface {
 
-     void addView(String url, String name,String age,String userType);
+     void addView(String url, String firstName,String lastName,String age,String userType);
      void onClick(String bpf_id, String bpf_deviceId, String bpf_fcmToken, String bpf_topFinishes);
 }

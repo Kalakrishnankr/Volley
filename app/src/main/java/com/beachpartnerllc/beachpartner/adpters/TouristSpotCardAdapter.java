@@ -86,7 +86,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
 
         if (spot != null) {
             if (spot.getBpf_age() != null) {
-                holder.name.setText(MessageFormat.format("{0}, {1}", spot.getBpf_firstName(), spot.getBpf_age()));
+                holder.name.setText(MessageFormat.format("{0}, {1}", spot.getBpf_firstName()+"  "+ spot.getBpf_lastName(), spot.getBpf_age()));
             } else {
                 String dobToage = spot.getBpf_dob();
                 if (dobToage != null && !dobToage.isEmpty()) {
@@ -101,9 +101,9 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                         age--;
                     }
                     ageInt = new Integer(age);
-                    holder.name.setText(spot.getBpf_firstName() + ", " + ageInt);
+                    holder.name.setText(spot.getBpf_firstName()+" "+spot.getBpf_lastName() + ", " + ageInt);
                 } else {
-                    holder.name.setText(spot.getBpf_firstName());
+                    holder.name.setText(spot.getBpf_firstName()+" "+spot.getBpf_lastName());
                 }
             }
         }
@@ -176,7 +176,7 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
             @Override
             public void onClick(View view) {
                 holder.exoPlayer.stop();
-                myInterface.addView(spot.getBpf_imageUrl(), spot.getBpf_firstName(),spot.getBpf_dob(),spot.getBpf_userType());
+                myInterface.addView(spot.getBpf_imageUrl(), spot.getBpf_firstName(),spot.getBpf_lastName(),spot.getBpf_dob(),spot.getBpf_userType());
                 myInterface.onClick(spot.getBpf_id(), spot.getBpf_deviceId(), spot.getBpf_fcmToken(), spot.getBpf_topfinishes());
             }
         });
