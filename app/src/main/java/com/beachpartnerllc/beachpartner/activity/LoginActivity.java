@@ -690,11 +690,20 @@ public class LoginActivity extends AppCompatActivity {
         LayoutInflater inflater     = this.getLayoutInflater();
         View layout                 = inflater.inflate(R.layout.never_got_the_email_alert_layout,null);
         never_got_email_tv          = layout.findViewById(R.id.never_got_text);
+        Button btnreturnLogin       = layout.findViewById(R.id.return_to_Login);
         neverGotEmailAlertTextUnderline();
         alert.setView(layout);
 
 
         final AlertDialog alertDialog = alert.create();
+
+        btnreturnLogin.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
 
         alertDialog.show();
 
