@@ -81,6 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="@string/iagree"
+                android:textColor="@drawable/checkbox_selector"
                 android:buttonTint="@drawable/checkbox_selector"
                 android:gravity="center_vertical"/>
 

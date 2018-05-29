@@ -66,6 +66,9 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
         webTC           =   (WebView) findViewById(R.id.webview_tc);
         pbar            =   (ProgressBar) findViewById(R.id.pgbar);
 
+       // tickContinue.setTextColor(getResources().getColor(R.color.dot_dark_screen1));
+
+
         //webTC.loadUrl(ApiService.TERMS_AND_CONDITION);
         webTC.getSettings().setJavaScriptEnabled(true);
         webTC.getSettings().setSupportZoom(true);
@@ -114,7 +117,7 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
     @Override
     public void onClick(View view) {
         if(tickContinue.isChecked()){
-
+           // tickContinue.setTextColor(getResources().getColor(R.color.green));
             SharedPreferences.Editor editor = getSharedPreferences(MY_PREFS_NAME,MODE_PRIVATE).edit();
             editor.putBoolean("condition",tickContinue.isChecked());
             editor.apply();
@@ -123,6 +126,8 @@ public class TermsConditionsActivity extends AppCompatActivity implements View.O
             startActivity(intent);
             finish();
         }else {
+           // tickContinue.setTextColor(getResources().getColor(R.color.dot_dark_screen1));
+
             Toast.makeText(this, "Please agree", Toast.LENGTH_SHORT).show();
         }
     }
