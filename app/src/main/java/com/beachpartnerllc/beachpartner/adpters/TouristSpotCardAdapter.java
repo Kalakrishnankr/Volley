@@ -127,6 +127,8 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
         holder.exoPlayerView.setControllerAutoShow(false);
         holder.exoPlayerView.setMinimumWidth(1000);
         holder.exoPlayerView.setMinimumHeight(1000);
+        
+
 
         //  holder.exoPlayerView
 
@@ -196,6 +198,14 @@ public class TouristSpotCardAdapter extends ArrayAdapter<BpFinderModel> {
                 if (playWhenReady && playbackState == Player.STATE_READY) {
                     holder.exoPlayerView.setVisibility(View.VISIBLE);
                     // media actually playing
+                }
+                if (playWhenReady && playbackState == Player.STATE_ENDED) {
+                    holder.exoPlayer.stop();
+                    holder.exoPlayerView.setVisibility(View.INVISIBLE);
+                    holder.spinnerView.setVisibility(View.INVISIBLE);
+                    holder.progress.setVisibility(View.INVISIBLE);
+                    holder.image.setVisibility(View.VISIBLE);
+                    holder.progressBar.setVisibility(View.VISIBLE);
                 }
             }
         });
