@@ -48,7 +48,6 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
 import com.google.gson.Gson;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -120,11 +119,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private void initActivity(View view) {
 
-        rcv_conn = (RecyclerView) view.findViewById(R.id.rcv_connection);
-        txtv_athlete = (TextView) view.findViewById(R.id.txtAthlete);
-        txtv_coach = (TextView) view.findViewById(R.id.txtCoach);
-        txtv_noconnection = (TextView) view.findViewById(R.id.txtv_conview);
-        progress    =   (ProgressBar) view.findViewById(R.id.progress_connection);
+        rcv_conn = view.findViewById(R.id.rcv_connection);
+        txtv_athlete = view.findViewById(R.id.txtAthlete);
+        txtv_coach = view.findViewById(R.id.txtCoach);
+        txtv_noconnection = view.findViewById(R.id.txtv_conview);
+        progress = view.findViewById(R.id.progress_connection);
 
         AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
         View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
@@ -651,11 +650,14 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             public boolean onQueryTextChange(String newText) {
                 if (dataList != null && dataList.size() > 0 ) {
                     if (!newText.isEmpty()) {
+                        searchPerson(newText);
+
                         final List<BpFinderModel> filteredModelList = filter(dataList, newText);
                         adapter.setFilter(filteredModelList);
                         adapter.notifyDataSetChanged();
 
                     } else {
+                        searchPerson(newText);
                         adapter = new ConnectionAdapter(getContext(), athleteList, ConnectionFragment.this);
                         rcv_conn.setAdapter(adapter);
                         adapter.notifyDataSetChanged();
