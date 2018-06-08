@@ -100,9 +100,9 @@ public class MessageFragment extends Fragment {
     private void initView(View view) {
 
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.rcv_chat);
-        progressBar = (ProgressBar) view.findViewById(R.id.msg_progress);
-        tv_nomsgs = (TextView) view.findViewById(R.id.txtv_nomsgs);
+        recyclerView = view.findViewById(R.id.rcv_chat);
+        progressBar = view.findViewById(R.id.msg_progress);
+        tv_nomsgs = view.findViewById(R.id.txtv_nomsgs);
         //chatListAdapter =   new ChatListAdapter(getContext(),list);
         RecyclerView.LayoutManager mLayoutmanger = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(mLayoutmanger);
@@ -131,6 +131,8 @@ public class MessageFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchPerson(newText);
+
                 if (dataList != null && dataList.size() > 0 ) {
                     if (!newText.isEmpty()) {
                         final List<BpFinderModel> filteredModelList = filter(dataList, newText);
@@ -138,7 +140,6 @@ public class MessageFragment extends Fragment {
                         chatListAdapter.notifyDataSetChanged();
 
                     } else {
-
                         chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
                         recyclerView.setAdapter(chatListAdapter);
                         chatListAdapter.notifyDataSetChanged();
@@ -168,13 +169,11 @@ public class MessageFragment extends Fragment {
 
     private void searchPerson(String query) {
 
-        String textSearch = query;
-
-        if (!textSearch.equals("null")) {
+        if (!query.equals("null")) {
                 searchList.clear();
                 if (userList.size() > 0) {
                     for (int i = 0; i < userList.size(); i++) {
-                        if (userList.get(i).getBpf_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
+                        if (userList.get(i).getBpf_firstName().toLowerCase().contains(query.toLowerCase())) {
                             searchList.add(userList.get(i));
                         }
                     }

@@ -11,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -180,33 +181,33 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private void initView(View view) {
 
         //Next buttons
-        ucoming_next    =   (LinearLayout)view.findViewById(R.id.upcome_next_button);
-        message_next    =   (LinearLayout)view.findViewById(R.id.mess_next_button);
-        request_next    =   (LinearLayout)view.findViewById(R.id.req_next_button);
+        ucoming_next = view.findViewById(R.id.upcome_next_button);
+        message_next = view.findViewById(R.id.mess_next_button);
+        request_next = view.findViewById(R.id.req_next_button);
 
-        progressBar     =   (AVLoadingIndicatorView)view.findViewById(R.id.progress);
-        progressBar_tour=   (AVLoadingIndicatorView)view.findViewById(R.id.progress_tournament);
-        progressBar_msg =   (AVLoadingIndicatorView)view.findViewById(R.id.progress_msg);
-        progressBar_rqsts=  (AVLoadingIndicatorView)view.findViewById(R.id.progress_request);
+        progressBar = view.findViewById(R.id.progress);
+        progressBar_tour = view.findViewById(R.id.progress_tournament);
+        progressBar_msg = view.findViewById(R.id.progress_msg);
+        progressBar_rqsts = view.findViewById(R.id.progress_request);
 
 
         //img_bpprofile   =   (ImageView) view.findViewById(R.id.img_bpfinder);
-        txt_head        =   (TextView)view.findViewById(R.id.txtview_head);
-        txtv_notour     =   (TextView)view.findViewById(R.id.txtv_notour_athlete);
-        txtv_nomsgs     =   (TextView)view.findViewById(R.id.txtv_nomessgs);
-        txtv_noreqsts   =   (TextView)view.findViewById(R.id.txtv_noreqsts);
-        txtv_nobp       =   (TextView)view.findViewById(R.id.txtv_nobp);
+        txt_head = view.findViewById(R.id.txtview_head);
+        txtv_notour = view.findViewById(R.id.txtv_notour_athlete);
+        txtv_nomsgs = view.findViewById(R.id.txtv_nomessgs);
+        txtv_noreqsts = view.findViewById(R.id.txtv_noreqsts);
+        txtv_nobp = view.findViewById(R.id.txtv_nobp);
 
 
-        img_send        =   (ImageView)view.findViewById(R.id.imgview_send);
-        img_received    =   (ImageView)view.findViewById(R.id.imgview_received);
-        likesCard       =   (FrameLayout)view.findViewById(R.id.no_of_likes_card);
-        txtv_likes      =   (TextView)view.findViewById(R.id.txtv_likes_athlete);
+        img_send = view.findViewById(R.id.imgview_send);
+        img_received = view.findViewById(R.id.imgview_received);
+        likesCard = view.findViewById(R.id.no_of_likes_card);
+        txtv_likes = view.findViewById(R.id.txtv_likes_athlete);
 
-        pRecyclerview   =   (RecyclerView) view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
-        mRecyclerview   =   (RecyclerView)view.findViewById(R.id.rcv);          //Recycler view for upcoming events
-        msgRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_message);  //Recycler view for messages
-        parRecyclerview =   (RecyclerView)view.findViewById(R.id.rcv_partners); //Recycler view for tournament requests
+        pRecyclerview = view.findViewById(R.id.rrv_topProfile);//This recycler view for top profile picture
+        mRecyclerview = view.findViewById(R.id.rcv);          //Recycler view for upcoming events
+        msgRecyclerview = view.findViewById(R.id.rcv_message);  //Recycler view for messages
+        parRecyclerview = view.findViewById(R.id.rcv_partners); //Recycler view for tournament requests
 
 
         ln_layout_tournamentrequestheader = view.findViewById(R.id.tournament_request_header);
@@ -239,8 +240,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         /*Message*/
 
         layoutManagerMsg = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-//        SnapHelper snaper = new PagerSnapHelper();
-//        snaper.attachToRecyclerView(msgRecyclerview);
+        SnapHelper snaper = new LinearSnapHelper();
+        snaper.attachToRecyclerView(msgRecyclerview);
         msgRecyclerview.setLayoutManager(layoutManagerMsg);
         msgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());
@@ -311,7 +312,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             LayoutInflater inflater = getLayoutInflater();
             View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
 
-            final Button save_btn            = (Button)   alertLayout.findViewById(R.id.purchase_btn);
+            final Button save_btn = alertLayout.findViewById(R.id.purchase_btn);
             android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
             // Initialize a new foreground color span instance
             ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
