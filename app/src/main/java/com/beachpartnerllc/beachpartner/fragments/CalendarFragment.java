@@ -232,6 +232,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 tabActivity.setActionBarTitle("Master Calendar");
                 compactCalendarView.removeAllEvents();
                 compactCalendarView.invalidate();
+                setHasOptionsMenu(true); //filter needed in master calendar
                 if(eventsAdapter!=null){
                     eventsAdapter.notifyDataSetChanged();
                 }
@@ -245,6 +246,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 tabActivity.setActionBarTitle("My Calendar");
                 compactCalendarView.removeAllEvents();
                 compactCalendarView.invalidate();
+                setHasOptionsMenu(false);   //filter not needed in my calendar
                 if(eventsAdapter!=null){
                     eventsAdapter.notifyDataSetChanged();
                 }
@@ -285,6 +287,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 rview.setAdapter(eventsAdapter);
                 rview.invalidate();
                 eventsAdapter.notifyDataSetChanged();
+                tview_date.setText("Events for " + dateFormat.format(new Date()));
             }
 
         }
@@ -688,6 +691,14 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 spinner_month.setAdapter(adapterMonths);
                 spinner_year.setAdapter(null);
                 spinner_year.setAdapter(adapterYear);
+                top_tabs.setVisibility(View.VISIBLE);
+                calendar_llt.setVisibility(View.VISIBLE);
+                container_llt.setWeightSum((float) 4);
+                LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,0, (float) 0.3);
+                eventHeader_llt.setLayoutParams(param);
+                getAllEvents();
+                filterViewModel.setFilter(new Filter("", "", "", "", ""));
+                filterDialogue.cancel();
 
             }
         });
@@ -705,24 +716,40 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 eventType_clear = eventType.replaceAll("\\s", "");
 
                 filterViewModel.setFilter(new Filter(eventType, subType, year, month, state));
-
+                String searchCriteriaString = "Events for ";
                 if(eventType.equalsIgnoreCase("Please Select")){
                     eventType="";
                 }
+                else{
+                    searchCriteriaString=eventType+ " ->";
+                }
 
-                if(subType.equalsIgnoreCase("Please Select")){
+                if(subType.equalsIgnoreCase("Please Select")||subType.equalsIgnoreCase("Not Applicable")){
                     subType="";
+                }
+                else{
+                    searchCriteriaString+=subType+ " ->";
                 }
                 if(year.equalsIgnoreCase("Please Select")){
                     year="";
+                }
+                else{
+                    searchCriteriaString+=year+ " ->";
                 }
 
                 if(month.equalsIgnoreCase("Please Select")){
                     month="";
                 }
+                else{
+                    searchCriteriaString+=month+ " ->";
+                }
+
 
                 if(state.equalsIgnoreCase("Please Select")){
                     state="";
+                }
+                else{
+                    searchCriteriaString+=state+ " ->";
                 }
 
                 if(month!=""){
@@ -735,15 +762,16 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                         e.printStackTrace();
                     }
                     tview_month.setText(dateFormatForMonth.format(startDate));
-                    tview_date.setText("Events for " + dateFormatForMonth.format(startDate));
                     compactCalendarView.setCurrentDate(startDate);
                 }
+
+                tview_date.setText(searchCriteriaString);
 
                 compactCalendarView.invalidate();
 
                 JSONObject objects = new JSONObject();
                 try {
-                    objects.put("eventType",eventType_clear);
+                    objects.put("eventType",eventType);
                     objects.put("month",month);
                     objects.put("region","");
                     objects.put("state",state);
