@@ -748,12 +748,16 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             cardStackView.setVisibility(View.INVISIBLE);
             rr.setVisibility(View.VISIBLE);
             empty_card.setVisibility(View.VISIBLE);
-            if (profileImage != null && !profileImage.equals("null")) {
-                Glide.with(getActivity()).load(profileImage).into(profilePic);
-            }else {
-                Glide.with(getActivity()).load(R.drawable.user_img).into(profilePic);
-            }
 
+//            donot delete changed as per request from client 6/8/2018
+
+
+//            if (profileImage != null && !profileImage.equals("null")) {
+//                Glide.with(getActivity()).load(profileImage).into(profilePic);
+//            }else {
+//                Glide.with(getActivity()).load(R.drawable.user_img).into(profilePic);
+//            }
+            profilePic.setVisibility(View.INVISIBLE);
         }
     }
 

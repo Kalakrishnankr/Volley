@@ -23,6 +23,7 @@ import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 28/3/18.
@@ -31,6 +32,7 @@ import java.util.ArrayList;
 public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHolder> {
 
     Context mContext;
+    private ArrayList<BpFinderModel> mCountryModel;
     ArrayList<BpFinderModel>list;
     MessageFragment messageFragment;
     public ChatListAdapter(MessageFragment messageFragment,Context context, ArrayList<BpFinderModel> chatList) {
@@ -39,6 +41,11 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         this.messageFragment = messageFragment;
     }
 
+    public void setFilter(List<BpFinderModel> countryModels) {
+        mCountryModel = new ArrayList<>();
+        mCountryModel.addAll(countryModels);
+        notifyDataSetChanged();
+    }
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
@@ -113,6 +120,7 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                     coachtrans.replace(R.id.container,coachProfileFragment);
                     coachtrans.addToBackStack(null);
                     coachtrans.commit();
+                    disableTabMenuButtons();
                 }
 
             }

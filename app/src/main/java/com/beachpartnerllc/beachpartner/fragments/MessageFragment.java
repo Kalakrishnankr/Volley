@@ -1,18 +1,27 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -40,6 +49,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 
 
@@ -56,6 +66,8 @@ public class MessageFragment extends Fragment {
     private ProgressBar progressBar;
     private TextView tv_nomsgs;
     private ArrayList<BpFinderModel> connectionList = new ArrayList<>();
+    private ArrayList<BpFinderModel> dataList = new ArrayList<>();
+    private ArrayList<BpFinderModel> searchList = new ArrayList<>();
 
     public MessageFragment() {
         // Required empty public constructor
@@ -67,6 +79,7 @@ public class MessageFragment extends Fragment {
         if (getActivity() != null) {
             Firebase.setAndroidContext(getActivity());
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -81,6 +94,7 @@ public class MessageFragment extends Fragment {
         initView(view);
         return view;
     }
+
 
 
     private void initView(View view) {
@@ -98,6 +112,114 @@ public class MessageFragment extends Fragment {
     }
 
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // TODO Add your menu entries here
+        inflater.inflate(R.menu.menu_search, menu);
+        MenuItem item = menu.findItem(R.id.action_search);
+
+        final SearchView searchView = (SearchView) MenuItemCompat.getActionView(item);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                searchPerson(query);
+//                AlertDialog alertDialog = new AlertDialog.Builder(getActivity()).create();
+//                alertDialog.setMessage("Search keyword is " + query);
+//                alertDialog.show();
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (dataList != null && dataList.size() > 0 ) {
+                    if (!newText.isEmpty()) {
+                        final List<BpFinderModel> filteredModelList = filter(dataList, newText);
+                        chatListAdapter.setFilter(filteredModelList);
+                        chatListAdapter.notifyDataSetChanged();
+
+                    } else {
+
+                        chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                        recyclerView.setAdapter(chatListAdapter);
+                        chatListAdapter.notifyDataSetChanged();
+                    }
+                }
+                return false;
+            }
+        });
+
+        searchView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                if (keyboardShown(searchView.getRootView())) {
+                    //Log.d("keyboard", "keyboard UP");
+                    disableMenu();
+                    tabActivity.navigation.setVisibility(View.GONE);
+                } else {
+                    //Log.d("keyboard", "keyboard Down");
+                    tabActivity.navigation.setVisibility(View.VISIBLE);
+
+                }
+            }
+        });
+
+
+    }
+
+    private void searchPerson(String query) {
+
+        String textSearch = query;
+
+        if (!textSearch.equals("null")) {
+                searchList.clear();
+                if (userList.size() > 0) {
+                    for (int i = 0; i < userList.size(); i++) {
+                        if (userList.get(i).getBpf_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
+                            searchList.add(userList.get(i));
+                        }
+                    }
+                }
+
+            if (searchList.size() > 0) {
+                chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), searchList);
+                recyclerView.setAdapter(chatListAdapter);
+                chatListAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+
+                chatListAdapter =new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                recyclerView.setAdapter(chatListAdapter);
+                chatListAdapter.notifyDataSetChanged();
+
+
+            }
+
+        }
+
+
+    }
+
+    private boolean keyboardShown(View rootView) {
+
+        final int softKeyboardHeight = 100;
+        Rect r = new Rect();
+        rootView.getWindowVisibleDisplayFrame(r);
+        DisplayMetrics dm = rootView.getResources().getDisplayMetrics();
+        int heightDiff = rootView.getBottom() - r.bottom;
+        return heightDiff > softKeyboardHeight * dm.density;
+    }
+
+    private List<BpFinderModel> filter(List<BpFinderModel> models, String query) {
+        query = query.toLowerCase().trim();
+        final List<BpFinderModel> filteredModelList = new ArrayList<>();
+        for (BpFinderModel model : models) {
+            final String text = model.getBpf_firstName().toLowerCase().trim();
+            if (text.contains(query)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+    }
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);

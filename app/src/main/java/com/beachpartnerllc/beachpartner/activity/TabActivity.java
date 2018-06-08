@@ -224,6 +224,7 @@ public class TabActivity extends AppCompatActivity  {
                 if(!tips){
                     Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
                     intentTips.putExtra("reDirectPage", "home");
+                    intentTips.putExtra(WelcomeActivity.EXTRA_IS_FROM_INIT, true);
                     startActivity(intentTips);
                     finish();
                 }else {
@@ -381,7 +382,7 @@ public class TabActivity extends AppCompatActivity  {
                 Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
                 intentTips.putExtra("reDirectPage", "help");
                 startActivity(intentTips);
-                finish();
+//                finish();
                 break;
             case R.id.logout:
                 //Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();

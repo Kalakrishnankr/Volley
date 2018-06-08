@@ -4,7 +4,7 @@
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
     <string name="dntaccount">Don\'t have an account? </string>
-    <string name="signup">Sign Up</string>
+    <string name="signup">Register Here to Sign Up</string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Email</string>
     <string name="hint_forgot">Forgot Password?</string>

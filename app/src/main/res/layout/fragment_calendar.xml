@@ -8,6 +8,7 @@
     
     
     <LinearLayout
+        android:id="@+id/the_container_linear_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -17,6 +18,7 @@
         <!--Top menu bar-->
 
         <LinearLayout
+            android:id="@+id/top_tabs_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.5"
@@ -56,6 +58,7 @@
 
         <!--Calender View-->
         <LinearLayout
+            android:id="@+id/calendar_whole_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="2.1">
@@ -138,6 +141,7 @@
         <!--Tab Event For-->
 
         <LinearLayout
+            android:id="@+id/event_header_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.3"
@@ -163,6 +167,7 @@
         <!--Event Details-->
 
         <LinearLayout
+            android:id="@+id/event_recycler_linear_layout"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1.1">

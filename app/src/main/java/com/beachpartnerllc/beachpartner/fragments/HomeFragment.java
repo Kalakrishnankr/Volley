@@ -239,8 +239,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         /*Message*/
 
         layoutManagerMsg = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        SnapHelper snaper = new PagerSnapHelper();
-        snaper.attachToRecyclerView(msgRecyclerview);
+//        SnapHelper snaper = new PagerSnapHelper();
+//        snaper.attachToRecyclerView(msgRecyclerview);
         msgRecyclerview.setLayoutManager(layoutManagerMsg);
         msgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());

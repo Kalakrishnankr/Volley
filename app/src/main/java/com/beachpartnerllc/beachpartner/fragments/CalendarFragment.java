@@ -27,6 +27,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -91,6 +92,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private String eventType,subType,year,month,state,eventType_clear;
     private Spinner spinner_events,spinner_subEvents,spinner_year,spinner_month,tv_state,tv_region;
     private FilterViewModel filterViewModel;
+    private LinearLayout top_tabs,calendar_llt,eventHeader_llt,eventRecycler_llt,container_llt;
 
 
     public CalendarFragment() {
@@ -119,6 +121,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
 
     private void initActivity(View view) {
+
+
+        top_tabs =     (LinearLayout) view.findViewById(R.id.top_tabs_linear_layout);
+        calendar_llt = (LinearLayout) view.findViewById(R.id.calendar_whole_linear_layout);
+        eventHeader_llt = (LinearLayout) view.findViewById(R.id.event_header_linear_layout);
+        eventRecycler_llt = (LinearLayout) view.findViewById(R.id.event_recycler_linear_layout);
+        container_llt   =(LinearLayout) view.findViewById(R.id.the_container_linear_layout);
 
         tview_master = (TextView) view.findViewById(R.id.txtMaster);
         tview_mycalendar = (TextView) view.findViewById(R.id.txtMycalendar);
@@ -1000,6 +1009,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
     //Api for search events
     private void searchEvents(JSONObject obj) {
+        top_tabs.setVisibility(View.GONE);
+        calendar_llt.setVisibility(View.GONE);
+        container_llt.setWeightSum((float) 1.2);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,0, (float) 0.1);
+        eventHeader_llt.setLayoutParams(param);
+
+
         b.show();
         eventModelList.clear();
         MyJsonArrayRequest arrayRequest = new MyJsonArrayRequest(ApiService.REQUEST_METHOD_POST, ApiService.SEARCH_EVENTS,obj,

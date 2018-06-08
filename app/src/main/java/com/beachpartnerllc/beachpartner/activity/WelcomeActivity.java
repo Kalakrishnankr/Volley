@@ -27,6 +27,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
 public class WelcomeActivity extends AppCompatActivity {
 
+    public static final String EXTRA_IS_FROM_INIT = "extra_is_from_init";
     private String YOUR_FRAGMENT_STRING_TAG;
     private ViewPager viewPager;
     public MyViewPagerAdapter myViewPagerAdapter;
@@ -91,15 +92,18 @@ public class WelcomeActivity extends AppCompatActivity {
         viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
 
+        final boolean isFromStart = getIntent().getBooleanExtra(EXTRA_IS_FROM_INIT, false);
+
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int current = getItem(-1);
-                if (current < layouts.length) {
-                    // move to next screen
-                    viewPager.setCurrentItem(current);
+                if (viewPager.getCurrentItem() == 0) {
+                    if (!isFromStart) launchHomeScreen();
+                    else{
+                        btnSkip.setVisibility(View.INVISIBLE);
+                    }
                 } else {
-                    launchHomeScreen();
+                    viewPager.setCurrentItem(viewPager.getCurrentItem() - 1);
                 }
             }
         });
