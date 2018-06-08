@@ -123,6 +123,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.8"
                         android:gravity="center_vertical"
+                        android:textSize="@dimen/text_size"
                         android:textColor="@color/white"
                         android:text="@string/upcoming_tournaments" />
 
@@ -206,8 +207,9 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:visibility="gone"
+                        android:textSize="@dimen/text_size"
                         android:layout_gravity="center_vertical"
-                        android:text="You have no upcoming tournaments" />
+                        android:text="@string/no_upcoming_tournaments" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv"
@@ -243,6 +245,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.5"
                         android:gravity="center_vertical"
+                        android:textSize="@dimen/text_size"
                         android:text="@string/messages"
                         android:textColor="@color/white"/>
 
@@ -333,9 +336,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:textSize="@dimen/text_size"
                         android:visibility="gone"
                         android:layout_gravity="center_vertical"
-                        android:text="You have no new messages" />
+                        android:text="@string/no_new_messages" />
 
 
                     <android.support.v7.widget.RecyclerView
@@ -378,6 +382,7 @@
                         android:layout_height="match_parent"
                         android:layout_weight="1.8"
                         android:gravity="center_vertical"
+                        android:textSize="@dimen/text_size"
                         android:textColor="@color/white"
                         android:text="@string/partnerintrest" />
 
@@ -475,9 +480,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:gravity="center"
+                        android:textSize="@dimen/text_size"
                         android:visibility="gone"
                         android:layout_gravity="center_vertical"
-                        android:text="You have no requests" />
+                        android:text="@string/no_tournament_requests_received" />
 
                     <android.support.v7.widget.RecyclerView
                         android:id="@+id/rcv_partners"

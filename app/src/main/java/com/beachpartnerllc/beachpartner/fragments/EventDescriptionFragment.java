@@ -59,7 +59,7 @@ import java.util.Map;
 
 public class EventDescriptionFragment extends Fragment implements View.OnClickListener {
 
-    private TextView tview_eventname, tview_location, tview_venue, tview_eventadmin, tview_startDate, tview_endDate, tview_regStart, tview_regClose,tview_title;
+    private TextView tview_eventname, tview_location, tview_venue,tview_TeamSize, tview_eventadmin, tview_startDate, tview_endDate, tview_regStart, tview_regClose,tview_title;
     private Button btnInvitePartner, btnRegister, btnBack, btnCoachGoing, btnCoachNotGoing;
     private PrefManager prefManager;
     private LinearLayout athleteBtnLt, coachBtnLt;
@@ -144,9 +144,14 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             if (event.getEventName() != null) {
                 tview_eventname.setText(event.getEventName());
             }
-            if (event.getEventLocation()!=null) {
-                tview_location.setText(event.getEventLocation());
+
+            if (event.getEventState()!=null) {
+                tview_location.setText(event.getEventState());     //location changed to state as per directions on 01/06/2018
             }
+            else if(event.getEventLocation()!=null){
+                tview_location.setText(event.getEventLocation());     //as some api's returning location and others state 01/06/2018
+            }
+            tview_TeamSize.setText(event.getEventTeamSize());
             eventName = event.getEventName();
             if (event.getUserMessage() != null && !event.getUserMessage().isEmpty()) {
                 tview_title.setVisibility(View.VISIBLE);
@@ -196,6 +201,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         tview_location = (TextView) view.findViewById(R.id.tv_location);
         tview_venue = (TextView) view.findViewById(R.id.tv_venue);
         tview_eventadmin = (TextView) view.findViewById(R.id.tv_admin);
+        tview_TeamSize = (TextView) view.findViewById(R.id.tv_event_team_size);
         tview_title  =   (TextView) view.findViewById(R.id.top_title);
 
         tview_startDate = (TextView) view.findViewById(R.id.tv_startDate);
@@ -277,7 +283,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
                 break;
             case R.id.coach_going_btn:
-                alertAddToSystemCalendarCoach();
+                alertAddToCalendarCoach();
                 break;
             case R.id.coach_notgoing_btn:
                 //Back button
@@ -440,8 +446,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             Toast.makeText(getActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
-                            addToSystemCalendar();
-
+                            btnRegister.setClickable(false);
+                            btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                            btnInvitePartner.setClickable(false);
+                            btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                            AlertAddtoSystemCalendar();
                         }
 
                     }
@@ -453,6 +462,12 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
                         case 401:
                             json = new String(response.data);
                             json = trimMessage(json, "detail");
@@ -534,7 +549,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         try {
             registerObject.put("eventId", eventId);
             registerObject.put("registerType", "Organizer");
-            registerObject.put("userIds", "[]");
+            registerObject.put("userIds", new JSONArray());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -561,8 +576,27 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
 
+private void AlertAddtoSystemCalendar(){
+    final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Add to Your Calendar")
+                .setMessage("Would you like to add it to your calendar?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                            addToSystemCalendar();
+                    }
+                })
+                .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
 
-    private void alertAddToSystemCalendarCoach() {
+                        dialogInterface.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+}
+    private void alertAddToCalendarCoach() {
         //Register Event Api
         JSONObject registerObject = new JSONObject();
         try {
@@ -573,25 +607,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             e.printStackTrace();
         }
         registerEvent(registerObject);
-
-//        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-//        builder.setTitle("Add to Your Calendar")
-//                .setMessage("Would you like to add it to your calendar?")
-//                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//                        addToSystemCalendar();
-//                    }
-//                })
-//                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialogInterface, int i) {
-//
-//                        dialogInterface.cancel();
-//                    }
-//                });
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
 
     }
 

@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  * Created by seq-kala on 3/4/18.
  */
 
-public class BpFinderModel implements Parcelable {
+public class BpFinderModel implements Parcelable, Serializable {
 
     @SerializedName("id")
     @Expose

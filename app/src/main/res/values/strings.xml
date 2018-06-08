@@ -4,7 +4,7 @@
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
     <string name="dntaccount">Don\'t have an account? </string>
-    <string name="signup"><u>Sign Up</u></string>
+    <string name="signup">Sign Up</string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Email</string>
     <string name="hint_forgot">Forgot Password?</string>
@@ -50,7 +50,7 @@
     <string name="next">Next</string>
     <string name="messages">Messages</string>
     <string name="start">GOT IT</string>
-    <string name="skip">Skip</string>
+    <string name="back">Back</string>
     <string name="partnerintrest">Tournament Requests Received</string>
     <string name="nameerror">Please enter your first name (No special characters allowed)</string>
     <string name="lnameerror">Please enter your last name (NO special characters allowed)</string>
@@ -100,7 +100,7 @@
 
     <!--More Information-->
 
-    <string name="hint_experience">Experience</string>
+    <string name="hint_experience">Experience Level</string>
     <string name="hint_pref">Court Side Preference</string>
     <string name="hint_position">Position</string>
     <string name="hint_height">Height</string>
@@ -178,5 +178,12 @@
     <string name="recruiting_sub">RECRUITING</string>
     <string name="free_sub">FREE</string>
 
-    <string name="version">Beach Partner v34</string>
+    <string name="version">Beach Partner v40</string>
+    <string name="no_tournament_requests_sent">No  Tournament requests sent</string>
+    <string name="no_tournament_requests_received">No Tournament requests received</string>
+    <string name="no_upcoming_tournaments">You have no Upcoming Tournaments</string>
+    <string name="no_new_messages">You have no new Messages</string>
+    <string name="team_size">Team Size</string>
+    <string name="no_messsages_message_fragment">Messages sent or received will appear here</string>
+    <string name="clear_all">Clear All</string>
 </resources>

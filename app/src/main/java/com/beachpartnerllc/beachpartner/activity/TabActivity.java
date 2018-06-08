@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
@@ -345,16 +346,16 @@ public class TabActivity extends AppCompatActivity  {
                 }
 
                 break;
-            case R.id.about_us:
-                //Toast.makeText(this, "Clicked AboutUs", Toast.LENGTH_SHORT).show();
-                AboutUsFragment aboutUsFragment = new AboutUsFragment();
-                getSupportActionBar().setTitle("About Us");
-                FragmentManager mang = getSupportFragmentManager();
-                FragmentTransaction trans = mang.beginTransaction();
-                trans.replace(R.id.container, aboutUsFragment, YOUR_FRAGMENT_STRING_TAG);
-                trans.commit();
-                disableFloatButtons();
-                break;
+//            case R.id.about_us:
+//                //Toast.makeText(this, "Clicked AboutUs", Toast.LENGTH_SHORT).show();
+//                AboutUsFragment aboutUsFragment = new AboutUsFragment();
+//                getSupportActionBar().setTitle("About Us");
+//                FragmentManager mang = getSupportFragmentManager();
+//                FragmentTransaction trans = mang.beginTransaction();
+//                trans.replace(R.id.container, aboutUsFragment, YOUR_FRAGMENT_STRING_TAG);
+//                trans.commit();
+//                disableFloatButtons();
+//                break;
             case R.id.feedback:
                 //Toast.makeText(this, "Clicked Feedback", Toast.LENGTH_SHORT).show();
                 FeedBackFragment feedBackFragment = new FeedBackFragment();
@@ -451,8 +452,13 @@ public class TabActivity extends AppCompatActivity  {
 
     @Override
     public void onBackPressed() {
-      if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
+        Fragment fragment = getSupportFragmentManager().findFragmentById(R.id.container);
+        boolean isHome = fragment instanceof HomeFragment || fragment instanceof CoachHomeFragment;
+
+        if (getSupportFragmentManager().getBackStackEntryCount() > 0) {
             getSupportFragmentManager().popBackStack();
+        } else if (!isHome) {
+            navigation.setSelectedItemId(R.id.navigation_home);
         } else {
            // super.onBackPressed();
           new AlertDialog.Builder(this)

@@ -371,6 +371,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                 progressBar_rqsts.setVisibility(View.INVISIBLE);
                 if (response != null) {
                     EventResultModel eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
+
                     if (eventResultModel != null) {
                         if (getActivity() != null) {
                             Bundle bundle = new Bundle();
@@ -440,6 +441,12 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     Event eventModel = new Gson().fromJson(response.toString(),Event.class);
+                    try {
+                        eventModel.setEventState(response.getString("state"));
+                        eventModel.setEventTeamSize(response.getString("teamSize"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     if (eventModel != null) {
                         if (getActivity() != null) {
                             Bundle bundle = new Bundle();
@@ -577,7 +584,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                progressBar.setVisibility(View.GONE);
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -643,8 +650,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventId(obj.getString("id"));
                             event.setEventName(obj.getString("eventName"));
                             event.setEventDescription(obj.getString("eventDescription"));
-                            event.setEventLocation(obj.getString("eventLocation"));
+//                            event.setEventLocation(obj.getString("eventLocation"));
+                            event.setEventState(obj.getString("state"));  // changed as location is returning null and state value can be used instead
                             event.setEventVenue(obj.getString("eventVenue"));
+                            event.setEventTeamSizes(obj.getString("teamSize"));
                             event.setEventStartDate(obj.getLong("eventStartDate"));
                             event.setEventEndDate(obj.getLong("eventEndDate"));
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
@@ -684,7 +693,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
-                progressBar_tour.setVisibility(View.INVISIBLE);
+                progressBar_tour.setVisibility(View.GONE);
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -898,6 +907,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             parRecyclerview.setAdapter(partnerAdapter);
         }else {
             parRecyclerview.setVisibility(View.GONE);
+            txtv_noreqsts.setText(R.string.no_tournament_requests_received);
             txtv_noreqsts.setVisibility(View.VISIBLE);
         }
     }
@@ -912,6 +922,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             parRecyclerview.setAdapter(partnerAdapter);
         }else {
             parRecyclerview.setVisibility(View.GONE);
+            txtv_noreqsts.setText(R.string.no_tournament_requests_sent);
             txtv_noreqsts.setVisibility(View.VISIBLE);
         }
     }
@@ -949,6 +960,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
+                progressBar_msg.setVisibility(View.GONE);
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -1093,7 +1105,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
             @Override
             public void onCancelled(FirebaseError firebaseError) {
-
+                Log.d("Firebase ",firebaseError.toString());
+                progressBar_msg.setVisibility(View.GONE);
             }
         });
 

@@ -57,7 +57,7 @@ import java.util.Map;
 public class AcceptRejectRequestFragment extends Fragment implements AcceptRejectInvitationListener {
 
     private RecyclerView rcv_requests;
-    private TextView eventTitle,eventStart,eventEnd,eventLocation,eventVenue,eventAdmin;
+    private TextView eventTitle,eventStart,eventEnd,eventLocation,eventVenue,eventAdmin,teamSize;
     private SuggestionAdapter suggestionAdapter;
     private ArrayList<EventResultModel>suggestionList = new ArrayList<>();
     //private LinearLayout undoLayout;
@@ -111,6 +111,9 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         eventLocation   = view.findViewById(R.id.txtv_location);
         eventVenue      = view.findViewById(R.id.textv_venue);
         eventAdmin      = view.findViewById(R.id.txtv_admin);
+        teamSize        = view.findViewById(R.id.txtv_teamSize);
+
+
         //undoLayout   = view.findViewById(R.id.layout_undo);
         rcv_requests  = view.findViewById(R.id.rcv_requests);
 
@@ -162,9 +165,10 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         Date date_end  = new Date(event_endDate);
 
         eventTitle.setText(eventResultModel.getEventName());
-        eventLocation.setText(eventResultModel.getEventLocation());
+        eventLocation.setText(eventResultModel.getState()); // event location changed to state as it is not returning any values
         eventVenue.setText(eventResultModel.getEventVenue());
         eventAdmin.setText(eventResultModel.getEventAdmin());
+        teamSize.setText(eventResultModel.getTeamSize());
         eventStart.setText(dft.format(date_start));
         eventEnd.setText(dft.format(date_end));
         if (suggestionList != null) {

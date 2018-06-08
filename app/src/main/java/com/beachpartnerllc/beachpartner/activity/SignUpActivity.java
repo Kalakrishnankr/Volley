@@ -54,6 +54,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -457,26 +458,28 @@ public class SignUpActivity extends AppCompatActivity{
 
         };
 
+
         //dob date
 
         user_dob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 txt_dobError.setVisibility(View.GONE);
-                DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this, date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                dialog.getDatePicker().setMaxDate(maxDate);
-                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (which == DialogInterface.BUTTON_NEGATIVE) {
-                            txt_dobError.setVisibility(View.VISIBLE);
-                            txt_dobError.setText(getResources().getString(R.string.doberror));
-                        }
-                    }
-                });
-                dialog.show();
+//                DatePickerDialog dialog = new DatePickerDialog(SignUpActivity.this,android.R.style.Theme_Holo_Light_Panel, date, myCalendar
+//                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                        myCalendar.get(Calendar.DAY_OF_MONTH));
+//                dialog.getDatePicker().setMaxDate(maxDate);
+//                dialog.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int which) {
+//                        if (which == DialogInterface.BUTTON_NEGATIVE) {
+////                            txt_dobError.setVisibility(View.VISIBLE);
+////                            txt_dobError.setText(getResources().getString(R.string.doberror));
+//                        }
+//                    }
+//                });
+//                dialog.show();
 
+                CustomDatePicker();
 
             }
         });
@@ -566,7 +569,6 @@ public class SignUpActivity extends AppCompatActivity{
                         txt_dobError.setVisibility(View.VISIBLE);
                         txt_dobError.setText(getResources().getString(R.string.doberror));
                     }
-
 
                     if (sex == null) {
                         txt_genderError.setVisibility(View.VISIBLE);
@@ -816,6 +818,90 @@ public class SignUpActivity extends AppCompatActivity{
 
     }
 
+
+
+
+
+    private void CustomDatePicker(){
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        View datealertLayout = inflater.inflate(R.layout.custom_date_picker_dialog, null);
+
+        final DatePicker dp     =          (DatePicker) datealertLayout.findViewById(R.id.datePicker_custom);
+        final Button  okBtn     =          (Button)   datealertLayout.findViewById(R.id.okBtn);
+        final Button  cancelBtn =           (Button) datealertLayout.findViewById(R.id.cancel_button);
+
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(this);
+
+
+
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+
+        dp.setMaxDate(maxDate);
+        dp.init(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                // Do something when the date changed from date picker object
+
+                // Create a Date variable/object with user chosen date
+
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            }
+        });
+
+        alert.setView(datealertLayout);
+        alert.setCancelable(true);
+
+
+        final android.app.AlertDialog dialog = alert.create();
+
+
+        dialog.show();
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SimpleDateFormat dateBirth = updateLabel();
+                if (dateBirth!=null){
+                    Calendar today = Calendar.getInstance();
+                    int age = today.get(Calendar.YEAR) - dateBirth.getCalendar().get(Calendar.YEAR);
+                    if(today.get(Calendar.DAY_OF_YEAR) < dateBirth.getCalendar().get(Calendar.DAY_OF_YEAR)){
+                        age--;
+                    }
+                    Integer ageInt = new Integer(age);
+                    if(ageInt<18){
+                        minorStatus =true;
+                        if(userType!=null){
+                            if(userType.equals("Athlete")){
+                                alertMinor();
+                            }
+                        }
+                    }
+                }
+                dialog.dismiss();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+
+
     private void alertEnterParentDetails() {
 
         LayoutInflater inflater = getLayoutInflater();
@@ -836,20 +922,7 @@ public class SignUpActivity extends AppCompatActivity{
 
         alert.setView(alertLayout);
         alert.setCancelable(true);
-//        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-//
-//            @Override
-//            public void onItemClick(DialogInterface dialog, int which) {
-//
-//            }
-//        });
-//        alert.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onItemClick(DialogInterface dialog, int which) {
-//
-//            }
-//
-//        });
+
 
 
 

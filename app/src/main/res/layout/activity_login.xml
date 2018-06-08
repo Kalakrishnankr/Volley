@@ -115,20 +115,57 @@
                     android:textColor="@color/white"
                     android:layout_marginTop="@dimen/margin_button"/>
             </LinearLayout>
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/forgotPass"
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:textSize="@dimen/text_size"
                 android:layout_weight="1.2"
-                android:gravity="center"
-                android:textColor="@color/btnColor"
-                android:text="@string/hint_forgot"
-                android:layout_gravity="center"/>
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/forgotPass"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|right"
+                    android:text="@string/hint_forgot"
+                    android:textColor="@color/blueDark"  />
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="@dimen/coach_name_marginTop_coach_profile"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:layout_marginLeft="@dimen/pipe_left_margin_login"
+                    android:layout_marginRight="@dimen/pipe_right_margin_login"/>
+
+                <com.beachpartnerllc.beachpartner.CustomTextView
+                    android:id="@+id/tSignUp"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center|left"
+                    android:text="@string/signup"
+                    android:textColor="@color/blueDark" />
+
+
+            </LinearLayout>
+            <!--<com.beachpartnerllc.beachpartner.CustomTextView-->
+                <!--android:id="@+id/forgotPass"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="0dp"-->
+                <!--android:textSize="@dimen/text_size"-->
+                <!--android:layout_weight="1.2"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="@color/btnColor"-->
+                <!--android:text="@string/hint_forgot"-->
+                <!--android:layout_gravity="center"/>-->
 
         </LinearLayout>
 
 
+        <!--the view's visibilty inside the below linearlayout is set to invisible as per temporar needs -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -146,6 +183,7 @@
                 android:gravity="center"
                 android:textSize="@dimen/text_size"
                 android:text="@string/connect"
+                android:visibility="invisible"
                 android:textColor="@color/blueDark"/>
             <!--<Space
                 android:layout_weight="0.1"
@@ -156,7 +194,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.2"
                 android:weightSum="1"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:visibility="invisible">
                 <ImageView
                     android:id="@+id/login_button"
                     android:layout_width="0dp"
@@ -172,6 +211,7 @@
 
                 <ImageView
                     android:id="@+id/instaLogin"
+                    android:visibility="gone"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.3"
@@ -204,36 +244,37 @@
         android:layout_height="0dp"
         android:layout_gravity="center"
         android:orientation="vertical"
-        android:weightSum="2">
+        android:gravity="center"
+        android:weightSum="1">
 
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:orientation="horizontal"
-            android:layout_weight="1.3"
-            android:weightSum="2">
+        <!--<LinearLayout-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:orientation="horizontal"-->
+            <!--android:layout_weight="1.3"-->
+            <!--android:weightSum="2">-->
 
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:text="@string/dntaccount"
-                android:textColor="@color/white"
-                android:layout_weight="1.5"
-                android:layout_marginRight="5dp"
-                android:gravity="center|right"/>
+            <!--<com.beachpartnerllc.beachpartner.CustomTextView-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:text="@string/dntaccount"-->
+                <!--android:textColor="@color/white"-->
+                <!--android:layout_weight="1.5"-->
+                <!--android:layout_marginRight="5dp"-->
+                <!--android:gravity="center|right"/>-->
 
-            <com.beachpartnerllc.beachpartner.CustomTextView
-                android:id="@+id/tSignUp"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:text="@string/signup"
-                android:gravity="left|center"
-                android:layout_weight="1"
-                android:textColor="@color/blueDark" />
+            <!--<com.beachpartnerllc.beachpartner.CustomTextView-->
+                <!--android:id="@+id/tSignUp"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:text="@string/signup"-->
+                <!--android:gravity="left|center"-->
+                <!--android:layout_weight="1"-->
+                <!--android:textColor="@color/blueDark" />-->
 
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
 
 
 

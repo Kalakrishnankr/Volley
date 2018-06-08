@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
-    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,myCal_startDate,myCal_endDate,no_partners_txtv,headingPartnersAthletes;
+    private TextView myCal_eventname,myCal_location,myCal_venue,myCal_eventadmin,my_cal_team_size,myCal_startDate,myCal_endDate,no_partners_txtv,headingPartnersAthletes;
     private Button btn_myCalCourt,btn_myCalBack;
     private RecyclerView rcv_mycalendar;
     private String userType;
@@ -98,9 +98,9 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
             eventId = event.getEventId();
             String eventAdmin = event.getEventAdmin();
             myCal_eventadmin.setText(eventAdmin.toString());
-
+            my_cal_team_size.setText(event.getEventTeamSize());
             myCal_eventname.setText(event.getEventName());
-            myCal_location.setText(event.getEventLocation());
+            myCal_location.setText(event.getEventState());
             myCal_venue.setText(event.getEventVenue());
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy");
@@ -121,6 +121,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         myCal_eventname     =   (TextView) view.findViewById(R.id.my_event_name);
         myCal_location      =   (TextView) view.findViewById(R.id.my_tv_location);
         myCal_venue         =   (TextView) view.findViewById(R.id.my_tv_venue);
+        my_cal_team_size    =   (TextView) view.findViewById(R.id.my_tv_team_size);
 
         myCal_eventadmin    =   (TextView) view.findViewById(R.id.my_tv_admin);
         myCal_startDate     =   (TextView) view.findViewById(R.id.my_tv_startDate);

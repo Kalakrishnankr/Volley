@@ -21,4 +21,5 @@ public class AppConstants {
     public static final String EVENT_OBJECT = "eventObject";
     public static final String EVENT_DETAIL = "event_clicked";
     public static final String REQUEST_SEND_COUNT ="sendCount";
+    public static String USER_DETAIL = "user_clicked";
 }

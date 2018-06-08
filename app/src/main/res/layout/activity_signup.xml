@@ -53,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="25dp"
-                android:weightSum="10">
+                android:weightSum="9">
 
 
                 <!--First Name-->
@@ -95,7 +95,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/hint_lname"
                         android:textSize="@dimen/text_size"
+                        android:imeOptions="actionNext"
                         android:layout_marginBottom="-5dp"
+                        android:nextFocusForward="@id/athlete_radio"
                         android:inputType="textCapWords"
                         android:textColor="@color/colorPrimary" />
                 </android.support.design.widget.TextInputLayout>
@@ -110,25 +112,25 @@
                 <!--Athlete-Coach Radio Button-->
                 <RadioGroup
                     android:id="@+id/user_type"
+                    android:layout_marginTop="12dp"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
                     <RadioButton
                         android:id="@+id/athlete_radio"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:text="Athlete" />
 
                     <RadioButton
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_gravity="center"
                         android:text="Coach" />
                 </RadioGroup>
                 <TextView
@@ -162,7 +164,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/dot_dark_screen1"
-                    android:visibility="gone"/>
+                    android:visibility="visible"
+                    android:layout_marginBottom="10dp"/>
                 <!--Gender-->
 
                 <LinearLayout
@@ -338,11 +341,6 @@
                     android:visibility="gone"/>
             </LinearLayout>
 
-            <View
-                android:id="@+id/scroll_space1"
-                android:layout_width="match_parent"
-                android:layout_below="@+id/linearLt_signup"
-                android:layout_height="140dp"/>
         </RelativeLayout>
 
 

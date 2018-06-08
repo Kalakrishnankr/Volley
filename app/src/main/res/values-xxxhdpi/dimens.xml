@@ -1,6 +1,8 @@
 <resources>
 
 
+	<dimen name="pipe_left_margin_login">20dp</dimen>
+	<dimen name="pipe_right_margin_login">20dp</dimen>
     <dimen name="margin_button">15dp</dimen>
 	<dimen name="text_size">18sp</dimen>
 	<dimen name="header_text_size">30sp</dimen>

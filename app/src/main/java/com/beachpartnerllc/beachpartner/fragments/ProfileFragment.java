@@ -76,10 +76,15 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.CoachProfileResponse;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.models.UserProfileModel;
 import com.beachpartnerllc.beachpartner.utils.AppCommon;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionButton;
 import com.beachpartnerllc.beachpartner.utils.FloatingActionMenu;
 import com.beachpartnerllc.beachpartner.utils.SelectedFilePath;
@@ -115,6 +120,7 @@ import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
 import com.google.android.exoplayer2.upstream.FileDataSource;
 import com.google.android.exoplayer2.util.Util;
+import com.google.gson.Gson;
 
 import org.apache.commons.io.FileUtils;
 import org.json.JSONException;
@@ -175,7 +181,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private static boolean editStatus = false;
     private static ProgressDialog progress;
     // private static PhotoAsyncTask asyncTask;
-    public UserDataModel userDataModel;
+    public CoachProfileResponse userDataModel;
     public String token, user_id, spinnerTLValue, spinnerWTValue, spinnerTRValue, spinnerExpValue, spinnerPrefValue, spinnerPosValue, editHeightValue, imageUri, videoUri;
     Calendar myCalendar = Calendar.getInstance();
     ArrayList selectedItems;
@@ -200,7 +206,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     private FloatingActionMenu imgShare;
     private FloatingActionButton fabImage, fabVideo;
     private CircularImageView imgProfile;
-    private TextView profileName, profileDesig, edit_tag, basic_info_tab, more_info_tab;
+    private TextView profileName, profileDesig, edit_tag,imgShareText, basic_info_tab, more_info_tab;
     //private VideoView videoView;
     private Uri selectedImageUri, selectedVideoUri, screenshotUri, screenshotVideoUri;
     private byte[] multipartBody;
@@ -234,9 +240,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     boolean appendEditOpenedTwo = false;
     FrameLayout placeholder;
     private long maxDate;
+    private  BpFinderModel finderModel;
     private ServiceClass uploadService;
     private MultipartBody.Part fileToUpload,videoToUploaded;
     private  String[] values;
+    Bundle bundle;
 
     // method for add intent to arraylist
     private static List<Intent> addIntentsToList(Context context, List<Intent> list, Intent intent) {
@@ -447,11 +455,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
-        setUp();
+
+
 
         initActivity(view);
 
         getActivity().getActionBar();
+
 
 
         BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
@@ -467,8 +477,59 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         playerView.setUseArtwork(true);
         playerView.setResizeMode(exoPlayer.getVideoScalingMode());
+
+        bundle = getArguments();
+        if (bundle != null) {
+            finderModel = (BpFinderModel) bundle.getSerializable(AppConstants.USER_DETAIL);
+            setViewForConnectedUSer();
+        }else{
+            setUp();
+        }
+
         return view;
     }
+
+    private void setViewForConnectedUSer() {
+        try{
+            //code for viewing profile of connected users
+            imgEdit.setVisibility(View.INVISIBLE);
+            imgProfile.setClickable(false);
+            videoFrameLayout.setClickable(false);
+            edit_tag.setVisibility(View.INVISIBLE);
+            imgShare.setVisibility(View.INVISIBLE);
+            imgShareText.setVisibility(View.INVISIBLE);
+
+            userDataModel = new CoachProfileResponse();
+            userDataModel.setId(finderModel.getBpf_id());
+            userDataModel.setFirstName(finderModel.getBpf_firstName());
+            userDataModel.setLastName(finderModel.getBpf_lastName());
+            userDataModel.setGender(finderModel.getBpf_gender());
+            userDataModel.setDob(finderModel.getBpf_dob());
+            userDataModel.setCity(finderModel.getBpf_city());
+            userDataModel.setPhoneNumber(finderModel.getBpf_phoneNumber());
+            userDataModel.setLangKey(finderModel.getBpf_langKey());
+            userDataModel.setLocation(finderModel.getBpf_city());
+            //userDataModel.setSubscriptions(response.getString("subscriptions"));
+            userDataModel.setImageUrl(finderModel.getBpf_imageUrl());
+            userDataModel.setVideoUrl(finderModel.getBpf_videoUrl());
+            userDataModel.setUserType(finderModel.getBpf_userType());
+            userDataModel.setFcmToken(finderModel.getBpf_fcmToken());
+            userDataModel.setAuthToken(finderModel.getBpf_authToken());
+            userDataModel.setDeviceId(finderModel.getBpf_deviceId());
+            userDataModel.setEmail(finderModel.getBpf_email());
+            if (!finderModel.getUserProfile().equals(null) && !finderModel.getUserProfile().equals("null")) {
+
+                UserProfileModel tempFinderModel = finderModel.getUserProfile();
+                if (tempFinderModel != null) {
+                    userDataModel.setUserProfile(tempFinderModel);
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        setViews();
+    }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -510,7 +571,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             exoPlayer.removeListener(this);
             exoPlayer.stop();
             exoPlayer.release();
-            setUp();
 
             BandwidthMeter bandwidthMeter = new DefaultBandwidthMeter();
             TrackSelector trackSelector = new DefaultTrackSelector(new AdaptiveTrackSelection.Factory(bandwidthMeter));
@@ -524,6 +584,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
             playerView.setUseArtwork(true);
             playerView.setResizeMode(exoPlayer.getVideoScalingMode());
+            bundle = getArguments();
+            if (bundle != null) {
+                finderModel = (BpFinderModel) bundle.getSerializable(AppConstants.USER_DETAIL);
+                setViewForConnectedUSer();
+            }else{
+                setUp();
+            }
+
+
 //            if(userDataModel.getVideoUrl()!=null){
 //                playVideo(userDataModel.getVideoUrl());
 //            }
@@ -563,6 +632,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
         imgPlay = (ImageView) view.findViewById(R.id.imgPlay);
         imgShare = (FloatingActionMenu) view.findViewById(R.id.menu_blue);
+        imgShareText = (TextView) view.findViewById(R.id.img_share_text);
         fabImage = (FloatingActionButton) view.findViewById(R.id.fab_image);
         fabVideo = (FloatingActionButton) view.findViewById(R.id.fab_video);
 
@@ -610,6 +680,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         spinnerWtoTravel.setEnabled(false);
         editHeight.setEnabled(false);
         editCity.setEnabled(false);
+        spinnerInit();
+
 
 
         editPlayed = (EditText) view.findViewById(R.id.txtvPlayed);
@@ -762,278 +834,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         });
 
 
-         /*This for demo only end*/
-
-
-        // setupViewPager(viewPager);
-        // tabs.setupWithViewPager(viewPager);
-
-//        imgEdit.setOnClickListener(this);
-        //   imgVideo.setOnClickListener(this);
-        videoFrameLayout.setOnClickListener(this);
-        imgProfile.setOnClickListener(this);
-        imgPlay.setOnClickListener(this);
-
-
-        /*Experience Spinner*/
-        List<String> experience = new ArrayList<>();
-        experience.add("Please Select");
-        experience.add("“Newbie” [New to the Game]");
-        experience.add("1-2 years [Some Indoor/Beach Experience]");
-        experience.add("2-3 years [Beach Club/Tournament Experience]");
-        experience.add("3-4 years [Experienced Tournament Player]");
-        experience.add("More than 4 years");
-
-        expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
-        expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerExp.setAdapter(expAdapter);
-        spinnerExp.invalidate();
-
-        spinnerExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-
-                if (!spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerExpValue = spinnerExp.getSelectedItem().toString();
-                } else {
-                    int spinnerExpPos = expAdapter.getPosition(spinnerExpValue);
-                    spinnerExp.setSelection(spinnerExpPos);
-                    spinnerExpValue = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        /*Court Preference spinner*/
-        spinnerPref.setOnItemSelectedListener(this);
-        courtPref = new ArrayList<>();
-        courtPref.add("Please Select");
-        courtPref.add("Left Side");
-        courtPref.add("Right Side");
-        courtPref.add("No Preference");
-        prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
-        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPref.setAdapter(prefAdapter);
-        spinnerPref.invalidate();
-        spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-
-                if (!spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerPrefValue = spinnerPref.getSelectedItem().toString();
-                } else {
-                    int spinnerpref = prefAdapter.getPosition(spinnerPrefValue);
-                    spinnerPref.setSelection(spinnerpref);
-                    spinnerPrefValue = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        /*position Spinner*/
-        spinnerPositon.setOnItemSelectedListener(this);
-        List<String> position = new ArrayList<>();
-        position.add("Please Select");
-        position.add("Primary Blocker");
-        position.add("Primary Defender");
-        position.add("Split Block/Defense");
-        positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
-        positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerPositon.setAdapter(positionAdapter);
-        spinnerPositon.invalidate();
-        spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-
-                if (!spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerPosValue = spinnerPositon.getSelectedItem().toString();
-                } else {
-                    int spinnerposition = positionAdapter.getPosition(spinnerPosValue);
-                    spinnerPositon.setSelection(spinnerposition);
-                    spinnerPosValue = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        /*Tournament Level interest spinner*/
-        spinnerTLInterest.setOnItemSelectedListener(this);
-        List<String> tournamentInterest = new ArrayList<>();
-        tournamentInterest.add("Please Select");
-        tournamentInterest.add("Novice/Social");
-        tournamentInterest.add("Unrated");
-        tournamentInterest.add("B");
-        tournamentInterest.add("A");
-        tournamentInterest.add("AA");
-        tournamentInterest.add("AAA");
-        tournamentInterest.add("Pro");
-
-        tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
-        tournamentInterestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTLInterest.setAdapter(tournamentInterestAdapter);
-        spinnerTLInterest.invalidate();
-        spinnerTLInterest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-
-                if (!spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
-                } else {
-                    int spinnerTLValuePos = tournamentInterestAdapter.getPosition(spinnerTLValue);
-                    spinnerTLInterest.setSelection(spinnerTLValuePos);
-                    spinnerTLValue = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-
-        spinnerTourRating.setOnItemSelectedListener(this);
-        List<String> rating = new ArrayList<>();
-        rating.add("Please Select");
-        rating.add("PRO");
-        rating.add("Open Or AAA");
-        rating.add("AA");
-        rating.add("A");
-        rating.add("BB");
-        rating.add("B");
-        rating.add("C Or Novice");
-        rating.add("Unrated");
-        highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
-        highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerTourRating.setAdapter(highestRatingAdapter);
-        spinnerTourRating.invalidate();
-
-        spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-                if (!spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
-                } else {
-                    int spinnerTRValuePos = highestRatingAdapter.getPosition(spinnerTRValue);
-                    spinnerTourRating.setSelection(spinnerTRValuePos);
-                    spinnerTRValue = "";
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        /*Spinner for willing to travel*/
-        spinnerWtoTravel.setOnItemSelectedListener(this);
-        List<String> distance = new ArrayList<>();
-        distance.add("Please Select");
-        distance.add("Not Willing");
-        distance.add("Up to 25 miles");
-        distance.add("Up to 50 miles");
-        distance.add("Up to 100 miles");
-        distance.add("Up to 250 miles");
-        distance.add("Up to 500 miles");
-        distance.add("Nationwide");
-        distance.add("International");
-        distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
-        distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerWtoTravel.setAdapter(distanceAdapter);
-        spinnerWtoTravel.invalidate();
-        spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-                if (!spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
-                } else {
-                    int travelValuePos = distanceAdapter.getPosition(spinnerWTValue);
-
-                    spinnerWtoTravel.setSelection(travelValuePos);
-                    spinnerWTValue = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
-        List<String> height = new ArrayList<>();
-        height.add("Please Select");
-        height.add("4' 10\"");
-        height.add("4' 11\"");
-        height.add("5' 0\"");
-        height.add("5' 1\"");
-        height.add("5' 2\"");
-        height.add("5' 3\"");
-        height.add("5' 4\"");
-        height.add("5' 5\"");
-        height.add("5' 6\"");
-        height.add("5' 7\"");
-        height.add("5' 8\"");
-        height.add("5' 9\"");
-        height.add("5' 10\"");
-        height.add("5' 11\"");
-        height.add("6' 0\"");
-        height.add("6' 1\"");
-        height.add("6' 2\"");
-        height.add("6' 3\"");
-        height.add("6' 4\"");
-        height.add("6' 5\"");
-        height.add("6' 6\"");
-        height.add("6' 7\"");
-        height.add("6' 8\"");
-        height.add("6' 9\"");
-        height.add("6' 10\"");
-        height.add("6' 11\"");
-        height.add("7' 0\"");
-
-        heightAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, height);
-        heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        editHeight.setAdapter(heightAdapter);
-        editHeight.invalidate();
-        editHeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-                moreUploadStatus = true;
-                if (!editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
-                    editHeightValue = editHeight.getSelectedItem().toString();
-                } else {
-                    int editHeightValuePos = heightAdapter.getPosition(editHeightValue);
-                    editHeight.setSelection(editHeightValuePos);
-                    editHeightValue = "";
-                }
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> arg0) {
-                // TODO Auto-generated method stub
-
-            }
-        });
-
         dataAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, stateList);
         dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
@@ -1051,6 +851,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
             }
         });
+
+         /*This for demo only end*/
+
+
+        // setupViewPager(viewPager);
+        // tabs.setupWithViewPager(viewPager);
+
+//        imgEdit.setOnClickListener(this);
+        //   imgVideo.setOnClickListener(this);
+        videoFrameLayout.setOnClickListener(this);
+        imgProfile.setOnClickListener(this);
+        imgPlay.setOnClickListener(this);
+
+
+
 
 
 //        Buttons click action for saving
@@ -1093,6 +908,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     editCustomView();
                     editBasicInfo();
                     editMoreInfo();
+                    spinnerInit();
                     addingPleaseSelect();
 
                     imgEdit.setImageDrawable(getResources().getDrawable(R.drawable.ic_edit_active));
@@ -1151,11 +967,13 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         editDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                dialog.getDatePicker().setMaxDate(maxDate);
-                dialog.show();
+//                DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
+//                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                        myCalendar.get(Calendar.DAY_OF_MONTH));
+//                dialog.getDatePicker().setMaxDate(maxDate);
+//                dialog.show();
+
+                CustomDatePicker();
 
             }
         });
@@ -1322,6 +1140,390 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
     }
 
+
+    private void CustomDatePicker(){
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        View datealertLayout = inflater.inflate(R.layout.custom_date_picker_dialog, null);
+
+        final DatePicker dp     =          (DatePicker) datealertLayout.findViewById(R.id.datePicker_custom);
+        final Button  okBtn     =          (Button)   datealertLayout.findViewById(R.id.okBtn);
+        final Button  cancelBtn =           (Button) datealertLayout.findViewById(R.id.cancel_button);
+
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+
+
+
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+
+        dp.setMaxDate(maxDate);
+        dp.init(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                // Do something when the date changed from date picker object
+
+                // Create a Date variable/object with user chosen date
+
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            }
+        });
+
+        alert.setView(datealertLayout);
+        alert.setCancelable(true);
+
+
+        final android.app.AlertDialog dialog = alert.create();
+
+
+        dialog.show();
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+              updateLabel();
+                dialog.dismiss();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void spinnerInit(){
+                /*Experience Spinner*/
+        List<String> experience = new ArrayList<>();
+        experience.add("Please Select");
+        experience.add("“Newbie” [New to the Game]");
+        experience.add("1-2 years [Some Indoor/Beach Experience]");
+        experience.add("2-3 years [Beach Club/Tournament Experience]");
+        experience.add("3-4 years [Experienced Tournament Player]");
+        experience.add("More than 4 years");
+
+        expAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, experience);
+        expAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerExp.setAdapter(expAdapter);
+        spinnerExp.invalidate();
+
+        spinnerExp.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editStatus){
+                    if (spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                        spinnerExp.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerExp.setVisibility(View.VISIBLE);
+
+                }
+                if (!spinnerExp.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerExpValue = spinnerExp.getSelectedItem().toString();
+                } else {
+                    int spinnerExpPos = expAdapter.getPosition(spinnerExpValue);
+                    spinnerExp.setSelection(spinnerExpPos);
+                    spinnerExpValue = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        /*Court Preference spinner*/
+        spinnerPref.setOnItemSelectedListener(this);
+        courtPref = new ArrayList<>();
+        courtPref.add("Please Select");
+        courtPref.add("Left Side");
+        courtPref.add("Right Side");
+        courtPref.add("No Preference");
+        prefAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, courtPref);
+        prefAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPref.setAdapter(prefAdapter);
+        spinnerPref.invalidate();
+        spinnerPref.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editStatus){
+                    if(spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                        spinnerPref.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerPref.setVisibility(View.VISIBLE);
+
+                }
+
+                if (!spinnerPref.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerPrefValue = spinnerPref.getSelectedItem().toString();
+                } else {
+                    int spinnerpref = prefAdapter.getPosition(spinnerPrefValue);
+                    spinnerPref.setSelection(spinnerpref);
+                    spinnerPrefValue = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        /*position Spinner*/
+        spinnerPositon.setOnItemSelectedListener(this);
+        List<String> position = new ArrayList<>();
+        position.add("Please Select");
+        position.add("Primary Blocker");
+        position.add("Primary Defender");
+        position.add("Split Block/Defense");
+        positionAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, position);
+        positionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPositon.setAdapter(positionAdapter);
+        spinnerPositon.invalidate();
+        spinnerPositon.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editStatus){
+                    if(spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")){
+                        spinnerPositon.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerPositon.setVisibility(View.VISIBLE);
+
+                }
+                if (!spinnerPositon.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerPosValue = spinnerPositon.getSelectedItem().toString();
+                } else {
+                    int spinnerposition = positionAdapter.getPosition(spinnerPosValue);
+                    spinnerPositon.setSelection(spinnerposition);
+                    spinnerPosValue = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        /*Tournament Level interest spinner*/
+        spinnerTLInterest.setOnItemSelectedListener(this);
+        List<String> tournamentInterest = new ArrayList<>();
+        tournamentInterest.add("Please Select");
+        tournamentInterest.add("Novice/Social");
+        tournamentInterest.add("Unrated");
+        tournamentInterest.add("B");
+        tournamentInterest.add("A");
+        tournamentInterest.add("AA");
+        tournamentInterest.add("AAA");
+        tournamentInterest.add("Pro");
+
+        tournamentInterestAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, tournamentInterest);
+        tournamentInterestAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTLInterest.setAdapter(tournamentInterestAdapter);
+        spinnerTLInterest.invalidate();
+        spinnerTLInterest.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editStatus){
+                    if (spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                        spinnerTLInterest.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerTLInterest.setVisibility(View.VISIBLE);
+                }
+                if (!spinnerTLInterest.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerTLValue = spinnerTLInterest.getSelectedItem().toString();
+                } else {
+                    int spinnerTLValuePos = tournamentInterestAdapter.getPosition(spinnerTLValue);
+                    spinnerTLInterest.setSelection(spinnerTLValuePos);
+                    spinnerTLValue = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+        spinnerTourRating.setOnItemSelectedListener(this);
+        List<String> rating = new ArrayList<>();
+        rating.add("Please Select");
+        rating.add("PRO");
+        rating.add("Open Or AAA");
+        rating.add("AA");
+        rating.add("A");
+        rating.add("BB");
+        rating.add("B");
+        rating.add("C Or Novice");
+        rating.add("Unrated");
+        highestRatingAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, rating);
+        highestRatingAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTourRating.setAdapter(highestRatingAdapter);
+        spinnerTourRating.invalidate();
+
+        spinnerTourRating.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+                if(!editStatus){
+                    if (spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                        spinnerTourRating.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerTourRating.setVisibility(View.VISIBLE);
+                }
+
+                if (!spinnerTourRating.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerTRValue = spinnerTourRating.getSelectedItem().toString();
+                } else {
+                    int spinnerTRValuePos = highestRatingAdapter.getPosition(spinnerTRValue);
+                    spinnerTourRating.setSelection(spinnerTRValuePos);
+                    spinnerTRValue = "";
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        /*Spinner for willing to travel*/
+        spinnerWtoTravel.setOnItemSelectedListener(this);
+        List<String> distance = new ArrayList<>();
+        distance.add("Please Select");
+        distance.add("Not Willing");
+        distance.add("Up to 25 miles");
+        distance.add("Up to 50 miles");
+        distance.add("Up to 100 miles");
+        distance.add("Up to 250 miles");
+        distance.add("Up to 500 miles");
+        distance.add("Nationwide");
+        distance.add("International");
+        distanceAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, distance);
+        distanceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerWtoTravel.setAdapter(distanceAdapter);
+        spinnerWtoTravel.invalidate();
+        spinnerWtoTravel.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+
+                if(!editStatus){
+                    if (spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                        spinnerWtoTravel.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    spinnerWtoTravel.setVisibility(View.VISIBLE);
+                }
+                if (!spinnerWtoTravel.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    spinnerWTValue = spinnerWtoTravel.getSelectedItem().toString();
+                } else {
+                    int travelValuePos = distanceAdapter.getPosition(spinnerWTValue);
+
+                    spinnerWtoTravel.setSelection(travelValuePos);
+                    spinnerWTValue = "";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        List<String> height = new ArrayList<>();
+        height.add("Please Select");
+        height.add("4' 10\"");
+        height.add("4' 11\"");
+        height.add("5' 0\"");
+        height.add("5' 1\"");
+        height.add("5' 2\"");
+        height.add("5' 3\"");
+        height.add("5' 4\"");
+        height.add("5' 5\"");
+        height.add("5' 6\"");
+        height.add("5' 7\"");
+        height.add("5' 8\"");
+        height.add("5' 9\"");
+        height.add("5' 10\"");
+        height.add("5' 11\"");
+        height.add("6' 0\"");
+        height.add("6' 1\"");
+        height.add("6' 2\"");
+        height.add("6' 3\"");
+        height.add("6' 4\"");
+        height.add("6' 5\"");
+        height.add("6' 6\"");
+        height.add("6' 7\"");
+        height.add("6' 8\"");
+        height.add("6' 9\"");
+        height.add("6' 10\"");
+        height.add("6' 11\"");
+        height.add("7' 0\"");
+
+        heightAdapter = new ArrayAdapter<String>(getContext(), R.layout.spinner_style, height);
+        heightAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        editHeight.setAdapter(heightAdapter);
+        editHeight.invalidate();
+        editHeight.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
+                moreUploadStatus = true;
+
+                if(!editStatus){
+                    if (editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                        editHeight.setVisibility(View.INVISIBLE);
+                    }
+                }
+                else{
+                    editHeight.setVisibility(View.VISIBLE);
+                }
+                if (!editHeight.getSelectedItem().toString().equalsIgnoreCase("Please Select")) {
+                    editHeightValue = editHeight.getSelectedItem().toString();
+                } else {
+                    int editHeightValuePos = heightAdapter.getPosition(editHeightValue);
+                    editHeight.setSelection(editHeightValuePos);
+                    editHeightValue = "";
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+
+    }
     private void addingPleaseSelect() {
 
     }
@@ -1529,22 +1731,27 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
             e.printStackTrace();
         }
 
-        DataSource.Factory factory = new DataSource.Factory() {
-            @Override
-            public DataSource createDataSource() {
-                return fileDataSource;
-            }
-        };
-        MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
-                factory, new DefaultExtractorsFactory(), null, null);
+        try{
+            DataSource.Factory factory = new DataSource.Factory() {
+                @Override
+                public DataSource createDataSource() {
+                    return fileDataSource;
+                }
+            };
+            MediaSource audioSource = new ExtractorMediaSource(fileDataSource.getUri(),
+                    factory, new DefaultExtractorsFactory(), null, null);
 
-        exoPlayer.prepare(audioSource);
-        playerView.setPlayer(exoPlayer);
-        exoPlayer.prepare(audioSource);
-        exoPlayer.setPlayWhenReady(true);
-        exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
-        playerView.setUseController(false);
-        exoPlayer.setVolume(0);
+            exoPlayer.prepare(audioSource);
+            playerView.setPlayer(exoPlayer);
+            exoPlayer.prepare(audioSource);
+            exoPlayer.setPlayWhenReady(true);
+            exoPlayer.setRepeatMode(Player.REPEAT_MODE_ONE);
+            playerView.setUseController(false);
+            exoPlayer.setVolume(0);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     private void imageBrowse() {
@@ -2100,7 +2307,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 object.put("fcmToken", userDataModel.getFcmToken().trim());
                 object.put("email", userDataModel.getEmail().trim());
                 object.put("deviceId", userDataModel.getDeviceId().trim());
-                object.put("authToken", userDataModel.getAuthToken().trim());
+                object.put("authToken", userDataModel.getAuthToken());
 //                object.put("city",userDataModel.getLocation().trim());
 
             } catch (JSONException e) {
@@ -2713,67 +2920,69 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         Log.d("response get account--", response.toString());
                         if (response != null) {
                             try {
-                                userDataModel = new UserDataModel();
-                                userDataModel.setId(response.getString("id"));
-                                userDataModel.setFirstName(response.getString("firstName"));
-                                userDataModel.setLastName(response.getString("lastName"));
-                                userDataModel.setGender(response.getString("gender"));
-                                if (response.getString("dob") != null) {
-                                    userDataModel.setDob(response.getString("dob"));
-                                }
-                                userDataModel.setCity(response.getString("city"));
-                                userDataModel.setPhoneNumber(response.getString("phoneNumber"));
-                                userDataModel.setLangKey(response.getString("langKey"));
-                                userDataModel.setLocation(response.getString("city"));
-                                //userDataModel.setSubscriptions(response.getString("subscriptions"));
-                                userDataModel.setImageUrl(response.getString("imageUrl"));
-                                userDataModel.setVideoUrl(response.getString("videoUrl"));
-                                userDataModel.setUserType(response.getString("userType"));
-                                userDataModel.setFcmToken(response.getString("fcmToken"));
-                                userDataModel.setAuthToken(response.getString("authToken"));
-                                userDataModel.setDeviceId(response.getString("deviceId"));
-                                userDataModel.setEmail(response.getString("email"));
-                                if (!response.getString("userProfile").equals(null) && !response.getString("userProfile").equals("null")) {
-
-                                    JSONObject obj = new JSONObject(response.getString("userProfile"));
-                                    if (obj != null && obj.length() != 0) {
-                                        userDataModel.setHeight(obj.getString("height"));
-                                        userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
-                                        userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
-                                        userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
-                                        userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
-                                        userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
-                                        userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
-                                        userDataModel.setCollageClub(obj.getString("collageClub"));
-                                        userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
-                                        userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
-                                        userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
-                                        userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
-                                        userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
-                                        userDataModel.setExperience(obj.getString("experience"));
-                                        userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
-                                        userDataModel.setPosition(obj.getString("position"));
-                                        userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
-
-                                        userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
-                                        userDataModel.setTopFinishes(obj.getString("topFinishes"));
-                                        userDataModel.setCollage(obj.getString("collage"));
-                                        userDataModel.setDescription(obj.getString("description"));
-                                        userDataModel.setYearsRunning(obj.getString("yearsRunning"));
-                                        userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
-                                        userDataModel.setProgramsOffered(obj.getString("programsOffered"));
-                                        userDataModel.setDivision(obj.getString("division"));
-                                        userDataModel.setFundingStatus(obj.getString("fundingStatus"));
-                                        userDataModel.setShareAthlets(obj.getString("shareAthlets"));
-                                    }
-                                }
+                                Gson gson = new Gson();
+                                userDataModel = gson.fromJson(response.toString(),CoachProfileResponse.class);
+//                                userDataModel = new CoachProfileResponse();
+//                                userDataModel.setId(response.getString("id"));
+//                                userDataModel.setFirstName(response.getString("firstName"));
+//                                userDataModel.setLastName(response.getString("lastName"));
+//                                userDataModel.setGender(response.getString("gender"));
+//                                if (response.getString("dob") != null) {
+//                                    userDataModel.setDob(response.getString("dob"));
+//                                }
+//                                userDataModel.setCity(response.getString("city"));
+//                                userDataModel.setPhoneNumber(response.getString("phoneNumber"));
+//                                userDataModel.setLangKey(response.getString("langKey"));
+//                                userDataModel.setLocation(response.getString("city"));
+//                                //userDataModel.setSubscriptions(response.getString("subscriptions"));
+//                                userDataModel.setImageUrl(response.getString("imageUrl"));
+//                                userDataModel.setVideoUrl(response.getString("videoUrl"));
+//                                userDataModel.setUserType(response.getString("userType"));
+//                                userDataModel.setFcmToken(response.getString("fcmToken"));
+//                                userDataModel.setAuthToken(response.getString("authToken"));
+//                                userDataModel.setDeviceId(response.getString("deviceId"));
+//                                userDataModel.setEmail(response.getString("email"));
+//                                if (!response.getString("userProfile").equals(null) && !response.getString("userProfile").equals("null")) {
+//
+//                                    JSONObject obj = new JSONObject(response.getString("userProfile"));
+//                                    if (obj != null && obj.length() != 0) {
+//                                        userDataModel.setHeight(obj.getString("height"));
+//                                        userDataModel.setCbvaPlayerNumber(obj.getString("cbvaPlayerNumber"));
+//                                        userDataModel.setCbvaFirstName(obj.getString("cbvaFirstName"));
+//                                        userDataModel.setCbvaLastName(obj.getString("cbvaLastName"));
+//                                        userDataModel.setToursPlayedIn(obj.getString("toursPlayedIn"));
+//                                        userDataModel.setTotalPoints(isEmptyOrNull(obj.getString("totalPoints")));
+//                                        userDataModel.setHighSchoolAttended(obj.getString("highSchoolAttended"));
+//                                        userDataModel.setCollageClub(obj.getString("collageClub"));
+//                                        userDataModel.setIndoorClubPlayed(obj.getString("indoorClubPlayed"));
+//                                        userDataModel.setCollegeIndoor(obj.getString("collegeIndoor"));
+//                                        userDataModel.setCollegeBeach(obj.getString("collegeBeach"));
+//                                        userDataModel.setTournamentLevelInterest(obj.getString("tournamentLevelInterest"));
+//                                        userDataModel.setHighestTourRatingEarned(obj.getString("highestTourRatingEarned"));
+//                                        userDataModel.setExperience(obj.getString("experience"));
+//                                        userDataModel.setCourtSidePreference(obj.getString("courtSidePreference"));
+//                                        userDataModel.setPosition(obj.getString("position"));
+//                                        userDataModel.setWillingToTravel(obj.getString("willingToTravel"));
+//
+//                                        userDataModel.setUsaVolleyballRanking(isEmptyOrNull(obj.getString("usaVolleyballRanking")));
+//                                        userDataModel.setTopFinishes(obj.getString("topFinishes"));
+//                                        userDataModel.setCollage(obj.getString("collage"));
+//                                        userDataModel.setDescription(obj.getString("description"));
+//                                        userDataModel.setYearsRunning(obj.getString("yearsRunning"));
+//                                        userDataModel.setNumOfAthlets(obj.getString("numOfAthlets"));
+//                                        userDataModel.setProgramsOffered(obj.getString("programsOffered"));
+//                                        userDataModel.setDivision(obj.getString("division"));
+//                                        userDataModel.setFundingStatus(obj.getString("fundingStatus"));
+//                                        userDataModel.setShareAthlets(obj.getString("shareAthlets"));
+//                                    }
+//                                }
 
 
                                 //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
                                 setViews();
 
 
-                            } catch (JSONException e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -2950,12 +3159,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                         Log.d("filename---", userDataModel.getVideoUrl().substring(userDataModel.getVideoUrl().lastIndexOf('/') + 1));
                         myProfileVideFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "video" + "/" + exactVideoName);
 
-                        if (myProfileVideFile.exists()) {
+                        if (myProfileVideFile.exists() && bundle == null) {
                             playVideoFromFile(Uri.parse(myProfileVideFile.getPath()));
                         } else {
                             playVideo(userDataModel.getVideoUrl());
+                            if(bundle==null){
+                                new DownloadFileFromURL(exactVideoName, "video",userDataModel.getVideoUrl()).execute();
 
-                            new DownloadFileFromURL(exactVideoName, "video",userDataModel.getVideoUrl()).execute();
+                            }
 
                         }
                     }
@@ -2987,84 +3198,84 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 }
                 editPhone.setText(userDataModel.getPhoneNumber());
                 //set More information
-                if (userDataModel.getCbvaFirstName() != null || userDataModel.getCbvaFirstName() != "null") {
-                    editCBVAFName.setText(userDataModel.getCbvaFirstName());
+                if (userDataModel.getUserProfile().getUpf_cbvaFirstName() != null || userDataModel.getUserProfile().getUpf_cbvaFirstName() != "null") {
+                    editCBVAFName.setText(userDataModel.getUserProfile().getUpf_cbvaFirstName());
                 }
-                if (userDataModel.getCbvaLastName() != "null" || userDataModel.getCbvaLastName() != null) {
-                    editCBVALName.setText(userDataModel.getCbvaLastName());
+                if (userDataModel.getUserProfile().getUpf_cbvaLastName() != "null" || userDataModel.getUserProfile().getUpf_cbvaLastName() != null) {
+                    editCBVALName.setText(userDataModel.getUserProfile().getUpf_cbvaLastName());
                 }
-                if (userDataModel.getCbvaPlayerNumber() != "null" || userDataModel.getCbvaPlayerNumber() != null) {
+                if (userDataModel.getUserProfile().getUpf_cbvaPlayerNumber() != "null" ||userDataModel.getUserProfile().getUpf_cbvaPlayerNumber()!= null) {
                     editCBVANo.setText(userDataModel.getCbvaPlayerNumber());
                 }
-                if (userDataModel.getCollageClub() != "null" || userDataModel.getCollageClub() != null) {
-                    editColgClub.setText(userDataModel.getCollageClub());
+                if (userDataModel.getUserProfile().getUpf_collageClub() != "null" || userDataModel.getUserProfile().getUpf_collageClub() != null) {
+                    editColgClub.setText(userDataModel.getUserProfile().getUpf_collageClub());
                 }
-                if (userDataModel.getCollegeBeach() != "null" || userDataModel.getCollegeBeach() != null) {
-                    editColgBeach.setText(userDataModel.getCollegeBeach());
+                if (userDataModel.getUserProfile().getUpf_collegeBeach() != "null" || userDataModel.getUserProfile().getUpf_collegeBeach() != null) {
+                    editColgBeach.setText(userDataModel.getUserProfile().getUpf_collegeBeach());
                 }
-                if (userDataModel.getCollegeIndoor() != "null" || userDataModel.getCollegeIndoor() != null) {
-                    editColgIndoor.setText(userDataModel.getCollegeIndoor());
+                if (userDataModel.getUserProfile().getUpf_collegeIndoor() != "null" || userDataModel.getUserProfile().getUpf_collegeIndoor()  != null) {
+                    editColgIndoor.setText(userDataModel.getUserProfile().getUpf_collegeIndoor() );
                 }
-                if (userDataModel.getHighSchoolAttended() != "null" || userDataModel.getHighSchoolAttended() != null) {
-                    editHighschool.setText(userDataModel.getHighSchoolAttended());
+                if (userDataModel.getUserProfile().getUpf_highSchoolAttended() != "null" || userDataModel.getUserProfile().getUpf_highSchoolAttended() != null) {
+                    editHighschool.setText(userDataModel.getUserProfile().getUpf_highSchoolAttended());
                 }
-                if (userDataModel.getIndoorClubPlayed() != "null" || userDataModel.getIndoorClubPlayed() != null) {
-                    editIndoorClub.setText(userDataModel.getIndoorClubPlayed());
+                if (userDataModel.getUserProfile().getUpf_indoorClubPlayed() != "null" || userDataModel.getUserProfile().getUpf_indoorClubPlayed() != null) {
+                    editIndoorClub.setText(userDataModel.getUserProfile().getUpf_indoorClubPlayed());
                 }
-                if (userDataModel.getTotalPoints() != "null" || userDataModel.getTotalPoints() != null) {
-                    editPoints.setText(userDataModel.getTotalPoints());
+                if (userDataModel.getUserProfile().getUpf_totalPoints() != "null" || userDataModel.getUserProfile().getUpf_totalPoints() != null) {
+                    editPoints.setText(userDataModel.getUserProfile().getUpf_totalPoints());
                 }
-                if (userDataModel.getToursPlayedIn() != "null" || userDataModel.getToursPlayedIn() != null) {
-                    editPlayed.setText(userDataModel.getToursPlayedIn());
+                if (userDataModel.getUserProfile().getUpf_toursPlayedIn() != "null" || userDataModel.getUserProfile().getUpf_toursPlayedIn() != null) {
+                    editPlayed.setText(userDataModel.getUserProfile().getUpf_toursPlayedIn());
                 }
-                if (userDataModel.getUsaVolleyballRanking() != "null" || userDataModel.getUsaVolleyballRanking() != null) {
-                    edit_volleyRanking.setText(userDataModel.getUsaVolleyballRanking());
+                if (userDataModel.getUserProfile().getUpf_usaVolleyballRanking() != "null" || userDataModel.getUserProfile().getUpf_usaVolleyballRanking() != null) {
+                    edit_volleyRanking.setText(userDataModel.getUserProfile().getUpf_usaVolleyballRanking());
                 }
 
 
-                String topFinishes = userDataModel.getTopFinishes();
+//                String topFinishes = userDataModel.getUserProfile().getTopFinishes();
 
 
-                String courSidePref = userDataModel.getCourtSidePreference();
+                String courSidePref = userDataModel.getUserProfile().getUpf_courtSidePreference();
                 if (courSidePref != null) {
                     int courtPos = prefAdapter.getPosition(courSidePref);
                     // spinnerPref.setSelection(courtPos);
                     spinnerPref.setSelection(prefAdapter.getPosition(courSidePref));
 
                 }
-                String exp = userDataModel.getExperience();
+                String exp = userDataModel.getUserProfile().getUpf_experience();
                 if (exp != null) {
                     int exper = expAdapter.getPosition(exp);
                     spinnerExp.setSelection(exper);
                 }
-                String highestTER = userDataModel.getHighestTourRatingEarned();
+                String highestTER = userDataModel.getUserProfile().getUpf_highestTourRatingEarned();
                 if (highestTER != null) {
                     int hter = highestRatingAdapter.getPosition(highestTER);
                     spinnerTourRating.setSelection(hter);
                 }
-                String tourIntrest = userDataModel.getTournamentLevelInterest();
+                String tourIntrest = userDataModel.getUserProfile().getUpf_tournamentLevelInterest();
                 if (tourIntrest != null) {
                     int tIL = tournamentInterestAdapter.getPosition(tourIntrest);
                     spinnerTLInterest.setSelection(tIL);
                 }
-                String pos = userDataModel.getPosition();
+                String pos = userDataModel.getUserProfile().getUpf_position();
                 if (pos != null) {
                     int positions = positionAdapter.getPosition(pos);
                     spinnerPositon.setSelection(positions);
                 }
-                String wTot = userDataModel.getWillingToTravel();
+                String wTot = userDataModel.getUserProfile().getUpf_willingToTravel();
                 if (wTot != null) {
                     int willingTotravel = distanceAdapter.getPosition(wTot);
                     spinnerWtoTravel.setSelection(willingTotravel);
                 }
-                String height = userDataModel.getHeight();
+                String height = userDataModel.getUserProfile().getUpf_height();
                 if (height != null) {
                     int heightVal = heightAdapter.getPosition(height);
                     editHeight.setSelection(heightVal);
                 }
-                if (userDataModel.getTopFinishes() != null) {
+                if ( userDataModel.getUserProfile().getTopFinishes() != null) {
 
-                    values = userDataModel.getTopFinishes().split(",");
+                    values =  userDataModel.getUserProfile().getTopFinishes().split(",");
                     if (values.length == 1) {
                         if (values[0] != null) {
                             topfinishes_txt_1.setText(values[0].trim());

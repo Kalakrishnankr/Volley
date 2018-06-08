@@ -41,6 +41,9 @@
                     android:id="@+id/txtv_uname"
                     android:layout_gravity="center"
                     android:textAlignment="center"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_size"
+                    android:singleLine="true"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

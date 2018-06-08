@@ -6,7 +6,7 @@
     <LinearLayout
         android:id="@+id/llMoreInfoDetails"
         android:layout_width="match_parent"
-        android:layout_height="1150dp"
+        android:layout_height="950dp"
         android:visibility="gone">
 
             <RelativeLayout
@@ -171,7 +171,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/height_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/interest_lt"
@@ -181,7 +182,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -209,7 +211,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/interest_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/tours_played_lt"
@@ -219,7 +222,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -257,7 +261,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/tours_played_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/tour_rating_highest_lt"
@@ -267,7 +272,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -296,7 +302,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/tour_rating_highest_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/cbva_player_no_lt"
@@ -306,7 +313,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -339,7 +347,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/cbva_player_no_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/cbva_first_name_lt"
@@ -349,7 +358,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -382,7 +392,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/cbva_first_name_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/cbva_last_name_lt"
@@ -392,7 +403,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -538,12 +550,13 @@
                         android:inputType="textCapWords"
                         android:textSize="@dimen/text_size"
                         android:maxLines="1"
-                        android:nextFocusDown="@+id/txtvColgClub"
+                        android:nextFocusDown="@+id/txtvColgBeach"
                         android:paddingLeft="5dp"
                         android:paddingStart="5dp" />
 
 
                 </LinearLayout>
+                <!--next focus changed as some of the fields are not needed but those fields will be useful for future -->
 
                 <!--College (Club)-->
 
@@ -551,7 +564,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/indoor_club_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/college_club_lt"
@@ -561,7 +575,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -668,7 +683,7 @@
                         android:inputType="textCapWords"
                         android:textSize="@dimen/text_size"
                         android:maxLines="1"
-                        android:nextFocusDown="@+id/txtvPoints"
+                        android:nextFocusDown="@+id/topfinishes_txt_1"
                         android:paddingLeft="5dp"
                         android:paddingStart="5dp" />
 
@@ -681,7 +696,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/college_indoor_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/points_lt"
@@ -691,7 +707,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"
@@ -808,7 +825,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="1dp"
                     android:layout_below="@+id/points_lt"
-                    android:background="#A9A9A9" />
+                    android:background="#A9A9A9"
+                    android:visibility="gone"/>
 
                 <LinearLayout
                     android:id="@+id/ranking_lt"
@@ -818,7 +836,8 @@
                     android:layout_marginBottom="10dp"
                     android:layout_marginTop="10dp"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:weightSum="2"
+                    android:visibility="gone">
 
                     <com.beachpartnerllc.beachpartner.CustomTextView
                         android:layout_width="0dp"

@@ -94,7 +94,13 @@ public class WelcomeActivity extends AppCompatActivity {
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchHomeScreen();
+                int current = getItem(-1);
+                if (current < layouts.length) {
+                    // move to next screen
+                    viewPager.setCurrentItem(current);
+                } else {
+                    launchHomeScreen();
+                }
             }
         });
 

@@ -6,8 +6,6 @@ import android.support.annotation.Nullable;
 
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 
-import org.json.JSONArray;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -46,6 +44,8 @@ public class Event implements Serializable, Parcelable {
     private int color;
     public String eventAdmin;
     private String invitationStatus;
+    private String eventState;
+    private String eventTeamSize;
 
     public long[] getEventDates() {
         return eventDates;
@@ -57,6 +57,13 @@ public class Event implements Serializable, Parcelable {
 
     private long [] eventDates;
 
+    public void setEventState(String state){
+        this.eventState = state;
+    }
+
+    public String getEventState(){
+        return eventState;
+    }
 
 
 
@@ -285,5 +292,15 @@ public class Event implements Serializable, Parcelable {
     }
 
 
+    public String getEventTeamSize() {
+        return eventTeamSize;
+    }
 
+    public void setEventTeamSize(String eventTeamSizes) {
+        this.eventTeamSize = eventTeamSizes;
+    }
+
+    public void setEventTeamSizes(String eventTeamSizes) {
+        this.eventTeamSize = eventTeamSizes;
+    }
 }

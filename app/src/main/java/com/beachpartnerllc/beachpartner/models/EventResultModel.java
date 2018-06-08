@@ -31,6 +31,8 @@ public class EventResultModel implements Parcelable {
     String eventAdmin;
     @SerializedName("teamSize")
     String teamSize;
+    @SerializedName("state")
+    String state;
     @SerializedName("invitationList")
     List<InvitationsModel>invitationList;
 
@@ -45,6 +47,7 @@ public class EventResultModel implements Parcelable {
         eventEndDate = in.readString();
         eventAdmin = in.readString();
         teamSize = in.readString();
+        state   = in.readString();
         invitationList = in.createTypedArrayList(InvitationsModel.CREATOR);
     }
 
@@ -95,6 +98,8 @@ public class EventResultModel implements Parcelable {
     public String getEventLocation() {
         return eventLocation;
     }
+
+    public String getState(){return state;}
 
     public String getEventVenue() {
         return eventVenue;

@@ -45,7 +45,8 @@
                     android:layout_centerHorizontal="true"
                     android:contentDescription="@string/app_name"
                     android:layout_margin="16dp"
-                    android:scaleType="fitCenter"/>
+                    android:background="@color/white"
+                    android:scaleType="centerCrop"/>
 
                 <com.beachpartnerllc.beachpartner.CustomTextView
                     android:id="@+id/name"
@@ -54,9 +55,11 @@
                     android:textAlignment="center"
                     android:layout_below="@id/thumbnail"
                     android:paddingLeft="@dimen/album_title_padding"
+                    android:maxLines="1"
+                    android:textSize="@dimen/text_size"
+                    android:singleLine="true"
                     android:paddingRight="@dimen/album_title_padding"
-                    android:paddingTop="@dimen/album_title_padding"
-                    android:textSize="@dimen/album_title" />
+                    android:paddingTop="@dimen/album_title_padding" />
 
                 <com.beachpartnerllc.beachpartner.CustomTextView
                     android:id="@+id/age"
@@ -65,9 +68,10 @@
                     android:layout_below="@+id/name"
                     android:textAlignment="center"
                     android:paddingBottom="@dimen/songs_count_padding_bottom"
+                    android:singleLine="true"
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"
-                    android:textSize="@dimen/songs_count" />
+                    android:textSize="@dimen/text_size" />
             </RelativeLayout>
             <RelativeLayout
                 android:id="@+id/rlHeader2"
@@ -90,6 +94,7 @@
                     android:layout_height="wrap_content"
                     android:text="BLOCK"
                     android:textAlignment="center"
+                    android:textSize="@dimen/text_size"
                     android:paddingBottom="@dimen/songs_count_padding_bottom"
                     android:paddingLeft="@dimen/album_title_padding"
                     android:paddingRight="@dimen/album_title_padding"/>
@@ -109,6 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/block"
                     android:text="MESSAGE"
+                    android:textSize="@dimen/text_size"
                     android:textAlignment="center"
                     android:paddingBottom="@dimen/songs_count_padding_bottom"
                     android:paddingLeft="@dimen/album_title_padding"
@@ -127,6 +133,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="NOTES"
+                    android:textSize="@dimen/text_size"
                     android:textAlignment="center"
                     android:layout_below="@id/message"
                     android:paddingBottom="@dimen/songs_count_padding_bottom"

@@ -15,7 +15,9 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
+import com.beachpartnerllc.beachpartner.fragments.CoachProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
+import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
@@ -79,6 +81,40 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
                 ctrans.addToBackStack(null);
                 ctrans.commit();
                 disableTabMenuButtons();
+            }
+        });
+
+        holder.person_pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String userType = message.getBpf_userType();
+
+                //add bundle to be transfered to coachProfile or athleteProfile
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(AppConstants.USER_DETAIL,message);
+
+                if(userType.equalsIgnoreCase("Athlete")){
+                    ProfileFragment profileFragment = new ProfileFragment();
+                    profileFragment.setArguments(bundle);
+                    FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                    FragmentTransaction ctrans = manager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    ctrans.replace(R.id.container,profileFragment);
+                    ctrans.addToBackStack(null);
+                    ctrans.commit();
+                    disableTabMenuButtons();
+                }
+                else if(userType.equalsIgnoreCase("Coach")){
+                    CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
+                    coachProfileFragment.setArguments(bundle);
+                    FragmentManager coachManager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                    FragmentTransaction coachtrans = coachManager.beginTransaction();
+                    //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                    coachtrans.replace(R.id.container,coachProfileFragment);
+                    coachtrans.addToBackStack(null);
+                    coachtrans.commit();
+                }
+
             }
         });
 

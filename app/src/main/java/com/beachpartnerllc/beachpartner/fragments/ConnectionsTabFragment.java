@@ -359,7 +359,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             @Override
             public void onResponse(JSONObject response) {
                 if (response != null) {
-                    Toast.makeText(getActivity(), "Request send successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Request sent successfully", Toast.LENGTH_SHORT).show();
                      moveToMasterCalendar();
                 }
 

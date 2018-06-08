@@ -1,7 +1,11 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.ViewModelProviders;
+import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -40,6 +44,8 @@ import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCale
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.filter.Filter;
+import com.beachpartnerllc.beachpartner.filter.FilterViewModel;
 import com.beachpartnerllc.beachpartner.utils.MyJsonArrayRequest;
 
 import org.json.JSONArray;
@@ -81,6 +87,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private List<Event> toDayEvents = new ArrayList<>();
     private static boolean isMycal = false;
     private TabActivity tabActivity;
+    AlertDialog b;
+    private String eventType,subType,year,month,state,eventType_clear;
+    private Spinner spinner_events,spinner_subEvents,spinner_year,spinner_month,tv_state,tv_region;
+    private FilterViewModel filterViewModel;
+
+
     public CalendarFragment() {
         // Required empty public constructor
     }
@@ -99,8 +111,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         token = new PrefManager(getActivity()).getToken();
-        getAllEvents();
         initActivity(view);
+        getAllEvents();
 
         return view;
     }
@@ -133,6 +145,15 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         btn_next.setOnClickListener(this);
         btn_previous.setOnClickListener(this);
 
+
+        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        b = dialogbar.create();
+        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        b.setCancelable(false);
 
         //load events for today date
         activeMasterTab();
@@ -361,6 +382,24 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
                 filterDialogue.show();
                 initView(filterDialogue);
+
+                int eventValuePos = adapterEventTypes.getPosition(filterViewModel.getFilter().getEventType());
+                spinner_events.setSelection(eventValuePos);
+
+
+                int eventSubValuePos = adapterSubEvents.getPosition(filterViewModel.getFilter().getSubType());
+                spinner_subEvents.setSelection(eventSubValuePos);
+
+                int yearValuePos = adapterYear.getPosition(filterViewModel.getFilter().getYear());
+                spinner_year.setSelection(yearValuePos);
+
+                int monthValuePos = adapterMonths.getPosition(filterViewModel.getFilter().getMonth());
+                spinner_month.setSelection(monthValuePos);
+
+                int stateValuePos = adapterStates.getPosition(filterViewModel.getFilter().getState());
+                tv_state.setSelection(stateValuePos);
+
+
                 break;
             default:
                 break;
@@ -368,22 +407,41 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         return false;
     }
 
-    private void initView(final Dialog filterDialogue) {
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        filterViewModel = ViewModelProviders.of(this).get(FilterViewModel.class);
+    }
+    public ArrayAdapter<String> adapterEventTypes;
+    public ArrayAdapter<String> adapterYear;
+    public ArrayAdapter<String> adapterMonths;
+    public ArrayAdapter<String> adapterStates;
+    public ArrayAdapter<String> adapterSubEvents;
 
-        final Spinner spinner_events = (Spinner) filterDialogue.findViewById(R.id.event_spinner);
-        final Spinner spinner_subEvents = (Spinner) filterDialogue.findViewById(R.id.subtypes_spinner);
-        final Spinner spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
-        final Spinner spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
+    List<String> eventTypes = new ArrayList<>();
+    ArrayList<String> years = new ArrayList<String>();
+    List<String> stateList = new ArrayList<>();
+    List<String> regionList = new ArrayList<>();
+    /*Month*/
+    String[] Months = new String[]{"Please Select","January", "February",
+            "March", "April", "May", "June", "July", "August", "September",
+            "October", "November", "December"};
 
-        final AutoCompleteTextView tv_state = (AutoCompleteTextView) filterDialogue.findViewById(R.id.state_List);
-        AutoCompleteTextView tv_region = (AutoCompleteTextView) filterDialogue.findViewById(R.id.region_list);
-
-        final Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
 
 
+
+
+
+
+    private void spinnerInit(){
+
+        years.clear();
+        eventTypes.clear();
+        stateList.clear();
+        regionList.clear();
         /*Events*/
 
-        List<String> eventTypes = new ArrayList<>();
+        eventTypes.add("Please Select");
         eventTypes.add("Junior");
         eventTypes.add("College Showcase");
         eventTypes.add("College Clinic");
@@ -393,6 +451,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         //List for junior
 
         final List<String> juniorSubEvent = new ArrayList<>();
+        juniorSubEvent.add("Please Select");
         juniorSubEvent.add("10U");
         juniorSubEvent.add("12U");
         juniorSubEvent.add("13U");
@@ -404,8 +463,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
 
         //List For adult
-
         final List<String> adultSubEvent = new ArrayList<>();
+        adultSubEvent.add("Please Select");
         adultSubEvent.add("Unrated");
         adultSubEvent.add("B");
         adultSubEvent.add("A");
@@ -424,8 +483,22 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         subEventsNil.add("Not Applicable");
 
 
-        ArrayAdapter<String> adapterEventTypes = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, eventTypes);
+
+        adapterEventTypes = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, eventTypes);
         spinner_events.setAdapter(adapterEventTypes);
+
+//        if (filterViewModel.getFilter().getEventType().equals("Junior")) {
+//            adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, juniorSubEvent);
+//            spinner_subEvents.setAdapter(adapterSubEvents);
+//        } else if (filterViewModel.getFilter().getEventType().equals("Adult")) {
+//
+//            adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, adultSubEvent);
+//            spinner_subEvents.setAdapter(adapterSubEvents);
+//        }
+//        else {
+            adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subEventsNil);
+            spinner_subEvents.setAdapter(adapterSubEvents);
+//        }
 
         spinner_events.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -433,17 +506,20 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
                 if (spinner_events.getSelectedItem().equals("Junior")) {
 
-                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, juniorSubEvent);
+                    adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, juniorSubEvent);
                     spinner_subEvents.setAdapter(adapterSubEvents);
+
                 } else if (spinner_events.getSelectedItem().equals("Adult")) {
 
-                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, adultSubEvent);
-                    spinner_subEvents.setAdapter(adapterSubEvents);
-                } else {
-                    ArrayAdapter<String> adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subEventsNil);
+                    adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, adultSubEvent);
                     spinner_subEvents.setAdapter(adapterSubEvents);
                 }
-
+                else {
+                    adapterSubEvents = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, subEventsNil);
+                    spinner_subEvents.setAdapter(adapterSubEvents);
+                }
+                int eventSubValuePos = adapterSubEvents.getPosition(filterViewModel.getFilter().getSubType());
+                spinner_subEvents.setSelection(eventSubValuePos);
             }
 
             @Override
@@ -455,20 +531,17 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         /*Year*/
 
-        ArrayList<String> years = new ArrayList<String>();
         int thisYear = Calendar.getInstance().get(Calendar.YEAR);
-        for (int i = thisYear; i <= 2020; i++) {
-            years.add(Integer.toString(i));
+
+        for (int i = 0; i <= 3; i++) {
+            years.add(Integer.toString(thisYear + i));
         }
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
-        spinner_year.setAdapter(adapter);
+        adapterYear = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, years);
+        spinner_year.setAdapter(adapterYear);
 
-        /*Month*/
-        String[] Months = new String[]{"January", "February",
-                "March", "April", "May", "June", "July", "August", "September",
-                "October", "November", "December"};
 
-        ArrayAdapter<String> adapterMonths = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, Months);
+
+        adapterMonths = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, Months);
         spinner_month.setAdapter(adapterMonths);
 
         Typeface font = Typeface.createFromAsset(getContext().getAssets(),
@@ -476,7 +549,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
         /*State*/
 
-        List<String> stateList = new ArrayList<>();
+        stateList.add("Please Select");
         stateList.add("Alabama");
         stateList.add("Alaska");
         stateList.add("Arizona");
@@ -528,12 +601,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         stateList.add("Wisconsin");
         stateList.add("Wyoming");
 
-        ArrayAdapter<String> adapterStates = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
-        tv_state.setTypeface(font);
+       adapterStates = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
+
         tv_state.setAdapter(adapterStates);
 
         //Region
-        List<String> regionList = new ArrayList<>();
+        regionList.add("Please Select");
         regionList.add("Alaska Region");
         regionList.add("Aloha Region");
         regionList.add("Arizona Region");
@@ -577,36 +650,86 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
 
         ArrayAdapter<String> adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
-        tv_region.setTypeface(font);
-        tv_region.setAdapter(adapterRegion);
 
-        tv_state.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        tv_region.setAdapter(adapterRegion);
+    }
+
+    private void initView(final Dialog filterDialogue) {
+        spinner_events = (Spinner) filterDialogue.findViewById(R.id.event_spinner);
+        spinner_subEvents = (Spinner) filterDialogue.findViewById(R.id.subtypes_spinner);
+        spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
+        spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
+        final TextView clearAll     =  (TextView) filterDialogue.findViewById(R.id.clear_all_txtv);
+        tv_state = (Spinner) filterDialogue.findViewById(R.id.state_List);
+        tv_region = (Spinner) filterDialogue.findViewById(R.id.region_list);
+
+        final Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
+
+        spinnerInit();
+
+
+
+
+        clearAll.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onClick(View v) {
+                spinner_events.setAdapter(null);
+                spinner_events.setAdapter(adapterEventTypes);
+                spinner_month.setAdapter(null);
+                spinner_month.setAdapter(adapterMonths);
+                spinner_year.setAdapter(null);
+                spinner_year.setAdapter(adapterYear);
 
             }
         });
 
+
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String eventType = spinner_events.getSelectedItem().toString();
-                String subType = spinner_subEvents.getSelectedItem().toString();
-                String year = spinner_year.getSelectedItem().toString();
-                String month = spinner_month.getSelectedItem().toString();
-                String state    = tv_state.getText().toString();
-                String eventType_clear = eventType.replaceAll("\\s", "");
-                String stateAdapter = state.replaceAll("\\s", "");
 
-                String dateYear = month+" "+ year;
-                Date startDate = null;
-                DateFormat df = new SimpleDateFormat("MMMM yyyy");
-                try {
-                    startDate = df.parse(dateYear);
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                eventType = spinner_events.getSelectedItem().toString();
+                subType = spinner_subEvents.getSelectedItem().toString();
+                year = spinner_year.getSelectedItem().toString();
+                month = spinner_month.getSelectedItem().toString();
+                state    = tv_state.getSelectedItem().toString();
+                eventType_clear = eventType.replaceAll("\\s", "");
+
+                filterViewModel.setFilter(new Filter(eventType, subType, year, month, state));
+
+                if(eventType.equalsIgnoreCase("Please Select")){
+                    eventType="";
                 }
-                compactCalendarView.setCurrentDate(startDate);
+
+                if(subType.equalsIgnoreCase("Please Select")){
+                    subType="";
+                }
+                if(year.equalsIgnoreCase("Please Select")){
+                    year="";
+                }
+
+                if(month.equalsIgnoreCase("Please Select")){
+                    month="";
+                }
+
+                if(state.equalsIgnoreCase("Please Select")){
+                    state="";
+                }
+
+                if(month!=""){
+                    String dateYear = month+" "+ year;
+                    Date startDate = null;
+                    DateFormat df = new SimpleDateFormat("MMMM yyyy");
+                    try {
+                        startDate = df.parse(dateYear);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    tview_month.setText(dateFormatForMonth.format(startDate));
+                    tview_date.setText("Events for " + dateFormatForMonth.format(startDate));
+                    compactCalendarView.setCurrentDate(startDate);
+                }
+
                 compactCalendarView.invalidate();
 
                 JSONObject objects = new JSONObject();
@@ -614,7 +737,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     objects.put("eventType",eventType_clear);
                     objects.put("month",month);
                     objects.put("region","");
-                    objects.put("state",stateAdapter);
+                    objects.put("state",state);
                     objects.put("subType",subType);
                     objects.put("year",year);
 
@@ -635,6 +758,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     //Get all Master Calendar events Api
 
     private void getAllEvents() {
+        b.show();
         isMycal  = false;
         eventModelList.clear();
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_EVENTS, null,
@@ -655,7 +779,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setEventId(object.getString("id"));
                                     model.setEventName(object.getString("eventName"));
                                     model.setData(object.getString("eventDescription"));
-                                    model.setEventLocation(object.getString("eventLocation"));
+                                    model.setEventLocation(object.getString("state"));//eventlocation changed to state on 31/05/2018 6:59 pm abraham
                                     model.setEventVenue(object.getString("eventVenue"));
                                     model.setEventStartDate(object.getLong("eventStartDate"));
                                     model.setEventEndDate(object.getLong("eventEndDate"));
@@ -663,6 +787,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     model.setEventRegStartdate(object.getLong("eventRegStartDate"));
                                     model.setEventRegEnddate(object.getLong("eventRegEndDate"));
                                     model.setEventAdmin(object.getString("eventAdmin"));
+                                    model.setEventTeamSizes(object.getString("teamSize"));
                                     model.setRegType(object.getString("registerType"));
                                     model.setUserMessage(object.getString("userMessage"));
                                     model.setEventStatus(object.getString("eventStatus"));
@@ -679,7 +804,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModelList.add(model);
 
                                 } catch (Exception e) {
-
+                                    e.printStackTrace();
                                 }
                             }
                             setupCalendar();
@@ -690,7 +815,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                b.cancel();
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -739,13 +864,14 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 compactCalendarView.addEvent(eventModelList.get(i));
             }
         }
-
+        b.cancel();
         currentDateEventSetter();
     }
 
 
     //Get MyCalendar Events
     private void getMycalendarEvents() {
+        b.show();
         myeventModelList.clear();
         final String userId = new PrefManager(getApplicationContext()).getUserId();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_USER_EVENTS+userId, null,
@@ -764,9 +890,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                                     eventModel.setEventId(jsonObject.getString("id"));
                                     eventModel.setEventName(jsonObject.getString("eventName"));
                                     eventModel.setData(jsonObject.getString("eventDescription"));
-                                    eventModel.setEventLocation(jsonObject.getString("eventLocation"));
+                                    eventModel.setEventState(jsonObject.getString("state")); //changed location to state
                                     eventModel.setEventVenue(jsonObject.getString("eventVenue"));
                                     eventModel.setEventStartDate(jsonObject.getLong("eventStartDate"));
+                                    eventModel.setEventTeamSizes(jsonObject.getString("teamSize"));
                                     eventModel.setTimeInMillis(Long.parseLong(jsonObject.getString("eventStartDate")));
                                     eventModel.setEventEndDate(jsonObject.getLong("eventEndDate"));
                                     eventModel.setEventAdmin(jsonObject.getString("eventAdmin"));
@@ -793,6 +920,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                b.cancel();
                 String json = null;
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
@@ -836,62 +964,124 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 compactCalendarView.addEvent(myeventModelList.get(i));
             }
         }
+        b.cancel();
         currentDateEventSetter();
+
+    }
+
+    private void setupFilterCalendar() {
+
+        compactCalendarView.removeAllEvents();
+        compactCalendarView.invalidate();
+        if (eventModelList != null) {
+            for (int i = 0; i < eventModelList.size(); i++) {
+                eventStartDate.add(String.valueOf(eventModelList.get(i).getEventStartDate()));
+                compactCalendarView.addEvent(eventModelList.get(i));
+            }
+        }
+        toDayEvents.clear();
+        List<Event> bookingsFromMap = compactCalendarView.getEventsForMonth(compactCalendarView.getCurrentDate());
+        if (bookingsFromMap != null) {
+
+            for (int i = 0; i < bookingsFromMap.size(); i++) {
+
+                if (!toDayEvents.contains(bookingsFromMap.get(i))) {
+                    toDayEvents.add(bookingsFromMap.get(i));
+                }
+            }
+            eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+            rview.setAdapter(eventsAdapter);
+            rview.invalidate();
+            eventsAdapter.notifyDataSetChanged();
+        }
+        b.cancel();
 
     }
 
     //Api for search events
     private void searchEvents(JSONObject obj) {
+        b.show();
         eventModelList.clear();
         MyJsonArrayRequest arrayRequest = new MyJsonArrayRequest(ApiService.REQUEST_METHOD_POST, ApiService.SEARCH_EVENTS,obj,
                 new Response.Listener<JSONArray> () {
                 @Override
                 public void onResponse(JSONArray response) {
-                   /* Log.d(TAG, "onResponse Search: " + response.toString());
-                    Type listType = new TypeToken<List<Event>>() {}.getType();
+                   Log.d(TAG, "onResponse Search: " + response.toString());
+                    /*Type listType = new TypeToken<List<Event>>() {}.getType();
                     eventModelList = new Gson().fromJson(response.toString(), listType);
                     setupCalendar();*/
-                    for (int i = 0; i < response.length(); i++) {
-                        try {
+                    if (response != null) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
 
-                            JSONObject object = response.getJSONObject(i);
+                                JSONObject object = response.getJSONObject(i);
 
-                            Event model = new Event();
-                            model.setEventId(object.getString("id"));
-                            model.setEventName(object.getString("eventName"));
-                            model.setData(object.getString("eventDescription"));
-                            model.setEventLocation(object.getString("eventLocation"));
-                            model.setEventVenue(object.getString("eventVenue"));
-                            model.setEventStartDate(object.getLong("eventStartDate"));
-                            model.setEventEndDate(object.getLong("eventEndDate"));
-                            model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
-                            model.setEventRegStartdate(object.getLong("eventRegStartDate"));
-                            model.setEventRegEnddate(object.getLong("eventRegEndDate"));
-                            model.setEventAdmin(object.getString("eventAdmin"));
-                            model.setRegType(object.getString("registerType"));
-                            model.setUserMessage(object.getString("userMessage"));
-                            model.setEventStatus(object.getString("eventStatus"));
-                            model.setInvitationStatus(object.getString("invitationStatus"));
-                            model.setEventUrl(object.getString("eventurl"));
-                            JSONArray dateArray = object.getJSONArray("eventDates");
-                            long [] mydatearray = new long[dateArray.length()];
-                            if (dateArray.length()>0 ) {
-                                for (int j = 0; j < dateArray.length() ; j++) {
-                                    mydatearray [j]= dateArray.getLong(j);
+                                Event model = new Event();
+                                model.setEventId(object.getString("id"));
+                                model.setEventName(object.getString("eventName"));
+                                model.setData(object.getString("eventDescription"));
+                                model.setEventLocation(object.getString("eventLocation"));
+                                model.setEventState(object.getString("state"));
+                                model.setEventVenue(object.getString("eventVenue"));
+                                model.setEventStartDate(object.getLong("eventStartDate"));
+                                model.setEventEndDate(object.getLong("eventEndDate"));
+                                model.setTimeInMillis(Long.parseLong(object.getString("eventStartDate")));
+                                model.setEventRegStartdate(object.getLong("eventRegStartDate"));
+                                model.setEventRegEnddate(object.getLong("eventRegEndDate"));
+                                model.setEventAdmin(object.getString("eventAdmin"));
+                                model.setRegType(object.getString("registerType"));
+                                model.setEventTeamSizes(object.getString("teamSize"));
+                                model.setUserMessage(object.getString("userMessage"));
+                                model.setEventStatus(object.getString("eventStatus"));
+                                model.setInvitationStatus(object.getString("invitationStatus"));
+                                model.setEventUrl(object.getString("eventurl"));
+                                JSONArray dateArray = object.getJSONArray("eventDates");
+                                long [] mydatearray = new long[dateArray.length()];
+                                if (dateArray.length()>0 ) {
+                                    for (int j = 0; j < dateArray.length() ; j++) {
+                                        mydatearray [j]= dateArray.getLong(j);
+                                    }
+                                    model.setEventDates(mydatearray);
                                 }
-                                model.setEventDates(mydatearray);
+                                eventModelList.add(model);
+
+                            } catch (Exception e) {
+                                    e.printStackTrace();
                             }
-                            eventModelList.add(model);
-
-                        } catch (Exception e) {
-
                         }
+
                     }
-                    setupCalendar();
+
+                    setupFilterCalendar();
                 }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                b.cancel();
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        case 500:
+                            json = new String(response.data);
+                            json = trimMessage(json, "title");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
 
             }
         }){

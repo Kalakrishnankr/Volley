@@ -34,6 +34,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
     private List<InvitationsModel> invitationList;
     private  String partners;
     private String myname;
+    private String userId;
     private PrefManager prefManager;
 
 
@@ -47,7 +48,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_item,parent,false);
         MyViewHolder myViewHolder = new MyViewHolder(itemView);
         itemView.setMinimumWidth(parent.getMeasuredWidth());
-
+        userId = new PrefManager(mContext).getUserId();
         return myViewHolder;
     }
 
@@ -67,17 +68,22 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.MyViewHolder> 
             invitationList = model.getInvitationList();
             if (invitationList!=null) {
                 partnerList.addAll(invitationList.get(0).getPartnerList());
-                //partners+= invitationList.get(0).getInviterName()+", ";
+                if(!invitationList.get(0).getInviterUserId().equalsIgnoreCase(userId)){
+                    partners+= invitationList.get(0).getInviterName();
+                }
             }
 
             if(partnerList.size()>0){
                 for(int i=0;i<partnerList.size();i++){
                     if(i!=partnerList.size()){
-                        partners+=(partnerList.get(i).getPartnerName());
-
+                        if(!partnerList.get(i).getPartnerUserId().equalsIgnoreCase(userId)){
+                            partners+=(partnerList.get(i).getPartnerName());
+                        }
                     }
                     else{
-                        partners+=(partnerList.get(i).getPartnerName()+", ");
+                        if(!partnerList.get(i).getPartnerUserId().equalsIgnoreCase(userId)){
+                            partners+=(partnerList.get(i).getPartnerName()+", ");
+                        }
                     }
 
                     }

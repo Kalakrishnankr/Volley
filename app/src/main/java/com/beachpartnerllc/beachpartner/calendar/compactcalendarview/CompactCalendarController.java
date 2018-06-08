@@ -620,6 +620,15 @@ class CompactCalendarController {
         return calendar.getTime();
     }
 
+    Date getCurrentMonth(){
+        Calendar calendar = Calendar.getInstance(timeZone, locale);
+        calendar.setTime(currentDate);
+        calendar.add(Calendar.MONTH, -monthsScrolledSoFar);
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        setToMidnight(calendar);
+        return calendar.getTime();
+    }
+
     void setCurrentDate(Date dateTimeMonth) {
         distanceX = 0;
         monthsScrolledSoFar = 0;

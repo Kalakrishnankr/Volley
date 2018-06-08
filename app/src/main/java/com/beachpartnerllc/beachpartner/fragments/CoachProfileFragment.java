@@ -63,11 +63,13 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.CoachProfileResponse;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.CoachProfileUpdateInputData;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.UserInputDto;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileUpdateInputData.UserProfileDto;
 import com.beachpartnerllc.beachpartner.models.UserDataModel;
+import com.beachpartnerllc.beachpartner.models.UserProfileModel;
 import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.beachpartnerllc.beachpartner.utils.ServiceClass;
@@ -169,6 +171,9 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private static ProgressDialog progress;
     private ServiceClass uploadService;
     private MultipartBody.Part fileImageToUpload,filevideoToUploaded;
+    Bundle bundle;
+    private  BpFinderModel finderModel;
+
 
 
     public CoachProfileFragment() {
@@ -213,13 +218,84 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         View view = inflater.inflate(R.layout.fragment_coach_profile, container, false);
         progress = new ProgressDialog(getContext());
         initView(view);
-        setUp();
 
+        bundle = getArguments();
+        if (bundle != null) {
+            finderModel = (BpFinderModel) bundle.getSerializable(AppConstants.USER_DETAIL);
+            setViewForConnectedUSer();
+        }else{
+            setUp();
+        }
 
         return view;
 
 
     }
+
+    private void setViewForConnectedUSer() {
+        imgEdit.setVisibility(View.INVISIBLE);
+        edit_tag.setVisibility(View.INVISIBLE);
+        imgProfile.setClickable(false);
+        try{
+            userCoachModel = new CoachProfileResponse();
+            userCoachModel.setId(finderModel.getBpf_id());
+            userCoachModel.setFirstName(finderModel.getBpf_firstName());
+            userCoachModel.setLastName(finderModel.getBpf_lastName());
+            userCoachModel.setGender(finderModel.getBpf_gender());
+            userCoachModel.setDob(finderModel.getBpf_dob());
+            userCoachModel.setCity(finderModel.getBpf_city());
+            userCoachModel.setPhoneNumber(finderModel.getBpf_phoneNumber());
+            userCoachModel.setLangKey(finderModel.getBpf_langKey());
+            userCoachModel.setLocation(finderModel.getBpf_city());
+            //userDataModel.setSubscriptions(response.getString("subscriptions"));
+            userCoachModel.setImageUrl(finderModel.getBpf_imageUrl());
+            userCoachModel.setVideoUrl(finderModel.getBpf_videoUrl());
+            userCoachModel.setUserType(finderModel.getBpf_userType());
+            userCoachModel.setFcmToken(finderModel.getBpf_fcmToken());
+            userDataModel.setAuthToken(finderModel.getBpf_authToken());
+            userDataModel.setDeviceId(finderModel.getBpf_deviceId());
+            userDataModel.setEmail(finderModel.getBpf_email());
+            if (!finderModel.getUserProfile().equals(null) && !finderModel.getUserProfile().equals("null")) {
+
+                UserProfileModel tempFinderModel = finderModel.getUserProfile();
+                if (tempFinderModel != null) {
+                    userCoachModel.setUserProfile(tempFinderModel);
+//                    userDataModel.setHeight(tempFinderModel.getUpf_height());
+//                    userDataModel.setCbvaPlayerNumber(tempFinderModel.getUpf_cbvaPlayerNumber());
+//                    userDataModel.setCbvaFirstName(tempFinderModel.getUpf_cbvaFirstName());
+//                    userDataModel.setCbvaLastName(tempFinderModel.getUpf_cbvaLastName());
+//                    userDataModel.setToursPlayedIn(tempFinderModel.getUpf_toursPlayedIn());
+//                    userDataModel.setTotalPoints(tempFinderModel.getUpf_totalPoints());
+//                    userDataModel.setHighSchoolAttended(tempFinderModel.getUpf_highSchoolAttended());
+//                    userDataModel.setCollageClub(tempFinderModel.getUpf_collageClub());
+//                    userDataModel.setIndoorClubPlayed(tempFinderModel.getUpf_indoorClubPlayed());
+//                    userDataModel.setCollegeIndoor(tempFinderModel.getUpf_collegeIndoor());
+//                    userDataModel.setCollegeBeach(tempFinderModel.getUpf_collegeBeach());
+//                    userDataModel.setTournamentLevelInterest(tempFinderModel.getUpf_tournamentLevelInterest());
+//                    userDataModel.setHighestTourRatingEarned(tempFinderModel.getUpf_highestTourRatingEarned());
+//                    userDataModel.setExperience(tempFinderModel.getUpf_experience());
+//                    userDataModel.setCourtSidePreference(tempFinderModel.getUpf_courtSidePreference());
+//                    userDataModel.setPosition(tempFinderModel.getUpf_position());
+//                    userDataModel.setWillingToTravel(tempFinderModel.getUpf_willingToTravel());
+//
+//                    userDataModel.setUsaVolleyballRanking(tempFinderModel.getUpf_usaVolleyballRanking());
+//                    userDataModel.setTopFinishes(tempFinderModel.getTopFinishes());
+//                    userDataModel.setCollage(tempFinderModel.getUpf_collage());
+//                    userDataModel.setDescription(tempFinderModel.getUpf_description());
+//                    userDataModel.setYearsRunning(tempFinderModel.getUpf_yearsRunning());
+//                    userDataModel.setNumOfAthlets(tempFinderModel.getUpf_numOfAthlets());
+//                    userDataModel.setProgramsOffered(tempFinderModel.getUpf_programsOffered());
+//                    userDataModel.setDivision(tempFinderModel.getUpf_division());
+//                    userDataModel.setFundingStatus(tempFinderModel.getUpf_fundingStatus());
+//                    userDataModel.setShareAthlets(tempFinderModel.getUpf_shareAthlets());
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        setView();
+    }
+
 
     private void initView(final View view) {
         profileImgLayout = (RelativeLayout) view.findViewById(R.id.profile_img_layout);
@@ -314,17 +390,19 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Date today = new Date();
         Calendar c = Calendar.getInstance();
         c.setTime(today);
-        // Subtract 5 years
-        c.add( Calendar.YEAR, -18 ) ;
+        // Subtract 18 years
+        c.add( Calendar.YEAR, -18 );
         maxDate = c.getTime().getTime();
         editDob.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
-                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
-                        myCalendar.get(Calendar.DAY_OF_MONTH));
-                dialog.getDatePicker().setMaxDate(maxDate);
-                dialog.show();
+//                DatePickerDialog dialog = new DatePickerDialog(getContext(), date, myCalendar
+//                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+//                        myCalendar.get(Calendar.DAY_OF_MONTH));
+//                dialog.getDatePicker().setMaxDate(maxDate);
+//                dialog.show();
+
+                CustomDatePicker();
             }
         });
 
@@ -457,6 +535,69 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
 
 
+    }
+
+
+    private void CustomDatePicker(){
+
+
+        LayoutInflater inflater = getLayoutInflater();
+        View datealertLayout = inflater.inflate(R.layout.custom_date_picker_dialog, null);
+
+        final DatePicker dp     =          (DatePicker) datealertLayout.findViewById(R.id.datePicker_custom);
+        final Button  okBtn     =          (Button)   datealertLayout.findViewById(R.id.okBtn);
+        final Button  cancelBtn =           (Button) datealertLayout.findViewById(R.id.cancel_button);
+
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+
+
+
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+
+
+
+        dp.setMaxDate(maxDate);
+        dp.init(myCalendar.get(Calendar.YEAR),myCalendar.get(Calendar.MONTH),myCalendar.get(Calendar.DAY_OF_MONTH), new DatePicker.OnDateChangedListener() {
+            @Override
+            public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+                // Do something when the date changed from date picker object
+
+                // Create a Date variable/object with user chosen date
+
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+
+
+            }
+        });
+
+        alert.setView(datealertLayout);
+        alert.setCancelable(true);
+
+
+        final android.app.AlertDialog dialog = alert.create();
+
+
+        dialog.show();
+
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateLabel();
+                dialog.dismiss();
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     public void updateLabel() {
@@ -1091,36 +1232,36 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
             editPhone.setText(userCoachModel.getPhoneNumber());
             if(userCoachModel.getUserProfile()!=null){
-                if (userCoachModel.getUserProfile().getCollage() !=null || !userCoachModel.getUserProfile().getCollage().equalsIgnoreCase("null"))
-                    editCollege.setText(userCoachModel.getUserProfile().getCollage());
+                if (userCoachModel.getUserProfile().getUpf_collage() !=null || !userCoachModel.getUserProfile().getUpf_collage().equalsIgnoreCase("null"))
+                    editCollege.setText(userCoachModel.getUserProfile().getUpf_collage());
 
-                if(userCoachModel.getUserProfile().getDescription() != null){
-                    if(!userCoachModel.getUserProfile().getDescription().equals("null")){
-                        description.setText(userCoachModel.getUserProfile().getDescription().toString());
+                if(userCoachModel.getUserProfile().getUpf_description() != null){
+                    if(!userCoachModel.getUserProfile().getUpf_description().equals("null")){
+                        description.setText(userCoachModel.getUserProfile().getUpf_description().toString());
                     }
                 }
-                if(userCoachModel.getUserProfile().getYearsRunning() != null || userCoachModel.getUserProfile().getYearsRunning().equalsIgnoreCase("null"))
-                    years_running.setText(userCoachModel.getUserProfile().getYearsRunning().toString());
+                if(userCoachModel.getUserProfile().getUpf_yearsRunning() != null || userCoachModel.getUserProfile().getUpf_yearsRunning().equalsIgnoreCase("null"))
+                    years_running.setText(userCoachModel.getUserProfile().getUpf_yearsRunning().toString());
 
-                if(userCoachModel.getUserProfile().getNumOfAthlets() != null || userCoachModel.getUserProfile().getNumOfAthlets().equalsIgnoreCase("null"))
-                    no_athletes.setText(userCoachModel.getUserProfile().getNumOfAthlets().toString());
+                if(userCoachModel.getUserProfile().getUpf_numOfAthlets() != null || userCoachModel.getUserProfile().getUpf_numOfAthlets().equalsIgnoreCase("null"))
+                    no_athletes.setText(userCoachModel.getUserProfile().getUpf_numOfAthlets().toString());
 
-                if(userCoachModel.getUserProfile().getProgramsOffered() != null || userCoachModel.getUserProfile().getProgramsOffered().equalsIgnoreCase("null"))
-                    prog_offered.setText(userCoachModel.getUserProfile().getProgramsOffered().toString());
+                if(userCoachModel.getUserProfile().getUpf_programsOffered() != null || userCoachModel.getUserProfile().getUpf_programsOffered().equalsIgnoreCase("null"))
+                    prog_offered.setText(userCoachModel.getUserProfile().getUpf_programsOffered().toString());
 
-                if(userCoachModel.getUserProfile().getDivision() != null || userCoachModel.getUserProfile().getDivision().equalsIgnoreCase("null"))
-                    division.setText(userCoachModel.getUserProfile().getDivision().toString());
+                if(userCoachModel.getUserProfile().getUpf_division() != null || userCoachModel.getUserProfile().getUpf_division().equalsIgnoreCase("null"))
+                    division.setText(userCoachModel.getUserProfile().getUpf_division().toString());
 
-                if(userCoachModel.getUserProfile().getFundingStatus() != null || userCoachModel.getUserProfile().getFundingStatus().equalsIgnoreCase("null"))
+                if(userCoachModel.getUserProfile().getUpf_fundingStatus() != null || userCoachModel.getUserProfile().getUpf_fundingStatus().equalsIgnoreCase("null"))
                 {
-                    if (userCoachModel.getUserProfile().getFundingStatus().equals("Yes"))
+                    if (userCoachModel.getUserProfile().getUpf_fundingStatus().equals("Yes"))
                         program_funding.setSelection(0);
                     else
                         program_funding.setSelection(1);
                 }
 
-                if (userCoachModel.getUserProfile().getShareAthlets() != null || userCoachModel.getUserProfile().getShareAthlets().equalsIgnoreCase("null")){
-                    if (userCoachModel.getUserProfile().getShareAthlets().equals("Yes"))
+                if (userCoachModel.getUserProfile().getUpf_shareAthlets() != null || userCoachModel.getUserProfile().getUpf_shareAthlets().equalsIgnoreCase("null")){
+                    if (userCoachModel.getUserProfile().getUpf_shareAthlets().equals("Yes"))
                         program_share_athletes.setSelection(0);
                     else
                         program_share_athletes.setSelection(1);

@@ -3,6 +3,9 @@ package com.beachpartnerllc.beachpartner.adpters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,12 +18,15 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.fragments.CoachProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
+import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -170,6 +176,38 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                     }
 
                 }
+            });
+
+            holder.profilePic.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    //add bundle
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable(AppConstants.USER_DETAIL,model.getBpFinderModel());
+                    if(model.getBpFinderModel().getBpf_userType().equalsIgnoreCase("Athlete")){
+                        ProfileFragment profileFragment = new ProfileFragment();
+                        profileFragment.setArguments(bundle);
+                        FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                        FragmentTransaction ctrans = manager.beginTransaction();
+                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                        ctrans.replace(R.id.container,profileFragment);
+                        ctrans.addToBackStack(null);
+                        ctrans.commit();
+                    }
+                    else if(model.getBpFinderModel().getBpf_userType().equalsIgnoreCase("Coach")){
+                        CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
+                        coachProfileFragment.setArguments(bundle);
+                        FragmentManager coachManager = ((FragmentActivity)mContext).getSupportFragmentManager();
+                        FragmentTransaction coachtrans = coachManager.beginTransaction();
+                        //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
+                        coachtrans.replace(R.id.container,coachProfileFragment);
+                        coachtrans.addToBackStack(null);
+                        coachtrans.commit();
+                    }
+
+                }
+
             });
 
 

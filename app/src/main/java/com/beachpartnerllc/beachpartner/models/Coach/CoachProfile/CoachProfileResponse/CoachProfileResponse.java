@@ -1,6 +1,7 @@
 
 package com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse;
 
+import com.beachpartnerllc.beachpartner.models.UserProfileModel;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class CoachProfileResponse {
     @SerializedName("deviceId")
     private String DeviceId;
     @SerializedName("dob")
-    private Long Dob;
+    private String Dob;
     @SerializedName("email")
     private String Email;
     @SerializedName("fcmToken")
@@ -31,7 +32,7 @@ public class CoachProfileResponse {
     @SerializedName("gender")
     private String Gender;
     @SerializedName("id")
-    private Long Id;
+    private String Id;
     @SerializedName("imageUrl")
     private String ImageUrl;
     @SerializedName("langKey")
@@ -53,11 +54,43 @@ public class CoachProfileResponse {
     @SerializedName("subscriptions")
     private List<Subscription> Subscriptions;
     @SerializedName("userProfile")
-    private com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.UserProfile UserProfile;
+    private UserProfileModel UserProfile;
     @SerializedName("userType")
     private String UserType;
     @SerializedName("videoUrl")
     private String VideoUrl;
+
+
+    private String height;
+    private String cbvaPlayerNumber;
+    private String cbvaFirstName;
+    private String cbvaLastName;
+    private String toursPlayedIn;
+    private String totalPoints;
+    private String highSchoolAttended;
+    private String collageClub;
+    private String indoorClubPlayed;
+    private String collegeIndoor;
+    private String collegeBeach;
+    private String tournamentLevelInterest;
+    private String highestTourRatingEarned;
+    private String experience;
+    private String courtSidePreference;
+    private String position;
+    private String willingToTravel;
+    private String usaVolleyballRanking;
+    private String topFinishes;
+    private String collage;
+    private String description;
+    private String yearsRunning;
+    private String numOfAthlets;
+    private String programsOffered;
+    private String division;
+    private String fundingStatus;
+    private String subscriptionType;
+    private String effectiveDate;
+    private String termDate;
+    private String daysToExpireSubscription;
 
     public Boolean getActivated() {
         return Activated;
@@ -107,11 +140,11 @@ public class CoachProfileResponse {
         DeviceId = deviceId;
     }
 
-    public Long getDob() {
+    public String getDob() {
         return Dob;
     }
 
-    public void setDob(Long dob) {
+    public void setDob(String dob) {
         Dob = dob;
     }
 
@@ -147,11 +180,11 @@ public class CoachProfileResponse {
         Gender = gender;
     }
 
-    public Long getId() {
+    public String getId() {
         return Id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         Id = id;
     }
 
@@ -235,11 +268,11 @@ public class CoachProfileResponse {
         Subscriptions = subscriptions;
     }
 
-    public com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.UserProfile getUserProfile() {
+    public UserProfileModel getUserProfile() {
         return UserProfile;
     }
 
-    public void setUserProfile(com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.UserProfile userProfile) {
+    public void setUserProfile(UserProfileModel userProfile) {
         UserProfile = userProfile;
     }
 
@@ -258,5 +291,225 @@ public class CoachProfileResponse {
     public void setVideoUrl(String videoUrl) {
         VideoUrl = videoUrl;
     }
+
+    public String getHeight() {
+        return height;
+    }
+
+    public void setHeight(String height) {
+        this.height = height;
+    }
+
+    public String getCbvaPlayerNumber() {
+        return cbvaPlayerNumber;
+    }
+
+    public void setCbvaPlayerNumber(String cbvaPlayerNumber) {
+        this.cbvaPlayerNumber = cbvaPlayerNumber;
+    }
+
+    public String getCbvaFirstName() {
+        return cbvaFirstName;
+    }
+
+    public void setCbvaFirstName(String cbvaFirstName) {
+        this.cbvaFirstName = cbvaFirstName;
+    }
+
+    public String getCbvaLastName() {
+        return cbvaLastName;
+    }
+
+    public void setCbvaLastName(String cbvaLastName) {
+        this.cbvaLastName = cbvaLastName;
+    }
+
+    public String getToursPlayedIn() {
+        return toursPlayedIn;
+    }
+
+    public void setToursPlayedIn(String toursPlayedIn) {
+        this.toursPlayedIn = toursPlayedIn;
+    }
+
+    public String getTotalPoints() {
+        return totalPoints;
+    }
+
+    public void setTotalPoints(String totalPoints) {
+        this.totalPoints = totalPoints;
+    }
+
+    public String getHighSchoolAttended() {
+        return highSchoolAttended;
+    }
+
+    public void setHighSchoolAttended(String highSchoolAttended) {
+        this.highSchoolAttended = highSchoolAttended;
+    }
+
+    public String getCollageClub() {
+        return collageClub;
+    }
+
+    public void setCollageClub(String collageClub) {
+        this.collageClub = collageClub;
+    }
+
+    public String getIndoorClubPlayed() {
+        return indoorClubPlayed;
+    }
+
+    public void setIndoorClubPlayed(String indoorClubPlayed) {
+        this.indoorClubPlayed = indoorClubPlayed;
+    }
+
+    public String getCollegeIndoor() {
+        return collegeIndoor;
+    }
+
+    public void setCollegeIndoor(String collegeIndoor) {
+        this.collegeIndoor = collegeIndoor;
+    }
+
+    public String getCollegeBeach() {
+        return collegeBeach;
+    }
+
+    public void setCollegeBeach(String collegeBeach) {
+        this.collegeBeach = collegeBeach;
+    }
+
+    public String getTournamentLevelInterest() {
+        return tournamentLevelInterest;
+    }
+
+    public void setTournamentLevelInterest(String tournamentLevelInterest) {
+        this.tournamentLevelInterest = tournamentLevelInterest;
+    }
+
+    public String getHighestTourRatingEarned() {
+        return highestTourRatingEarned;
+    }
+
+    public void setHighestTourRatingEarned(String highestTourRatingEarned) {
+        this.highestTourRatingEarned = highestTourRatingEarned;
+    }
+
+    public String getExperience() {
+        return experience;
+    }
+
+    public void setExperience(String experience) {
+        this.experience = experience;
+    }
+
+    public String getCourtSidePreference() {
+        return courtSidePreference;
+    }
+
+    public void setCourtSidePreference(String courtSidePreference) {
+        this.courtSidePreference = courtSidePreference;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position = position;
+    }
+
+    public String getWillingToTravel() {
+        return willingToTravel;
+    }
+
+    public void setWillingToTravel(String willingToTravel) {
+        this.willingToTravel = willingToTravel;
+    }
+
+    public String getUsaVolleyballRanking() {
+        return usaVolleyballRanking;
+    }
+
+    public void setUsaVolleyballRanking(String usaVolleyballRanking) {
+        this.usaVolleyballRanking = usaVolleyballRanking;
+    }
+
+    public String getTopFinishes() {
+        return topFinishes;
+    }
+
+    public void setTopFinishes(String topFinishes) {
+        this.topFinishes = topFinishes;
+    }
+
+    public String getCollage() {
+        return collage;
+    }
+
+    public void setCollage(String collage) {
+        this.collage = collage;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getYearsRunning() {
+        return yearsRunning;
+    }
+
+    public void setYearsRunning(String yearsRunning) {
+        this.yearsRunning = yearsRunning;
+    }
+
+    public String getNumOfAthlets() {
+        return numOfAthlets;
+    }
+
+    public void setNumOfAthlets(String numOfAthlets) {
+        this.numOfAthlets = numOfAthlets;
+    }
+
+    public String getProgramsOffered() {
+        return programsOffered;
+    }
+
+    public void setProgramsOffered(String programsOffered) {
+        this.programsOffered = programsOffered;
+    }
+
+    public String getDivision() {
+        return division;
+    }
+
+    public void setDivision(String division) {
+        this.division = division;
+    }
+
+    public String getFundingStatus() {
+        return fundingStatus;
+    }
+
+    public void setFundingStatus(String fundingStatus) {
+        this.fundingStatus = fundingStatus;
+    }
+
+    public String getShareAthlets() {
+        return shareAthlets;
+    }
+
+    public void setShareAthlets(String shareAthlets) {
+        this.shareAthlets = shareAthlets;
+    }
+
+    private String shareAthlets;
+
+
 
 }

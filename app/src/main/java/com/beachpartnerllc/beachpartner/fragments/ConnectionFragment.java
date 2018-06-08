@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -46,6 +48,7 @@ import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
 import com.google.gson.Gson;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -78,6 +81,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
     private ProgressBar progress;
     TabActivity tabActivity;
     ProgressDialog dialog;
+    AlertDialog b;
+
     public ConnectionFragment() {
         // Required empty public constructor
     }
@@ -120,12 +125,17 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         txtv_coach = (TextView) view.findViewById(R.id.txtCoach);
         txtv_noconnection = (TextView) view.findViewById(R.id.txtv_conview);
         progress    =   (ProgressBar) view.findViewById(R.id.progress_connection);
-        dialog      = new ProgressDialog(getContext(),ProgressDialog.THEME_HOLO_DARK);
-        dialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        // set title and message
-        dialog.setTitle("Please wait");
-        dialog.setMessage("Loading...");
-        dialog.setCancelable(false);
+
+        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        b = dialogbar.create();
+        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        b.setCancelable(false);
+
+
         // and show it
 
 
@@ -238,7 +248,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         blockCoachList.clear();
         dataList.clear();
         //progress.setVisibility(View.VISIBLE);
-        dialog.show();
+        b.show();
         String user_id = new PrefManager(getContext()).getUserId();
         JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id + "?status=Active", null, new Response.Listener<JSONArray>() {
             @Override
@@ -269,6 +279,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
+                b.cancel();
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -313,7 +324,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     private void setConnections() {
         //progress.setVisibility(View.GONE);
-        dialog.cancel();
+        b.cancel();
         if (connectionList != null && connectionList.size() > 0) {
             for (int i = 0; i < connectionList.size(); i++) {
                 if (connectionList.get(i).getBpFinderModel().getBpf_userType().equals("Athlete")) {
@@ -353,8 +364,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
 
         final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
-
-        alertadd.setTitle("Are you sure you want to block "+person_name+" from your connection?")
+        alertadd.setMessage("Are you sure you want to block "+person_name+" from your connection?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -449,7 +459,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         //Toast.makeText(getActivity(), "Unblocked"+personid, Toast.LENGTH_SHORT).show();
         final AlertDialog.Builder alertadd = new AlertDialog.Builder(getActivity());
 
-        alertadd.setTitle("Are you sure you want to unblock "+person_name+" from your connection?")
+        alertadd.setMessage("Are you sure you want to unblock "+person_name+" from your connection?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -716,9 +726,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 searchList.clear();
                 if (athleteList.size() > 0) {
                     for (int i = 0; i < athleteList.size(); i++) {
-                        if (textSearch.equalsIgnoreCase(athleteList.get(i).getBpFinderModel().getBpf_firstName().trim())) {
+                        if (athleteList.get(i).getBpFinderModel().getBpf_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
                             searchList.add(athleteList.get(i));
-
                         }
                     }
                 }
