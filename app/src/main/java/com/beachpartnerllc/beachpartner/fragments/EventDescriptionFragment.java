@@ -189,12 +189,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             tabActivity.setActionBarTitle("Events");
             tabActivity.disableFloatButtons();
         }
-
     }
-
-
-
-
     private void initActivity(View view) {
 
         tview_eventname = (TextView) view.findViewById(R.id.event_name);
@@ -450,6 +445,10 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                             btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                             btnInvitePartner.setClickable(false);
                             btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                            if (userType.equalsIgnoreCase("Coach")) {
+                                btnCoachGoing.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                                btnCoachNotGoing.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                            }
                             AlertAddtoSystemCalendar();
                         }
 
