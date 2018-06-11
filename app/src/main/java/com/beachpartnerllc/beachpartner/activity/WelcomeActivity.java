@@ -89,10 +89,13 @@ public class WelcomeActivity extends AppCompatActivity {
         changeStatusBarColor();
 
         myViewPagerAdapter = new MyViewPagerAdapter();
-        viewPager.setAdapter(myViewPagerAdapter);
         viewPager.addOnPageChangeListener(viewPagerPageChangeListener);
+        viewPager.setAdapter(myViewPagerAdapter);
 
         final boolean isFromStart = getIntent().getBooleanExtra(EXTRA_IS_FROM_INIT, false);
+        if (isFromStart) {
+            btnSkip.setVisibility(View.GONE);
+        }
 
         btnSkip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +164,11 @@ public class WelcomeActivity extends AppCompatActivity {
         @Override
         public void onPageSelected(int position) {
             addBottomDots(position);
+            final boolean isFromStart = getIntent().getBooleanExtra(EXTRA_IS_FROM_INIT, false);
+
+            if (position == 0 && isFromStart) {
+                btnSkip.setVisibility(View.GONE);
+            }
 
             // changing the next button text 'NEXT' / 'GOT IT'
             if (position == layouts.length - 1) {
@@ -170,7 +178,12 @@ public class WelcomeActivity extends AppCompatActivity {
             } else {
                 // still pages are left
                 btnNext.setText(getString(R.string.next));
-                btnSkip.setVisibility(View.VISIBLE);
+
+                if (position == 0 && isFromStart) {
+                    btnSkip.setVisibility(View.GONE);
+                } else {
+                    btnSkip.setVisibility(View.VISIBLE);
+                }
             }
         }
 
