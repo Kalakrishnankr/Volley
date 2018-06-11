@@ -76,12 +76,10 @@ import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
-import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.CoachProfile.CoachProfileResponse.CoachProfileResponse;
-import com.beachpartnerllc.beachpartner.models.UserDataModel;
 import com.beachpartnerllc.beachpartner.models.UserProfileModel;
 import com.beachpartnerllc.beachpartner.utils.AppCommon;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
@@ -149,7 +147,6 @@ import java.util.ListIterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -2303,7 +2300,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 object.put("imageUrl", userDataModel.getImageUrl().trim());
                 object.put("videoUrl", userDataModel.getVideoUrl().trim());
                 object.put("userType", userDataModel.getUserType().trim());
-                object.put("langKey", userDataModel.getLangKey().trim());
+                object.put("langKey", userDataModel.getLangKey());
                 object.put("fcmToken", userDataModel.getFcmToken().trim());
                 object.put("email", userDataModel.getEmail().trim());
                 object.put("deviceId", userDataModel.getDeviceId().trim());
