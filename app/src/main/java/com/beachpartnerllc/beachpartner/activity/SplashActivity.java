@@ -39,7 +39,7 @@ public class SplashActivity extends AppCompatActivity {
 					if (update.getStatus() == Status.SUCCESS) {
 						Update response = update.getData();
 						
-						if (!response.getMandatoryUpdate()) {
+						if (response.getMandatoryUpdate()) {
 							mandatoryUpdateAvailable();
 						} else {
 							navigateToHome();

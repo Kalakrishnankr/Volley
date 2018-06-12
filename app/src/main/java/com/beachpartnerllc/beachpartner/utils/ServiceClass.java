@@ -23,5 +23,4 @@ public interface ServiceClass {
     @Multipart
     @POST("storage/uploadProfileData")
     Call<UploadObject> uploadMultiFile(@Part MultipartBody.Part file, @Part MultipartBody.Part file1, @Part("userId") RequestBody name);
-
 }

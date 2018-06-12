@@ -42,7 +42,6 @@ public class ApiService {
     public static String COURT_NOTIFY           =  BASE_URL + "events/user/notifyCourtNumber";
     public static String SEARCH_EVENTS          =  BASE_URL +"events/search";
 
-
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String GET_ALL_LIKES           =  BASE_URL+"users/connected-count/";
     public static String ADD_PROFILE_VIDEO_IMAGE =  BASE_URL+"storage/uploadProfileData";
@@ -56,6 +55,7 @@ public class ApiService {
     public static String  LEFT_SWIPE_DISLIKE       =   BASE_URL+"users/reject-friendship/";
     public static String  HIFI_SWIPE_UP            =   BASE_URL+"users/hifi/";
     public static String  REVERSE_SWIPE_CARD       =   BASE_URL+"users/undo-request/";
+    //public static String  UPDATE_FCM_TOKEN          =  BASE_URL+"users/update-fcmtoken";
 
 
     public static String BLOCK_PERSON              =    BASE_URL+"users/block-user/";

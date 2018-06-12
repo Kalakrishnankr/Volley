@@ -38,6 +38,18 @@ class UpdateViewModel(private val app: Application) : AndroidViewModel(app) {
         return update
     }
 
+    fun updateFcmToken(token : String){
+        api().updateFcmToken(hashMapOf("fcmToken" to token)).enqueue(object: Callback<FcmUpdate?> {
+            override fun onFailure(call: Call<FcmUpdate?>?, t: Throwable?) {
+
+            }
+
+            override fun onResponse(call: Call<FcmUpdate?>?, response: Response<FcmUpdate?>?) {
+
+            }
+        })
+    }
+
     fun api(): ApiService {
         if (!::apis.isInitialized) {
             val logger = HttpLoggingInterceptor()

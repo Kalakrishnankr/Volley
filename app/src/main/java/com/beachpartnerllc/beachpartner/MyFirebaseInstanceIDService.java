@@ -1,10 +1,11 @@
 package com.beachpartnerllc.beachpartner;
 
-import android.app.Service;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.update.UpdateViewModel;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.FirebaseInstanceIdService;
 
@@ -15,6 +16,8 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyFirebaseIIDService";
+    PrefManager prefManager;
+    private String auth_usertoken;
 
     @Override
     public void onTokenRefresh() {
@@ -28,6 +31,10 @@ public class MyFirebaseInstanceIDService extends FirebaseInstanceIdService {
         SharedPreferences preferences =
                 PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
         preferences.edit().putString("FIREBASE_TOKEN", refreshedToken).apply();
+
+        UpdateViewModel viewModel = new UpdateViewModel(getApplication());
+        viewModel.updateFcmToken(refreshedToken);
+
     }
 
 }

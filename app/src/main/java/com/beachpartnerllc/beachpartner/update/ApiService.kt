@@ -12,6 +12,9 @@ interface ApiService {
     @POST("check-app-version")
     fun checkForUpdate(@Body update: Update): Call<Update>
 
+    @POST("users/update-fcmtoken")
+    fun updateFcmToken(@Body fcm: HashMap<String,String>): Call<FcmUpdate>
+
     companion object {
         const val URL_BASE = "https://beachpartner.com/api/"
     }
