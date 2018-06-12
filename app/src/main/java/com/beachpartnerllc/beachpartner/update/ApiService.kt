@@ -11,7 +11,7 @@ import retrofit2.http.POST
  */
 interface ApiService {
     @Headers(HEADER_NO_AUTH)
-    @POST("check-app-version")
+    @POST("misc/check-app-version")
     fun checkForUpdate(@Body update: Update): Call<Update>
 
     @POST("users/update-fcmtoken")
