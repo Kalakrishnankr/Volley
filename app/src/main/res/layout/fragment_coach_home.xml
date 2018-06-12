@@ -336,7 +336,7 @@
                     android:textColor="@color/white"
                     android:padding="15dp"
                     android:layout_gravity="center_vertical"
-                    android:text="When you get connected with other users they'll appear here, where you can send them a message" />
+                    android:text="@string/no_new_messages" />
 
                 <android.support.v7.widget.RecyclerView
                     android:id="@+id/rcv_message"

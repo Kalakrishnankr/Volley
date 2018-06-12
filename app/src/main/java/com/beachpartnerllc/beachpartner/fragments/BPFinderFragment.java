@@ -182,7 +182,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         // Inflate the layout for this fragment
         if (isbpActive) {
             view = inflater.inflate(R.layout.fragment_bpfinder, container, false);
-
         } else {
             view = inflater.inflate(R.layout.fragment_bpfinder1, container, false);
         }

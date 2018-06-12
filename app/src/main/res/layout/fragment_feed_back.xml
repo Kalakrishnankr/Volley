@@ -14,9 +14,7 @@
         <WebView
             android:id="@+id/webviews"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-        </WebView>
+            android:layout_height="match_parent"/>
 
         <ProgressBar
             android:id="@+id/pgbars"

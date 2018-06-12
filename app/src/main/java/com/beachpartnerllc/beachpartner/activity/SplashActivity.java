@@ -44,6 +44,8 @@ public class SplashActivity extends AppCompatActivity {
 						} else {
 							navigateToHome();
 						}
+					}else if (update.getStatus() == Status.ERROR){
+						navigateToHome();
 					}
 				}
 			});

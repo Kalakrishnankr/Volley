@@ -81,12 +81,8 @@ public class SettingsFragment extends Fragment {
             location_change=arguments.getString("prime_card");
             if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
                 spinner_location.setEnabled(true);
-
-
-                        blink();
-
+                blink();
                 dataAdapter.setDropDownViewResource(R.layout.spinner_style_bp);
-
             }
         }catch (Exception e){
             e.printStackTrace();

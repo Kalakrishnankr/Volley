@@ -40,7 +40,6 @@ public class PartnerInviteFragmentTab extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setHasOptionsMenu(true);
-
     }
 
     @Override
@@ -62,7 +61,6 @@ public class PartnerInviteFragmentTab extends Fragment {
         tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
         slideAdapter    =  new SliderAdapter(getChildFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
         pager.setAdapter(slideAdapter);
-
         // Setting the ViewPager For the SlidingTabsLayout
         tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
         tabs.setViewPager(pager);
