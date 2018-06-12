@@ -2,6 +2,7 @@ package com.beachpartnerllc.beachpartner.update
 
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.Headers
 import retrofit2.http.POST
 
 /**
@@ -9,6 +10,7 @@ import retrofit2.http.POST
  * @created on 12 Jun 2018 at 9:25 AM
  */
 interface ApiService {
+    @Headers(HEADER_NO_AUTH)
     @POST("check-app-version")
     fun checkForUpdate(@Body update: Update): Call<Update>
 
@@ -17,5 +19,8 @@ interface ApiService {
 
     companion object {
         const val URL_BASE = "https://beachpartner.com/api/"
+
+        const val NO_AUTH = "No-Auth"
+        private const val HEADER_NO_AUTH = "$NO_AUTH: true"
     }
 }
