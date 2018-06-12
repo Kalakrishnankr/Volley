@@ -16,6 +16,7 @@ import com.beachpartnerllc.beachpartner.utils.TeamMakerInterface;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by seq-kala on 9/3/18.
@@ -26,7 +27,7 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
     private TeamMakerInterface makerInterface;
 
     private ArrayList<ConnectionModel>dataModelList = new ArrayList<>();
-
+    private ArrayList<ConnectionModel>mCountryModel = new ArrayList<>();
     public MyConnectionAdapter(Context context, ArrayList<ConnectionModel>allSampleData,TeamMakerInterface teamMakerInterface) {
 
         this.mContext       =   context;
@@ -90,6 +91,11 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
         return dataModelList.size();
     }
 
+    public void setFilter(List<ConnectionModel> countryModels) {
+        mCountryModel = new ArrayList<>();
+        mCountryModel.addAll(countryModels);
+        notifyDataSetChanged();
+    }
     public class MyViewHolder extends RecyclerView.ViewHolder {
 
         public TextView tvname,tv_unavailable;

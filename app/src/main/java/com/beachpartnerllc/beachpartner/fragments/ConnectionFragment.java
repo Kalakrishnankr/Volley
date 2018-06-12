@@ -267,7 +267,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     }
                     getBlockedMembers();
                     setConnections();
-                    activeAthletTab();
+                    if (getActivity() != null) {
+                        activeAthletTab();
+                    }
+
                 }
 
 

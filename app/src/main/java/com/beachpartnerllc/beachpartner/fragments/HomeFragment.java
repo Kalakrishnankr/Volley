@@ -1,6 +1,5 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
-import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -15,14 +14,11 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -304,11 +300,11 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     //Getting the number of likes
     private void likesDisplay() {
 
-        if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
+        //if (subScriptions.equalsIgnoreCase("FREE") && subScriptions != null) {
             //Api for getting
             getPeopleWhoLiked();
 
-        }else {
+        /*}else {
             LayoutInflater inflater = getLayoutInflater();
             View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
 
@@ -335,7 +331,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             });
 
 
-        }
+        }*/
 
        /* if(userType=="Athlete"){
 
@@ -1023,7 +1019,31 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                String json = null;
+                progressBar_msg.setVisibility(View.GONE);
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 400:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
 
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }) {
             @Override
