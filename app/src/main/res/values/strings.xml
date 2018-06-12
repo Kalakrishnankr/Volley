@@ -186,4 +186,10 @@
     <string name="team_size">Team Size</string>
     <string name="no_messsages_message_fragment">Messages sent or received will appear here</string>
     <string name="clear_all">Clear All</string>
+    <string name="update_available">Update Available</string>
+    <string name="msg_update">Current version of the application (%s) is obsolete. Please update application to avail services</string>
+    <string name="update">Update</string>
+    <string name="cancel">Cancel</string>
+    <string name="exit">Exit</string>
+    <string name="install_play_store">Please install play services to update the app</string>
 </resources>
