@@ -20,7 +20,6 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.fragments.AboutUsFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;

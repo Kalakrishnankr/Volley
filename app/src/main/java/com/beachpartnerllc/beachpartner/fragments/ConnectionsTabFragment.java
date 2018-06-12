@@ -112,7 +112,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            //tabActivity.setActionBarTitle(eventObject.getEventName());
+            tabActivity.setActionBarTitle(eventObject.getEventName());
         }
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         //adapter for connections

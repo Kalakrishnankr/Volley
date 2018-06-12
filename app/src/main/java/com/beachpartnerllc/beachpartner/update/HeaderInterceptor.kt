@@ -11,9 +11,17 @@ import okhttp3.Response
  */
 class HeaderInterceptor(private val app: Application) : Interceptor {
     override fun intercept(chain: Interceptor.Chain?): Response {
-        val request = chain?.request()!!.newBuilder()
-                .addHeader(TOKEN_KEY, "$TOKEN_VALUE ${PrefManager(app).token}")
-                .build()
+        var request = chain?.request()!!
+
+        request = if (request.header(ApiService.NO_AUTH) == null) {
+            request.newBuilder()
+                    .addHeader(TOKEN_KEY, "$TOKEN_VALUE ${PrefManager(app).token}")
+                    .build()
+        } else {
+            request.newBuilder()
+                    .removeHeader(ApiService.NO_AUTH)
+                    .build()
+        }
 
         return chain.proceed(request)
     }

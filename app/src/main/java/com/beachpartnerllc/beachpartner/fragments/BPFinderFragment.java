@@ -182,7 +182,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         // Inflate the layout for this fragment
         if (isbpActive) {
             view = inflater.inflate(R.layout.fragment_bpfinder, container, false);
-
         } else {
             view = inflater.inflate(R.layout.fragment_bpfinder1, container, false);
         }
@@ -276,6 +275,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
+            if (!isPartner) {
+                tabActivity.getSupportActionBar().setTitle((R.string.app_name));
+            }
             //tabActivity.getSupportActionBar().setTitle((R.string.app_name));
             //tabActivity.setActionBarTitle("Beach Partner");
         }
@@ -761,7 +763,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
         allCardList.clear();
+
         //adapter.clear();    //adapter cleared inorder to clear the list when returning from settings
+
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD + "?includeCoach=" + isCoach + "&location="+ location + "&minAge=" + minAge + "&maxAge=" + maxAge + "&gender=" + sgender + "&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null,
                 new Response.Listener<JSONArray>() {
                     @Override

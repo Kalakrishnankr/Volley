@@ -32,6 +32,8 @@ class UpdateViewModel(private val app: Application) : AndroidViewModel(app) {
             override fun onResponse(call: Call<Update?>?, response: Response<Update?>) {
                 if (response.code() == 200) {
                     update.value = Resource.success(response.body())
+                }else{
+                    update.value = Resource.error()
                 }
             }
         })
