@@ -8,5 +8,6 @@ data class Filter(
         var subType: String? = "Please Select",
         var year: String? = "Please Select",
         var month: String? = "Please Select",
-        var state: String? = "Please Select"
+        var state: String? = "Please Select",
+        var region: String? = "Please Select"
 )

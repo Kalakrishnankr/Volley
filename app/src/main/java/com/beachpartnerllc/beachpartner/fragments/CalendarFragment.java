@@ -80,7 +80,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     SimpleDateFormat dateFormatForMonth = new SimpleDateFormat("MMMM yyyy", Locale.getDefault());
     SimpleDateFormat dateFormat = new SimpleDateFormat("MMM dd, yyyy", Locale.getDefault());
     String toDayDate;
-    private TextView tview_master, tview_mycalendar, tview_month, tview_date;
+    private TextView tview_master, tview_mycalendar, tview_month, tview_date,tview_no_events;
     private ImageButton btn_previous, btn_next;
     private RecyclerView rview;
     private EventsAdapter eventsAdapter;
@@ -89,7 +89,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     private static boolean isMycal = false;
     private TabActivity tabActivity;
     AlertDialog b;
-    private String eventType,subType,year,month,state,eventType_clear;
+    private String eventType,subType,year,month,state,region,eventType_clear;
     private Spinner spinner_events,spinner_subEvents,spinner_year,spinner_month,tv_state,tv_region;
     private FilterViewModel filterViewModel;
     private LinearLayout top_tabs,calendar_llt,eventHeader_llt,eventRecycler_llt,container_llt;
@@ -138,6 +138,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         btn_next = (ImageButton) view.findViewById(R.id.next_button);
 
         rview = (RecyclerView) view.findViewById(R.id.rcv_events);
+        tview_no_events = (TextView)view.findViewById(R.id.no_events);
 
         compactCalendarView = (CompactCalendarView) view.findViewById(R.id.compactcalendar);
         toDayDate = DateFormat.getDateTimeInstance().format(new Date());
@@ -189,10 +190,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
-                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
-                    rview.setAdapter(eventsAdapter);
-                    rview.invalidate();
-                    eventsAdapter.notifyDataSetChanged();
+                    if(toDayEvents.size()!=0){
+                        rview.setVisibility(View.VISIBLE);
+                        eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                        rview.setAdapter(eventsAdapter);
+                        rview.invalidate();
+                        eventsAdapter.notifyDataSetChanged();
+                    }
+                    else{
+                        rview.setVisibility(View.GONE);
+                        tview_no_events.setVisibility(View.VISIBLE);
+                    }
+
 
                 }
 
@@ -283,11 +292,19 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                         toDayEvents.add(bookingsFromMap.get(i));
                     }
                 }
-                eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
-                rview.setAdapter(eventsAdapter);
-                rview.invalidate();
-                eventsAdapter.notifyDataSetChanged();
-                tview_date.setText("Events for " + dateFormat.format(new Date()));
+                if(toDayEvents.size()!= 0){
+                    rview.setVisibility(View.VISIBLE);
+                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+                    rview.setAdapter(eventsAdapter);
+                    rview.invalidate();
+                    eventsAdapter.notifyDataSetChanged();
+                    tview_date.setText("Events for " + dateFormat.format(new Date()));
+                }
+                else{
+                    rview.setVisibility(View.GONE);
+                    tview_no_events.setVisibility(View.VISIBLE);
+                }
+
             }
 
         }
@@ -411,6 +428,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 int stateValuePos = adapterStates.getPosition(filterViewModel.getFilter().getState());
                 tv_state.setSelection(stateValuePos);
 
+                int regionValuePos = adapterRegion.getPosition(filterViewModel.getFilter().getRegion());
+                tv_region.setSelection(regionValuePos);
+
+
 
                 break;
             default:
@@ -429,6 +450,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     public ArrayAdapter<String> adapterMonths;
     public ArrayAdapter<String> adapterStates;
     public ArrayAdapter<String> adapterSubEvents;
+    ArrayAdapter<String> adapterRegion;
 
     List<String> eventTypes = new ArrayList<>();
     ArrayList<String> years = new ArrayList<String>();
@@ -661,7 +683,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         regionList.add("Western Empire Region");
 
 
-        ArrayAdapter<String> adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
+        adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
 
         tv_region.setAdapter(adapterRegion);
     }
@@ -697,7 +719,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,0, (float) 0.3);
                 eventHeader_llt.setLayoutParams(param);
                 getAllEvents();
-                filterViewModel.setFilter(new Filter("", "", "", "", ""));
+                filterViewModel.setFilter(new Filter("", "", "", "", "",""));
                 filterDialogue.cancel();
 
             }
@@ -713,9 +735,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 year = spinner_year.getSelectedItem().toString();
                 month = spinner_month.getSelectedItem().toString();
                 state    = tv_state.getSelectedItem().toString();
+                region   = tv_region.getSelectedItem().toString();
                 eventType_clear = eventType.replaceAll("\\s", "");
 
-                filterViewModel.setFilter(new Filter(eventType, subType, year, month, state));
+                filterViewModel.setFilter(new Filter(eventType, subType, year, month, state,region));
                 String searchCriteriaString = "Events for ";
                 if(eventType.equalsIgnoreCase("Please Select")){
                     eventType="";
@@ -752,6 +775,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     searchCriteriaString+=state+ " ->";
                 }
 
+                if(region.equalsIgnoreCase("Please Select")){
+                    region="";
+                }
+                else{
+                    searchCriteriaString+=region+ " ->";
+                }
+
                 if(month!=""){
                     String dateYear = month+" "+ year;
                     Date startDate = null;
@@ -777,6 +807,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     objects.put("state",state);
                     objects.put("subType",subType);
                     objects.put("year",year);
+                    objects.put("region",region);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -1026,10 +1057,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                     toDayEvents.add(bookingsFromMap.get(i));
                 }
             }
-            eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
-            rview.setAdapter(eventsAdapter);
-            rview.invalidate();
-            eventsAdapter.notifyDataSetChanged();
+            if (toDayEvents.size() != 0) {
+                rview.setVisibility(View.VISIBLE);
+                eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+                rview.setAdapter(eventsAdapter);
+                rview.invalidate();
+                eventsAdapter.notifyDataSetChanged();
+            }
+            else{
+                rview.setVisibility(View.GONE);
+                tview_no_events.setVisibility(View.VISIBLE);
+            }
+
         }
         b.cancel();
 

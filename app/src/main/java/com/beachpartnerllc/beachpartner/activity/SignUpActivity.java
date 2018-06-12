@@ -871,6 +871,10 @@ public class SignUpActivity extends AppCompatActivity{
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                myCalendar.set(Calendar.YEAR, dp.getYear());
+                myCalendar.set(Calendar.MONTH, dp.getMonth());
+                myCalendar.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
                 SimpleDateFormat dateBirth = updateLabel();
                 if (dateBirth!=null){
                     Calendar today = Calendar.getInstance();
