@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,6 +45,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //import com.beachpartnerllc.beachpartner.adpters.ConnectionAdapter;
@@ -60,6 +62,8 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private ArrayList<ConnectionModel>myTeamList = new ArrayList<>();
     private ArrayList<ConnectionModel>connectionList = new ArrayList<>();
     private ArrayList<ConnectionModel>athleteList = new ArrayList<>();  //to sort out athletes from the connectionlist
+    private ArrayList<ConnectionModel>searchList = new ArrayList<>();
+    List<ConnectionModel> filteredModelList = new ArrayList<>();
     LinearLayoutManager layoutmnger;
     private String token;
     private long eventDate;
@@ -73,6 +77,8 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private TabActivity tabActivity;
     private String YOUR_FRAGMENT_STRING_TAG;
     private AlertDialog alertDialog;
+    private SearchView searchView;
+    private static boolean isSearch = false;
 
     public ConnectionsTabFragment() {
         // Required empty public constructor
@@ -85,14 +91,15 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         //setHasOptionsMenu(true);
-        eventDate   = getArguments().getLong("eventDate");
-        eventObject = getArguments().getParcelable("eventObj");
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        eventDate   = getArguments().getLong("eventDate");
+        eventObject = getArguments().getParcelable("eventObj");
         token   = new PrefManager(getContext()).getToken();
         View view =inflater.inflate(R.layout.fragment_connections_tab, container, false);
         initActivity(view);
@@ -105,7 +112,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
         if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle(eventObject.getEventName());
+            //tabActivity.setActionBarTitle(eventObject.getEventName());
         }
         layoutmnger = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         //adapter for connections
@@ -120,14 +127,15 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
 
     private void initActivity(View view) {
 
-       // rlTop       =       (RelativeLayout)view.findViewById(R.id.rlayoutTop);
-        txtv_noconnection   =       (TextView)view.findViewById(R.id.no_connections);
-        rlTeam              =       (RelativeLayout)view.findViewById(R.id.rlayout_myteam);
+        // rlTop       =       (RelativeLayout)view.findViewById(R.id.rlayoutTop);
+        txtv_noconnection   =        view.findViewById(R.id.no_connections);
+        rlTeam              =        view.findViewById(R.id.rlayout_myteam);
+        searchView          =        view.findViewById(R.id.search);
 
-        rcviewConn          =       (RecyclerView)view.findViewById(R.id.rview_connections);
-        rcviewTeam          =       (RecyclerView)view.findViewById(R.id.rcview_myteam);
+        rcviewConn          =       view.findViewById(R.id.rview_connections);
+        rcviewTeam          =       view.findViewById(R.id.rcview_myteam);
 
-        upDownToggle        =       (ImageView)view.findViewById(R.id.upDown);
+        upDownToggle        =       view.findViewById(R.id.upDown);
         btnInvitefrnd       =       view.findViewById(R.id.btn_invite);
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottom_sheet));
 
@@ -177,6 +185,74 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
             }
         });
+
+        //search view
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                if (athleteList != null && athleteList.size() > 0) {
+                    isSearch=true;
+                    if (!newText.isEmpty()) {
+                        filterPerson(newText);
+                        final List<ConnectionModel> filteredModelList = filter(connectionList, newText);
+                        mConnectionAdapter.setFilter(filteredModelList);
+                        mConnectionAdapter.notifyDataSetChanged();
+
+                    } else {
+                        filterPerson(newText);
+                        mConnectionAdapter = new MyConnectionAdapter(getContext(), athleteList, ConnectionsTabFragment.this);
+                        rcviewConn.setAdapter(mConnectionAdapter);
+                        mConnectionAdapter.notifyDataSetChanged();
+                    }
+
+
+                }
+                return false;
+            }
+        });
+    }
+
+    private List<ConnectionModel> filter(ArrayList<ConnectionModel> connectionList, String newText) {
+        newText = newText.toLowerCase().trim();
+        for (ConnectionModel model : connectionList) {
+            final String text = model.getConnected_firstName().toLowerCase().trim();
+            if (text.contains(newText)) {
+                filteredModelList.add(model);
+            }
+        }
+        return filteredModelList;
+
+    }
+
+    private void filterPerson(String newText) {
+        String textSearch = newText;
+        if (!textSearch.equals("null")) {
+            searchList.clear();
+            if (athleteList.size() > 0) {
+                for (int i = 0; i < athleteList.size(); i++) {
+                    if (athleteList.get(i).getConnected_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
+                        searchList.add(athleteList.get(i));
+                    }
+                }
+            }
+            if (searchList.size() > 0) {
+                mConnectionAdapter = new MyConnectionAdapter(getContext(), searchList, this);
+                rcviewConn.setAdapter(mConnectionAdapter);
+                mConnectionAdapter.notifyDataSetChanged();
+            } else {
+                Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+                mConnectionAdapter = new MyConnectionAdapter(getContext(), athleteList, this);
+                rcviewConn.setAdapter(mConnectionAdapter);
+                mConnectionAdapter.notifyDataSetChanged();
+
+            }
+
+        }
     }
 
 
@@ -184,7 +260,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         SimpleDateFormat dft = new SimpleDateFormat("dd-MM-yyyy");
         eventDateToCheckAvailability=dft.format(eventDate);
 
-       // Toast.makeText(getContext(), "eventClickedDate-----"+eventDateToCheckAvailability, Toast.LENGTH_SHORT).show();
+        // Toast.makeText(getContext(), "eventClickedDate-----"+eventDateToCheckAvailability, Toast.LENGTH_SHORT).show();
 
         connectionList.clear();
         athleteList.clear();
@@ -343,6 +419,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             }
 
         }
+
         JSONArray array = new JSONArray(persons);
         registerType = "invitee";//"organizer";//invitee
         JSONObject object = new JSONObject();
@@ -360,7 +437,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     Toast.makeText(getActivity(), "Request sent successfully", Toast.LENGTH_SHORT).show();
-                     moveToMasterCalendar();
+                    moveToMasterCalendar();
                 }
 
             }
@@ -408,9 +485,17 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         if(bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
-        myTeamList.add(athleteList.remove(position));
-        mConnectionAdapter.notifyDataSetChanged();
-        myTeamAdapter.notifyDataSetChanged();
+        if (!isSearch) {
+            myTeamList.add(athleteList.remove(position));
+            mConnectionAdapter.notifyDataSetChanged();
+            myTeamAdapter.notifyDataSetChanged();
+        }else {
+            myTeamList.add(searchList.remove(position));
+            athleteList.removeAll(myTeamList);
+            mConnectionAdapter.notifyDataSetChanged();
+            myTeamAdapter.notifyDataSetChanged();
+        }
+
 
         //Toast.makeText(getActivity(), "id --->"+member.getConnected_uId()+"available-->"+member.getConnected_isAvailable_ondate()+" at position-->"+position, Toast.LENGTH_SHORT).show();
     }
