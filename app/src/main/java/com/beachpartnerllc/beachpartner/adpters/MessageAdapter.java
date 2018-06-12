@@ -20,6 +20,7 @@ import com.beachpartnerllc.beachpartner.fragments.ChatFragmentPage;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -66,13 +67,13 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
         holder.txtvUname.setText(model.getBpf_firstName()+" "+ model.getBpf_lastName() );
         if(dataList.get(position).getBpf_imageUrl()!=null){
             if (!dataList.get(position).getBpf_imageUrl().equals("null")) {
-                Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).into(holder.imgUserPic);
+                Glide.with(mContext).load(dataList.get(position).getBpf_imageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(holder.imgUserPic);
             }else {
-                holder.imgUserPic.setImageResource(R.drawable.ic_person);
+                holder.imgUserPic.setImageResource(R.mipmap.ic_user_img);
             }
             //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
         }else {
-            holder.imgUserPic.setImageResource(R.drawable.ic_person);
+            holder.imgUserPic.setImageResource(R.mipmap.ic_user_img);
         }
 
         holder.cardView.setOnClickListener(new View.OnClickListener() {

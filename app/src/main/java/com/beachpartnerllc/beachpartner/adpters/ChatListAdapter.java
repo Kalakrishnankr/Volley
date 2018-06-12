@@ -21,6 +21,7 @@ import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -64,10 +65,10 @@ public class ChatListAdapter extends RecyclerView.Adapter<ChatListAdapter.ViewHo
         holder.txv_name.setText(message.getBpf_firstName()+ " "+ message.getBpf_lastName());
         if(list.get(position).getBpf_imageUrl()!=null){
             if(!list.get(position).getBpf_imageUrl().equals("null")){
-                Glide.with(mContext).load(list.get(position).getBpf_imageUrl()).into(holder.person_pic);
+                Glide.with(mContext).load(list.get(position).getBpf_imageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(holder.person_pic);
                 //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
             }else {
-                holder.person_pic.setImageResource(R.drawable.ic_person);
+                holder.person_pic.setImageResource(R.mipmap.ic_user_img);
             }
         }
 

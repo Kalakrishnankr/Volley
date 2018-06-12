@@ -37,7 +37,7 @@
                     android:background="@drawable/ic_cndown"
                     android:layout_alignParentRight="true"/>
 
-                <com.beachpartnerllc.beachpartner.CircularImageView
+                <ImageView
                     android:id="@+id/thumbnail"
                     android:layout_width="75dp"
                     android:layout_height="75dp"
@@ -45,7 +45,7 @@
                     android:layout_centerHorizontal="true"
                     android:contentDescription="@string/app_name"
                     android:layout_margin="16dp"
-                    android:background="@color/white"
+                    android:background="@drawable/circular_bg"
                     android:scaleType="centerCrop"/>
 
                 <com.beachpartnerllc.beachpartner.CustomTextView

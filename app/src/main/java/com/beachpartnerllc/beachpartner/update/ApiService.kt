@@ -9,7 +9,7 @@ import retrofit2.http.POST
  * @created on 12 Jun 2018 at 9:25 AM
  */
 interface ApiService {
-    @POST("check-app-version")
+    @POST("misc/check-app-version")
     fun checkForUpdate(@Body update: Update): Call<Update>
 
     @POST("users/update-fcmtoken")
