@@ -20,7 +20,7 @@
     <!--margin for login button-->
     <dimen name="margin_button">5dp</dimen>
 
-    <dimen name="text_size">14sp</dimen>
+    <dimen name="text_size">12sp</dimen>
     <dimen name="header_text_size">26sp</dimen>
 
     <!--framelayout that contains videView height-->

@@ -321,6 +321,11 @@ public class SettingsFragment extends Fragment {
         new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+    }
 
     public void addLocation() {
         stateList.add("Alabama");

@@ -25,6 +25,7 @@ import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.Coach.ConnectionResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -123,12 +124,12 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
             if(dataLists.get(position).getBpFinderModel().getBpf_imageUrl() != null){
                 if(!dataLists.get(position).getBpFinderModel().getBpf_imageUrl().equalsIgnoreCase("null"))
-                    Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).into(holder.profilePic);
+                    Glide.with(mContext).load(dataLists.get(position).getBpFinderModel().getBpf_imageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img).apply(RequestOptions.circleCropTransform())).into(holder.profilePic);
                 else
-                    holder.profilePic.setImageResource(R.drawable.ic_person);
+                    holder.profilePic.setImageResource(R.mipmap.ic_user_img);
                 //holder.profilePic.setImageURI(Uri.parse(dataLists.get(position).getConnected_imageUrl()));
             }else {
-                holder.profilePic.setImageResource(R.drawable.ic_person);
+                holder.profilePic.setImageResource(R.mipmap.ic_user_img);
             }
 
             //Set OnclickListener message
@@ -232,7 +233,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
         public ImageView topIcon;
         public CardView cardView;
         public RelativeLayout rrHeaderTwo,rrHeaderOne;
-        public CircularImageView profilePic;
+        public ImageView profilePic;
         public View viewOne;
 
         public MyViewHolder(View view) {
@@ -245,7 +246,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             txtv_message= (TextView)view.findViewById(R.id.message);
             txtv_notes  = (TextView)view.findViewById(R.id.notes);
             cardView    = (CardView)view.findViewById(R.id.card_view);
-            profilePic  = (CircularImageView)view.findViewById(R.id.thumbnail);
+            profilePic  = (ImageView)view.findViewById(R.id.thumbnail);
             rrHeaderOne = (RelativeLayout) view.findViewById(R.id.rlHeader1);
             rrHeaderTwo = (RelativeLayout) view.findViewById(R.id.rlHeader2);
             viewOne     = (View)view.findViewById(R.id.viewOne);

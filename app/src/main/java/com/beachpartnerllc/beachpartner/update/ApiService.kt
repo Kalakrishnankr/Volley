@@ -10,6 +10,7 @@ import retrofit2.http.POST
  * @created on 12 Jun 2018 at 9:25 AM
  */
 interface ApiService {
+
     @Headers(HEADER_NO_AUTH)
     @POST("misc/check-app-version")
     fun checkForUpdate(@Body update: Update): Call<Update>

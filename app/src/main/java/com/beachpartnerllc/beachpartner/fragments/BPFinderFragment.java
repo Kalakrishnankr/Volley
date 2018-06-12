@@ -541,6 +541,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                     //new PrefManager(getContext()).savePageno(-1);
                     getBpProfiles();
                 }
+                location = spinner_location.getSelectedItem().toString();
                 sgender = txtv_gender.getText().toString();
                 isCoach = sCoach.isChecked();
                 minAge = Integer.parseInt(tvMin.getText().toString().trim());
@@ -762,6 +763,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //GEt all cards
     private void getAllCards(String location, String sgender, Boolean isCoach, int minAge, int maxAge) {
         allCardList.clear();
+        //adapter cleared inorder to clear the list when returning from settings
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.SEARCH_USER_CARD + "?includeCoach=" + isCoach + "&location="+ location + "&minAge=" + minAge + "&maxAge=" + maxAge + "&gender=" + sgender + "&hideConnectedUser=true&hideLikedUser=true&hideRejectedConnections=true&hideBlockedUsers=true", null,
                 new Response.Listener<JSONArray>() {
                     @Override
