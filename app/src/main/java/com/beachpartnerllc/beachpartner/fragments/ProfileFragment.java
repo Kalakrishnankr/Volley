@@ -2297,8 +2297,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 object.put("city", location.toString().trim());
                 object.put("location", location.toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
-                object.put("imageUrl", userDataModel.getImageUrl().trim());
-                object.put("videoUrl", userDataModel.getVideoUrl().trim());
+                object.put("imageUrl", userDataModel.getImageUrl());
+                object.put("videoUrl", userDataModel.getVideoUrl());
                 object.put("userType", userDataModel.getUserType().trim());
                 object.put("langKey", userDataModel.getLangKey());
                 object.put("fcmToken", userDataModel.getFcmToken().trim());

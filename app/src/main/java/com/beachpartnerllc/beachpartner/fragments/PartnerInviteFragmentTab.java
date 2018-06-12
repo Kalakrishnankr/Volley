@@ -39,21 +39,17 @@ public class PartnerInviteFragmentTab extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-
+        //setHasOptionsMenu(true);
 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         eventDateToCheck= getArguments().getLong("eventDate");
         eventObject     = getArguments().getParcelable("eventObject");
-        if (getActivity() instanceof TabActivity) {
-            tabActivity = (TabActivity) getActivity();
-            tabActivity.setActionBarTitle(eventObject.getEventName());
-        }
+
         Log.d(TAG, "onCreateView: "+eventObject);
         View view   =   inflater.inflate(R.layout.fragment_partner_invite, container, false);
         initActivity(view);
@@ -65,7 +61,6 @@ public class PartnerInviteFragmentTab extends Fragment {
         pager           =  (ViewPager) view.findViewById(R.id.pager);
         tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
         slideAdapter    =  new SliderAdapter(getChildFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
-
         pager.setAdapter(slideAdapter);
 
         // Setting the ViewPager For the SlidingTabsLayout
@@ -79,6 +74,10 @@ public class PartnerInviteFragmentTab extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity) getActivity();
+            tabActivity.getSupportActionBar().setTitle(eventObject.getEventName());
+        }
 
     }
 

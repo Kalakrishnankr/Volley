@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
@@ -169,7 +170,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
         /*Message*/
 
         layoutManager       = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
-        SnapHelper snaper   = new PagerSnapHelper();
+        SnapHelper snaper   = new LinearSnapHelper();
         snaper.attachToRecyclerView(coachMsgRecyclerview);
 //        coachMsgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
 //        coachMsgRecyclerview.setItemAnimator(new DefaultItemAnimator());

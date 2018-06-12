@@ -102,7 +102,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         initActivity(view);
-
         return view;
 
 
@@ -134,9 +133,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         b.setCancelable(false);
 
-
         // and show it
-
 
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         rcv_conn.setLayoutManager(layoutManager);
@@ -144,7 +141,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
         txtv_athlete.setOnClickListener(this);
         txtv_coach.setOnClickListener(this);
-        activeAthletTab();
+        //activeAthletTab();
         getConnections();
 
 
@@ -270,6 +267,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     }
                     getBlockedMembers();
                     setConnections();
+                    activeAthletTab();
                 }
 
 
