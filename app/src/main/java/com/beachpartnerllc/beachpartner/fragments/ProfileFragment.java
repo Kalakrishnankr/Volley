@@ -1187,6 +1187,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
             myCalendar.set(Calendar.YEAR, dp.getYear());
             myCalendar.set(Calendar.MONTH, dp.getMonth());
             myCalendar.set(Calendar.DAY_OF_MONTH, dp.getDayOfMonth());
