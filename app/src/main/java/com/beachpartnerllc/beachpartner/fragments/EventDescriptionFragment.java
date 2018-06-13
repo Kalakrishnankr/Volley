@@ -17,6 +17,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -85,6 +87,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("Create", "onCreate");
+        setHasOptionsMenu(true);
         ForegroundLoader();
     }
 
@@ -92,7 +95,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         Log.d("Create", "onCreateView");
-
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_event_description, container, false);
         prefManager = new PrefManager(getContext());
@@ -179,6 +181,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
         return view;
     }
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -289,6 +292,15 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 break;
         }
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        tabActivity.getSupportActionBar().setTitle("Event Details");
+        if (menu.findItem(R.id.search_filter)!=null) {
+            menu.findItem(R.id.search_filter).setVisible(false);
+        }
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     private void ForegroundLoader(){

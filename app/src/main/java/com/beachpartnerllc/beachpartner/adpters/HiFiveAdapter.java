@@ -19,6 +19,7 @@ import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.github.curioustechizen.ago.RelativeTimeTextView;
 
 import org.json.JSONException;
@@ -100,7 +101,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
         usersImg            =  convertView.findViewById(R.id.hifiveImg);
 
         tvContact.setText(hiFiveList.get(position).getBpf_firstName()+" "+hiFiveList.get(position).getBpf_lastName()+" sent you a high five");
-        Glide.with(getContext()).load(hiFiveList.get(position).getBpf_imageUrl()).into(usersImg);
+        Glide.with(getContext()).load(hiFiveList.get(position).getBpf_imageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(usersImg);
         //timeStamp.setReferenceTime(new Date().getTime());
 
 

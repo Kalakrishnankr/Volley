@@ -404,11 +404,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // TODO Add your menu entries here
         menu.clear();
+        tabActivity.getSupportActionBar().setTitle("Calendar");
         inflater.inflate(R.menu.menu_class_fragment, menu);
         inflater.inflate(R.menu.menu_search_filter, menu);
         super.onCreateOptionsMenu(menu, inflater);
-
-
         /*super.onCreateOptionsMenu(menu, inflater); menu.clear();
         inflater.inflate(R.menu.sample_menu, menu);*/
     }
