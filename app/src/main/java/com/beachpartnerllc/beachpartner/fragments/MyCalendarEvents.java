@@ -207,7 +207,7 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
-            tabActivity.setActionBarTitle("Events");
+            tabActivity.setActionBarTitle("Event Details");
         }
         getEvent(eventId);
 
@@ -231,6 +231,11 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        tabActivity.setActionBarTitle("My Calendar");
+    }
 
     private void courtAlert() {
 

@@ -192,7 +192,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                 myCalendarEvents.setArguments(bundle);
                 FragmentManager fragmentManager  =  ((FragmentActivity)mContext).getSupportFragmentManager();
                 FragmentTransaction ctrans = fragmentManager.beginTransaction();
-                ctrans.replace(R.id.container,myCalendarEvents);
+                ctrans.add(R.id.container,myCalendarEvents);
                 ctrans.addToBackStack(null);
                 ctrans.commit();
 
