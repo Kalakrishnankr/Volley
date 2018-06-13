@@ -24,7 +24,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -212,8 +211,32 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 //Log.d(TAG, "Month was scrolled to: " + firstDayOfNewMonth);
                 tview_month.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
-            }
 
+                toDayEvents.clear();
+
+                List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getFirstDayOfCurrentMonth());
+                if (bookingsFromMap != null) {
+                    for (int i = 0; i < bookingsFromMap.size(); i++) {
+                        // Date date=new Date(bookingsFromMap.get(i).getTimeInMillis());
+                        if ((DatetoMilli(firstDayOfNewMonth)) == (DatetoMilli(new Date(bookingsFromMap.get(i).getTimeInMillis())))) {
+                            toDayEvents.add(bookingsFromMap.get(i));
+                        }
+                    }
+                    if(toDayEvents.size()!=0){
+                        rview.setVisibility(View.VISIBLE);
+                        eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                        rview.setAdapter(eventsAdapter);
+                        rview.invalidate();
+                        eventsAdapter.notifyDataSetChanged();
+                    }
+                    else{
+                        rview.setVisibility(View.GONE);
+                        tview_no_events.setVisibility(View.VISIBLE);
+                    }
+
+
+                }
+            }
 
         });
 

@@ -49,7 +49,8 @@ public class FeedBackFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
+
 	}
 	
 	@Override
@@ -75,7 +76,7 @@ public class FeedBackFragment extends Fragment {
 		webview.loadUrl(ApiService.FEEDBACK_PAGE);
 		progressBar.setMax(100);
 		progressBar.setProgress(1);
-		
+
 		webview.setWebChromeClient(new WebChromeClient() {
 			@Override
 			public void onProgressChanged(WebView view, int progress) {
@@ -93,8 +94,9 @@ public class FeedBackFragment extends Fragment {
 				return true;
 			}
 		});
-		
+
 		webview.setWebViewClient(new WebViewClient() {
+
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
@@ -117,4 +119,5 @@ public class FeedBackFragment extends Fragment {
 		
 		progressBar.setVisibility(View.INVISIBLE);
 	}
+
 }
