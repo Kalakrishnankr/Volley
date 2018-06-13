@@ -742,7 +742,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 eventHeader_llt.setLayoutParams(param);
                 getAllEvents();
                 filterViewModel.setFilter(new Filter("", "", "", "", "",""));
-                filterDialogue.cancel();
+//                filterDialogue.cancel();
 
             }
         });
