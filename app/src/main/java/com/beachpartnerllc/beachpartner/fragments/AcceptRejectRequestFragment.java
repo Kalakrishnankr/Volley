@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.PopupAdapter;
 import com.beachpartnerllc.beachpartner.adpters.SuggestionAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
@@ -86,7 +87,11 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if (getActivity() instanceof TabActivity){
+            TabActivity tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Invitations");
+            tabActivity.disableFloatButtons();
+        }
         user_token  =  new PrefManager(getActivity()).getToken();
         user_id     =  new PrefManager(getActivity()).getUserId();
 
@@ -99,6 +104,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_accept_reject_request, container, false);
         initviews(view);
+
 
         return view;
     }

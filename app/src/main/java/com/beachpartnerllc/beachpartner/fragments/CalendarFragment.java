@@ -52,6 +52,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -119,7 +120,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
 
 
     private void initActivity(View view) {
-
 
         top_tabs =     (LinearLayout) view.findViewById(R.id.top_tabs_linear_layout);
         calendar_llt = (LinearLayout) view.findViewById(R.id.calendar_whole_linear_layout);
@@ -734,6 +734,10 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
                 spinner_month.setAdapter(adapterMonths);
                 spinner_year.setAdapter(null);
                 spinner_year.setAdapter(adapterYear);
+                tv_state.setAdapter(null);
+                tv_state.setAdapter(adapterStates);
+                tv_region.setAdapter(null);
+                tv_region.setAdapter(adapterRegion);
                 top_tabs.setVisibility(View.VISIBLE);
                 calendar_llt.setVisibility(View.VISIBLE);
                 container_llt.setWeightSum((float) 4);
