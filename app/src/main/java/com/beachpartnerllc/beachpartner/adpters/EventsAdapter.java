@@ -221,7 +221,7 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
                         FragmentManager manager = ((FragmentActivity)mContext).getSupportFragmentManager();
                         FragmentTransaction ctrans = manager.beginTransaction();
                         //ctrans.setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right);
-                        ctrans.replace(R.id.container,eventDescriptionFragment);
+                        ctrans.add(R.id.container,eventDescriptionFragment);
                         ctrans.addToBackStack(null);
                         ctrans.commit();
                     }
