@@ -176,6 +176,12 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             tview_regStart.setText(dft.format(reg_startDate));
             tview_regClose.setText(dft.format(reg_endDate));
             tview_venue.setText(event.getEventVenue());
+
+            if(new Date(event_regEnd).before(new  Date())){
+                btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                btnInvitePartner.setClickable(false);
+            }
+
         }
 
 
@@ -533,7 +539,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             successfulRegisterationPrompt();
             registerCompleted = false;
         }
-        Log.d("Create", "onResume");
 
 
     }
