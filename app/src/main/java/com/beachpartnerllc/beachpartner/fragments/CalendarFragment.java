@@ -114,7 +114,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener {
         token = new PrefManager(getActivity()).getToken();
         initActivity(view);
         getAllEvents();
-
         return view;
     }
 

@@ -389,46 +389,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         return bm;
     }
 
-/*
-    public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
-
-        HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-        try {
-            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            //throws ParseException, IOException
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(new URI("https://www.beachpartner.com/api/storage/uploadProfileData"));
-//            sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sslFactory, 443));
-
-            httppost.setEntity(reqEntity);
-
-
-            // DEBUG
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
-
-
-            HttpEntity resEntity = response.getEntity();
-            while (resEntity == null) {
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
-            }
-            return resEntity;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            progress.dismiss();
-            Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
-        }
-        return null;
-    }
-*/
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

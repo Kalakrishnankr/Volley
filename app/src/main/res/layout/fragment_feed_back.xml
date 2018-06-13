@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bgimage"
+    android:id="@+id/topFrame"
     tools:context="com.beachpartnerllc.beachpartner.fragments.AboutUsFragment">
 
 
@@ -14,7 +15,7 @@
         <WebView
             android:id="@+id/webviews"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent" />
 
         <ProgressBar
             android:id="@+id/pgbars"
