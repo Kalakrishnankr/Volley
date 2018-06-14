@@ -88,7 +88,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
         Log.d("Create", "onCreate");
         setHasOptionsMenu(true);
-        ForegroundLoader();
+        //ForegroundLoader();
     }
 
     @Override

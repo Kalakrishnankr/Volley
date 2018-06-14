@@ -195,4 +195,6 @@
     <string name="install_play_store">Please install play services to update the app</string>
 
     <string name="no_events_found">No Events Found</string>
+    <string name="hint_logout">Would you like to log out?</string>
+    <string name="message_logout">Logout</string>
 </resources>

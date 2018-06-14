@@ -423,8 +423,8 @@ public class TabActivity extends AppCompatActivity  {
     }
     private void alertLogout() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Logout")
-                .setMessage("Would you like to logout?")
+        builder.setTitle(R.string.message_logout)
+                .setMessage(R.string.hint_logout)
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
