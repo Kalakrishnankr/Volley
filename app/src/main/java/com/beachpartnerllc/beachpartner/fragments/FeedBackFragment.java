@@ -105,9 +105,9 @@ public class FeedBackFragment extends Fragment {
 			public void onGlobalLayout() {
 				Rect r = new Rect();
 				view.getWindowVisibleDisplayFrame(r);
-				if (view.getRootView().getHeight() - (r.bottom - r.top) > 800) { // if more than 100 pixels, its probably a keyboard...
+				if (view.getRootView().getHeight() - (r.bottom - r.top) > 500) { // if more than 100 pixels, its probably a keyboard...
 					//onKeyboardShow()
-					view.scrollTo(0,430);
+					view.scrollTo(0,webview.getHeight()-800);
 				} else {
 					Log.d(TAG, "Keyboard Closed");
 					view.scrollTo(0, 0);
