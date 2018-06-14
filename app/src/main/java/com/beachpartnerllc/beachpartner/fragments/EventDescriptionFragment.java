@@ -399,6 +399,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
         if (partnerList.size() > 0) {
             btnBack.setText("VIEW PARTNERS");
+            btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_buttons));
             isPartnerbtnActive = true;
         }
 
