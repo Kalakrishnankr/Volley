@@ -2969,6 +2969,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                                 default:
                                     break;
                             }
+                        }else{
+                            Toast.makeText(mContext, R.string.no_internet, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }) {

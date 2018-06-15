@@ -738,6 +738,8 @@ public class SignUpActivity extends AppCompatActivity{
                                     default:
                                         break;
                             }
+                        }else{
+                            Toast.makeText(SignUpActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }) {

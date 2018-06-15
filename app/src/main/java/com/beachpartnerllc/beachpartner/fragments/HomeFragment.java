@@ -413,6 +413,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             break;
                     }
                 }
+                else{
+                    Toast.makeText(tabActivity, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                }
             }
         }){
             @Override
@@ -490,6 +493,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                         default:
                             break;
                     }
+                }else{
+                    Toast.makeText(tabActivity, R.string.no_internet, Toast.LENGTH_SHORT).show();
                 }
             }
         }){
@@ -863,6 +868,8 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                         default:
                             break;
                     }
+                }else{
+                    Toast.makeText(tabActivity, R.string.no_internet, Toast.LENGTH_SHORT).show();
                 }
             }
         }){

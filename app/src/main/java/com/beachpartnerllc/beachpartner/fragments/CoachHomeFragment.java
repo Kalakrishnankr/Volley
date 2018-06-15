@@ -518,6 +518,25 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
             @Override
             public void onErrorResponse(VolleyError error) {
 
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }else{
+                    Toast.makeText(tabActivity, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                }
             }
         }){ @Override
         public Map<String, String> getHeaders()  {

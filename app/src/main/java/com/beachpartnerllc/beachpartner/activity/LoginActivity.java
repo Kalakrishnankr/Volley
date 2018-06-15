@@ -627,7 +627,10 @@ public class LoginActivity extends AppCompatActivity {
                                     default:
                                         break;
                             }
+                        }else{
+                            Toast.makeText(LoginActivity.this, R.string.no_internet, Toast.LENGTH_SHORT).show();
                         }
+
 
                         //progressDialog.dismiss();
                     }

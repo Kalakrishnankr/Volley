@@ -42,6 +42,7 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.android.volley.DefaultRetryPolicy;
@@ -795,7 +796,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                         default:
                             break;
                     }
+                }else{
+                    Toast.makeText(tabActivity, R.string.no_internet, Toast.LENGTH_SHORT).show();
                 }
+
+
 
             }
         }) {

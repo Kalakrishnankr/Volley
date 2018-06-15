@@ -209,6 +209,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             if(new Date(event_regEnd).before(new  Date())){
                 btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                 btnInvitePartner.setClickable(false);
+                btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                btnBack.setClickable(false);
             }
 
         }
