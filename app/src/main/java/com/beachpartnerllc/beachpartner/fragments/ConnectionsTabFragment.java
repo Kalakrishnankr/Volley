@@ -486,14 +486,21 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
         if (!isSearch) {
-            myTeamList.add(athleteList.remove(position));
-            mConnectionAdapter.notifyDataSetChanged();
-            myTeamAdapter.notifyDataSetChanged();
+            if(myTeamList.size()<=4){
+                myTeamList.add(athleteList.remove(position));
+                mConnectionAdapter.notifyDataSetChanged();
+                myTeamAdapter.notifyDataSetChanged();
+            }else {
+                Toast.makeText(tabActivity, "Exceeded send requests", Toast.LENGTH_SHORT).show();
+            }
+
         }else {
-            myTeamList.add(searchList.remove(position));
-            athleteList.removeAll(myTeamList);
-            mConnectionAdapter.notifyDataSetChanged();
-            myTeamAdapter.notifyDataSetChanged();
+            if(myTeamList.size()<=4) {
+                myTeamList.add(searchList.remove(position));
+                athleteList.removeAll(myTeamList);
+                mConnectionAdapter.notifyDataSetChanged();
+                myTeamAdapter.notifyDataSetChanged();
+            }
         }
 
 

@@ -62,9 +62,9 @@ import java.util.Map;
 public class EventDescriptionFragment extends Fragment implements View.OnClickListener {
 
     private TextView tview_eventname, tview_location, tview_venue,tview_TeamSize, tview_eventadmin, tview_startDate, tview_endDate, tview_regStart, tview_regClose,tview_title;
-    private Button btnInvitePartner, btnRegister, btnBack, btnCoachGoing, btnCoachNotGoing;
+    private Button btnInvitePartner, btnRegister, btnBack, btnCoachGoing, btnCoachNotGoing,athleteGoingBtn;
     private PrefManager prefManager;
-    private LinearLayout athleteBtnLt, coachBtnLt;
+    private LinearLayout athleteBtnLt, coachBtnLt,athleteGoingBtnLt;
     private String user_id, user_token, userType, eventName, eventId, regType, sendCount,eventUrl;
     private Boolean registerCompleted = false;
     private boolean isPartnerbtnActive = false;
@@ -88,7 +88,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         super.onCreate(savedInstanceState);
         Log.d("Create", "onCreate");
         setHasOptionsMenu(true);
-        //ForegroundLoader();
+
     }
 
     @Override
@@ -114,24 +114,53 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
             //Case1:coming from MAstercalendar to Eventdescription--->disabling event register button till the team size is met that is when the event status is Active
             if (regType != null ) {
-                if (regType.equalsIgnoreCase("Organizer") && event.getEventStatus().equalsIgnoreCase("Active")) {
-                    btnRegister.setClickable(true);
-                }else {
-                    btnRegister.setClickable(false);
-                    btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                if (regType.equalsIgnoreCase("Organizer")) {
+                    if(event.getEventStatus().equalsIgnoreCase("Active")|| event.getEventStatus().equalsIgnoreCase("Registered")){
+                        btnInvitePartner.setClickable(false);
+                        btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    }
+                    else if(event.getEventStatus().equalsIgnoreCase("Registered")){
+                        athleteGoingBtn.setClickable(false);
+                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    }
+                }else if(regType.equalsIgnoreCase("Invitee")){
+                    athleteGoingBtn.setClickable(false);
+                    athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    btnInvitePartner.setClickable(false);
+                    btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                 }
+                else{
+                    btnBack.setClickable(false);
+                    btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+
+                    btnInvitePartner.setClickable(true);
+                    btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_buttons));
+                }
+//                    if(!event.getEventStatus().equalsIgnoreCase("Registered")){
+//                        athleteGoingBtn.setClickable(true);
+//                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_going));
+//                    }
+//                    else{
+//                        athleteGoingBtn.setClickable(false);
+//                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+//                    }
+
             }
 
             //Case2:coming from HomePage to Eventdescription(In case of sent request)--->check invitationlist to retrieve eventStatus<-->
             // only taking first array element, as of now user can register for a particular event only once
             if(event.getInvitationList()!=null){
                 if(event.getInvitationList().get(0).getEventStatus()!=null){
-                    if(event.getInvitationList().get(0).getEventStatus().equalsIgnoreCase("Active")){
-                        btnRegister.setClickable(true);
+//                    if(event.getInvitationList().get(0).getEventStatus().equalsIgnoreCase("Active")){
+//                        athleteGoingBtn.setClickable(true);
+//                    }
+                    if(event.getInvitationList().get(0).getEventStatus().equalsIgnoreCase("Registered")){
+                        athleteGoingBtn.setClickable(false);
+                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                     }
                     else{
-                        btnRegister.setClickable(false);
-                        btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                        athleteGoingBtn.setClickable(true);
+                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_going));
                     }
                 }
                 //transparentAlert.dismiss();
@@ -192,6 +221,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ForegroundLoader();
         getEvent(eventId);
         if (getActivity() instanceof TabActivity){
             tabActivity = (TabActivity)getActivity();
@@ -221,14 +251,18 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         btnBack = (Button) view.findViewById(R.id.btn_back);
         btnCoachGoing = (Button) view.findViewById(R.id.coach_going_btn);
         btnCoachNotGoing = (Button) view.findViewById(R.id.coach_notgoing_btn);
+        athleteGoingBtnLt = (LinearLayout) view.findViewById(R.id.athlete_going_lt);
+        athleteGoingBtn = (Button)view.findViewById(R.id.athlete_going);
 
         if (userType.equalsIgnoreCase("Athlete")) {
             athleteBtnLt.setVisibility(View.VISIBLE);
             coachBtnLt.setVisibility(View.GONE);
+            athleteGoingBtnLt.setVisibility(View.VISIBLE);
         }
         if (userType.equalsIgnoreCase("Coach")) {
             athleteBtnLt.setVisibility(View.GONE);
             coachBtnLt.setVisibility(View.VISIBLE);
+            athleteGoingBtnLt.setVisibility(View.GONE);
         }
 
 
@@ -237,6 +271,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         btnBack.setOnClickListener(this);
         btnCoachNotGoing.setOnClickListener(this);
         btnCoachGoing.setOnClickListener(this);
+        athleteGoingBtn.setOnClickListener(this);
 
     }
 
@@ -279,12 +314,10 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 break;
             case R.id.btn_back:
                 //Back button
-                if (isPartnerbtnActive) {
                     showAletDialogue();
-                }else {
-                    getActivity().onBackPressed();
-                }
-
+                break;
+            case R.id.athlete_going:
+                successfulRegisterationPrompt();
                 break;
             case R.id.coach_going_btn:
                 alertAddToCalendarCoach();
@@ -387,7 +420,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     private void viewPartners() {
         partnerList.clear();
 
-
         if (invitationList != null && invitationList.size() > 0) {
             if(invitationList.get(0).getEventStatus().equalsIgnoreCase("Active")||invitationList.get(0).getEventStatus().equalsIgnoreCase("Registered")){
                 btnInvitePartner.setClickable(false);
@@ -398,7 +430,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             }
         }
         if (partnerList.size() > 0) {
-            btnBack.setText("VIEW PARTNERS");
+            btnBack.setText("View Partners");
             btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_buttons));
             isPartnerbtnActive = true;
         }
@@ -421,15 +453,18 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         listView.setLayoutManager(layoutManager);
 
         if(invitationList!=null) {
-            partnerResultModelList.clear();
-            if (!invitationList.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
-                MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
-                partnerObject1.setpartner_Id(invitationList.get(0).getInviterUserId());
-                partnerObject1.setPartner_ImageUrl(invitationList.get(0).getInviterImageUrl());
-                partnerObject1.setpartner_Name(invitationList.get(0).getInviterName());
-                partnerObject1.setpartner_role("Organizer");
-                partnerResultModelList.add(partnerObject1);//organizer
+            if(invitationList.size()>0){
+                partnerResultModelList.clear();
+                if (!invitationList.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
+                    MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
+                    partnerObject1.setpartner_Id(invitationList.get(0).getInviterUserId());
+                    partnerObject1.setPartner_ImageUrl(invitationList.get(0).getInviterImageUrl());
+                    partnerObject1.setpartner_Name(invitationList.get(0).getInviterName());
+                    partnerObject1.setpartner_role("Organizer");
+                    partnerResultModelList.add(partnerObject1);//organizer
+                }
             }
+
         }
 
         for(int i=0;i<partnerList.size();i++){
@@ -448,6 +483,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             PopupAdapter cardArrayAdapter = new PopupAdapter(getActivity(), partnerResultModelList);
             listView.setAdapter(cardArrayAdapter);
         }
+        else{
+            Toast.makeText(tabActivity, "You have no partners", Toast.LENGTH_SHORT).show();
+        }
 
         alertDialog.show();
 
@@ -460,8 +498,8 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             Toast.makeText(getActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
-                            btnRegister.setClickable(false);
-                            btnRegister.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                            athleteGoingBtn.setClickable(false);
+                            athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                             btnInvitePartner.setClickable(false);
                             btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                             if (userType.equalsIgnoreCase("Coach")) {
@@ -537,7 +575,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         super.onResume();
         if (registerCompleted) {
             //alertAddToSystemCalendar();
-            successfulRegisterationPrompt();
+            //successfulRegisterationPrompt();
             registerCompleted = false;
         }
 

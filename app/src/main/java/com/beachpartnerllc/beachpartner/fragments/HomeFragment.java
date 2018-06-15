@@ -239,7 +239,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         SnapHelper snaper = new LinearSnapHelper();
         snaper.attachToRecyclerView(msgRecyclerview);
         msgRecyclerview.setLayoutManager(layoutManagerMsg);
-        msgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
+        msgRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(1), true));
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());
         msgRecyclerview.setHasFixedSize(true);
 
