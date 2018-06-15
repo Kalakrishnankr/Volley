@@ -86,7 +86,7 @@
             android:name=".activity.SignUpActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            android:windowSoftInputMode="adjustResize"/>
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".activity.LoginActivity"
             android:screenOrientation="portrait"

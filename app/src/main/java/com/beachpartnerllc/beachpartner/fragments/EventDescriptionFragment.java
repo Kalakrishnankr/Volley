@@ -513,7 +513,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                String json = null;
+                String json = "";
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {

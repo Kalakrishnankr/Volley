@@ -484,13 +484,21 @@ public class SignUpActivity extends AppCompatActivity{
             }
         });
 
+        user_location_spinner.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    toursPlayed();
+                }
+            }
+        });
+
         user_location_spinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toursPlayed();
             }
         });
-
 
         //SignUp here
         btnsignUp.setOnClickListener(new View.OnClickListener() {
