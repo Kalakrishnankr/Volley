@@ -28,6 +28,15 @@
     <color name="price_ring">#01177e</color>
     <color name="free_sub">#c98cf9eb</color>
     <color name="transparent_blue">#900a19e1</color>
+    <color name="dark_green">#f71be958</color>
+    <color name="dark_orange">#ff6600</color>
+    <color name="btn_sub">#0053C1</color>
+
+    <!--subscriptions button color code-->
+    <color name="butn_lite">#66A1DD</color>
+    <color name="butn_free">#3C97AD</color>
+    <color name="butn_std">#7F2076</color>
+    <color name="butn_recruit">#1C9B1C</color>
 
 
 

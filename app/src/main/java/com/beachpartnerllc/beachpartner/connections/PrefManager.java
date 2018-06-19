@@ -24,12 +24,11 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation,String subscriptions ){
+    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation ){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
         editor.putString("userType",userType);
-        editor.putString("subscriptions",subscriptions);
         editor.putString("userName",userName);
         editor.putString("userProfilePic",userPic);
         editor.putString("userLocation",userLocation);
@@ -43,6 +42,14 @@ public class PrefManager {
         editor.commit();
 
     }
+    public void saveSubscription(String subscription,String remainDays){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("subscriptions",subscription);
+        editor.putString("subRemainingDays",remainDays);
+        editor.commit();
+    }
+
 
     public void saveFCMToken(String FCM){
         SharedPreferences sharedPreferences = context.getSharedPreferences("FCM", Context.MODE_PRIVATE);
@@ -73,6 +80,7 @@ public class PrefManager {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         return sharedPreferences.getString("subscriptions", "");
     }
+
     public void saveSettingData(String location,String gender,Boolean isCoach, int minAge,int maxAge){
         SharedPreferences sharedPreferences = context.getSharedPreferences("settingsData", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -158,10 +166,7 @@ public class PrefManager {
         SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
         return preferences.getString("Token","");
     }
-    public String getSubscription(){
-        SharedPreferences  preferences = context.getSharedPreferences("LoginDetails",Context.MODE_PRIVATE);
-        return preferences.getString("subscriptions","");
-    }
+
 
     public boolean isUserLogedOut() {
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);

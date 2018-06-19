@@ -26,7 +26,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.style.ForegroundColorSpan;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -60,7 +59,9 @@ import com.beachpartnerllc.beachpartner.CustomTextView;
 import com.beachpartnerllc.beachpartner.MyInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.adpters.BenefitListItemAdapter;
 import com.beachpartnerllc.beachpartner.adpters.BlueBProfileAdapter;
+import com.beachpartnerllc.beachpartner.adpters.SubscriptionAdapter;
 import com.beachpartnerllc.beachpartner.adpters.TouristSpotCardAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.CompactCalendarView;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
@@ -68,9 +69,15 @@ import com.beachpartnerllc.beachpartner.cardstackview.CardStackView;
 import com.beachpartnerllc.beachpartner.cardstackview.SwipeDirection;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.models.BenefitModel;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
+import com.beachpartnerllc.beachpartner.models.SingleSubscriptionModel;
+import com.beachpartnerllc.beachpartner.models.SubscriptionItemsModels;
+import com.beachpartnerllc.beachpartner.models.SubscriptonPlansModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.CheckPlan;
+import com.beachpartnerllc.beachpartner.utils.SubClickInterface;
 import com.bumptech.glide.Glide;
 import com.google.firebase.FirebaseApp;
 import com.google.gson.Gson;
@@ -100,8 +107,10 @@ import java.util.Map;
 
 import io.apptik.widget.MultiSlider;
 
+import static com.beachpartnerllc.beachpartner.utils.CheckPlan.selectedIndex;
 
-public class BPFinderFragment extends Fragment implements MyInterface {
+
+public class BPFinderFragment extends Fragment implements MyInterface,SubClickInterface{
 
 
     public static final MediaType JSON
@@ -114,6 +123,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private ProgressBar progressBar;
     private CardStackView cardStackView;
     private TouristSpotCardAdapter adapter;
+    private SubscriptionAdapter subscriptionAdapter;
     private RelativeLayout rr;
     private CoordinatorLayout llv;
     private ImageView imgv_profilepic,imgv_rvsecard,imgv_location,imgv_highfi,btnPlay;
@@ -135,7 +145,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private View view;
     private int bp_ageInt;
     private SharedPreferences prefs;
-    private String location, sgender, profileImage, topThreeFinish;
+    private String location, sgender, profileImage, topThreeFinish,usertype;
     private Boolean isCoach;
     private int minAge, maxAge;
     private CompactCalendarView compactCalendar;
@@ -143,17 +153,32 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     private BlueBProfileAdapter blueBProfileAdapter;
     private CardView empty_card;
     private CircularImageView profilePic;
-    private String token, user_id, user_subscription, reqPersonId, deviceId, fcmToken;
+
+    private View layoutAlert;
+    private LinearLayout topHeaderLayout;
+    private TextView headerTitle,tv_price,tv_regPrice;
+    private Button btnBuy,btnProceed,btnCancel;
+    private RecyclerView rcview_sub_item;
+    private RelativeLayout premius_header;
+    private List<BenefitModel>benefitModelList = new ArrayList<>();
+    private BenefitListItemAdapter benefitItemAdapter;
+
+    private String token, user_id, reqPersonId, deviceId, fcmToken,userSubscription;
     private ArrayList<BpFinderModel> allCardList = new ArrayList<BpFinderModel>();
     private ArrayList<SwipeResultModel> bluebpListSecond = new ArrayList<>();
     private ArrayList<BpFinderModel> hifiList = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> noLikes = new ArrayList<BpFinderModel>();
     private ArrayList<BpFinderModel> bluebpList = new ArrayList<>();
+    private List<SubscriptonPlansModel>plansModelList = new ArrayList<>();
+    private List<SubscriptionItemsModels>userSubList = new ArrayList<>();
+    private List<SubscriptionItemsModels>userAddonsList= new ArrayList<>();
+    private List<SubscriptonPlansModel> userPlanList = new ArrayList<>();
     private String item_location;
     private List<Event> personEventList = new ArrayList<Event>();
     private TabActivity tabActivity;
     private BpFinderModel cModel;
     private CustomTextView topFinishes_One, topFinishes_Two, topFinishes_Three;
+    private PrefManager prefManager;
     AlertDialog b;
 
     public BPFinderFragment() {
@@ -186,9 +211,11 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         } else {
             view = inflater.inflate(R.layout.fragment_bpfinder1, container, false);
         }
-        token = new PrefManager(getContext()).getToken();
-        user_id = new PrefManager(getContext()).getUserId();
-        user_subscription = new PrefManager(getContext()).getSubscriptionType();
+        prefManager = new PrefManager(getActivity());
+        token       = prefManager.getToken();
+        user_id     = prefManager.getUserId();
+        userSubscription = prefManager.getSubscriptionType();
+        usertype  = prefManager.getUserType();
 
         AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
         View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
@@ -282,6 +309,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             //tabActivity.getSupportActionBar().setTitle((R.string.app_name));
             //tabActivity.setActionBarTitle("Beach Partner");
         }
+        getuserSubscriptions();
     }
 
     @Override
@@ -660,7 +688,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
 
 
         //Calendar
-
         toggle.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -675,15 +702,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-
-
                 List<Event> bookingsMap = compactCalendar.getEvents(dateClicked);
-
-
                 if (bookingsMap != null) {
-
                     for (int i = 0; i < bookingsMap.size(); i++) {
-
                         // Date date=new Date(bookingsFromMap.get(i).getTimeInMillis());
                         if ((DatetoMilli(dateClicked)) == (DatetoMilli(new Date(bookingsMap.get(i).getTimeInMillis())))) {
 
@@ -710,6 +731,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             @Override
             public void onClick(View view) {
                 String id = new PrefManager(getActivity()).getReverseCardID();
+
                 reverse();
                /* empty_card.setVisibility(View.GONE);
                 cardStackView.setVisibleCount(View.VISIBLE);*/
@@ -726,9 +748,7 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 swipeUp();
             }
         });
-
         //Get Location
-
         imgv_location.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -1186,6 +1206,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
                 if (response != null && response.data != null) {
                     switch (response.statusCode) {
                         case 400:
+                            if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+                                showAlertDialouge();
+                            }
                             json = new String(response.data);
                             json = trimMessage(json, "title");
                             if (json != null) {
@@ -1668,10 +1691,41 @@ public class BPFinderFragment extends Fragment implements MyInterface {
     //push notification
 
     private void getLocation() {
-        String user_subcription = "";
-        if (!user_subcription.equals("Prime")) {
+        if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+            if (userSubscription != null) {
+                    if (CheckPlan.isPlanAvailable(plansModelList, userSubscription, AppConstants.BENIFIT_CODE_B16)) {
+                        userPlanList.clear();
+                        //Toast.makeText(tabActivity, "Selecetd index"+selectedIndex, Toast.LENGTH_SHORT).show();
+                        if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(userSubscription)) {
+                            gotoSettings();
+                        } else {
+                            if (plansModelList.get(2).getPlanName().equalsIgnoreCase(userSubscription)) {
+                                gotoSettings();
+                            } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(userSubscription)) {
+                                gotoSettings();
+                            } else {
+                                for (int i = selectedIndex; i < plansModelList.size(); i++) {
+                                    userPlanList.add(plansModelList.get(i));
+                                }
+                                showAlertDialouge();
+                            }
+                        }
+
+                    }
 
 
+               /* if (userSubscription.equalsIgnoreCase("FREE") || userSubscription.equalsIgnoreCase("LITE")) {
+                    showAlertDialouge();
+                } else {
+
+                }*/
+            }
+        }
+    }
+
+    //Method for goto Settings Page
+    private void gotoSettings() {
+        if (getActivity() != null) {
             SettingsFragment sf = new SettingsFragment();
             Bundle arguments = new Bundle();
             arguments.putString("prime_card", "location");
@@ -1680,50 +1734,129 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             FragmentTransaction trans = mang.beginTransaction().addToBackStack(null);
             trans.replace(R.id.container, sf);
             trans.commit();
-        } else if (user_subcription.equals("BlueBP")) {
-            likesDisplay();
-        } else {
-            likesDisplay();
         }
-
     }
 
-    private void likesDisplay() {
-
+    private void showAlertDialouge() {
         LayoutInflater inflater = getLayoutInflater();
-        View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
+        //View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);//Alert dialogue previous one
+        View alertLayout = inflater.inflate(R.layout.alert_subscription_layout, null);
 
-        final Button save_btn = (Button) alertLayout.findViewById(R.id.purchase_btn);
+        btnProceed    = alertLayout.findViewById(R.id.btn_proceed);
+        btnCancel     = alertLayout.findViewById(R.id.btn_sub_cancel);
+        RecyclerView rc_view  = alertLayout.findViewById(R.id.rcv_subscribe);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rc_view.setLayoutManager(layoutManager);
+        btnProceed.setClickable(false);
+
+        if (userPlanList != null && userPlanList.size() > 0 ) {
+            subscriptionAdapter = new SubscriptionAdapter(getContext(),userPlanList, this,userSubscription);
+            rc_view.setAdapter(subscriptionAdapter);
+        }
         android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-
-
         // Initialize a new foreground color span instance
         ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
-
-
         alert.setView(alertLayout);
         alert.setCancelable(true);
-
-
         final android.app.AlertDialog dialog = alert.create();
-
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
             public void onShow(DialogInterface arg0) {
-
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
             }
         });
         dialog.show();
-
-        save_btn.setOnClickListener(new View.OnClickListener() {
+        btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
             }
         });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
+
+    @Override
+    public void changeViews() {
+        btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
+        btnProceed.setTextColor(getResources().getColor(R.color.white));
+    }
+
+    @Override
+    public void changeSubLayout(SubscriptonPlansModel subscriptonPlansModel) {
+        LayoutInflater inflater = getLayoutInflater();
+        layoutAlert = inflater.inflate(R.layout.subscription_free_layout, null);
+        LinearLayoutManager linearManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        topHeaderLayout = layoutAlert.findViewById(R.id.top_sub_header);
+        headerTitle     = layoutAlert.findViewById(R.id.head_sub_title);
+        tv_price        = layoutAlert.findViewById(R.id.tv_price);
+        tv_regPrice     = layoutAlert.findViewById(R.id.tv_subPrice);
+        btnBuy          = layoutAlert.findViewById(R.id.sub_buy);
+        rcview_sub_item = layoutAlert.findViewById(R.id.rcview_sub);
+        premius_header  = layoutAlert.findViewById(R.id.recruit_header);
+
+        rcview_sub_item.setLayoutManager(linearManager);
+        //benefitModelList.clear();
+        benefitModelList =subscriptonPlansModel.getBenefitList();
+        if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("FREE")) {
+            //layoutAlert = inflater.inflate(R.layout.subscription_free_layout, null);
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_free));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee());
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }else if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("LITE")) {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_lite));
+            headerTitle.setText(R.string.lite_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_lite));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        } else if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("STANDARD")) {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_standard));
+            headerTitle.setText(R.string.standard_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_std));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }else {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_rec));
+            headerTitle.setText(R.string.recruiting_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_recruit));
+            premius_header.setVisibility(View.VISIBLE);
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+        alert.setView(layoutAlert);
+        alert.setCancelable(true);
+        final android.app.AlertDialog dialog = alert.create();
+
+        dialog.show();
+
+    }
+
+
 
     public void sendMessage(final String recipients, final String title, final String body, final String icon) {
 
@@ -1848,6 +1981,94 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         alertDialog.show();
 
     }
+
+    private void getuserSubscriptions() {
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_USER_ACTIVE_PLANS, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    Log.d(TAG, "onUserPlansResponse: ");
+                    SingleSubscriptionModel subscriptionModel = new Gson().fromJson(response.toString(),SingleSubscriptionModel.class);
+                    userSubList = subscriptionModel.getSubItemModel();
+                    userAddonsList=subscriptionModel.getAddonsItemModel();
+                    saveSubscription();
+                    getSubscriptionPlans();//Information for all subscriptions
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            Log.d("SubscriptionRequest", queue.toString());
+            queue.add(request);
+        }
+
+    }
+
+
+
+    private void saveSubscription() {
+
+        if (userSubList != null && userSubList.size() > 0) {
+            for (int i = 0; i < userSubList.size() ; i++) {
+                if (getActivity() != null) {
+                    new PrefManager(getContext()).saveSubscription(userSubList.get(i).getPlanName(),userSubList.get(i).getRemainingDays());
+                }
+            }
+
+        }
+    }
+
+    //Get all subscriptions
+    private void getSubscriptionPlans() {
+        plansModelList.clear();
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTION_PLANS, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    Log.d(TAG, "onResponse: "+response.toString());
+                    Type type = new TypeToken<List<SubscriptonPlansModel>>() {}.getType();
+                    plansModelList = new Gson().fromJson(response.toString(),type);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("SubscriptionRequest", arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+        }
+
+    }
+
 
    /* @Override
     public void onItemClick(Object item, int position) {

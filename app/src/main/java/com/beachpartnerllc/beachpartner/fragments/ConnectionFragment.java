@@ -102,9 +102,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         initActivity(view);
+
         return view;
-
-
     }
 
     @Override
@@ -141,10 +140,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
         txtv_athlete.setOnClickListener(this);
         txtv_coach.setOnClickListener(this);
-        //activeAthletTab();
         getConnections();
-
-
     }
 
 
@@ -731,6 +727,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     for (int i = 0; i < athleteList.size(); i++) {
                         if (athleteList.get(i).getBpFinderModel().getBpf_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
                             searchList.add(athleteList.get(i));
+
                         }
                     }
                 }

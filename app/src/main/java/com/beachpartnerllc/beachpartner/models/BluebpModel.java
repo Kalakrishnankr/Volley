@@ -6,7 +6,7 @@ import java.util.List;
  * Created by user on 2/4/18.
  */
 
-public class BluebpModel {
+public class BluebpModel  {
     private String bp_userId;
     private String bp_name;
     private String bp_age;
