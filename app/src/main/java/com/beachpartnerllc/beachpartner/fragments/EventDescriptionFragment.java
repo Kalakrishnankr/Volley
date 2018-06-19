@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -115,7 +116,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             //Case1:coming from MAstercalendar to Eventdescription--->disabling event register button till the team size is met that is when the event status is Active
             if (regType != null ) {
                 if (regType.equalsIgnoreCase("Organizer")) {
-                    if(event.getEventStatus().equalsIgnoreCase("Active")|| event.getEventStatus().equalsIgnoreCase("Registered")){
+                    if(event.getEventStatus().equalsIgnoreCase("Active")){
                         btnInvitePartner.setClickable(false);
                         btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                     }
@@ -135,6 +136,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
                     btnInvitePartner.setClickable(true);
                     btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_buttons));
+
+                    if(event.getEventStatus().equalsIgnoreCase("Registered")){
+                        athleteGoingBtn.setClickable(false);
+                        athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                    }
                 }
 //                    if(!event.getEventStatus().equalsIgnoreCase("Registered")){
 //                        athleteGoingBtn.setClickable(true);
@@ -209,8 +215,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             if(new Date(event_regEnd).before(new  Date())){
                 btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                 btnInvitePartner.setClickable(false);
-                btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
-                btnBack.setClickable(false);
             }
 
         }
@@ -361,6 +365,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             public void onResponse(JSONObject response) {
                 if (response != null) {
                     try {
+                        invitationList.clear();
                         Event eventModel = new Gson().fromJson(response.toString(), Event.class);
                         invitationList = eventModel.getInvitationList();
                         transparentAlert.dismiss();
@@ -421,7 +426,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     private void viewPartners() {
         partnerList.clear();
-
         if (invitationList != null && invitationList.size() > 0) {
             if(invitationList.get(0).getEventStatus().equalsIgnoreCase("Active")||invitationList.get(0).getEventStatus().equalsIgnoreCase("Registered")){
                 btnInvitePartner.setClickable(false);
@@ -453,10 +457,10 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         final TextView textView_status = layout.findViewById(R.id.partner_status);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
         listView.setLayoutManager(layoutManager);
-
+        partnerResultModelList.clear();
         if(invitationList!=null) {
             if(invitationList.size()>0){
-                partnerResultModelList.clear();
+
                 if (!invitationList.get(0).getInviterUserId().equalsIgnoreCase(user_id)) {
                     MyCalendarPartnerModel partnerObject1 = new MyCalendarPartnerModel();
                     partnerObject1.setpartner_Id(invitationList.get(0).getInviterUserId());
@@ -588,10 +592,11 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         Calendar cal = Calendar.getInstance();
         Intent intent = new Intent(Intent.ACTION_INSERT);
         intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra("beginTime", cal.getTimeInMillis());
+        intent.putExtra("beginTime", event.getEventStartDate());
         intent.putExtra("allDay", false);
 //        intent.putExtra("rrule", "FREQ=DAILY");
-        intent.putExtra("endTime", cal.getTimeInMillis());
+        intent.putExtra("endTime", event.getEventEndDate());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION,event.getEventLocation());
         intent.putExtra("title", eventName);
         startActivityForResult(intent, 1);
 

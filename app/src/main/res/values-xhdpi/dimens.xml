@@ -30,5 +30,7 @@
 	<dimen name="circular_img_marginTop_coach_profile">20dp</dimen>
     <dimen name="circular_img_marginLeft_coach_profile">10dp</dimen>
     <dimen name="coach_name_marginTop_coach_profile">20dp</dimen>
+	<dimen name="event_description_height">550dp</dimen>
+
 
 </resources>

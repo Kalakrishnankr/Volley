@@ -11,7 +11,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/event_description_height"
         android:orientation="vertical"
         android:weightSum="2.5">
 
@@ -33,7 +33,7 @@
             android:layout_weight="1.2"
             android:background="@drawable/location_bg"
             android:orientation="vertical"
-            android:weightSum="4.6">
+            android:weightSum="4.7">
 
             <!--Event Heading Inside Map-->
             <LinearLayout
@@ -251,8 +251,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="0.6"
-                android:layout_margin="5dp"
+                android:layout_weight="0.7"
+                android:layout_margin="10dp"
                 android:orientation="horizontal"
                 android:weightSum="10">
 
@@ -279,12 +279,15 @@
                             android:layout_height="0dp"
                             android:text="Start Date:"
                             android:gravity="center"
+                            android:textSize="@dimen/text_size"
                             android:layout_weight="0.5"/>
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/tv_startDate"
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:gravity="center"
+                            android:textSize="@dimen/text_size"
+                            android:layout_marginRight="5dp"
                             android:layout_weight="0.5"/>
 
                     </LinearLayout>
@@ -317,13 +320,16 @@
                             android:layout_width="match_parent"
                             android:layout_height="0dp"
                             android:text="End Date:"
+                            android:textSize="@dimen/text_size"
                             android:gravity="center"
                             android:layout_weight="0.5"/>
                         <com.beachpartnerllc.beachpartner.CustomTextView
                             android:id="@+id/tv_endDate"
                             android:layout_width="match_parent"
+                            android:textSize="@dimen/text_size"
                             android:layout_height="0dp"
                             android:gravity="center"
+                            android:layout_marginLeft="5dp"
                             android:layout_weight="0.5"/>
 
 
