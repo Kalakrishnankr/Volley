@@ -659,7 +659,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventStartDate(obj.getLong("eventStartDate"));
                             event.setEventEndDate(obj.getLong("eventEndDate"));
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
-                            event.setEventEndDate(obj.getLong("eventRegEndDate"));
+                            event.setEventRegEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
 
 

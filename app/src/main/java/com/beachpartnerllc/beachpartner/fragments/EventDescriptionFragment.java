@@ -215,6 +215,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
             if(new Date(event_regEnd).before(new  Date())){
                 btnInvitePartner.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                 btnInvitePartner.setClickable(false);
+
+//                athleteGoingBtn.setClickable(false);
+//                athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
             }
 
         }
@@ -579,6 +582,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
     @Override
     public void onResume() {
         super.onResume();
+        transparentAlert.dismiss();
         if (registerCompleted) {
             //alertAddToSystemCalendar();
             //successfulRegisterationPrompt();
