@@ -249,17 +249,6 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         final Button   btn_cancel   =   (Button) layout.findViewById(R.id.btn_ntfy_cancel);
         final Button   btn_notify   =   (Button) layout.findViewById(R.id.btn_ntfy_ok);
 
-       /* txtv_notify.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean hasFocus) {
-                if (hasFocus) {
-                    Toast.makeText(getContext(), "Opend", Toast.LENGTH_SHORT).show();
-                }else {
-                    Toast.makeText(getContext(), "Closed", Toast.LENGTH_SHORT).show();
-
-                }
-            }
-        });*/
 
         /*button notify*/
         btn_notify.setOnClickListener(new View.OnClickListener() {

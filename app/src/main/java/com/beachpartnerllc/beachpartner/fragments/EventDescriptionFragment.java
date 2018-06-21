@@ -491,12 +491,13 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         if (partnerResultModelList.size() > 0) {
             PopupAdapter cardArrayAdapter = new PopupAdapter(getActivity(), partnerResultModelList);
             listView.setAdapter(cardArrayAdapter);
+            alertDialog.show();
         }
         else{
             Toast.makeText(tabActivity, "You have no partners", Toast.LENGTH_SHORT).show();
         }
 
-        alertDialog.show();
+
 
     }
     private void registerEvent(JSONObject object) {
