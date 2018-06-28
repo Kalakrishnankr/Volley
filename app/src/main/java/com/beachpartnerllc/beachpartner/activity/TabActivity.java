@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.fragments.AcceptRejectRequestFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
 import com.beachpartnerllc.beachpartner.fragments.CoachHomeFragment;
@@ -268,6 +269,15 @@ public class TabActivity extends AppCompatActivity  {
             }
             else if(value.equalsIgnoreCase("hifive")){
                 activateHiFiveFragment();
+            }
+            else if(value.equalsIgnoreCase("INVITATION")){
+                AcceptRejectRequestFragment acceptRejectRequestFragment = new AcceptRejectRequestFragment();
+                acceptRejectRequestFragment.setArguments(bundle);
+                getSupportActionBar().setTitle("Invitation");
+                FragmentManager arMang = getSupportFragmentManager();
+                FragmentTransaction arTrans = arMang.beginTransaction();
+                arTrans.replace(R.id.container, acceptRejectRequestFragment, YOUR_FRAGMENT_STRING_TAG);
+                arTrans.commit();
             }
             else {
                     if (tips) {

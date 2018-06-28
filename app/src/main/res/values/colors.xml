@@ -28,6 +28,7 @@
     <color name="price_ring">#01177e</color>
     <color name="free_sub">#c98cf9eb</color>
     <color name="transparent_blue">#900a19e1</color>
+    <color name="blue_183f51b5">#183f51b5</color>
 
 
 
@@ -53,6 +54,9 @@
     <color name="dot_light_screen7">#93c6fd</color>
     <color name="dot_light_screen8">#e4b5fc</color>
     <color name="dot_light_screen9">#f98da5</color>
+    <color name="grey_cccccc">#cccccc</color>
+    <color name="grey_aaaaaa">#aaaaaa</color>
+    <color name="grey_848484">#848484</color>
 
 
     <array name="array_dot_active">

@@ -173,6 +173,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     private MultipartBody.Part fileImageToUpload,filevideoToUploaded;
     Bundle bundle;
     private  BpFinderModel finderModel;
+    TabActivity tabActivity;
 
 
 
@@ -1035,6 +1036,13 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         Log.d("Request", jsonObjectRequest.toString());
         requestQueue.add(jsonObjectRequest);
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        tabActivity = (TabActivity)getActivity();
+        tabActivity.getSupportActionBar().setTitle(finderModel.getBpf_firstName()+"'s profile");
     }
 
     private void InfoCancelChange() {

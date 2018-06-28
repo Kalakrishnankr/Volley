@@ -1018,7 +1018,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             Log.d("RequestSend", request.toString());
             requestQueue.add(request);
         }
-
+        else{
+            b.dismiss();
+        }
 
     }
 
@@ -1109,6 +1111,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             RequestQueue queue = Volley.newRequestQueue(getActivity());
             Log.d("RejectRequest", queue.toString());
             queue.add(jrequest);
+        }
+        else{
+            b.dismiss();
         }
 
     }
@@ -1228,6 +1233,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             Log.d("HifiRequestSend", requests.toString());
             requestQueue.add(requests);
         }
+        else{
+            b.dismiss();
+        }
 
 
     }
@@ -1302,6 +1310,9 @@ public class BPFinderFragment extends Fragment implements MyInterface {
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
             //Log.d("RequestSend", request.toString());
             requestQueue.add(request);
+        }
+        else{
+            b.dismiss();
         }
 
     }
@@ -1857,4 +1868,6 @@ public class BPFinderFragment extends Fragment implements MyInterface {
         bluebpListSecond.remove(position);
         blueBProfileAdapter.notifyDataSetChanged();
     }*/
+
+
 }

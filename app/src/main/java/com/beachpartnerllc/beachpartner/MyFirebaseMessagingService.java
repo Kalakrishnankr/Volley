@@ -104,6 +104,9 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             else if(redirect.equalsIgnoreCase("ACTIVE")){
                 intent.putExtra("reDirectPage", "HOME");
             }
+            else if(redirect.equalsIgnoreCase("INVITATION")){
+                intent.putExtra("reDirectPage", "INVITATION");
+            }
             else{
                 intent.putExtra("reDirectPage", "hifive");
             }

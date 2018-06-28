@@ -31,6 +31,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.HeaderDecoration;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.PopupAdapter;
@@ -193,6 +194,10 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         LinearLayoutManager manager = new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false);
         suggestionAdapter = new SuggestionAdapter(getContext(),listInvitation,this);
         rcv_requests.setLayoutManager(manager);
+        LayoutInflater inflater = getLayoutInflater();
+        View vHeader = inflater.inflate(R.layout.recycler_header_decoration, null);
+        HeaderDecoration headerDecoration = new HeaderDecoration(vHeader,false, 0.5f, 0.5f,1);
+        rcv_requests.addItemDecoration(headerDecoration);
         rcv_requests.setAdapter(suggestionAdapter);
         suggestionAdapter.notifyDataSetChanged();
     }
@@ -325,14 +330,14 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     p.setColor(Color.parseColor("#388E3C"));
                     RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());
                     c.drawRect(background,p);
-                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit);
+                    icon = BitmapFactory.decodeResource(getResources(), R.mipmap.overlay_right);
                     RectF icon_dest = new RectF((float) itemView.getLeft() + width ,(float) itemView.getTop() + width,(float) itemView.getLeft()+ 2*width,(float)itemView.getBottom() - width);
                     c.drawBitmap(icon,null,icon_dest,p);
                 } else {
                     p.setColor(Color.parseColor("#D32F2F"));
                     RectF background = new RectF((float) itemView.getRight() + dX, (float) itemView.getTop(),(float) itemView.getRight(), (float) itemView.getBottom());
                     c.drawRect(background,p);
-                    icon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_edit);
+                    icon = BitmapFactory.decodeResource(getResources(), R.mipmap.dislike);
                     RectF icon_dest = new RectF((float) itemView.getRight() - 2*width ,(float) itemView.getTop() + width,(float) itemView.getRight() - width,(float)itemView.getBottom() - width);
                     c.drawBitmap(icon,null,icon_dest,p);
                 }

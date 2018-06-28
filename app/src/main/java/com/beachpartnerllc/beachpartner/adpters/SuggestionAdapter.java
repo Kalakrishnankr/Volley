@@ -12,6 +12,7 @@ import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.utils.AcceptRejectInvitationListener;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,6 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         View itemview = LayoutInflater.from(parent.getContext()).inflate(R.layout.suggestions_item,parent,false);
         MyViewHolder MyViewHolder = new MyViewHolder(itemview);
         return MyViewHolder;
@@ -42,7 +42,6 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
-
         final InvitationsModel eventModel = sList.get(position);
         holder.txtv_team.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,7 +52,7 @@ public class SuggestionAdapter extends RecyclerView.Adapter<SuggestionAdapter.My
         });
         if (eventModel.getInviterImageUrl() != null) {
             if (!eventModel.getInviterImageUrl().equals("null")) {
-                Glide.with(mContext).load(eventModel.getInviterImageUrl()).into(holder.imgv_pic);
+                Glide.with(mContext).load(eventModel.getInviterImageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(holder.imgv_pic);
             }else {
                 holder.imgv_pic.setImageResource(R.drawable.ic_person);
             }

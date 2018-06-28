@@ -400,6 +400,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     @Override
     public void onResume() {
         super.onResume();
+        if (bundle != null) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.getSupportActionBar().setTitle(finderModel.getBpf_firstName()+"'s profile");
+        }
+
     }
 
     @Override

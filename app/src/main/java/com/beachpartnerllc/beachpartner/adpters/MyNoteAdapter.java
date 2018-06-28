@@ -20,6 +20,7 @@ import com.beachpartnerllc.beachpartner.models.InvitationsModel;
 import com.beachpartnerllc.beachpartner.models.MyCalendarPartnerModel;
 import com.beachpartnerllc.beachpartner.models.PartnerResultModel;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 
@@ -54,12 +55,12 @@ public class MyNoteAdapter extends RecyclerView.Adapter<MyNoteAdapter.PartnerLis
         if(model!=null){
                 if(model.getpartner_role().equalsIgnoreCase("Organizer")){
                     holder.tv_name.setText(model.getpartner_Name());
-                    Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.my_pic);
+                    Glide.with(mContext).load(model.getPartner_ImageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(holder.my_pic);
                     holder.tv_role.setVisibility(View.VISIBLE);
                 }
                 else{
                     holder.tv_name.setText(model.getpartner_Name());
-                    Glide.with(mContext).load(model.getPartner_ImageUrl()).into(holder.my_pic);
+                    Glide.with(mContext).load(model.getPartner_ImageUrl()).apply(RequestOptions.placeholderOf(R.mipmap.ic_user_img)).into(holder.my_pic);
                     holder.tv_role.setVisibility(View.GONE);
                 }
 

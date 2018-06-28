@@ -85,7 +85,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.MyViewHo
                 if (mContext instanceof TabActivity){
                     tabActivity = (TabActivity)mContext;
                 }
-                tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
+//                tabActivity.navigation.setSelectedItemId(R.id.navigation_more);
                 tabActivity.disableFloatButtons();
                 ChatFragmentPage chatFragmentPage = new ChatFragmentPage();
                 Bundle bundle = new Bundle();
