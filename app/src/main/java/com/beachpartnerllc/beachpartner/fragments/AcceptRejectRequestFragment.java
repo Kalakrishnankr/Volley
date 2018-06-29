@@ -101,7 +101,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_accept_reject_request, container, false);

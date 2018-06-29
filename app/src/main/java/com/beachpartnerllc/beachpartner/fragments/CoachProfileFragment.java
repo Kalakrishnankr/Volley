@@ -24,6 +24,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -231,6 +233,15 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         return view;
 
 
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity)getActivity();
+            tabActivity.setActionBarTitle("Profile");
+        }
     }
 
     private void setViewForConnectedUSer() {
@@ -934,7 +945,9 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
     public void onResume() {
         super.onResume();
         tabActivity = (TabActivity)getActivity();
-        tabActivity.getSupportActionBar().setTitle(finderModel.getBpf_firstName()+"'s profile");
+        if(finderModel!= null){
+            tabActivity.getSupportActionBar().setTitle(finderModel.getBpf_firstName()+"'s profile");
+        }
     }
 
     private void InfoCancelChange() {

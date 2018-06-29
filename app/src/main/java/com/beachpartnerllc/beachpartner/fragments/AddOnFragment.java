@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.AddonAdapter;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
@@ -45,6 +45,7 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
     private List<SubscriptonPlansModel>addonList = new ArrayList<>();
     private AddonAdapter addonAdapter;
     private AVLoadingIndicatorView progressBar;
+    private TabActivity tabActivity;
 
     public AddOnFragment() {
         // Required empty public constructor
@@ -59,7 +60,7 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_addon, container, false);
@@ -72,6 +73,8 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tabActivity = (TabActivity)getActivity();
+        tabActivity.getSupportActionBar().setTitle((R.string.app_name));
         usertoken = new PrefManager(getContext()).getToken();
         getSubscribedAddons();
     }
@@ -126,7 +129,7 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
 
     private void setAddonadapter() {
         progressBar.setVisibility(View.INVISIBLE);
-        if (addonList.size() > 0 && addonList != null) {
+        if ( addonList != null && addonList.size() > 0 ) {
             addonAdapter = new AddonAdapter(getContext(),addonList, this,null);
             addon_rcv.setAdapter(addonAdapter);
         }
@@ -144,7 +147,7 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
             case R.id.proceed_btn:
                 break;
             case R.id.cancel_btn:
-                Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Clicked", Toast.LENGTH_SHORT).show();
                 if (getActivity() != null) {
                     getActivity().onBackPressed();
                 }

@@ -488,10 +488,10 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        /*if (getActivity() instanceof TabActivity) {
+        if (getActivity() instanceof TabActivity) {
             tabActivity = (TabActivity)getActivity();
             tabActivity.setActionBarTitle("Profile");
-        }*/
+        }
         //setViews();
     }
 
