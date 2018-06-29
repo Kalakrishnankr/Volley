@@ -27,6 +27,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     NotificationManager notificationManager;
     String ADMIN_CHANNEL_ID="BeachPartner";
     private String redirect;
+    private String eventId;
     private static final String TAG = "MyFirebaseMsgService";
 
 
@@ -51,6 +52,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String title = data.get("title");
         String body = data.get("body");
         redirect = data.get("click_action");
+        eventId  = data.get("event_id");
 
 
         if(title!=null&&body!=null){
@@ -102,10 +104,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 intent.putExtra("reDirectPage", "HOME");
             }
             else if(redirect.equalsIgnoreCase("ACTIVE")){
-                intent.putExtra("reDirectPage", "HOME");
+                intent.putExtra("reDirectPage", "ACTIVE");
             }
             else if(redirect.equalsIgnoreCase("INVITATION")){
                 intent.putExtra("reDirectPage", "INVITATION");
+                intent.putExtra("event_id",eventId);
             }
             else{
                 intent.putExtra("reDirectPage", "hifive");

@@ -214,6 +214,7 @@ public class TabActivity extends AppCompatActivity  {
         userType = new PrefManager(getApplicationContext()).getUserType().trim();
         tips = new PrefManager(getApplicationContext()).getTips();
         String fcm = new PrefManager(getApplicationContext()).getFCMToken();
+        String eventId;
 
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
@@ -272,12 +273,24 @@ public class TabActivity extends AppCompatActivity  {
             }
             else if(value.equalsIgnoreCase("INVITATION")){
                 AcceptRejectRequestFragment acceptRejectRequestFragment = new AcceptRejectRequestFragment();
-                acceptRejectRequestFragment.setArguments(bundle);
+                Bundle invitationBundle = new Bundle();
+                eventId = (String) bundle.get("event_id");
+                invitationBundle.putString("event_id", eventId);
+                acceptRejectRequestFragment.setArguments(invitationBundle);
                 getSupportActionBar().setTitle("Invitation");
                 FragmentManager arMang = getSupportFragmentManager();
                 FragmentTransaction arTrans = arMang.beginTransaction();
                 arTrans.replace(R.id.container, acceptRejectRequestFragment, YOUR_FRAGMENT_STRING_TAG);
                 arTrans.commit();
+            }
+            else if(value.equalsIgnoreCase("ACTIVE")){
+                ConnectionFragment connectionFragment = new ConnectionFragment();
+                getSupportActionBar().setTitle("Connections");
+                FragmentManager connectionMngr = getSupportFragmentManager();
+                FragmentTransaction connectionTrans = connectionMngr.beginTransaction();
+                connectionTrans.replace(R.id.container, connectionFragment, YOUR_FRAGMENT_STRING_TAG);
+                connectionTrans.commit();
+                disableFloatButtons();
             }
             else {
                     if (tips) {

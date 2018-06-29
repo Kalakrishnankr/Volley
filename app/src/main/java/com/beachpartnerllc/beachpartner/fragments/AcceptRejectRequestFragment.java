@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -75,7 +76,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     private PrefManager prefManager;
     private String message;
     private static final String TAG = "AcceptRejectRequestFrag";
-
+    private AlertDialog transparentAlert;
 
     private ArrayList<PartnerResultModel>listPartner= new ArrayList<>();
     private ArrayList<InvitationsModel>listInvitation= new ArrayList<>();
@@ -129,7 +130,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        ForegroundLoader();
         if (getArguments() != null) {
             if(getArguments().getParcelable(AppConstants.EVENT_OBJECT)!=null){
                 eventResultModel = getArguments().getParcelable(AppConstants.EVENT_OBJECT);
@@ -137,6 +138,8 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
             if(getArguments().getSerializable("notAcceptedInvitee")!=null){
                 notAcceptedId   = getArguments().getSerializable("notAcceptedInvitee").toString();
             }
+            else if((getArguments().getString("event_id")!=null))
+                notAcceptedId = getArguments().getString("event_id");
             if (eventResultModel != null) {
                 suggestionList.clear();
                 suggestionList.add(eventResultModel);
@@ -200,6 +203,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         rcv_requests.addItemDecoration(headerDecoration);
         rcv_requests.setAdapter(suggestionAdapter);
         suggestionAdapter.notifyDataSetChanged();
+        transparentAlert.dismiss();
     }
 
     private void requestHandler(String notAcceptedId) {
@@ -212,6 +216,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     if (eventResultModel != null) {
                         suggestionList.clear();
                         suggestionList.add(eventResultModel);
+                        transparentAlert.dismiss();
                         setUpView();
                     }
 
@@ -222,6 +227,7 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
             @Override
             public void onErrorResponse(VolleyError error) {
                 String json = null;
+                transparentAlert.dismiss();
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
@@ -508,6 +514,16 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
         alertDialog.show();
     }
 
+    private void ForegroundLoader(){
+        android.app.AlertDialog.Builder dialogbar=new android.app.AlertDialog.Builder(getActivity());
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        transparentAlert = dialogbar.create();
+        transparentAlert.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        transparentAlert.show();
+    }
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
 

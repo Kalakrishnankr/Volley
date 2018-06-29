@@ -23,6 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_margin="5dp"
                 android:paddingRight="50dp"
+                android:paddingTop="15dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size"
                 android:textColor="@color/black"
@@ -38,7 +39,8 @@
                 android:layout_weight="5"
                 android:layout_below="@+id/tvContact"
                 android:layout_toRightOf="@+id/hifiveImg"
-                android:gravity="left|center" />
+                android:gravity="left|center"
+                android:visibility="gone"/>
 
             <ImageView
                 android:id="@+id/btn"
