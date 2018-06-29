@@ -196,7 +196,11 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         initActivity();
+
+
     }
+
+
 
 
     @Override
@@ -486,7 +490,7 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setFcmToken(userObj.getString("fcmToken"));
                                     //userDataModel.setAge(userObj.getString("age"));
                                     userDataModel.setUserType(userObj.getString("userType"));
-
+                                    new PrefManager(getApplicationContext()).saveSubscription(userObj.getString("subscriptionType"),null);
                                     JSONArray jsonArray = userObj.getJSONArray("subscriptions");
                                     if (jsonArray != null && jsonArray.length() > 0 ) {
                                         for(int i=0;i<jsonArray.length();i++){
@@ -511,7 +515,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation,subscribe);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation);
 
                                     SharedPreferences prefs = new PrefManager(getApplicationContext()).getSettingsData();
                                     if (prefs.getString("location",null) == null && prefs.getString("gender", null) == null) {
@@ -742,6 +746,8 @@ public class LoginActivity extends AppCompatActivity {
         never_got_email_tv.setMovementMethod(LinkMovementMethod.getInstance());
 
     }
+
+
     //Method for get Login user info
     /*private void getUserInfo() {
 

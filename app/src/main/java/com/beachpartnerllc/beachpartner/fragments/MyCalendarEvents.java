@@ -118,22 +118,22 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
 
     private void initViews(View view) {
 
-        myCal_eventname     =   (TextView) view.findViewById(R.id.my_event_name);
-        myCal_location      =   (TextView) view.findViewById(R.id.my_tv_location);
-        myCal_venue         =   (TextView) view.findViewById(R.id.my_tv_venue);
-        my_cal_team_size    =   (TextView) view.findViewById(R.id.my_tv_team_size);
+        myCal_eventname     =   view.findViewById(R.id.my_event_name);
+        myCal_location      =   view.findViewById(R.id.my_tv_location);
+        myCal_venue         =   view.findViewById(R.id.my_tv_venue);
+        my_cal_team_size    =   view.findViewById(R.id.my_tv_team_size);
 
-        myCal_eventadmin    =   (TextView) view.findViewById(R.id.my_tv_admin);
-        myCal_startDate     =   (TextView) view.findViewById(R.id.my_tv_startDate);
-        myCal_endDate       =   (TextView) view.findViewById(R.id.my_tv_endDate);
+        myCal_eventadmin    =   view.findViewById(R.id.my_tv_admin);
+        myCal_startDate     =   view.findViewById(R.id.my_tv_startDate);
+        myCal_endDate       =   view.findViewById(R.id.my_tv_endDate);
 
-        btn_myCalCourt      =   (Button) view.findViewById(R.id.my_btn_invite_partner);
-        btn_myCalBack       =   (Button) view.findViewById(R.id.my_btn_back);
+        btn_myCalCourt      =   view.findViewById(R.id.my_btn_invite_partner);
+        btn_myCalBack       =   view.findViewById(R.id.my_btn_back);
 
-        rcv_mycalendar      =   (RecyclerView) view.findViewById(R.id.rcv_partner_notes);
-        no_partners_txtv    =   (TextView) view.findViewById(R.id.no_partners_txtv);
-        loadingIndicatorView=   (AVLoadingIndicatorView)view.findViewById(R.id.progress_partners);
-        headingPartnersAthletes =(TextView)view.findViewById(R.id.heading_who_are_going);
+        rcv_mycalendar      =   view.findViewById(R.id.rcv_partner_notes);
+        no_partners_txtv    =   view.findViewById(R.id.no_partners_txtv);
+        loadingIndicatorView=   view.findViewById(R.id.progress_partners);
+        headingPartnersAthletes =view.findViewById(R.id.heading_who_are_going);
 
         if (userType.equalsIgnoreCase("Athlete")) {
             headingPartnersAthletes.setText("Event Partners");
@@ -147,18 +147,9 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         }
 
 
-//        Button change according to coach or athlete
-
-
-
-
+//      Button change according to coach or athlete
         btn_myCalCourt.setOnClickListener(this);
         btn_myCalBack.setOnClickListener(this);
-
-
-
-
-
     }
     private void setUpEventPartners(){
         loadingIndicatorView.setVisibility(View.GONE);
@@ -174,7 +165,6 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
                 partnerObject1.setpartner_role("Organizer");
                 partners.add(partnerObject1);//organizer
             }
-
             if(model.get(0).getPartnerList()!=null){
                 if(model.get(0).getPartnerList().size()>0){
                      tempModel = model.get(0).getPartnerList();
@@ -210,8 +200,6 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
             tabActivity.setActionBarTitle("Event Details");
         }
         getEvent(eventId);
-
-
     }
 
     @Override
@@ -223,7 +211,6 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
             case R.id.my_btn_back:
                 getActivity().onBackPressed();
                 break;
-
                 default:
                     break;
 
@@ -245,9 +232,9 @@ public class MyCalendarEvents extends Fragment implements View.OnClickListener {
         alert.setView(layout);
         final AlertDialog alertDialog  = alert.create();
 
-        final EditText txtv_notify  =   (EditText) layout.findViewById(R.id.edt_notify);
-        final Button   btn_cancel   =   (Button) layout.findViewById(R.id.btn_ntfy_cancel);
-        final Button   btn_notify   =   (Button) layout.findViewById(R.id.btn_ntfy_ok);
+        final EditText txtv_notify  =   layout.findViewById(R.id.edt_notify);
+        final Button   btn_cancel   =   layout.findViewById(R.id.btn_ntfy_cancel);
+        final Button   btn_notify   =   layout.findViewById(R.id.btn_ntfy_ok);
 
 
         /*button notify*/

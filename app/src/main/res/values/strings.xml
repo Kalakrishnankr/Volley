@@ -142,9 +142,10 @@
     <string name="invalid_key">The key you entered is not valid</string>
     <string name="hint_passord_size">Please enter password</string>
     <string name="hint_didnotmatch">Password does not match</string>
+    <string name="premium">(PREMIUM)</string>
 
 
-    <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile)will also be notified</string>
+    <string name="hint_court_assign_msg">Notifications will be sent to your team partners. Coaches in your connection list and parents (if linked to your profile) will also be notified.</string>
     <string name="reg_success_msg">To complete registration, please check your email and click on the activation link. </string>
     <string name="reg_success_return">Return to login</string>
     <string name="reg_success_never">I never got the email</string>
@@ -177,6 +178,10 @@
     <string name="lite_sub">LITE</string>
     <string name="recruiting_sub">RECRUITING</string>
     <string name="free_sub">FREE</string>
+    <string name="read_more">Read more</string>
+
+    <string name="sub_header">GET BEACH PARTNER PREMIUM</string>
+    <string name="sub_desc">This is a premium feature. Please subscribe to \n one of the below subscription types to be \n able to use this feature.</string>
 
     <string name="version">Beach Partner v44</string>
     <string name="no_tournament_requests_sent">No  Tournament requests sent</string>
@@ -199,4 +204,5 @@
     <string name="message_logout">Logout</string>
     <string name="no_internet">No internet connection</string>
     <string name="swipe_accept_or_reject_invitations">Swipe below items right or left to accept or reject invitations respectively</string>
+    <string name="current_plan">Current plan</string>
 </resources>

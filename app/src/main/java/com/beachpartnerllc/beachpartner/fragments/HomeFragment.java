@@ -1,5 +1,6 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -14,14 +15,17 @@ import android.support.v7.widget.LinearSnapHelper;
 import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SnapHelper;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,21 +38,29 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.adpters.BenefitListItemAdapter;
 import com.beachpartnerllc.beachpartner.adpters.CardAdapter;
 import com.beachpartnerllc.beachpartner.adpters.MessageAdapter;
 import com.beachpartnerllc.beachpartner.adpters.PartnerAdapter;
 import com.beachpartnerllc.beachpartner.adpters.ProfileAdapter;
+import com.beachpartnerllc.beachpartner.adpters.SubscriptionAdapter;
 import com.beachpartnerllc.beachpartner.calendar.compactcalendarview.domain.Event;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.models.BenefitModel;
 import com.beachpartnerllc.beachpartner.models.BpFinderModel;
 import com.beachpartnerllc.beachpartner.models.EventDetailsModel;
 import com.beachpartnerllc.beachpartner.models.EventResultModel;
 import com.beachpartnerllc.beachpartner.models.InvitationResponseModel;
 import com.beachpartnerllc.beachpartner.models.InvitationsModel;
+import com.beachpartnerllc.beachpartner.models.SingleSubscriptionModel;
+import com.beachpartnerllc.beachpartner.models.SubscriptionItemsModels;
+import com.beachpartnerllc.beachpartner.models.SubscriptonPlansModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.CheckPlan;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
+import com.beachpartnerllc.beachpartner.utils.SubClickInterface;
 import com.firebase.client.DataSnapshot;
 import com.firebase.client.Firebase;
 import com.firebase.client.FirebaseError;
@@ -71,24 +83,29 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import static com.beachpartnerllc.beachpartner.utils.CheckPlan.selectedIndex;
 
-public class HomeFragment extends Fragment implements View.OnClickListener,EventClickListner {
+
+public class HomeFragment extends Fragment implements View.OnClickListener,EventClickListner,SubClickInterface {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 
     private ImageView img_bpprofile,img_send,img_received;
     private FrameLayout likesCard;
-    private RecyclerView mRecyclerview,pRecyclerview,msgRecyclerview,parRecyclerview;
+    private RecyclerView mRecyclerview,pRecyclerview,msgRecyclerview,parRecyclerview,rcview_sub_item;
     CardAdapter adapter;
     MessageAdapter messageAdapter;
     PartnerAdapter partnerAdapter;
     ProfileAdapter profileAdapter;
+    SubscriptionAdapter subscriptionAdapter;
+    BenefitListItemAdapter benefitItemAdapter;
+    private Button btnProceed,btnCancel,btnBuy;
     private TabActivity tabActivity;
-    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes;
-    private AVLoadingIndicatorView progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts;
-    private String user_id,user_token,userType,no_likes_count,subScriptions,event_Id;
+    private TextView txt_head,txtv_notour,txtv_nomsgs,txtv_noreqsts,txtv_nobp,txtv_likes,headerTitle,tv_price,tv_regPrice;
+    private AVLoadingIndicatorView progressBar,progressBar_tour,progressBar_msg,progressBar_rqsts,prgressSub;
+    private String user_id,user_token,usertype,no_likes_count,subScriptions,event_Id;
     private PrefManager prefManager;
-    private LinearLayout ucoming_next,message_next,request_next;
+    private LinearLayout ucoming_next,message_next,request_next,topHeaderLayout;
     private LinearLayoutManager layoutManagerBluebp,layoutManagerUp,layoutManagerMsg,layoutmngerReqst;
     private static  boolean isblueBP = false;
     private static boolean isPartner = false;
@@ -101,12 +118,20 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private ArrayList<BpFinderModel> userList = new ArrayList<>();
     private List<EventDetailsModel>sendInvitationList = new ArrayList<>();
     private List<EventDetailsModel>receiveInvitationList = new ArrayList<>();
+    private List<SubscriptonPlansModel>plansModelList = new ArrayList<>();
+    private List<SubscriptonPlansModel>userPlanList = new ArrayList<>();
+    private List<SubscriptionItemsModels>userSubList = new ArrayList<>();
+    private List<SubscriptionItemsModels>userAddonsList = new ArrayList<>();
+    private List<BenefitModel>benefitModelList = new ArrayList<>();
     View ln_layout_tournamentrequestheader;
     View ln_layout_tournamentrequestcontent;
     private boolean isRequestSend = false;
     private boolean isRequestReceive =false;
+    private View layoutAlert;
+    private RelativeLayout premius_header;
     private static final String TAG = "HomeFragment";
     private List<InvitationsModel>inviteList = new ArrayList<InvitationsModel>();
+    SubscriptonPlansModel splanModels;
 
 
     public HomeFragment() {
@@ -132,12 +157,10 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         View  view= inflater.inflate(R.layout.fragment_home, container, false);
         initView(view);
         prefManager =  new PrefManager(getContext());
+        subScriptions= prefManager.getSubscriptionType();
         user_id     =  prefManager.getUserId();
         user_token  =  prefManager.getToken();
-        userType    =  prefManager.getUserType();
-        subScriptions = prefManager.getSubscriptionType();
-        //getBlueBP profes
-
+        usertype    =  prefManager.getUserType();
         return view;
     }
 
@@ -151,6 +174,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             tabActivity = (TabActivity)getActivity();
             tabActivity.getSupportActionBar().setTitle((R.string.app_name));
         }
+        getuserSubscriptions();//Get single user subscriptions
         getBluebpProfiles();//Method for getting all bluebp profiles
         getMyTournaments();//Method for getting my upcoming tournamentslist(upcoming tournament current date to future 5 months)
         getConnections();//Method for getting all blocked/unblocked connections
@@ -158,7 +182,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         setViewBasedOnUserType();
         getAllSendOrReceiveInvitation();//Method for getting send/Receive invitations
         //setUpMessage();
-
         /*getRequests();
         getPeopleWhoLiked();*/
 
@@ -217,24 +240,17 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         message_next.setOnClickListener(this);
         request_next.setOnClickListener(this);
 
-
-
         //Blue BP Adapter class
-
         layoutManagerBluebp = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         pRecyclerview.setLayoutManager(layoutManagerBluebp);
         pRecyclerview.setHasFixedSize(true);
 
-
         /*My upcoming tournaments*/
-
         layoutManagerUp = new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
         mRecyclerview.setLayoutManager(layoutManagerUp);
         mRecyclerview.setHasFixedSize(true);
 
-
         /*Message*/
-
         layoutManagerMsg = new LinearLayoutManager(getActivity(),LinearLayoutManager.HORIZONTAL,false);
         SnapHelper snaper = new LinearSnapHelper();
         snaper.attachToRecyclerView(msgRecyclerview);
@@ -243,23 +259,15 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         msgRecyclerview.setItemAnimator(new DefaultItemAnimator());
         msgRecyclerview.setHasFixedSize(true);
 
-
-
         /*Tournament Requests*/
         layoutmngerReqst =  new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false);
-        SnapHelper snap =   new PagerSnapHelper();
+        SnapHelper snap =   new LinearSnapHelper();
         snap.attachToRecyclerView(parRecyclerview);
         parRecyclerview.setLayoutManager(layoutmngerReqst);
         parRecyclerview.addItemDecoration(new GridSpacingItemDecoration(3, dpToPx(5), true));
         parRecyclerview.setItemAnimator(new DefaultItemAnimator());
         parRecyclerview.setHasFixedSize(true);
-
-
-
     }
-
-
-
 
     @Override
     public void onClick(View view) {
@@ -267,13 +275,42 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             case R.id.imgview_received:
                 txt_head.setText("Tournament Requests Received");
                 receiveInvitationTab();
-                //txtv_noreqsts.setText("No requests received");
                 break;
 
             case R.id.imgview_send:
-                txt_head.setText("Tournament Requests Sent");
-                sendInvitationTab();
-                //txtv_noreqsts.setText("No requests received");
+                if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+                    if (subScriptions != null) {
+                        if (subScriptions.equalsIgnoreCase(AppConstants.SUBSCIPTION_TYPE_ONE)) {
+                            showSubcriptionAlert();
+                        }else {
+                            txt_head.setText("Tournament Requests Sent");
+                            sendInvitationTab();
+                        }
+                    }
+                }
+                /*if (subScriptions != null) {
+                    if (CheckPlan.isPlanAvailable(plansModelList, subScriptions, AppConstants.BENIFIT_CODE_B12)) {
+                        userPlanList.clear();
+                        //Toast.makeText(tabActivity, "Selecetd index"+selectedIndex, Toast.LENGTH_SHORT).show();
+                        if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(subScriptions)) {
+                            txt_head.setText("Tournament Requests Sent");
+                            sendInvitationTab();
+                        } else {
+                            if (plansModelList.get(2).getPlanName().equalsIgnoreCase(subScriptions)) {
+                                txt_head.setText("Tournament Requests Sent");
+                                sendInvitationTab();
+                            } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(subScriptions)) {
+                                txt_head.setText("Tournament Requests Sent");
+                                sendInvitationTab();
+                            } else {
+                                showSubcriptionAlert();
+                            }
+                        }
+                        for (int i = selectedIndex; i < plansModelList.size(); i++) {
+                            userPlanList.add(plansModelList.get(i));
+                        }
+                    }
+                }*/
                 break;
             case R.id.no_of_likes_card:
                   likesDisplay();
@@ -299,52 +336,92 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Getting the number of likes
     private void likesDisplay() {
-
-        //if (subScriptions.equalsIgnoreCase("FREE") && subScriptions != null) {
+        /*if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
             //Api for getting
             getPeopleWhoLiked();
 
-        /*}else {
-            LayoutInflater inflater = getLayoutInflater();
-            View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);
-
-            final Button save_btn = alertLayout.findViewById(R.id.purchase_btn);
-            android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-            // Initialize a new foreground color span instance
-            ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
-            alert.setView(alertLayout);
-            alert.setCancelable(true);
-            final android.app.AlertDialog dialog = alert.create();
-            dialog.setOnShowListener(new DialogInterface.OnShowListener() {
-                @Override
-                public void onShow(DialogInterface arg0) {
-                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
-                    dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
-                }
-            });
-            dialog.show();
-            save_btn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
-
-
+        }else {
+            showSubcriptionAlert();
         }*/
+        if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+            if (subScriptions != null) {
+                if (CheckPlan.isPlanAvailable(plansModelList, subScriptions, AppConstants.BENIFIT_CODE_B14)) {
+                    userPlanList.clear();
+                    //Toast.makeText(tabActivity, "Selecetd index"+selectedIndex, Toast.LENGTH_SHORT).show();
+                    if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(subScriptions)) {
+                        getPeopleWhoLiked();
+                    } else {
+                        if (plansModelList.get(2).getPlanName().equalsIgnoreCase(subScriptions)) {
+                            getPeopleWhoLiked();
+                        } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(subScriptions)) {
+                            getPeopleWhoLiked();
+                        } else {
+                            for (int i = selectedIndex; i < plansModelList.size(); i++) {
+                                userPlanList.add(plansModelList.get(i));
+                            }
+                            showSubcriptionAlert();
+                        }
+                    }
 
-       /* if(userType=="Athlete"){
+                }
+            }
+        }
+    }
 
-            boolean isblueBP=true;
-            boolean isPartner=false;
-            BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
-            Bundle bundle = new Bundle();
-            //cPosition is the current positon
+    private void showSubcriptionAlert() {
 
-            bundle.putSerializable("bluebplist", likesList);
-            bpFinderFragment.setArguments(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
-        }*/
+        LayoutInflater inflater = getLayoutInflater();
+        //View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);//Alert dialogue previous one
+        View alertLayout = inflater.inflate(R.layout.alert_subscription_layout, null);
+
+        btnProceed    = alertLayout.findViewById(R.id.btn_proceed);
+        btnCancel     = alertLayout.findViewById(R.id.btn_sub_cancel);
+        prgressSub    = alertLayout.findViewById(R.id.progress_subscription);
+        RecyclerView rc_view  = alertLayout.findViewById(R.id.rcv_subscribe);
+        prgressSub.setVisibility(View.VISIBLE);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        rc_view.setLayoutManager(layoutManager);
+        btnProceed.setClickable(false);
+        userPlanList.clear();
+        if (plansModelList.size() > 0 && plansModelList != null) {
+            for (int i = 0; i <plansModelList.size() ; i++) {
+                if (!plansModelList.get(i).getPlanName().equalsIgnoreCase(subScriptions)) {
+                    userPlanList.add(plansModelList.get(i));
+                }
+            }
+            prgressSub.setVisibility(View.INVISIBLE);
+            subscriptionAdapter = new SubscriptionAdapter(getContext(),userPlanList,this,subScriptions);
+            rc_view.setAdapter(subscriptionAdapter);
+        }
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+        alert.setView(alertLayout);
+        alert.setCancelable(true);
+        final android.app.AlertDialog dialog = alert.create();
+        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+            @Override
+            public void onShow(DialogInterface arg0) {
+                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+            }
+        });
+        dialog.show();
+        btnProceed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                if (splanModels != null) {
+                    changeSubLayout(splanModels);
+                }
+            }
+        });
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
     }
 
     //view all event invitation list api //15-05-2018
@@ -368,7 +445,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                 progressBar_rqsts.setVisibility(View.INVISIBLE);
                 if (response != null) {
                     EventResultModel eventResultModel = new Gson().fromJson(response.toString(),EventResultModel.class);
-
                     if (eventResultModel != null) {
                         if (getActivity() != null) {
                             Bundle bundle = new Bundle();
@@ -513,6 +589,82 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         }
     }
 
+    @Override
+    public void changeViews(SubscriptonPlansModel plansModel) {
+        btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
+        btnProceed.setTextColor(getResources().getColor(R.color.white));
+        splanModels =plansModel;
+    }
+
+    /*Method for displaying subscriptons*/
+    public void changeSubLayout(SubscriptonPlansModel subscriptonPlansModel){
+
+        LayoutInflater inflater = getLayoutInflater();
+        layoutAlert = inflater.inflate(R.layout.subscription_free_layout, null);
+        LinearLayoutManager linearManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+        topHeaderLayout = layoutAlert.findViewById(R.id.top_sub_header);
+        headerTitle     = layoutAlert.findViewById(R.id.head_sub_title);
+        tv_price        = layoutAlert.findViewById(R.id.tv_price);
+        tv_regPrice     = layoutAlert.findViewById(R.id.tv_subPrice);
+        btnBuy          = layoutAlert.findViewById(R.id.sub_buy);
+        rcview_sub_item = layoutAlert.findViewById(R.id.rcview_sub);
+        premius_header  = layoutAlert.findViewById(R.id.recruit_header);
+
+        rcview_sub_item.setLayoutManager(linearManager);
+        //benefitModelList.clear();
+        benefitModelList =subscriptonPlansModel.getBenefitList();
+        if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("FREE")) {
+            //layoutAlert = inflater.inflate(R.layout.subscription_free_layout, null);
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_free));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee());
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }else if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("LITE")) {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_lite));
+            headerTitle.setText(R.string.lite_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_lite));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        } else if (subscriptonPlansModel.getPlanName().equalsIgnoreCase("STANDARD")) {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_standard));
+            headerTitle.setText(R.string.standard_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_std));
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }else {
+            tv_price.setText("$"+subscriptonPlansModel.getMonthlyCharge());
+            topHeaderLayout.setBackgroundDrawable(getResources().getDrawable(R.drawable.header_rec));
+            headerTitle.setText(R.string.recruiting_sub);
+            btnBuy.setBackgroundColor(getResources().getColor(R.color.butn_recruit));
+            premius_header.setVisibility(View.VISIBLE);
+            if (benefitModelList != null) {
+                tv_regPrice.setText("$"+subscriptonPlansModel.getRegFee()+" one-time");
+                benefitItemAdapter = new BenefitListItemAdapter(getContext(),benefitModelList);
+                rcview_sub_item.setAdapter(benefitItemAdapter);
+            }
+        }
+
+        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+        // Initialize a new foreground color span instance
+        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+        alert.setView(layoutAlert);
+        alert.setCancelable(true);
+        final android.app.AlertDialog dialog = alert.create();
+
+        dialog.show();
+    }
+
 
    /* Grid item spacing and padding */
 
@@ -646,7 +798,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
                         try {
                             JSONObject object = response.getJSONObject(i);
-
                             JSONObject obj = object.getJSONObject("event");
                             Event event = new Event();
                             event.setEventId(obj.getString("id"));
@@ -661,9 +812,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             event.setEventRegStartdate(obj.getLong("eventRegStartDate"));
                             event.setEventRegEndDate(obj.getLong("eventRegEndDate"));
                             event.setEventAdmin(obj.getString("eventAdmin"));
-
-
-
 
                             JSONArray contacts = new JSONArray(object.getString("invitationList"));
                             Type type = new TypeToken<List<InvitationsModel>>(){}.getType();
@@ -1153,6 +1301,92 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             }
         }
 
+    }
+
+    //Method for getting logged user subscriptions
+    private void getuserSubscriptions() {
+        JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_USER_ACTIVE_PLANS, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (response != null) {
+                    Log.d(TAG, "onUserPlansResponse: ");
+                    SingleSubscriptionModel subscriptionModel = new Gson().fromJson(response.toString(),SingleSubscriptionModel.class);
+                    userSubList = subscriptionModel.getSubItemModel();
+                    userAddonsList=subscriptionModel.getAddonsItemModel();
+                    saveSubscription();
+                    getSubscriptionPlans();//Information for all subscriptions
+
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        if (getActivity() != null) {
+            RequestQueue queue = Volley.newRequestQueue(getActivity());
+            Log.d("SubscriptionRequest", queue.toString());
+            queue.add(request);
+        }
+
+    }
+
+
+
+    private void saveSubscription() {
+        if (userSubList != null && userSubList.size() > 0) {
+            for (int i = 0; i < userSubList.size() ; i++) {
+                if (getActivity() != null) {
+                    new PrefManager(getContext()).saveSubscription(userSubList.get(i).getPlanName(), userSubList.get(i).getRemainingDays());
+                }
+            }
+
+        }
+    }
+
+    //Get all subscriptions
+    private void getSubscriptionPlans() {
+        plansModelList.clear();
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_SUBSCRIPTION_PLANS, null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                if (response != null) {
+                    Log.d(TAG, "onResponse: "+response.toString());
+                    Type type = new TypeToken<List<SubscriptonPlansModel>>() {}.getType();
+                    plansModelList = new Gson().fromJson(response.toString(),type);
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + user_token);
+                //headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+
+            }
+
+        };
+        if (getActivity() != null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+            Log.d("SubscriptionRequest", arrayRequest.toString());
+            requestQueue.add(arrayRequest);
+        }
     }
 
     private String trimMessage(String json, String detail) {

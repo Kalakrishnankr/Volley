@@ -113,7 +113,7 @@ public class CoachHomeFragment extends Fragment implements View.OnClickListener 
         user_id         =  prefManager.getUserId();
         user_token      =  prefManager.getToken();
         userType        = prefManager.getUserType();
-        userSubscription= prefManager.getSubscription();
+        userSubscription= prefManager.getSubscriptionType();
 
         return view;
 

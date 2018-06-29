@@ -298,7 +298,6 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                     suggestionAdapter.removeItem(position);
                     if (!suggestionList.isEmpty()) {
                         EventResultModel last = suggestionList.get(suggestionList.size()-1);
-
                     }
                     //undoLayout.setVisibility(View.VISIBLE);
                 }
@@ -331,7 +330,6 @@ public class AcceptRejectRequestFragment extends Fragment implements AcceptRejec
                 View itemView = viewHolder.itemView;
                 float height = (float) itemView.getBottom() - (float) itemView.getTop();
                 float width = height / 3;
-
                 if(dX > 0){
                     p.setColor(Color.parseColor("#388E3C"));
                     RectF background = new RectF((float) itemView.getLeft(), (float) itemView.getTop(), dX,(float) itemView.getBottom());

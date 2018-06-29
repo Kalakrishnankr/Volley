@@ -21,8 +21,10 @@ import android.widget.ToggleButton;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.utils.AppConstants;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import io.apptik.widget.MultiSlider;
 
@@ -124,9 +126,7 @@ public class SettingsFragment extends Fragment {
         btnFemale.setTextOn("Female");
         btnMale.setTextOn("Male");
 
-        addLocation();
-
-
+        List<String> stateList = AppConstants.getstatelist();
         dataAdapter = new ArrayAdapter<String>(getActivity(), R.layout.spinner_style_bp, stateList);
         spinner_location.setAdapter(dataAdapter);
         spinner_location.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -327,57 +327,5 @@ public class SettingsFragment extends Fragment {
 
     }
 
-    public void addLocation() {
-        stateList.add("Alabama");
-        stateList.add("Alaska");
-        stateList.add("Arizona");
-        stateList.add("Arkansas");
-        stateList.add("California");
-        stateList.add("Colorado");
-        stateList.add("Connecticut");
-        stateList.add("Delaware");
-        stateList.add("Florida");
-        stateList.add("Georgia");
-        stateList.add("Hawaii");
-        stateList.add("Idaho");
-        stateList.add("Illinois");
-        stateList.add("Indiana");
-        stateList.add("Iowa");
-        stateList.add("Kansas");
-        stateList.add("Kentucky");
-        stateList.add("Louisiana");
-        stateList.add("Maine");
-        stateList.add("Maryland");
-        stateList.add("Massachusetts");
-        stateList.add("Michigan");
-        stateList.add("Minnesota");
-        stateList.add("Mississippi");
-        stateList.add("Missouri");
-        stateList.add("Montana");
-        stateList.add("Nebraska");
-        stateList.add("Nevada");
-        stateList.add("New Hampshire");
-        stateList.add("New Jersey");
-        stateList.add("New Mexico");
-        stateList.add("New York");
-        stateList.add("North Carolina");
-        stateList.add("North Dakota");
-        stateList.add("Ohio");
-        stateList.add("Oklahoma");
-        stateList.add("Oregon");
-        stateList.add("Pennsylvania");
-        stateList.add("Rhode Island");
-        stateList.add("South Carolina");
-        stateList.add("South Dakota");
-        stateList.add("Tennessee");
-        stateList.add("Texas");
-        stateList.add("Utah");
-        stateList.add("Vermont");
-        stateList.add("Virginia");
-        stateList.add("Washington");
-        stateList.add("West Virginia");
-        stateList.add("Wisconsin");
-        stateList.add("Wyoming");
-    }
 
 }

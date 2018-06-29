@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
+import com.beachpartnerllc.beachpartner.fragments.AddOnFragment;
 import com.beachpartnerllc.beachpartner.fragments.AcceptRejectRequestFragment;
 import com.beachpartnerllc.beachpartner.fragments.BPFinderFragment;
 import com.beachpartnerllc.beachpartner.fragments.CalendarFragment;
@@ -32,6 +33,7 @@ import com.beachpartnerllc.beachpartner.fragments.HomeFragment;
 import com.beachpartnerllc.beachpartner.fragments.MessageFragment;
 import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.SettingsFragment;
+import com.beachpartnerllc.beachpartner.fragments.SubscriptionFragment;
 
 public class TabActivity extends AppCompatActivity  {
 
@@ -405,6 +407,24 @@ public class TabActivity extends AppCompatActivity  {
                 intentTips.putExtra("reDirectPage", "help");
                 startActivity(intentTips);
 //                finish();
+                break;
+
+            case R.id.subscription:
+                SubscriptionFragment subscriptionFragment = new SubscriptionFragment();
+                FragmentManager mnger = getSupportFragmentManager();
+                FragmentTransaction subscriptionTrans = mnger.beginTransaction().addToBackStack(null);
+                subscriptionTrans.replace(R.id.container, subscriptionFragment, YOUR_FRAGMENT_STRING_TAG);
+                subscriptionTrans.commit();
+                disableFloatButtons();
+                break;
+
+            case R.id.addOns:
+                AddOnFragment addOnFragment = new AddOnFragment();
+                FragmentManager manager = getSupportFragmentManager();
+                FragmentTransaction transaction = manager.beginTransaction().addToBackStack(null);
+                transaction.replace(R.id.container, addOnFragment, YOUR_FRAGMENT_STRING_TAG);
+                transaction.commit();
+                disableFloatButtons();
                 break;
             case R.id.logout:
                 //Toast.makeText(this, "Clicked LogOut", Toast.LENGTH_SHORT).show();

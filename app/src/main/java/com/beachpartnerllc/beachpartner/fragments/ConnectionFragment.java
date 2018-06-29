@@ -169,7 +169,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-     /*Method for Active Coach Tab*/
+    /*Method for Active Coach Tab*/
 
     private void activeCoachTab() {
         isAthleteTab = false;
@@ -349,8 +349,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }else{
-                txtv_noconnection.setVisibility(View.VISIBLE);
-            }
+                    txtv_noconnection.setVisibility(View.VISIBLE);
+                }
             }
 
 
@@ -368,7 +368,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                       blockPerson(personid,person_name);
+                        blockPerson(personid,person_name);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {

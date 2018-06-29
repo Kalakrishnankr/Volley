@@ -30,22 +30,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private String eventId;
     private static final String TAG = "MyFirebaseMsgService";
 
-
-//    public void onMessageReceived(RemoteMessage remoteMessage) {
-
-//        Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-//        Notification notification = new Notification.Builder(getApplicationContext())
-//                .setContentTitle(remoteMessage.getNotification().getTitle())
-//                .setContentText(remoteMessage.getNotification().getBody())
-//                .setSmallIcon(R.mipmap.ic_launcher)
-//                .setSound(defaultSoundUri)
-//                .build();
-//        NotificationManagerCompat manager = NotificationManagerCompat.from(getApplicationContext());
-//        manager.notify(1, notification);
-
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
        super.onMessageReceived(remoteMessage);
         Log.d(TAG, "From: " + remoteMessage.getData().size()); // for the data size
         final Map<String, String> data = remoteMessage.getData();
@@ -60,28 +46,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 sendNotificationData(title, body); //send notification to user
             }
         }
-//        if(remoteMessage.getNotification()!=null){
-//
-//            sendNotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()); //send notification to user
-//        }
-
-//        Toast.makeText(this, "You just got a hi Five", Toast.LENGTH_SHORT).show();
     }
-
-//    @RequiresApi(api = Build.VERSION_CODES.O) private void setupChannels()
-//    { CharSequence adminChannelName = "BeachPartner";
-//    NotificationChannel adminChannel;
-//    adminChannel = new NotificationChannel(ADMIN_CHANNEL_ID, adminChannelName, NotificationManager.IMPORTANCE_HIGH);
-//    adminChannel.enableLights(true);
-//    adminChannel.setLightColor(Color.RED);
-//    adminChannel.enableVibration(true);
-//    if (notificationManager != null)
-//        { notificationManager.createNotificationChannel(adminChannel);
-//        }
-//    }
-
-
-
 
     /**
      * Handle time allotted to BroadcastReceivers.
@@ -134,6 +99,4 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0 , notificationBuilder.build());
     }
-
-
 }

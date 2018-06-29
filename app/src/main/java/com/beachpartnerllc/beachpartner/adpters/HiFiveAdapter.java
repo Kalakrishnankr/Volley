@@ -118,7 +118,7 @@ public class HiFiveAdapter extends BaseAdapter implements ListAdapter {
                   Bundle bundle = new Bundle();
                   bundle.putParcelable(AppConstants.BP_PROFILE, hiFiveList.get(position));
                   bpFinderFragment.setArguments(bundle);
-                activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
+                  activity.getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
             }
         });
 
