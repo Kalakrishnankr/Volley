@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/txtv_rcv_header"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:background="@color/blue_183f51b5"
+    android:gravity="center"
+    android:padding="16dp"
+    android:text="@string/swipe_accept_or_reject_invitations"
+    android:textColor="@color/grey_848484"
+    android:textSize="12sp">
+
+</TextView>
