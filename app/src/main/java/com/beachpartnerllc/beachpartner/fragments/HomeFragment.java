@@ -58,6 +58,7 @@ import com.beachpartnerllc.beachpartner.models.SubscriptionItemsModels;
 import com.beachpartnerllc.beachpartner.models.SubscriptonPlansModel;
 import com.beachpartnerllc.beachpartner.models.SwipeResultModel;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
+import com.beachpartnerllc.beachpartner.utils.CheckPlan;
 import com.beachpartnerllc.beachpartner.utils.EventClickListner;
 import com.beachpartnerllc.beachpartner.utils.SubClickInterface;
 import com.firebase.client.DataSnapshot;
@@ -81,6 +82,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+
+import static com.beachpartnerllc.beachpartner.utils.CheckPlan.selectedIndex;
 
 
 public class HomeFragment extends Fragment implements View.OnClickListener,EventClickListner,SubClickInterface {
@@ -128,6 +131,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     private RelativeLayout premius_header;
     private static final String TAG = "HomeFragment";
     private List<InvitationsModel>inviteList = new ArrayList<InvitationsModel>();
+    SubscriptonPlansModel splanModels;
 
 
     public HomeFragment() {
@@ -178,7 +182,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         setViewBasedOnUserType();
         getAllSendOrReceiveInvitation();//Method for getting send/Receive invitations
         //setUpMessage();
-
         /*getRequests();
         getPeopleWhoLiked();*/
 
@@ -333,26 +336,36 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
 
     //Getting the number of likes
     private void likesDisplay() {
-
-        if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
+        /*if (subScriptions.equalsIgnoreCase("Prime") && subScriptions != null) {
             //Api for getting
             getPeopleWhoLiked();
 
         }else {
             showSubcriptionAlert();
-        }
-
-       /* if(userType=="Athlete"){
-            boolean isblueBP=true;
-            boolean isPartner=false;
-            BPFinderFragment bpFinderFragment =new BPFinderFragment(isblueBP,isPartner);
-            Bundle bundle = new Bundle();
-            //cPosition is the current positon
-
-            bundle.putSerializable("bluebplist", likesList);
-            bpFinderFragment.setArguments(bundle);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, bpFinderFragment).commit();
         }*/
+        if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+            if (subScriptions != null) {
+                if (CheckPlan.isPlanAvailable(plansModelList, subScriptions, AppConstants.BENIFIT_CODE_B14)) {
+                    userPlanList.clear();
+                    //Toast.makeText(tabActivity, "Selecetd index"+selectedIndex, Toast.LENGTH_SHORT).show();
+                    if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(subScriptions)) {
+                        getPeopleWhoLiked();
+                    } else {
+                        if (plansModelList.get(2).getPlanName().equalsIgnoreCase(subScriptions)) {
+                            getPeopleWhoLiked();
+                        } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(subScriptions)) {
+                            getPeopleWhoLiked();
+                        } else {
+                            for (int i = selectedIndex; i < plansModelList.size(); i++) {
+                                userPlanList.add(plansModelList.get(i));
+                            }
+                            showSubcriptionAlert();
+                        }
+                    }
+
+                }
+            }
+        }
     }
 
     private void showSubcriptionAlert() {
@@ -398,6 +411,9 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if (splanModels != null) {
+                    changeSubLayout(splanModels);
+                }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -574,13 +590,13 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
     }
 
     @Override
-    public void changeViews() {
+    public void changeViews(SubscriptonPlansModel plansModel) {
         btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
         btnProceed.setTextColor(getResources().getColor(R.color.white));
+        splanModels =plansModel;
     }
 
     /*Method for displaying subscriptons*/
-    @Override
     public void changeSubLayout(SubscriptonPlansModel subscriptonPlansModel){
 
         LayoutInflater inflater = getLayoutInflater();
@@ -590,7 +606,7 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
         headerTitle     = layoutAlert.findViewById(R.id.head_sub_title);
         tv_price        = layoutAlert.findViewById(R.id.tv_price);
         tv_regPrice     = layoutAlert.findViewById(R.id.tv_subPrice);
-        btnBuy          =  layoutAlert.findViewById(R.id.sub_buy);
+        btnBuy          = layoutAlert.findViewById(R.id.sub_buy);
         rcview_sub_item = layoutAlert.findViewById(R.id.rcview_sub);
         premius_header  = layoutAlert.findViewById(R.id.recruit_header);
 

@@ -7,6 +7,5 @@ import com.beachpartnerllc.beachpartner.models.SubscriptonPlansModel;
  */
 
 public interface SubClickInterface {
-    void changeViews();
-    void changeSubLayout(SubscriptonPlansModel plansModel);
+    void changeViews(SubscriptonPlansModel plansModel);
 }

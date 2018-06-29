@@ -28,8 +28,8 @@ public class CheckPlan {
 
     private static boolean call(List<BenefitModel> benefitList, String benefitCode) {
         for (int j = 0; j < benefitList.size(); j++) {
-            if (benefitList.get(j).getBenefitName().equalsIgnoreCase(benefitCode)) {
-                if (benefitList.get(j).getBenefitStatus().equalsIgnoreCase("Limited") || benefitList.get(j).getBenefitStatus().equalsIgnoreCase("Available")) {
+                if (benefitList.get(j).getBenefitName().trim().equalsIgnoreCase(benefitCode)) {
+                if (benefitList.get(j).getBenefitStatus().trim().equalsIgnoreCase("Limited") || benefitList.get(j).getBenefitStatus().trim().equalsIgnoreCase("Available")) {
                     return true;
                 }
             }

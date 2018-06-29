@@ -102,8 +102,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         token = new PrefManager(getContext()).getToken();
         user_id = new PrefManager(getContext()).getUserId();
         initActivity(view);
-
         return view;
+
+
     }
 
     @Override
@@ -140,7 +141,10 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         rcv_conn.setItemAnimator(new DefaultItemAnimator());
         txtv_athlete.setOnClickListener(this);
         txtv_coach.setOnClickListener(this);
+        //activeAthletTab();
         getConnections();
+
+
     }
 
 
@@ -165,7 +169,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     }
 
-     /*Method for Active Coach Tab*/
+    /*Method for Active Coach Tab*/
 
     private void activeCoachTab() {
         isAthleteTab = false;
@@ -345,8 +349,8 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     rcv_conn.setAdapter(adapter);
                     adapter.notifyDataSetChanged();
                 }else{
-                txtv_noconnection.setVisibility(View.VISIBLE);
-            }
+                    txtv_noconnection.setVisibility(View.VISIBLE);
+                }
             }
 
 
@@ -364,7 +368,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                       blockPerson(personid,person_name);
+                        blockPerson(personid,person_name);
                     }
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
@@ -378,17 +382,19 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         AlertDialog alert=alertadd.create();
         alert.show();
 
+
     }
 
 
     //Api for block person
 
     private void blockPerson(String personid, final String person_name){
-
+        b.show();
         JsonObjectRequest request = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.BLOCK_PERSON + personid, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
+                    b.cancel();
                     String status_res = response.getString("status");
                     if (status_res.equals("Blocked")) {
                         Toast.makeText(getContext(), " You have blocked "+person_name , Toast.LENGTH_SHORT).show();
@@ -407,6 +413,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
+                    b.cancel();
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
@@ -433,6 +440,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                         default:
                             break;
                     }
+                }
+                else{
+                    b.cancel();
                 }
 
             }
@@ -472,16 +482,19 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
         AlertDialog alert=alertadd.create();
         alert.show();
+
     }
 
     //Api for unblock person
     private void unBlockPerson(String persId, final String persName){
+        b.show();
         JsonObjectRequest  jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UNBLOCK_PERSON + persId, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
                             try {
+                                b.cancel();
                                 String unblockres_status =response.getString("status");
                                 if (unblockres_status.equals("Active")) {
                                     Toast.makeText(getActivity(), "You have unblocked "+persName, Toast.LENGTH_SHORT).show();
@@ -500,6 +513,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;
                 if (response != null && response.data != null) {
+                    b.cancel();
                     switch (response.statusCode) {
                         case 401:
                             json = new String(response.data);
@@ -525,6 +539,9 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                         default:
                             break;
                     }
+                }
+                else{
+                    b.cancel();
                 }
             }
         }){
@@ -727,7 +744,6 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
                     for (int i = 0; i < athleteList.size(); i++) {
                         if (athleteList.get(i).getBpFinderModel().getBpf_firstName().toLowerCase().contains(textSearch.toLowerCase())) {
                             searchList.add(athleteList.get(i));
-
                         }
                     }
                 }

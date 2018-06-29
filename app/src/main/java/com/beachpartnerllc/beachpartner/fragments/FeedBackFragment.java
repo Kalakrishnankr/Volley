@@ -87,7 +87,6 @@ public class FeedBackFragment extends Fragment {
 			@Override
 			public void onProgressChanged(WebView view, int progress) {
 				progressBar.setProgress(progress);
-
 			}
 			@Override
 			public boolean onShowFileChooser(WebView webView, ValueCallback<Uri[]> filePathCallback, FileChooserParams fileChooserParams) {
@@ -116,7 +115,6 @@ public class FeedBackFragment extends Fragment {
 		});
 
 		webview.setWebViewClient(new WebViewClient() {
-
 			@Override
 			public boolean shouldOverrideUrlLoading(WebView view, String url) {
 				view.loadUrl(url);
@@ -127,16 +125,12 @@ public class FeedBackFragment extends Fragment {
 			public void onPageStarted(WebView view, String url, Bitmap favicon) {
 				super.onPageStarted(view, url, favicon);
 				progressBar.setVisibility(View.VISIBLE);
-				
-				
 			}
-			
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				progressBar.setVisibility(View.GONE);
 			}
 		});
-		
 		progressBar.setVisibility(View.INVISIBLE);
 	}
 

@@ -70,6 +70,7 @@ public class SubscriptionFragment extends Fragment implements SubClickInterface 
     private BenefitListItemAdapter benefitItemAdapter;
     private RecyclerView rc_view;
     private TabActivity tabActivity;
+    SubscriptonPlansModel splanModels;
     public SubscriptionFragment() {
         // Required empty public constructor
     }
@@ -104,7 +105,8 @@ public class SubscriptionFragment extends Fragment implements SubClickInterface 
         btnProceed.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                if(splanModels!=null)
+                subscriptionsModels(splanModels);
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -208,7 +210,9 @@ public class SubscriptionFragment extends Fragment implements SubClickInterface 
         if (plansModelList.size() > 0 && plansModelList != null) {
             prgressSub.setVisibility(View.INVISIBLE);
             subscriptionAdapter = new SubscriptionAdapter(getContext(),plansModelList, this,subscription);
+            subscriptionAdapter.notifyDataSetChanged();
             rc_view.setAdapter(subscriptionAdapter);
+
         }
     }
 
@@ -260,15 +264,12 @@ public class SubscriptionFragment extends Fragment implements SubClickInterface 
 //    }
 
     @Override
-    public void changeViews() {
+    public void changeViews(SubscriptonPlansModel plansModel) {
         btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
         btnProceed.setTextColor(getResources().getColor(R.color.white));
+        splanModels = plansModel;
     }
 
-    @Override
-    public void changeSubLayout(SubscriptonPlansModel plansModel) {
-        subscriptionsModels(plansModel);
-    }
     //Method for subscrptionsModels
     private void subscriptionsModels(SubscriptonPlansModel subscriptonPlansModel) {
         LayoutInflater inflater = getLayoutInflater();

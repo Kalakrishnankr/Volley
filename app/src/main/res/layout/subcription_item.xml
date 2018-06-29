@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="6dp"
+    app:cardCornerRadius="4dp"
+    app:contentPadding="6dp"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -32,20 +42,31 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textStyle="bold"
-        android:textColor="@color/orange"
+        android:textColor="@color/dark_orange"
         android:layout_marginTop="20dp"
         android:layout_marginRight="30dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
+        android:id="@+id/txtv_currentplan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:textColor="@color/dark_orange"
+        android:gravity="left"
+        android:layout_marginLeft="30dp"
+        android:textAlignment="textStart"
+        app:layout_constraintTop_toBottomOf="@+id/txtv_payment"/>
+
+    <TextView
         android:id="@+id/txtv_desc"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
         android:layout_marginTop="8dp"
-        android:gravity="center"
+        android:gravity="top"
         android:textAlignment="textStart"
-        app:layout_constraintTop_toBottomOf="@+id/txtv_subscription" />
+        app:layout_constraintTop_toBottomOf="@+id/txtv_currentplan" />
 
     <TextView
         android:id="@+id/txtv_readMore"
@@ -56,7 +77,9 @@
         android:textAlignment="center"
         android:textStyle="bold"
         android:textColor="@color/btn_sub"
+        app:layout_constraintTop_toBottomOf="@+id/txtv_desc"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 </android.support.constraint.ConstraintLayout>
+</android.support.v7.widget.CardView>

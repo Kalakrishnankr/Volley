@@ -133,14 +133,9 @@ public class AddOnFragment extends Fragment implements SubClickInterface, View.O
     }
 
     @Override
-    public void changeViews() {
+    public void changeViews(SubscriptonPlansModel plansModel) {
         btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
         btnProceed.setTextColor(getResources().getColor(R.color.white));
-    }
-
-    @Override
-    public void changeSubLayout(SubscriptonPlansModel plansModel) {
-
     }
 
     @Override

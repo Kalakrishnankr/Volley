@@ -27,7 +27,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private String user_subscription;
     private RadioButton lastCheckedRB = null;
     private SubClickInterface clickInterface;
-
+    private boolean isExpanded = false;
+    int pos;
 
     public SubscriptionAdapter(Context context, List<SubscriptonPlansModel> plansModelList, SubClickInterface subClickInterface,String subscription) {
 
@@ -50,13 +51,20 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         final SubscriptonPlansModel plansModel = modelArrayList.get(position);
         if (plansModel != null) {
             holder.txt_subscibe.setText(plansModel.getPlanName());
-            holder.txt_payment.setText("$"+plansModel.getMonthlyCharge()+" /month");
+            if (plansModel.getMonthlyCharge().equalsIgnoreCase("0")) {
+                holder.txt_payment.setText("");
+            }else {
+                holder.txt_payment.setText("$"+plansModel.getMonthlyCharge()+" /month");
+            }
             holder.txt_desc.setText(plansModel.getPlanDescription());
         }
         if (user_subscription != null) {
             if (!user_subscription.equalsIgnoreCase("null")) {
-                if (plansModel != null && user_subscription.equalsIgnoreCase(plansModel.getPlanName()))
-                    holder.img_toggle.setChecked(true);
+                if (plansModel != null && plansModel.getPlanName().equalsIgnoreCase(user_subscription)){
+                    holder.txtvCurrentPlan.setText(R.string.current_plan);
+                    holder.img_toggle.setVisibility(View.INVISIBLE);
+                }
+
             }
         }
         holder.img_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -68,16 +76,26 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 }
                 //store the clicked radiobutton
                 lastCheckedRB = checked_rb;
-                clickInterface.changeViews();//call interface to change the view
+                clickInterface.changeViews(plansModel);//call interface to change the view
             }
         });
         holder.txtReadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickInterface.changeSubLayout(plansModel);
+                isExpanded=!isExpanded;
+                if(isExpanded){
+                    ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
+                    params.height = 400;
+                    holder.txt_desc.setLayoutParams(params);
+                    holder.txtReadMore.setText("Read less");
+                }else {
+                    ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
+                    params.height = 0;
+                    holder.txt_desc.setLayoutParams(params);
+                    holder.txtReadMore.setText(R.string.read_more);
+                }
             }
         });
-
 
     }
 
@@ -87,7 +105,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView txt_subscibe,txt_payment,txt_desc,txtReadMore;
+        public TextView txt_subscibe,txt_payment,txt_desc,txtReadMore,txtvCurrentPlan;
         public AppCompatRadioButton img_toggle;
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -97,6 +115,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
             txt_payment  = itemView.findViewById(R.id.txtv_payment);
             img_toggle   = itemView.findViewById(R.id.img_toggle);
             txtReadMore  = itemView.findViewById(R.id.txtv_readMore);
+            txtvCurrentPlan = itemView.findViewById(R.id.txtv_currentplan);
         }
     }
 }

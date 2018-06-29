@@ -3,8 +3,8 @@ package com.beachpartnerllc.beachpartner.fragments;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.arch.lifecycle.ViewModelProviders;
-import android.graphics.Color;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -28,7 +28,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -68,7 +67,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Type;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -129,6 +127,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     private FilterViewModel filterViewModel;
     private LinearLayout top_tabs,calendar_llt,eventHeader_llt,eventRecycler_llt,container_llt;
     public ArrayAdapter<String> adapterEventTypes,adapterYear,adapterMonths,adapterStates,adapterSubEvents,adapterRegion;
+    private SubscriptonPlansModel splanModels;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -212,55 +211,22 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
-                   if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
+                   if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH) && !isMycal ) {
                         if (CheckPlan.isPlanAvailable(plansModelList, subScriptionPlan, AppConstants.BENIFIT_CODE_B6)) {
-                            userPlanList.clear();
-                            //Toast.makeText(tabActivity, "Selecetd index" + selectedIndex, Toast.LENGTH_SHORT).show();
-                            if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
-                                rview.getRecycledViewPool().clear();
-                                if(toDayEvents.size()!=0){
-                                    rview.setVisibility(View.VISIBLE);
-                                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
-                                    rview.setAdapter(eventsAdapter);
-                                    rview.invalidate();
-                                    eventsAdapter.notifyDataSetChanged();
-                                } else{
-                                    rview.setVisibility(View.GONE);
-                                    tview_no_events.setVisibility(View.VISIBLE);
-                                }
-                            } else {
-                                if (plansModelList.get(2).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
-                                    rview.getRecycledViewPool().clear();
-                                    if(toDayEvents.size()!=0){
-                                        rview.setVisibility(View.VISIBLE);
-                                        eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
-                                        rview.setAdapter(eventsAdapter);
-                                        rview.invalidate();
-                                        eventsAdapter.notifyDataSetChanged();
-                                    } else{
-                                        rview.setVisibility(View.GONE);
-                                        tview_no_events.setVisibility(View.VISIBLE);
-                                    }
-                                } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
-                                    if(toDayEvents.size()!=0){
-                                        rview.setVisibility(View.VISIBLE);
-                                        eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
-                                        rview.setAdapter(eventsAdapter);
-                                        rview.invalidate();
-                                        eventsAdapter.notifyDataSetChanged();
-                                    } else{
-                                        rview.setVisibility(View.GONE);
-                                        tview_no_events.setVisibility(View.VISIBLE);
-                                    }
-                                } else {
-                                    showAlertDialouge();
-                                }
-                            }
-                            for (int i = selectedIndex; i < plansModelList.size(); i++) {
-                                userPlanList.add(plansModelList.get(i));
-                            }
+                            checkEventShow();
                         }
-                    }
+                    }else {
+                       if(toDayEvents.size()!=0){
+                           rview.setVisibility(View.VISIBLE);
+                           eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                           rview.setAdapter(eventsAdapter);
+                           rview.invalidate();
+                           eventsAdapter.notifyDataSetChanged();
+                       } else{
+                           rview.setVisibility(View.GONE);
+                           tview_no_events.setVisibility(View.VISIBLE);
+                       }
+                   }
                 }
             }
 
@@ -268,9 +234,7 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 //Log.d(TAG, "Month was scrolled to: " + firstDayOfNewMonth);
                 tview_month.setText(dateFormatForMonth.format(compactCalendarView.getFirstDayOfCurrentMonth()));
-
                 toDayEvents.clear();
-
                 List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getFirstDayOfCurrentMonth());
                 if (bookingsFromMap != null) {
                     for (int i = 0; i < bookingsFromMap.size(); i++) {
@@ -279,19 +243,24 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                             toDayEvents.add(bookingsFromMap.get(i));
                         }
                     }
-                    if(toDayEvents.size()!=0){
-                        rview.setVisibility(View.VISIBLE);
-                        eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
-                        rview.setAdapter(eventsAdapter);
-                        rview.invalidate();
-                        eventsAdapter.notifyDataSetChanged();
-                    }
-                    else{
-                        rview.setVisibility(View.GONE);
-                        tview_no_events.setVisibility(View.VISIBLE);
-                    }
+                    //check method to show event
+                    if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH) && !isMycal ) {
+                        if (CheckPlan.isPlanAvailable(plansModelList, subScriptionPlan, AppConstants.BENIFIT_CODE_B6)) {
+                            checkEventShow();
+                        }
+                    }else {
+                        if (toDayEvents.size() != 0) {
+                            rview.setVisibility(View.VISIBLE);
+                            eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+                            rview.setAdapter(eventsAdapter);
+                            rview.invalidate();
+                            eventsAdapter.notifyDataSetChanged();
+                        } else {
+                            rview.setVisibility(View.GONE);
+                            tview_no_events.setVisibility(View.VISIBLE);
+                        }
 
-
+                    }
                 }
             }
 
@@ -301,6 +270,54 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         tview_date.setText("Events for " + dateFormat.format(new Date()));
 
 
+    }
+
+    private void checkEventShow() {
+        userPlanList.clear();
+        //Toast.makeText(tabActivity, "Selecetd index" + selectedIndex, Toast.LENGTH_SHORT).show();
+        if (plansModelList.get(selectedIndex).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
+            rview.getRecycledViewPool().clear();
+            if(toDayEvents.size()!=0){
+                rview.setVisibility(View.VISIBLE);
+                eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                rview.setAdapter(eventsAdapter);
+                rview.invalidate();
+                eventsAdapter.notifyDataSetChanged();
+            } else{
+                rview.setVisibility(View.GONE);
+                tview_no_events.setVisibility(View.VISIBLE);
+            }
+        } else {
+            if (plansModelList.get(2).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
+                rview.getRecycledViewPool().clear();
+                if(toDayEvents.size()!=0){
+                    rview.setVisibility(View.VISIBLE);
+                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                    rview.setAdapter(eventsAdapter);
+                    rview.invalidate();
+                    eventsAdapter.notifyDataSetChanged();
+                } else{
+                    rview.setVisibility(View.GONE);
+                    tview_no_events.setVisibility(View.VISIBLE);
+                }
+            } else if (plansModelList.get(3).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
+                if(toDayEvents.size()!=0){
+                    rview.setVisibility(View.VISIBLE);
+                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents,isMycal);
+                    rview.setAdapter(eventsAdapter);
+                    rview.invalidate();
+                    eventsAdapter.notifyDataSetChanged();
+                } else{
+                    rview.setVisibility(View.GONE);
+                    tview_no_events.setVisibility(View.VISIBLE);
+                }
+            } else {
+                showAlertDialouge();
+            }
+        }
+        for (int i = selectedIndex; i < plansModelList.size(); i++) {
+            userPlanList.add(plansModelList.get(i));
+        }
     }
 
     @Override
@@ -410,6 +427,9 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
+                if (splanModels != null) {
+                    subscriptionsModels(splanModels);
+                }
             }
         });
         btnCancel.setOnClickListener(new View.OnClickListener() {
@@ -424,10 +444,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     private void currentDateEventSetter() {
         if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
             if (subScriptionPlan != null && !subScriptionPlan.equalsIgnoreCase(AppConstants.SUBSCIPTION_TYPE_ONE)) {
-                if (dateFormat.format(compactCalendarView.getCurrentDate()).equalsIgnoreCase(dateFormat.format(new Date()))) {
-                    toDayEvents.clear();
-                    List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getCurrentDate());
-                    if (bookingsFromMap != null) {
+                showDefaultEvents();
+            }
+        }else {
+            showDefaultEvents();
+        }
+    }
+
+    private void showDefaultEvents() {
+        if (dateFormat.format(compactCalendarView.getCurrentDate()).equalsIgnoreCase(dateFormat.format(new Date()))) {
+            toDayEvents.clear();
+            List<Event> bookingsFromMap = compactCalendarView.getEvents(compactCalendarView.getCurrentDate());
+            if (bookingsFromMap != null) {
 
                 for (int i = 0; i < bookingsFromMap.size(); i++) {
 
@@ -435,24 +463,23 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                         toDayEvents.add(bookingsFromMap.get(i));
                     }
                 }
-                        if(toDayEvents.size()!= 0){
-                            rview.setVisibility(View.VISIBLE);
-                            eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
-                            rview.setAdapter(eventsAdapter);
-                            rview.invalidate();
-                            eventsAdapter.notifyDataSetChanged();
-                            tview_date.setText("Events for " + dateFormat.format(new Date()));
-                        }
-                        else{
-                            rview.setVisibility(View.GONE);
-                            tview_no_events.setVisibility(View.VISIBLE);
-                        }
-                    }
-
+                if(toDayEvents.size()!= 0){
+                    rview.setVisibility(View.VISIBLE);
+                    eventsAdapter = new EventsAdapter(getActivity(), toDayEvents, isMycal);
+                    rview.setAdapter(eventsAdapter);
+                    rview.invalidate();
+                    eventsAdapter.notifyDataSetChanged();
+                    tview_date.setText("Events for " + dateFormat.format(new Date()));
+                }
+                else{
+                    rview.setVisibility(View.GONE);
+                    tview_no_events.setVisibility(View.VISIBLE);
                 }
             }
+
         }
     }
+
     private void activeMasterTab() {
         tview_master.setTextColor(getResources().getColor(R.color.blueDark));
         tview_master.setBackgroundColor(getResources().getColor(R.color.white));
@@ -559,6 +586,8 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                             }
                         }
                     }
+                }else {
+                    showFilterBox();
                 }
                 break;
             default:
@@ -590,50 +619,14 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         stateList.clear();
         regionList.clear();
         /*Events*/
-
-        eventTypes.add("Please Select");
-        eventTypes.add("Junior");
-        eventTypes.add("College Showcase");
-        eventTypes.add("College Clinic");
-        eventTypes.add("National Tournament");
-        eventTypes.add("Adult");
-
+        List<String>eventTypes = AppConstants.getEventTypes();
         //List for junior
-
-        final List<String> juniorSubEvent = new ArrayList<>();
-        juniorSubEvent.add("Please Select");
-        juniorSubEvent.add("10U");
-        juniorSubEvent.add("12U");
-        juniorSubEvent.add("13U");
-        juniorSubEvent.add("14U");
-        juniorSubEvent.add("15U");
-        juniorSubEvent.add("16U");
-        juniorSubEvent.add("17U");
-        juniorSubEvent.add("18U");
-
-
-        //List For adult
-        final List<String> adultSubEvent = new ArrayList<>();
-        adultSubEvent.add("Please Select");
-        adultSubEvent.add("Unrated");
-        adultSubEvent.add("B");
-        adultSubEvent.add("A");
-        adultSubEvent.add("AA");
-        adultSubEvent.add("AAA");
-        adultSubEvent.add("Open");
-        adultSubEvent.add("CoEd");
-        adultSubEvent.add("CoEd Unrated");
-        adultSubEvent.add("CoEd B");
-        adultSubEvent.add("CoEd A");
-        adultSubEvent.add("CoEd AA");
-        adultSubEvent.add("CoEd AAA");
-        adultSubEvent.add("CoEd Open");
+        final List<String>juniorSubEvent = AppConstants.getJuniorSubEvents();
+        //List For adult sub events
+        final List<String>adultSubEvent = AppConstants.getAdultSubEvents();
 
         final List<String> subEventsNil = new ArrayList<>();
         subEventsNil.add("Not Applicable");
-
-
-
         adapterEventTypes = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, eventTypes);
         spinner_events.setAdapter(adapterEventTypes);
 
@@ -698,107 +691,13 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
                 "fonts/SanFranciscoTextRegular.ttf");
 
         /*State*/
-
-        stateList.add("Please Select");
-        stateList.add("Alabama");
-        stateList.add("Alaska");
-        stateList.add("Arizona");
-        stateList.add("Arkansas");
-        stateList.add("California");
-        stateList.add("Colorado");
-        stateList.add("Connecticut");
-        stateList.add("Delaware");
-        stateList.add("Florida");
-        stateList.add("Georgia");
-        stateList.add("Hawaii");
-        stateList.add("Idaho");
-        stateList.add("Illinois");
-        stateList.add("Indiana");
-        stateList.add("Iowa");
-        stateList.add("Kansas");
-        stateList.add("Kentucky");
-        stateList.add("Louisiana");
-        stateList.add("Maine");
-        stateList.add("Maryland");
-        stateList.add("Massachusetts");
-        stateList.add("Michigan");
-        stateList.add("Minnesota");
-        stateList.add("Mississippi");
-        stateList.add("Missouri");
-        stateList.add("Montana");
-        stateList.add("Nebraska");
-        stateList.add("Nevada");
-        stateList.add("New Hampshire");
-        stateList.add("New Jersey");
-        stateList.add("New Mexico");
-        stateList.add("New York");
-        stateList.add("North Carolina");
-        stateList.add("North Dakota");
-        stateList.add("Ohio");
-        stateList.add("Oklahoma");
-        stateList.add("Oregon");
-        stateList.add("Pennsylvania");
-        stateList.add("Rhode Island");
-        stateList.add("South Carolina");
-        stateList.add("South Dakota");
-        stateList.add("Tennessee");
-        stateList.add("Texas");
-        stateList.add("Utah");
-        stateList.add("Vermont");
-        stateList.add("Virginia");
-        stateList.add("Washington");
-        stateList.add("West Virginia");
-        stateList.add("Wisconsin");
-        stateList.add("Wyoming");
-
+        List<String>stateList = AppConstants.getstatelist();
         adapterStates = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, stateList);
-
         tv_state.setAdapter(adapterStates);
 
         //Region
-        regionList.add("Please Select");
-        regionList.add("Alaska Region");
-        regionList.add("Aloha Region");
-        regionList.add("Arizona Region");
-        regionList.add("Badger Region");
-        regionList.add("Bayou Region");
-        regionList.add("Carolina Region");
-        regionList.add("Chesapeake Region");
-        regionList.add("Columbia Empire Region");
-        regionList.add("Delta Region");
-        regionList.add("Evergreen Region");
-        regionList.add("Florida Region");
-        regionList.add("Garden Empire Region");
-        regionList.add("Gateway Region");
-        regionList.add("Great Lakes Region");
-        regionList.add("Great Plains Region");
-        regionList.add("Gulf Coast Region");
-        regionList.add("Heart of America Region");
-        regionList.add("Hoosier Region");
-        regionList.add("Intermountain Region");
-        regionList.add("Iowa Region");
-        regionList.add("Iroquois Empire Region");
-        regionList.add("Keystone Region");
-        regionList.add("Lakeshore Region");
-        regionList.add("Lone Star Region");
-        regionList.add("Moku O Keawe Region");
-        regionList.add("New England Region");
-        regionList.add("North Country Region");
-        regionList.add("North Texas Region");
-        regionList.add("Northern California Region");
-        regionList.add("Ohio Valley Region");
-        regionList.add("Oklahoma Region");
-        regionList.add("Old Dominion Region");
-        regionList.add("Palmetto Region");
-        regionList.add("Pioneer Region");
-        regionList.add("Puget Sound Region");
-        regionList.add("Rocky Mountain Region");
-        regionList.add("Southern Region");
-        regionList.add("Southern California Region");
-        regionList.add("Sun Country Region");
-        regionList.add("Western Empire Region");
-
-        adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
+        List<String>regionList = AppConstants.getregionList();
+                adapterRegion = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, regionList);
         tv_region.setAdapter(adapterRegion);
     }
 
@@ -1415,16 +1314,12 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
 
 
     @Override
-    public void changeViews() {
+    public void changeViews(SubscriptonPlansModel plansModel) {
         btnProceed.setBackgroundColor(getResources().getColor(R.color.btn_sub));
         btnProceed.setTextColor(getResources().getColor(R.color.white));
-    }
+        splanModels = plansModel;
 
-    @Override
-    public void changeSubLayout(SubscriptonPlansModel plansModel) {
-        subscriptionsModels(plansModel);
     }
-
     //Method for subscrptionsModels
     private void subscriptionsModels(SubscriptonPlansModel subscriptonPlansModel) {
         LayoutInflater inflater = getLayoutInflater();

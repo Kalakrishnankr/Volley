@@ -10,10 +10,8 @@ import android.net.Uri;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.beachpartnerllc.beachpartner.activity.LoginActivity;
-
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
-import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -28,6 +26,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String ADMIN_CHANNEL_ID="BeachPartner";
     private String redirect;
     private static final String TAG = "MyFirebaseMsgService";
+    private PrefManager prefManager;
 
 
 //    public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -44,20 +43,21 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
        super.onMessageReceived(remoteMessage);
-        Log.d(TAG, "From: " + remoteMessage.getData().size()); // for the data size
-        final Map<String, String> data = remoteMessage.getData();
-        String title = data.get("title");
-        String body = data.get("body");
-        redirect = data.get("click_action");
-
-
-        if(title!=null&&body!=null){
-            if(!title.equals("") && !body.equals("")){
-                sendNotificationData(title, body); //send notification to user
+        prefManager = new PrefManager(getApplicationContext());
+        boolean isLogin = prefManager.isUserLogedOut();
+        //if (!isLogin) {
+            Log.d(TAG, "From: " + remoteMessage.getData().size()); // for the data size
+            final Map<String, String> data = remoteMessage.getData();
+            String title = data.get("title");
+            String body = data.get("body");
+            redirect = data.get("click_action");
+            if(title!=null && body!=null){
+                if(!title.equals("") && !body.equals("")){
+                    sendNotificationData(title, body); //send notification to user
+                }
             }
-        }
+       // }
 //        if(remoteMessage.getNotification()!=null){
 //
 //            sendNotificationData(remoteMessage.getNotification().getTitle(), remoteMessage.getNotification().getBody()); //send notification to user

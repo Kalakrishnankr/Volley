@@ -260,34 +260,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 UserProfileModel tempFinderModel = finderModel.getUserProfile();
                 if (tempFinderModel != null) {
                     userCoachModel.setUserProfile(tempFinderModel);
-//                    userDataModel.setHeight(tempFinderModel.getUpf_height());
-//                    userDataModel.setCbvaPlayerNumber(tempFinderModel.getUpf_cbvaPlayerNumber());
-//                    userDataModel.setCbvaFirstName(tempFinderModel.getUpf_cbvaFirstName());
-//                    userDataModel.setCbvaLastName(tempFinderModel.getUpf_cbvaLastName());
-//                    userDataModel.setToursPlayedIn(tempFinderModel.getUpf_toursPlayedIn());
-//                    userDataModel.setTotalPoints(tempFinderModel.getUpf_totalPoints());
-//                    userDataModel.setHighSchoolAttended(tempFinderModel.getUpf_highSchoolAttended());
-//                    userDataModel.setCollageClub(tempFinderModel.getUpf_collageClub());
-//                    userDataModel.setIndoorClubPlayed(tempFinderModel.getUpf_indoorClubPlayed());
-//                    userDataModel.setCollegeIndoor(tempFinderModel.getUpf_collegeIndoor());
-//                    userDataModel.setCollegeBeach(tempFinderModel.getUpf_collegeBeach());
-//                    userDataModel.setTournamentLevelInterest(tempFinderModel.getUpf_tournamentLevelInterest());
-//                    userDataModel.setHighestTourRatingEarned(tempFinderModel.getUpf_highestTourRatingEarned());
-//                    userDataModel.setExperience(tempFinderModel.getUpf_experience());
-//                    userDataModel.setCourtSidePreference(tempFinderModel.getUpf_courtSidePreference());
-//                    userDataModel.setPosition(tempFinderModel.getUpf_position());
-//                    userDataModel.setWillingToTravel(tempFinderModel.getUpf_willingToTravel());
-//
-//                    userDataModel.setUsaVolleyballRanking(tempFinderModel.getUpf_usaVolleyballRanking());
-//                    userDataModel.setTopFinishes(tempFinderModel.getTopFinishes());
-//                    userDataModel.setCollage(tempFinderModel.getUpf_collage());
-//                    userDataModel.setDescription(tempFinderModel.getUpf_description());
-//                    userDataModel.setYearsRunning(tempFinderModel.getUpf_yearsRunning());
-//                    userDataModel.setNumOfAthlets(tempFinderModel.getUpf_numOfAthlets());
-//                    userDataModel.setProgramsOffered(tempFinderModel.getUpf_programsOffered());
-//                    userDataModel.setDivision(tempFinderModel.getUpf_division());
-//                    userDataModel.setFundingStatus(tempFinderModel.getUpf_fundingStatus());
-//                    userDataModel.setShareAthlets(tempFinderModel.getUpf_shareAthlets());
                 }
             }
         }catch (Exception e){
@@ -298,61 +270,47 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
 
     private void initView(final View view) {
-        profileImgLayout = (RelativeLayout) view.findViewById(R.id.profile_img_layout);
-        llMenuBasic = (LinearLayout) view.findViewById(R.id.llCoachMenuBasic);
-        llMenuMore = (LinearLayout) view.findViewById(R.id.llCoachMenuMore);
-        imgBgCoach  =   (ImageView) view.findViewById(R.id.img_bg_coach);
+        profileImgLayout    = view.findViewById(R.id.profile_img_layout);
+        llMenuBasic         = view.findViewById(R.id.llCoachMenuBasic);
+        llMenuMore          = view.findViewById(R.id.llCoachMenuMore);
+        imgBgCoach          = view.findViewById(R.id.img_bg_coach);
+        basic_info_tab      = view.findViewById(R.id.coach_basic_info_tab);
+        more_info_tab       = view.findViewById(R.id.coach_more_info_tab);
 
-        basic_info_tab = (TextView) view.findViewById(R.id.coach_basic_info_tab);
-        more_info_tab = (TextView) view.findViewById(R.id.coach_more_info_tab);
-
-        llBasicDetails = (LinearLayout) view.findViewById(R.id.llCoachBasicDetails);
-        llMoreDetails = (LinearLayout) view.findViewById(R.id.llCoachMoreInfoDetails);
-
-        viewBasic = (View) view.findViewById(R.id.viewCoachBasic);
-        viewMore = (View) view.findViewById(R.id.viewCoachMore);
-        imgProfile = (CircularImageView) view.findViewById(R.id.row_icon);
-        profileName = (TextView) view.findViewById(R.id.coachName);
+        llBasicDetails      = view.findViewById(R.id.llCoachBasicDetails);
+        llMoreDetails       = view.findViewById(R.id.llCoachMoreInfoDetails);
+        viewBasic           = view.findViewById(R.id.viewCoachBasic);
+        viewMore            = view.findViewById(R.id.viewCoachMore);
+        imgProfile          = view.findViewById(R.id.row_icon);
+        profileName         = view.findViewById(R.id.coachName);
 
         //For Basic Details
-
-        editFname = (EditText) view.findViewById(R.id.txtvFname);
-        editLname = (EditText) view.findViewById(R.id.txtvLname);
-        editGender = (EditText) view.findViewById(R.id.txtv_gender);
-        editDob = (EditText) view.findViewById(R.id.txtv_dob);
-        stateSpinner = (Spinner) view.findViewById(R.id.txtv_city_Cprofile);
-        editPhone = (EditText) view.findViewById(R.id.txtv_mobileno);
-//        editPassword    =   (EditText)view.findViewById(R.id.txtv_password);
-
-        basicBtnSave = (Button) view.findViewById(R.id.btnsave);
-        basicBtnCancel = (Button) view.findViewById(R.id.btncancel);
-
+        editFname           = view.findViewById(R.id.txtvFname);
+        editLname           = view.findViewById(R.id.txtvLname);
+        editGender          = view.findViewById(R.id.txtv_gender);
+        editDob             = view.findViewById(R.id.txtv_dob);
+        stateSpinner        = view.findViewById(R.id.txtv_city_Cprofile);
+        editPhone           = view.findViewById(R.id.txtv_mobileno);
+//        editPassword      = view.findViewById(R.id.txtv_password);
+        basicBtnSave        = view.findViewById(R.id.btnsave);
+        basicBtnCancel      = view.findViewById(R.id.btncancel);
         //Fore More Deatails
+        editCollege         = view.findViewById(R.id.txtv_college);
+        description         = view.findViewById(R.id.txtv_description);
+        years_running       = view.findViewById(R.id.txtv_years_running);
+        no_athletes         = view.findViewById(R.id.txtv_no_athletes);
+        prog_offered        = view.findViewById(R.id.txtv_prog_offered);
+        division            = view.findViewById(R.id.txtv_division);
 
-        editCollege = (EditText) view.findViewById(R.id.txtv_college);
-        editCollege.setEnabled(false);
-        description = (EditText) view.findViewById(R.id.txtv_description);
-        years_running = (EditText) view.findViewById(R.id.txtv_years_running);
-        no_athletes = (EditText) view.findViewById(R.id.txtv_no_athletes);
-        prog_offered = (EditText) view.findViewById(R.id.txtv_prog_offered);
-        division = (EditText) view.findViewById(R.id.txtv_division);
-
-        program_funding = (Spinner) view.findViewById(R.id.spinner_program_funding);
-
-        program_share_athletes = (Spinner) view.findViewById(R.id.spinner_program_share_athletes);
-
-
-        imgEdit = (ImageView) view.findViewById(R.id.edit);
-        edit_tag = (TextView) view.findViewById(R.id.edit_text);
-        profile_img_editIcon = (ImageView) view.findViewById(R.id.edit_profile_imgCoach);
-
-
-        coachBtnsBottom = (LinearLayout) view.findViewById(R.id.coach_btns_at_bottom);
-
-        coachMore_infoBtnsBottom = (LinearLayout) view.findViewById(R.id.coach_more_info_btns_bottom);
-
-        moreBtnSave = (Button) view.findViewById(R.id.btn_save);
-        moreBtnCancel = (Button) view.findViewById(R.id.btn_cancel);
+        program_funding     = view.findViewById(R.id.spinner_program_funding);
+        program_share_athletes = view.findViewById(R.id.spinner_program_share_athletes);
+        imgEdit              = view.findViewById(R.id.edit);
+        edit_tag             = view.findViewById(R.id.edit_text);
+        profile_img_editIcon = view.findViewById(R.id.edit_profile_imgCoach);
+        coachBtnsBottom = view.findViewById(R.id.coach_btns_at_bottom);
+        coachMore_infoBtnsBottom = view.findViewById(R.id.coach_more_info_btns_bottom);
+        moreBtnSave     = view.findViewById(R.id.btn_save);
+        moreBtnCancel   = view.findViewById(R.id.btn_cancel);
 
         llMenuBasic.setOnClickListener(this);
         llMenuMore.setOnClickListener(this);
@@ -367,12 +325,11 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         profile_img_editIcon.setOnClickListener(this);
 
         //spinners initially disabled
+        editCollege.setEnabled(false);
         program_funding.setEnabled(false);
         program_share_athletes.setEnabled(false);
         stateSpinner.setEnabled(false);
-
-        addLocation();
-
+        List<String>stateList = AppConstants.getstatelist();
         final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
 
             @Override
@@ -411,20 +368,15 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
             public void onClick(View v) {
                 LayoutInflater inflater = getLayoutInflater();
                 View alertLayout = inflater.inflate(R.layout.gender_popup_layout, null);
-
                 final RadioGroup radioGroup_gender = (RadioGroup) alertLayout.findViewById(R.id.gender_radio_group);
                 final RadioButton radioButton_male = (RadioButton) alertLayout.findViewById(R.id.rd_1);
                 final RadioButton female = (RadioButton) alertLayout.findViewById(R.id.rd_2);
-
                 AlertDialog.Builder alert = new AlertDialog.Builder(getContext(), AlertDialog.THEME_HOLO_LIGHT);
                 String titleText = "Select Gender!";
-
                 // Initialize a new foreground color span instance
                 ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
-
                 // Initialize a new spannable string builder instance
                 SpannableStringBuilder ssBuilder = new SpannableStringBuilder(titleText);
-
                 // Apply the text color span
                 ssBuilder.setSpan(
                         foregroundColorSpan,
@@ -437,13 +389,11 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 alert.setView(alertLayout);
                 alert.setCancelable(false);
                 alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
 
                     }
                 });
-
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -467,8 +417,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     }
                 });
                 dialog.show();
-
-
             }
 
         });
@@ -480,9 +428,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         stateSpinner.invalidate();
         stateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-
                 location = stateSpinner.getSelectedItem().toString();
-
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {
@@ -607,60 +553,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         editDob.setText(set_date);
     }
 
-    public void addLocation() {
-        stateList.add("Alabama");
-        stateList.add("Alaska");
-        stateList.add("Arizona");
-        stateList.add("Arkansas");
-        stateList.add("California");
-        stateList.add("Colorado");
-        stateList.add("Connecticut");
-        stateList.add("Delaware");
-        stateList.add("Florida");
-        stateList.add("Georgia");
-        stateList.add("Hawaii");
-        stateList.add("Idaho");
-        stateList.add("Illinois");
-        stateList.add("Indiana");
-        stateList.add("Iowa");
-        stateList.add("Kansas");
-        stateList.add("Kentucky");
-        stateList.add("Louisiana");
-        stateList.add("Maine");
-        stateList.add("Maryland");
-        stateList.add("Massachusetts");
-        stateList.add("Michigan");
-        stateList.add("Minnesota");
-        stateList.add("Mississippi");
-        stateList.add("Missouri");
-        stateList.add("Montana");
-        stateList.add("Nebraska");
-        stateList.add("Nevada");
-        stateList.add("New Hampshire");
-        stateList.add("New Jersey");
-        stateList.add("New Mexico");
-        stateList.add("New York");
-        stateList.add("North Carolina");
-        stateList.add("North Dakota");
-        stateList.add("Ohio");
-        stateList.add("Oklahoma");
-        stateList.add("Oregon");
-        stateList.add("Pennsylvania");
-        stateList.add("Rhode Island");
-        stateList.add("South Carolina");
-        stateList.add("South Dakota");
-        stateList.add("Tennessee");
-        stateList.add("Texas");
-        stateList.add("Utah");
-        stateList.add("Vermont");
-        stateList.add("Virginia");
-        stateList.add("Washington");
-        stateList.add("West Virginia");
-        stateList.add("Wisconsin");
-        stateList.add("Wyoming");
-
-
-    }
 
     private void editBasicInfo() {
 
@@ -1122,10 +1014,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                             userDataModel.setImageUrl(response.getString("imageUrl"));
                             //new PrefManager(getActivity()).saveUserDetails(response.getString("id"));
                             setView();
-
                             //editFname.setText(userDataModel.getFirstName());
                             //editLname.setText(userDataModel.getLastName());
-
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -1191,10 +1081,8 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                 String imageName = userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1);
                 String[] imagePathArray = imageName.split("-");
                 if (imagePathArray != null && imagePathArray.length > 0) {
-
                     String exactImageName = imagePathArray[imagePathArray.length-1];
                     Log.d("Image----",exactImageName);
-
                     Log.d("filename---", userCoachModel.getImageUrl().substring(userCoachModel.getImageUrl().lastIndexOf('/') + 1));
                     File myProfileImageFile = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + getString(R.string.app_name) + "/" + "image" + "/" + exactImageName);
 
@@ -1204,11 +1092,7 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
                     } else {
                         Glide.with(CoachProfileFragment.this).load(userCoachModel.getImageUrl()).into(imgProfile);
                         Glide.with(getContext()).load(userCoachModel.getImageUrl()).into(imgBgCoach);
-
-
                         new DownloadFileFromURL(exactImageName, "image",userCoachModel.getImageUrl()).execute();
-
-
                     }
                 }
 
@@ -1438,17 +1322,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK || resultCode == -1) {
 
@@ -1866,7 +1739,6 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
     private String trimMessage(String json, String detail) {
         String trimmedString = null;
-
         try {
             JSONObject obj = new JSONObject(json);
             trimmedString = obj.getString(detail);
@@ -2054,138 +1926,5 @@ public class CoachProfileFragment extends Fragment implements View.OnClickListen
 
         }
     }
-
-
-
-
-/*
-    public static class AsyncPhotoUploadTask extends AsyncTask<String, String, HttpEntity> {
-        String userId;
-        String imagePath;
-        String videoPath;
-        private PhotoAsyncTaskListener listener;
-
-
-        public AsyncPhotoUploadTask(final String imagePath, final String userId) {
-            super();
-            this.userId = userId;
-            this.imagePath = imagePath;
-
-            // do stuff
-        }
-
-        @Override
-        protected HttpEntity doInBackground(String... voids) {
-            try {
-                HttpEntity result=null;
-
-                if (imagePath != null ) {
-                    FileBody imageFile;
-                    MultipartEntity reqEntity = new MultipartEntity();
-                    StringBody user_Id = new StringBody(userId);
-                    reqEntity.addPart("userId", user_Id);
-
-                    imageFile = new FileBody(new File(imagePath));
-                    reqEntity.addPart("profileImg", imageFile);
-                    result = uploadToServer(reqEntity);
-
-                } else {
-                    progress.dismiss();
-                    Toast.makeText(getApplicationContext(), "Profile updation failed", Toast.LENGTH_LONG).show();
-                }
-
-
-
-                return result;
-
-
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                //Toast.makeText(getActivity(), "User Details Updation Failed", Toast.LENGTH_SHORT).show();
-
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(HttpEntity result) {
-            super.onPostExecute(result);
-
-            if (listener != null) {
-
-                try {
-                    if (result != null) {
-                        System.out.println(EntityUtils.toString(result));
-                    } // end if
-
-                    if (result != null) {
-                        result.consumeContent();
-
-
-                    } // end if
-
-                    int success, failure;
-                    // success = resultJson.getInt("success");
-                    //failure = resultJson.getInt("failure");
-                    //  Toast.makeText(getContext(), "Message Success: " + success + "Message Failed: " + failure, Toast.LENGTH_LONG).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    //                    Toast.makeText(getContext(), "Message Failed, Unknown error occurred.", Toast.LENGTH_LONG).show();
-                }
-            }
-
-
-            listener.onPhotoAsyncTaskFinished(result);
-        }
-
-        public void setListener(PhotoAsyncTaskListener listener) {
-            this.listener = listener;
-        }
-
-        public interface PhotoAsyncTaskListener {
-            void onPhotoAsyncTaskFinished(HttpEntity value);
-        }
-    }
-*/
-
-
-    /*public static HttpEntity uploadToServer(MultipartEntity reqEntity) throws IOException {
-
-        HostnameVerifier hostnameVerifier = SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER;
-        try {
-            SSLSocketFactory sslFactory = new SimpleSSLSocketFactory(null);
-            sslFactory.setHostnameVerifier(SSLSocketFactory.ALLOW_ALL_HOSTNAME_VERIFIER);
-
-            //throws ParseException, IOException
-            HttpClient httpclient = new DefaultHttpClient();
-            HttpPost httppost = new HttpPost(new URI("https://www.beachpartner.com/api/storage/uploadProfileData"));
-//            sslFactory.setHostnameVerifier((X509HostnameVerifier) hostnameVerifier);
-            // Register the HTTP and HTTPS Protocols. For HTTPS, register our custom SSL Factory object.
-            SchemeRegistry registry = new SchemeRegistry();
-            registry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-            registry.register(new Scheme("https", sslFactory, 443));
-
-            httppost.setEntity(reqEntity);
-
-
-            // DEBUG
-            System.out.println("executing request " + httppost.getRequestLine());
-            HttpResponse response = httpclient.execute(httppost);
-
-
-            HttpEntity resEntity = response.getEntity();
-            while (resEntity == null) {
-                progress.dismiss();
-                Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
-            }
-            return resEntity;
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            progress.dismiss();
-            Toast.makeText(getApplicationContext(), "User details updation failed", Toast.LENGTH_LONG).show();
-        }
-        return null;
-    }*/
 
 }

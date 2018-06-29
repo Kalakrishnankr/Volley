@@ -45,7 +45,6 @@ class UpdateViewModel(private val app: Application) : AndroidViewModel(app) {
             override fun onFailure(call: Call<FcmUpdate?>?, t: Throwable?) {
 
             }
-
             override fun onResponse(call: Call<FcmUpdate?>?, response: Response<FcmUpdate?>?) {
 
             }

@@ -26,6 +26,7 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
     private SubClickInterface subClickInterface;
     private String activeAddons;
     private RadioButton lastCheckedRB = null;
+    private static boolean isExpanded = false;
 
 
     public AddonAdapter(Context context, List<SubscriptonPlansModel> addonList, SubClickInterface addOnFragment,String activePlans ) {
@@ -43,8 +44,8 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        SubscriptonPlansModel plansModel = modelList.get(position);
+    public void onBindViewHolder(final MyViewHolder holder, int position) {
+        final SubscriptonPlansModel plansModel = modelList.get(position);
         holder.txtDesc.setText(plansModel.getPlanDescription());
         holder.addTitle.setText(plansModel.getPlanName());
         holder.txtPayment.setText("$"+plansModel.getMonthlyCharge()+"/day");
@@ -57,7 +58,26 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
                 }
                 //store the clicked radiobutton
                 lastCheckedRB = checked_rb;
-                subClickInterface.changeViews();//call interface to change the view
+                subClickInterface.changeViews(plansModel);//call interface to change the view
+            }
+        });
+        holder.txtvRead.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(!isExpanded){
+                    ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
+                    params.height = 400;
+                    holder.txtDesc.setLayoutParams(params);
+                    holder.txtvRead.setText("Read less");
+                    isExpanded=true;
+                }else {
+                    ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
+                    params.height = -400;
+                    holder.txtDesc.setLayoutParams(params);
+                    holder.txtvRead.setText(R.string.read_more);
+                    isExpanded=false;
+                }
+
             }
         });
     }
@@ -70,7 +90,7 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public AppCompatRadioButton toggle;
-        public TextView addTitle,txtPayment,txtDesc;
+        public TextView addTitle,txtPayment,txtDesc,txtvRead;
 
         public MyViewHolder(View itemView) {
             super(itemView);
@@ -78,6 +98,7 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
             addTitle = itemView.findViewById(R.id.txtv_addonTitle);
             txtDesc  = itemView.findViewById(R.id.txtv_desc);
             txtPayment= itemView.findViewById(R.id.txtv_payment);
+            txtvRead = itemView.findViewById(R.id.txtv_read);
         }
     }
 }

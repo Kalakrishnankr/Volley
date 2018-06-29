@@ -222,6 +222,5 @@ public class PrefManager {
         FCMDetails.clear();
         FCMDetails.apply();
         FCMDetails.commit();
-
     }
 }
