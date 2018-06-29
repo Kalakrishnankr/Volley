@@ -1,18 +1,25 @@
 package com.beachpartnerllc.beachpartner;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.View;
 
 import com.beachpartnerllc.beachpartner.activity.LoginActivity;
 
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -24,11 +31,15 @@ import java.util.Map;
  */
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
+
     NotificationManager notificationManager;
     String ADMIN_CHANNEL_ID="BeachPartner";
     private String redirect;
     private String eventId;
     private static final String TAG = "MyFirebaseMsgService";
+
+
+
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
@@ -39,20 +50,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String body = data.get("body");
         redirect = data.get("click_action");
         eventId  = data.get("event_id");
-
+        PrefManager prefManager = new PrefManager(getApplicationContext());
 
         if(title!=null&&body!=null){
             if(!title.equals("") && !body.equals("")){
-                sendNotificationData(title, body); //send notification to user
+                if(data.get("user_id").equalsIgnoreCase(prefManager.getUserId())){
+                    sendNotificationData(title, body); //send notification to user
+                }
             }
         }
-    }
 
-    /**
-     * Handle time allotted to BroadcastReceivers.
-     */
-    private void handleNow() {
-        Log.d(TAG, "Short lived task is done.");
     }
 
     /**
@@ -85,9 +92,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         long[] pattern = {500,500,500,500,500};
 
         Uri defaultSoundUri= RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-
-        NotificationCompat.Builder notificationBuilder = (NotificationCompat.Builder) new NotificationCompat.Builder(this)
-                .setSmallIcon(R.mipmap.ic_launcher)
+        int smallIcom = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP ? R.drawable.ic_bp_white_24dp :  R.mipmap.ic_launcher;
+        createNotificationChannel();
+        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this,getString(R.string.channel_id))
+                .setSmallIcon(smallIcom)
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher))
                 .setContentTitle(messageTitle)
                 .setContentText(messageBody)
                 .setAutoCancel(true)
@@ -95,8 +104,30 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 .setLights(Color.BLUE,1,1)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
-
+        Notification notification = notificationBuilder.build();
+        int smallIconId = getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
+        if (smallIconId != 0) {
+            if (notification.contentView!=null)
+                notification.contentView.setViewVisibility(smallIconId, View.INVISIBLE);
+        }
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        notificationManager.notify(0 , notificationBuilder.build());
+        notificationManager.notify(0 , notification);
     }
+
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = getString(R.string.channel_name);
+            String description = getString(R.string.channel_description);
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(getString(R.string.channel_id), name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
+    }
+
 }
