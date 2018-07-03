@@ -505,7 +505,7 @@ public class LoginActivity extends AppCompatActivity {
                                     String uProfileStatus = userObj.getString("userProfile");
                                     String userName = userObj.getString("firstName");
                                     String userPic  = userObj.getString("imageUrl");
-                                    String userLocation = userObj.getString("location");
+                                    String userLocation = userObj.getString("city"); //changed location to city as "city"  value is updated for change in the user settings
                                     if (status.equals("FB") || status.equals("IN")) {
                                         userType = "Athlete";
                                     }

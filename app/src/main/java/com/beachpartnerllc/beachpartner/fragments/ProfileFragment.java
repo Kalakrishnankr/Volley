@@ -2263,7 +2263,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 object.put("lastName", editLname.getText().toString().trim());
                 object.put("gender", editGender.getText().toString().trim());
                 object.put("dob", stringDate);
-                object.put("city", location.toString().trim());
+                object.put("city", userDataModel.getCity());
                 object.put("location", location.toString().trim());
                 object.put("phoneNumber", editPhone.getText().toString().trim());
                 object.put("imageUrl", userDataModel.getImageUrl());
@@ -2392,9 +2392,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
         return isValidate;
     }
 
-    private void nullCheck() {
-
-    }
 
     private void validateFeilds() {
         awesomeValidation.addValidation(getActivity(), R.id.txtvFname, "^[A-Za-z\\s]{1,}[\\.]{0,1}[A-Za-z\\s]{0,}$", R.string.nameerror);
@@ -3151,7 +3148,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                 editLname.setText(userDataModel.getLastName().trim());
                 editFname.setText(userDataModel.getFirstName().trim());
                 editGender.setText(userDataModel.getGender().trim());
-                location = userDataModel.getCity().trim();
+                location = userDataModel.getLocation().trim();
                 if (location != null) {
                     int positions = dataAdapter.getPosition(location);
                     editCity.setSelection(positions);

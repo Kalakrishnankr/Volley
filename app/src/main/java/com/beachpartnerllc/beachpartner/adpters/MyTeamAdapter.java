@@ -57,7 +57,7 @@ public class MyTeamAdapter extends RecyclerView.Adapter<MyTeamAdapter.MyViewHold
             holder.imgPic.setImageResource(R.drawable.ic_person);
 
         }
-        holder.tv_name.setText(model.getConnected_firstName());
+        holder.tv_name.setText(model.getConnected_firstName() + " "+model.getConnected_lastName());
 
         holder.imgRemove.setOnClickListener(new View.OnClickListener() {
             @Override
