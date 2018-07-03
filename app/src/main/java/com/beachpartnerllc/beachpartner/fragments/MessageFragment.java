@@ -131,22 +131,20 @@ public class MessageFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if(!newText.equalsIgnoreCase("")){
-                    searchPerson(newText);
-                    if (dataList != null && dataList.size() > 0 ) {
-                        if (!newText.isEmpty()) {
-                            final List<BpFinderModel> filteredModelList = filter(dataList, newText);
-                            chatListAdapter.setFilter(filteredModelList);
-                            chatListAdapter.notifyDataSetChanged();
+                searchPerson(newText);
 
-                        } else {
-                            chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
-                            recyclerView.setAdapter(chatListAdapter);
-                            chatListAdapter.notifyDataSetChanged();
-                        }
+                if (dataList != null && dataList.size() > 0 ) {
+                    if (!newText.isEmpty()) {
+                        final List<BpFinderModel> filteredModelList = filter(dataList, newText);
+                        chatListAdapter.setFilter(filteredModelList);
+                        chatListAdapter.notifyDataSetChanged();
+
+                    } else {
+                        chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                        recyclerView.setAdapter(chatListAdapter);
+                        chatListAdapter.notifyDataSetChanged();
                     }
                 }
-
                 return false;
             }
         });

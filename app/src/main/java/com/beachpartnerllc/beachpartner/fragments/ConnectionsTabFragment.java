@@ -266,7 +266,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         athleteList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
         //18-05-2018
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability+"&eventId="+eventObject.getEventId(), null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability, null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
