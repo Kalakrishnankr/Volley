@@ -1,10 +1,14 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,13 +20,27 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import io.apptik.widget.MultiSlider;
 
@@ -50,7 +68,8 @@ public class SettingsFragment extends Fragment {
     private int minAge,maxAge;
     private TabActivity tabActivity;
 
-    private String location_change;
+    private String location_change,token;
+    private AlertDialog b;
 
 
     public SettingsFragment() {
@@ -88,7 +107,13 @@ public class SettingsFragment extends Fragment {
             e.printStackTrace();
         }
 
-
+        AlertDialog.Builder dialogbar=new AlertDialog.Builder(getActivity());
+        View holder=View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        b = dialogbar.create();
+        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
         return view;
     }
@@ -291,12 +316,18 @@ public class SettingsFragment extends Fragment {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                b.show();
                 //location    =   spinner_location.getText().toString().trim();
                 sgender     =   txtv_gender.getText().toString();
                 minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
                 maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
-
+                JSONObject jsonCity = new JSONObject();
+                try {
+                    jsonCity.put("city",location);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                updateCity(jsonCity);
                 new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
                 getActivity().onBackPressed();
 
@@ -379,5 +410,73 @@ public class SettingsFragment extends Fragment {
         stateList.add("Wisconsin");
         stateList.add("Wyoming");
     }
+    private void updateCity(JSONObject object) {
 
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UPDATE_USER_CITY , object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            b.dismiss();
+                            Toast.makeText(tabActivity, "Updated current settings", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                b.dismiss();
+                Toast.makeText(getActivity(), "Failed to update your settings", Toast.LENGTH_LONG).show();
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
+    }
 }
