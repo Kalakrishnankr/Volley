@@ -128,15 +128,15 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     private void initActivity(View view) {
 
         // rlTop       =       (RelativeLayout)view.findViewById(R.id.rlayoutTop);
-        txtv_noconnection   =        view.findViewById(R.id.no_connections);
-        rlTeam              =        view.findViewById(R.id.rlayout_myteam);
-        searchView          =        view.findViewById(R.id.search);
+        txtv_noconnection   =  view.findViewById(R.id.no_connections);
+        rlTeam              =  view.findViewById(R.id.rlayout_myteam);
+        searchView          =  view.findViewById(R.id.search);
 
-        rcviewConn          =       view.findViewById(R.id.rview_connections);
-        rcviewTeam          =       view.findViewById(R.id.rcview_myteam);
+        rcviewConn          =  view.findViewById(R.id.rview_connections);
+        rcviewTeam          =  view.findViewById(R.id.rcview_myteam);
 
-        upDownToggle        =       view.findViewById(R.id.upDown);
-        btnInvitefrnd       =       view.findViewById(R.id.btn_invite);
+        upDownToggle        =  view.findViewById(R.id.upDown);
+        btnInvitefrnd       =  view.findViewById(R.id.btn_invite);
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottom_sheet));
 
         btnInvitefrnd.setOnClickListener(this);
@@ -266,7 +266,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         athleteList.clear();
         String user_id  = new PrefManager(getContext()).getUserId();
         //18-05-2018
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability, null, new Response.Listener<JSONArray>() {
+        JsonArrayRequest arrayRequest = new JsonArrayRequest(ApiService.REQUEST_METHOD_GET, ApiService.GET_ALL_CONNECTIONS + user_id +"?status=Active"+"&filterDate="+eventDateToCheckAvailability+"&eventId="+eventObject.getEventId(), null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
 
@@ -285,6 +285,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                             model.setConnected_imageUrl(obj.getString("imageUrl"));
                             //setting the availability of a user on a particular date
                             model.setConnected_isAvailable_ondate(object.getBoolean("availableOnDate"));
+                            model.setConnected_invitationStatus(object.getString("invitationStatus"));
                             connectionList.add(model);
 
                         } catch (JSONException e) {

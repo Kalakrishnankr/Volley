@@ -57,8 +57,8 @@ public class PartnerInviteFragmentTab extends Fragment {
 
     private void initActivity(View view) {
 
-        pager           =  (ViewPager) view.findViewById(R.id.pager);
-        tabs            =  (SlidingTab) view.findViewById(R.id.tabs);
+        pager           =  view.findViewById(R.id.pager);
+        tabs            =  view.findViewById(R.id.tabs);
         slideAdapter    =  new SliderAdapter(getChildFragmentManager(), titles, numberOfTabs,eventDateToCheck,eventObject);
         pager.setAdapter(slideAdapter);
         // Setting the ViewPager For the SlidingTabsLayout
@@ -76,7 +76,6 @@ public class PartnerInviteFragmentTab extends Fragment {
             tabActivity = (TabActivity) getActivity();
             tabActivity.getSupportActionBar().setTitle(eventObject.getEventName());
         }
-
     }
 
     @Override

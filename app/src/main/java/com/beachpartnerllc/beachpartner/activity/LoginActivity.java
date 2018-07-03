@@ -480,9 +480,6 @@ public class LoginActivity extends AppCompatActivity {
                                     userDataModel.setDob(userObj.getString("dob"));
                                     userDataModel.setGender(userObj.getString("gender"));
 
-
-
-
                                     userDataModel.setLoginType(userObj.getString("loginType"));
                                     userDataModel.setCity(userObj.getString("city"));
                                     userDataModel.setPhoneNumber(userObj.getString("phoneNumber"));
@@ -502,7 +499,7 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
 
-                                    String subscribe = userDataModel.getSubscriptionType();
+                                    String subscribe =  userDataModel.getSubscriptionType();
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
                                    // String subScription=userObj.getString("subscriptions");
@@ -533,14 +530,12 @@ public class LoginActivity extends AppCompatActivity {
                                         intent.putExtra("reDirectPage","home");
                                         startActivity(intent);
                                         finish();
-
                                     }
                                     else{
                                         //Whether user want to update his/her profile o
                                         AlertDialog.Builder builder = new AlertDialog.Builder(LoginActivity.this);
                                         builder.setMessage(getString(R.string.complete_profile));
                                         builder.setCancelable(true);
-
                                         builder.setPositiveButton(
                                                 "OK",
                                                 new DialogInterface.OnClickListener() {
@@ -578,23 +573,13 @@ public class LoginActivity extends AppCompatActivity {
 
                                         AlertDialog alert = builder.create();
                                         alert.show();
-
                                     }
-
-
-
-
                                 }else {
                                     Toast.makeText(LoginActivity.this, "Please try later", Toast.LENGTH_SHORT).show();
                                 }
-
-
-
-
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
-
                         }else {
 
                             Log.d("Bad response--", response.toString());
@@ -645,7 +630,6 @@ public class LoginActivity extends AppCompatActivity {
                 headers.put("Content-Type", "application/json; charset=utf-8");
                 return headers;
             }
-
         };
 
         RequestQueue requestQueue = Volley.newRequestQueue(LoginActivity.this);
@@ -662,11 +646,7 @@ public class LoginActivity extends AppCompatActivity {
 
         final Button return_to_loginBtn = layout.findViewById(R.id.return_to_LoginBtn);
         final Button never_got_emailBtn = layout.findViewById(R.id.never_btn);
-
-
         alert.setView(layout);
-
-
 
         final AlertDialog alertDialog = alert.create();
 
@@ -700,10 +680,7 @@ public class LoginActivity extends AppCompatActivity {
         Button btnreturnLogin       = layout.findViewById(R.id.return_to_Login);
         neverGotEmailAlertTextUnderline();
         alert.setView(layout);
-
-
         final AlertDialog alertDialog = alert.create();
-
         btnreturnLogin.setOnClickListener(new View.OnClickListener() {
 
             @Override

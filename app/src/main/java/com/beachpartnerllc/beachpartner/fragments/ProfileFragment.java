@@ -2019,7 +2019,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
 
             JSONObject jsonObjectMore = new JSONObject();
             try {
-
                 jsonObjectMore.put("cbvaFirstName", editCBVAFName.getText().toString().trim());
                 jsonObjectMore.put("cbvaLastName", editCBVALName.getText().toString().trim());
                 jsonObjectMore.put("cbvaPlayerNumber", editCBVANo.getText().toString().trim());

@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
     <color name="colorText">#2F3079</color>
     <color name="btnColor">#3C3A8F</color>
     <color name="blueDark">#060456</color>
@@ -17,14 +16,9 @@
     <color name="light_blue">#8f0a19e1</color>
     <color name="cyan">#00FFFF</color>
     <color name="transparent">#58000000</color>
-    <color name="blur">#80ffffff</color>
-    <color name="nobg">#80000000</color>
     <color name="orange">#FFA500</color>
-    <color name="undo">#e3413c3b</color>
     <color name="green">#7746c26b</color>
     <color name="waitin_orange">#77ffa500</color>
-    <color name="subscription_btn">#a323e6</color>
-    <color name="standard_sub">#7a1a79</color>
     <color name="price_ring">#01177e</color>
     <color name="free_sub">#c98cf9eb</color>
     <color name="transparent_blue">#900a19e1</color>
@@ -64,8 +58,6 @@
     <color name="dot_light_screen7">#93c6fd</color>
     <color name="dot_light_screen8">#e4b5fc</color>
     <color name="dot_light_screen9">#f98da5</color>
-    <color name="grey_cccccc">#cccccc</color>
-    <color name="grey_aaaaaa">#aaaaaa</color>
     <color name="grey_848484">#848484</color>
 
 

@@ -83,7 +83,7 @@ public class MessageFragment extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_message, container, false);
@@ -132,7 +132,6 @@ public class MessageFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String newText) {
                 searchPerson(newText);
-
                 if (dataList != null && dataList.size() > 0 ) {
                     if (!newText.isEmpty()) {
                         final List<BpFinderModel> filteredModelList = filter(dataList, newText);
@@ -163,8 +162,6 @@ public class MessageFragment extends Fragment {
                 }
             }
         });
-
-
     }
 
     private void searchPerson(String query) {
@@ -185,12 +182,9 @@ public class MessageFragment extends Fragment {
                 chatListAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
-
                 chatListAdapter =new ChatListAdapter(MessageFragment.this, getContext(), userList);
                 recyclerView.setAdapter(chatListAdapter);
                 chatListAdapter.notifyDataSetChanged();
-
-
             }
 
         }

@@ -219,10 +219,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 //                athleteGoingBtn.setClickable(false);
 //                athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
             }
-
         }
-
-
         return view;
     }
 
@@ -323,7 +320,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 break;
             case R.id.btn_back:
                 //Back button
-                    showAletDialogue();
+                showAletDialogue();
                 break;
             case R.id.athlete_going:
                 successfulRegisterationPrompt();
@@ -501,7 +498,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
     }
     private void registerEvent(JSONObject object) {
-
+        transparentAlert.show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -516,6 +513,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                                 btnCoachGoing.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                                 btnCoachNotGoing.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                             }
+                            transparentAlert.cancel();
                             AlertAddtoSystemCalendar();
                         }
 
@@ -523,6 +521,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                transparentAlert.cancel();
                 String json = "";
                 Log.d("error--", error.toString());
                 NetworkResponse response = error.networkResponse;

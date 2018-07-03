@@ -60,7 +60,7 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         }
         if (user_subscription != null) {
             if (!user_subscription.equalsIgnoreCase("null")) {
-                if (plansModel != null && plansModel.getPlanName().equalsIgnoreCase(user_subscription)){
+                if (plansModel != null && plansModel.getPlanCode().equalsIgnoreCase(user_subscription)){
                     holder.txtvCurrentPlan.setText(R.string.current_plan);
                     holder.img_toggle.setVisibility(View.INVISIBLE);
                 }

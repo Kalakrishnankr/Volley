@@ -26,7 +26,7 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:layout_weight="1.5"
+                android:layout_weight="1.2"
                 android:weightSum="2">
 
                 <TextView
@@ -34,7 +34,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1.3"
-
                     android:paddingLeft="10dp" />
 
                 <TextView
@@ -44,14 +43,13 @@
                     android:paddingLeft="10dp"
                     android:text="Organizer"/>
             </LinearLayout>
-
-
-
             <TextView
                 android:id="@+id/txtv_team"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="0.8"
+                android:gravity="center"
+                android:textAlignment="viewStart"
                 android:text="View Team" />
 
 

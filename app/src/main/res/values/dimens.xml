@@ -12,7 +12,6 @@
     <dimen name="album_title_padding">10dp</dimen>
     <dimen name="album_title">15dp</dimen>
     <dimen name="songs_count_padding_bottom">5dp</dimen>
-    <dimen name="songs_count">12dp</dimen>
     <dimen name="dots_height">35dp</dimen>
     <dimen name="dots_margin_bottom">20dp</dimen>
 

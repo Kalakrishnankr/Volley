@@ -18,6 +18,26 @@ public class ConnectionModel implements Parcelable {
     public String Connected_deviceId;
     public String Connected_authToken;
     public String Connected_location;
+    public String Connected_fcmToken;
+    public String Connected_status;
+    public boolean Connected_isAvailable_ondate;
+    public String Connected_userType;
+    public String Connected_imageUrl;
+    public String Connected_invitationStatus;
+    public boolean isExpanded = false;
+
+
+
+    public String getConnected_invitationStatus() {
+        return Connected_invitationStatus;
+    }
+
+    public void setConnected_invitationStatus(String connected_invitationStatus) {
+        Connected_invitationStatus = connected_invitationStatus;
+    }
+
+
+
 
     public String getConnected_fcmToken() {
         return Connected_fcmToken;
@@ -27,7 +47,6 @@ public class ConnectionModel implements Parcelable {
         Connected_fcmToken = connected_fcmToken;
     }
 
-    public String Connected_fcmToken;
 
     public String getConnected_status() {
         return Connected_status;
@@ -41,8 +60,7 @@ public class ConnectionModel implements Parcelable {
         return Connected_isAvailable_ondate;
     }
 
-    public String Connected_status;
-    public boolean Connected_isAvailable_ondate;
+
 
     public String getConnected_userType() {
         return Connected_userType;
@@ -52,7 +70,7 @@ public class ConnectionModel implements Parcelable {
         Connected_userType = connected_userType;
     }
 
-    public String Connected_userType;
+
 
     public String getConnected_imageUrl() {
         return Connected_imageUrl;
@@ -62,8 +80,6 @@ public class ConnectionModel implements Parcelable {
         Connected_imageUrl = connected_imageUrl;
     }
 
-    public String Connected_imageUrl;
-    public boolean isExpanded = false;
 
 
     public String getConnected_uId() {

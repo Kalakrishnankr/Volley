@@ -34,11 +34,10 @@
             android:layout_gravity="center"
             android:background="@drawable/ic_addbtn"/>
         <TextView
-            android:visibility="gone"
             android:id="@+id/unavailable"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="Unavailable"
+            android:visibility="gone"
             android:gravity="center"/>
 
     </LinearLayout>

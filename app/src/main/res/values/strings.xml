@@ -3,7 +3,6 @@
     <string name="welcome">WELCOME!</string>
     <string name="loginBtn">LOGIN</string>
     <string name="connect"><u>Connect with:</u></string>
-    <string name="dntaccount">Don\'t have an account? </string>
     <string name="signup">Register Here to Sign Up</string>
     <string name="hint_password">Password</string>
     <string name="hint_userName">Email</string>
@@ -12,7 +11,6 @@
     <string name="enter_user_type">You must choose a user type</string>
     <string name="hint_fname">First Name</string>
     <string name="hint_lname">Last Name</string>
-    <string name="hint_gender">I am</string>
     <string name="hint_dob">Date of Birth</string>
     <string name="hintLocation">State</string>
     //note: state populated instead of location
@@ -23,7 +21,6 @@
     <string name="already_account">Already have an account?</string>
     <string name="login">Login</string>
     <string name="hint_confirmpwd">Confirm Password</string>
-    <string name="ChooseVideo">Choose Cover Video</string>
     <string name="no_video">No video available for this profile</string>
     <string name="Invalid">Invalid Username or Password</string>
     <string name="not_activated">Your account is not activated.</string>
@@ -32,12 +29,7 @@
 
     <!--Tab Icons-->
     <string name="title_activity_tab">TabActivity</string>
-    <string name="title_home">Home</string>
-    <string name="title_profile">Profile</string>
     <string name="title_bp"></string>
-    <string name="title_calendar">Calendar</string>
-    <string name="title_more">More</string>
-    <string name="title_connections">Connections</string>
 
     <!--For Facebook only-->
 
@@ -45,7 +37,6 @@
     <string name="fb_login_protocol_scheme">fb182470729033334</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="upcoming_tournaments">My Upcoming Tournaments</string>
     <string name="next">Next</string>
     <string name="messages">Messages</string>
@@ -68,11 +59,9 @@
     <string name="lname_blank">Last name cannot be blank</string>
     <string name="email_blank">Email cannot be blank</string>
     <string name="pwd_blank">Password cannot be blank </string>
-    <string name="confpwd_blank">Confirm password cannot be blank or whitespace</string>
     <string name="mobile_blank">Mobile number cannot be blank</string>
 
 
-    <string name="settings">Settings</string>
     <string name="editProfile">Edit Profile</string>
     <string name="share">Share</string>
     <string name="error_username">Please enter a valid email</string>
@@ -80,7 +69,6 @@
 
     <!--Top menus-->
     <string name="hint_profile">My Profile</string>
-    <string name="hint_aboutus">About Us</string>
     <string name="hint_feedback">Feedback</string>
     <string name="hint_settings">Settings</string>
     <string name="hint_help">Help</string>
@@ -90,13 +78,9 @@
     <string name="terms_conditions">Terms &amp; Conditions</string>
     <string name="iagree">I Agree</string>
     <string name="hint_continue">Continue</string>
-    <string name="conditions">These Website Standard Terms and Conditions written on this webpage shall manage your use of this website. These Terms will be applied fully and affect to your use of this Website. By using this Website, you agreed to accept all terms and conditions written in here. You must not use this Website if you disagree with any of these Website Standard Terms and Conditions</string>
     <string name="hint_age">Select the age limit you are looking for</string>
     <string name="hint_location">Select the location in which you want to find a player</string>
 
-
-    <string name="hint_basicinfo">Basic Information</string>
-    <string name="hint_moreinfo">More Information</string>
 
     <!--More Information-->
 
@@ -117,8 +101,6 @@
     <string name="hint_collgebeach">College (Beach)</string>
     <string name="hint_colgindoor">College (Indoor)</string>
     <string name="hint_points">Points</string>
-    <string name="hint_youlink">YouTube Link</string>
-    <string name="hint_biolink">Bio Link</string>
     <string name="hint_rank">Ranking</string>
 
     <!--More info coach-->
@@ -140,8 +122,6 @@
     <string name="hint_ok">OK</string>
     <string name="hint_cancel">CANCEL</string>
     <string name="invalid_key">The key you entered is not valid</string>
-    <string name="hint_passord_size">Please enter password</string>
-    <string name="hint_didnotmatch">Password does not match</string>
     <string name="premium">(PREMIUM)</string>
 
 
@@ -150,29 +130,9 @@
     <string name="reg_success_return">Return to login</string>
     <string name="reg_success_never">I never got the email</string>
     <string name="never_got_the_email_msg">"Please check your spam folder. If you haven't received any email even after 10 minutes, please contact kara@beachpartner.com"</string>
-    <string name="title_activity_application">ApplicationActivity</string>
 
     <!--subscription texts here-->
 
-    <string name="reg">Registration fee</string>
-    <string name="swipes">Swipes</string>
-    <string name="swipe_visiblity">Swipe visiblity</string>
-    <string name="high_five">High-fives</string>
-    <string name="connection">Connections</string>
-    <string name="chat">Chat</string>
-    <string name="master">Master calendar</string>
-    <string name="mycal">My calendar</string>
-    <string name="myupcoming">My upcoming tournaments</string>
-    <string name="event_invite">Event invitation</string>
-    <string name="event_search">Event search</string>
-    <string name="court">Court notification</string>
-    <string name="partner">Partner  requests</string>
-    <string name="bluebpboost">Blue BP profile boost</string>
-    <string name="bluebp_sub">(feature atleast once/month)</string>
-    <string name="likeplayer">Visiblity to players who "like" you</string>
-    <string name="likecoach">Visiblity to coaches who "like" you</string>
-    <string name="location_change">Passport search location change</string>
-    <string name="undolast">Undo last swipe option</string>
     <string name="buy_now">BUY NOW</string>
     <string name="standard_sub">STANDARD</string>
     <string name="lite_sub">LITE</string>
@@ -183,7 +143,7 @@
     <string name="sub_header">GET BEACH PARTNER PREMIUM</string>
     <string name="sub_desc">This is a premium feature. Please subscribe to \n one of the below subscription types to be \n able to use this feature.</string>
 
-    <string name="version">Beach Partner v44</string>
+    <string name="version">Beach Partner v45</string>
     <string name="no_tournament_requests_sent">No  Tournament requests sent</string>
     <string name="no_tournament_requests_received">No Tournament requests received</string>
     <string name="no_upcoming_tournaments">You have no Upcoming Tournaments</string>
@@ -208,4 +168,9 @@
     <string name="channel_description">Notification</string>
     <string name="channel_id">default_channel_id</string>
     <string name="current_plan">Current plan</string>
+    <string name="hint_invitation_sent">Sent</string>
+    <string name="hint_invitation_accept">Accept</string>
+    <string name="hint_person_unavailable">Unavailable</string>
+
+
 </resources>
