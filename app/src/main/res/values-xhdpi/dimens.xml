@@ -32,5 +32,9 @@
 	<dimen name="rv_height_subscription">250dp</dimen>
 	<dimen name="rv_width_subscription">320dp</dimen>
 
+	<dimen name="rv_height_add_on">230dp</dimen>
+	<dimen name="rv_width_add_on">380dp</dimen>
+
+
 
 </resources>

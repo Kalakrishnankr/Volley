@@ -65,8 +65,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcv_addon"
-        android:layout_width="@dimen/rv_width_subscription"
-        android:layout_height="@dimen/rv_height_subscription"
+        android:layout_width="@dimen/rv_width_add_on"
+        android:layout_height="@dimen/rv_height_add_on"
         android:paddingLeft="28dp"
         android:paddingRight="28dp"
         tools:listitem="@layout/addon_item"
@@ -98,7 +98,8 @@
         android:background="@color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rcv_addon" />
+        app:layout_constraintTop_toBottomOf="@+id/rcv_addon"
+        android:layout_marginLeft="76dp" />
 
     <Button
         android:id="@+id/proceed_btn"
@@ -112,6 +113,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rcv_addon"
-        app:layout_constraintVertical_bias="0.52" />
+        android:layout_marginRight="92dp" />
 
 </android.support.constraint.ConstraintLayout>
