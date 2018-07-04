@@ -59,14 +59,15 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
         if(model.getConnected_isAvailable_ondate()){
             holder.tv_unavailable.setVisibility(View.GONE);
             holder.imgAdd.setVisibility(View.VISIBLE);
-        }
-        else{
             if (model.getConnected_invitationStatus().equalsIgnoreCase("Sent")) {
                 holder.invite_partner_container.setBackgroundResource(R.color.smallgrey);
                 holder.imgAdd.setVisibility(View.GONE);
                 holder.tv_unavailable.setText(R.string.hint_invitation_sent);
                 holder.tv_unavailable.setVisibility(View.VISIBLE);
-            } else if (model.getConnected_invitationStatus().equalsIgnoreCase("Accepted")) {
+            } 
+        }
+        else{
+             if (model.getConnected_invitationStatus().equalsIgnoreCase("Accepted")) {
                 holder.invite_partner_container.setBackgroundResource(R.color.smallgrey);
                 holder.imgAdd.setVisibility(View.GONE);
                 holder.tv_unavailable.setText(R.string.hint_invitation_accept);

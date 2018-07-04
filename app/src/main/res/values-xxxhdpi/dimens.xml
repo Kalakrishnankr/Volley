@@ -18,4 +18,7 @@
 	<!--marginTop of text under circular image view-->
 	<dimen name="margin_top_text_under_circularImage">60dp</dimen>
 	<dimen name="event_description_height">670dp</dimen>
+
+	<dimen name="rv_height_subscription">350dp</dimen>
+	<dimen name="rv_width_subscription">330dp</dimen>
 </resources>

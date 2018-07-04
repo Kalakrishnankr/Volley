@@ -65,8 +65,8 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rcv_addon"
-        android:layout_width="378dp"
-        android:layout_height="271dp"
+        android:layout_width="@dimen/rv_width_subscription"
+        android:layout_height="@dimen/rv_height_subscription"
         android:paddingLeft="28dp"
         android:paddingRight="28dp"
         tools:listitem="@layout/addon_item"
@@ -80,7 +80,7 @@
         android:layout_width="65dp"
         android:layout_height="65dp"
         android:layout_marginBottom="128dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:indicatorColor="@color/menubar"
         app:indicatorName="LineScaleIndicator"
         app:layout_constraintBottom_toBottomOf="@+id/rcv_addon"
