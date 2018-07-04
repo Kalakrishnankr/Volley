@@ -6,7 +6,7 @@ import com.android.volley.Request;
  * Created by seq-kala on 20/2/18.
  */
 
-public class  ApiService {
+public class ApiService {
     public static int REQUEST_METHOD_POST   =   Request.Method.POST;
     public static int REQUEST_METHOD_GET    =   Request.Method.GET;
     public static int REQUEST_METHOD_PUT    =   Request.Method.PUT;
@@ -39,8 +39,8 @@ public class  ApiService {
     public static String GET_INVITATION_LIST    =  BASE_URL+"events/user/invitations/";
     public static String GET_ALL_SENDORRECIVE_REQUEST = BASE_URL+"events/user/invitations";
     public static String HANDLE_EVENT           =  BASE_URL+"events/user/invitationResponse";
-    public static String COURT_NOTIFY           =  BASE_URL+"events/user/notifyCourtNumber";
-    public static String SEARCH_EVENTS          =  BASE_URL+"events/search";
+    public static String COURT_NOTIFY           =  BASE_URL + "events/user/notifyCourtNumber";
+    public static String SEARCH_EVENTS          =  BASE_URL +"events/search";
 
     public static String GET_ALL_CONNECTIONS     =  BASE_URL+"users/connected/";
     public static String GET_ALL_LIKES           =  BASE_URL+"users/connected-count/";
@@ -76,8 +76,6 @@ public class  ApiService {
     public static String ABOUT_US_PAGE             =   "https://www.beachpartner.com/about_us.html";
 
     public static String FEEDBACK_PAGE             =   "https://www.beachpartner.com/feedback.html";
-    //public static String FEEDBACK_PAGE             =   "https://lipis.github.io/bootstrap-sweetalert/";
-
 
 
 }
