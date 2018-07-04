@@ -41,15 +41,15 @@ public class WelcomeActivity extends AppCompatActivity {
     private View view;
     
     private static final int images[] = new int[]{
-        R.drawable.art_home_various_360dp,
-        R.drawable.art_home_2_various_360dp,
-        R.drawable.art_home_3_various_360dp,
-        R.drawable.art_home_4_various_360dp,
-        R.drawable.helptip_5,
-        R.drawable.helptip_6,
-        R.drawable.helptip_7,
-        R.drawable.art_message_various_360dp,
-        R.drawable.art_high_fives_various_360dp
+        R.drawable.art_home_1_various_360dp_1,
+        R.drawable.art_home_2_various_360dp_2,
+        R.drawable.art_home_3_various_360dp_3,
+        R.drawable.art_home_4_various_360dp_4,
+        R.drawable.art_bpfinder_5_various_360dp_5,
+        R.drawable.art_bpfinder_6_various_360dp_6,
+        R.drawable.art_eventdes_7_various_360dp_7,
+        R.drawable.art_message_8_various_360dp_8,
+        R.drawable.art_hifi_9_various_360dp_9
     };
     //  viewpager change listener
     ViewPager.OnPageChangeListener viewPagerPageChangeListener = new ViewPager.OnPageChangeListener() {

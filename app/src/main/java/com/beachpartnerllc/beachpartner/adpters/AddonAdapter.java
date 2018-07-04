@@ -64,18 +64,17 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
         holder.txtvRead.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!isExpanded){
+                plansModel.isExpanded = !plansModel.isExpanded;
+                if(plansModel.isExpanded){
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
                     params.height = 400;
                     holder.txtDesc.setLayoutParams(params);
                     holder.txtvRead.setText("Read less");
-                    isExpanded=true;
                 }else {
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
-                    params.height = -400;
+                    params.height = 0;
                     holder.txtDesc.setLayoutParams(params);
                     holder.txtvRead.setText(R.string.read_more);
-                    isExpanded=false;
                 }
 
             }

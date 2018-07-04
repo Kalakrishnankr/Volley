@@ -7,38 +7,40 @@
         android:id="@+id/invite_partner_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="horizontal"
         android:layout_margin="10dp"
+        android:orientation="horizontal"
         android:weightSum="2">
 
         <com.beachpartnerllc.beachpartner.CircularImageView
             android:id="@+id/imgPic"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginLeft="20dp"
-            android:layout_gravity="center"/>
-
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp" />
 
         <com.beachpartnerllc.beachpartner.CustomTextView
             android:id="@+id/tview_name"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
             android:layout_marginLeft="20dp"
-            android:layout_weight="1.6"/>
+            android:layout_weight="1.6"
+            android:ellipsize="end"
+            android:gravity="center_vertical"
+            android:maxLines="1" />
 
         <ImageView
             android:id="@+id/addBtn"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_gravity="center"
-            android:background="@drawable/ic_addbtn"/>
+            android:background="@drawable/ic_addbtn" />
+
         <TextView
             android:id="@+id/unavailable"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:visibility="gone"
-            android:gravity="center"/>
+            android:gravity="center"
+            android:visibility="gone" />
 
     </LinearLayout>
 

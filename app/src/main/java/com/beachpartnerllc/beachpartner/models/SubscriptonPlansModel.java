@@ -29,6 +29,7 @@ public class SubscriptonPlansModel implements Parcelable {
     String monthlyCharge;
     @SerializedName("benefitList")
     List<BenefitModel> benefitList;
+    public boolean isExpanded = false;
 
     public String getPlanId() {
         return planId;

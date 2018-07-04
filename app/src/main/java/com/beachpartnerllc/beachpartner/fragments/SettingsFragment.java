@@ -1,10 +1,14 @@
 package com.beachpartnerllc.beachpartner.fragments;
 
+import android.app.AlertDialog;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,15 +20,29 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
+import com.beachpartnerllc.beachpartner.connections.ApiService;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.utils.AppConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import io.apptik.widget.MultiSlider;
 
@@ -34,62 +52,62 @@ public class SettingsFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    ArrayAdapter<String> dataAdapter;
+    ArrayList<String> stateList = new ArrayList<>();
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
-
-    private TextView tvMin,tvMax,txtv_gender;
+    private TextView tvMin, tvMax, txtv_gender;
     private MultiSlider age_bar;
     private Spinner spinner_location;
-    private ToggleButton btnMale,btnFemale;
+    private ToggleButton btnMale, btnFemale;
     private Button btnSave;
-    ArrayAdapter<String> dataAdapter;
-    ArrayList<String> stateList = new ArrayList<>();
     private SharedPreferences prefs;
-    private String location,sgender;
-    private int minAge,maxAge;
+    private String location, sgender;
+    private int minAge, maxAge;
     private TabActivity tabActivity;
-
-    private String location_change;
-
+    private String location_change, token;
+    private AlertDialog b;
 
     public SettingsFragment() {
         // Required empty public constructor
     }
 
 
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
+        token = new PrefManager(getContext()).getToken();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view= inflater.inflate(R.layout.fragment_settings, container, false);
+        View view = inflater.inflate(R.layout.fragment_settings, container, false);
         initView(view);
 
         //to show focus on location field when clicking on location icon in bp
 
         Bundle arguments = getArguments();
 
-        try{
-            location_change=arguments.getString("prime_card");
+        try {
+            location_change = arguments.getString("prime_card");
             if (location_change == "location" || location_change.equalsIgnoreCase("location")) {
                 spinner_location.setEnabled(true);
                 blink();
                 dataAdapter.setDropDownViewResource(R.layout.spinner_style_bp);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
-
+        AlertDialog.Builder dialogbar = new AlertDialog.Builder(getActivity());
+        View holder = View.inflate(getActivity(), R.layout.progress_dialouge, null);
+        dialogbar.setView(holder);
+        //dialogbar.setMessage("please wait...");
+        dialogbar.setCancelable(false);
+        b = dialogbar.create();
+        b.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
 
 
         return view;
@@ -99,25 +117,25 @@ public class SettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (getActivity() instanceof TabActivity){
-            tabActivity = (TabActivity)getActivity();
+        if (getActivity() instanceof TabActivity) {
+            tabActivity = (TabActivity) getActivity();
             tabActivity.setActionBarTitle("Settings");
         }
     }
 
     private void initView(View view) {
 
-        tvMin       = (TextView) view.findViewById(R.id.txtv_minAge);
-        tvMax       = (TextView) view.findViewById(R.id.txtv_maxAge);
-        age_bar     = (MultiSlider) view.findViewById(R.id.rangebarOne);
+        tvMin = (TextView) view.findViewById(R.id.txtv_minAge);
+        tvMax = (TextView) view.findViewById(R.id.txtv_maxAge);
+        age_bar = (MultiSlider) view.findViewById(R.id.rangebarOne);
         spinner_location = (Spinner) view.findViewById(R.id.spinner_location_settings);
 
 
         txtv_gender = (TextView) view.findViewById(R.id.txtv_gender);
 
-        btnMale     = (ToggleButton) view.findViewById(R.id.btnMen);
-        btnFemale   = (ToggleButton) view.findViewById(R.id.btnWomen);
-        btnSave     = (Button) view.findViewById(R.id.saveSettings);
+        btnMale = (ToggleButton) view.findViewById(R.id.btnMen);
+        btnFemale = (ToggleButton) view.findViewById(R.id.btnWomen);
+        btnSave = (Button) view.findViewById(R.id.saveSettings);
 
         btnFemale.setText("Female");
         btnMale.setText("Male");
@@ -148,7 +166,7 @@ public class SettingsFragment extends Fragment {
         prefs = new PrefManager(getActivity()).getSettingsData();
         if (prefs != null) {
             location = prefs.getString("location", null);
-            if (location != null){
+            if (location != null) {
                 int positions = dataAdapter.getPosition(location);
                 spinner_location.setSelection(positions);
             }
@@ -156,18 +174,18 @@ public class SettingsFragment extends Fragment {
             minAge = prefs.getInt("minAge", 0);
             maxAge = prefs.getInt("maxAge", 0);
             if (minAge == 0 && maxAge == 0) {
-                minAge=5;
-                maxAge=30;
+                minAge = 5;
+                maxAge = 30;
                 age_bar.getThumb(0).setValue(0).setEnabled(true);
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
 
 
-            }else {
+            } else {
                 if (minAge == 5) {
                     age_bar.getThumb(0).setValue(0).setEnabled(true);
-                }else {
+                } else {
                     age_bar.getThumb(0).setValue(minAge).setEnabled(true);
                 }
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
@@ -209,14 +227,14 @@ public class SettingsFragment extends Fragment {
                     if (value < 5) {
                         tvMin.setText("5");
 
-                    }else {
+                    } else {
                         tvMin.setText(String.valueOf(value));
                     }
                 } else {
                     if (5 > value) {
                         thumb.setValue(30);
                         tvMax.setText("30");
-                    }else {
+                    } else {
                         tvMax.setText(String.valueOf(value));
                     }
 
@@ -284,25 +302,98 @@ public class SettingsFragment extends Fragment {
         });
 
 
-
-
         //add data to shared preference
         //play button
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                b.show();
                 //location    =   spinner_location.getText().toString().trim();
-                sgender     =   txtv_gender.getText().toString();
-                minAge      =   Integer.parseInt(tvMin.getText().toString().trim());
-                maxAge      =   Integer.parseInt(tvMax.getText().toString().trim());
-
-                new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
+                sgender = txtv_gender.getText().toString();
+                minAge = Integer.parseInt(tvMin.getText().toString().trim());
+                maxAge = Integer.parseInt(tvMax.getText().toString().trim());
+                JSONObject jsonCity = new JSONObject();
+                try {
+                    jsonCity.put("city", location);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                updateCity(jsonCity);
+                new PrefManager(getActivity()).saveSettingData(location, sgender, false, minAge, maxAge);
                 getActivity().onBackPressed();
 
             }
 
         });
+    }
+
+    private void updateCity(JSONObject object) {
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.UPDATE_USER_CITY , object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response != null) {
+                            b.dismiss();
+                            Toast.makeText(tabActivity, "Updated current settings", Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                b.dismiss();
+                Toast.makeText(getActivity(), "Failed to update your settings", Toast.LENGTH_LONG).show();
+
+                String json = null;
+                Log.d("error--", error.toString());
+                NetworkResponse response = error.networkResponse;
+                if (response != null && response.data != null) {
+                    switch (response.statusCode) {
+                        case 401:
+                            json = new String(response.data);
+                            json = trimMessage(json, "detail");
+                            if (json != null) {
+                                Toast.makeText(getActivity(), "" + json, Toast.LENGTH_LONG).show();
+                            }
+                            break;
+
+                        default:
+                            break;
+                    }
+                }
+
+            }
+        }) {
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Authorization", "Bearer " + token);
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+
+        };
+
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        Log.d("Request", jsonObjectRequest.toString());
+        requestQueue.add(jsonObjectRequest);
+
+    }
+
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        return trimmedString;
     }
 
     private void blink() {
@@ -318,7 +409,7 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        new PrefManager(getActivity()).saveSettingData(location,sgender,false,minAge,maxAge);
+        new PrefManager(getActivity()).saveSettingData(location, sgender, false, minAge, maxAge);
     }
 
     @Override

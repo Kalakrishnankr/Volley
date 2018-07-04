@@ -55,7 +55,7 @@ public class MyConnectionAdapter extends RecyclerView.Adapter<MyConnectionAdapte
             }
         });
 
-        holder.tvname.setText(model.getConnected_firstName().trim());
+        holder.tvname.setText(model.getConnected_firstName().trim() +" "+ model.getConnected_lastName());
         if(model.getConnected_isAvailable_ondate()){
             holder.tv_unavailable.setVisibility(View.GONE);
             holder.imgAdd.setVisibility(View.VISIBLE);

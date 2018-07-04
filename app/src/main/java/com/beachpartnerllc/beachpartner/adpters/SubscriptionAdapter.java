@@ -27,7 +27,6 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
     private String user_subscription;
     private RadioButton lastCheckedRB = null;
     private SubClickInterface clickInterface;
-    private boolean isExpanded = false;
     int pos;
 
     public SubscriptionAdapter(Context context, List<SubscriptonPlansModel> plansModelList, SubClickInterface subClickInterface,String subscription) {
@@ -82,8 +81,8 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         holder.txtReadMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                isExpanded=!isExpanded;
-                if(isExpanded){
+                plansModel.isExpanded = !plansModel.isExpanded;
+                if(plansModel.isExpanded){
                     ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
                     params.height = 400;
                     holder.txt_desc.setLayoutParams(params);

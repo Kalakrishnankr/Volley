@@ -96,7 +96,6 @@ public class MessageFragment extends Fragment {
     }
 
 
-
     private void initView(View view) {
 
 
@@ -131,17 +130,19 @@ public class MessageFragment extends Fragment {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                searchPerson(newText);
-                if (dataList != null && dataList.size() > 0 ) {
-                    if (!newText.isEmpty()) {
-                        final List<BpFinderModel> filteredModelList = filter(dataList, newText);
-                        chatListAdapter.setFilter(filteredModelList);
-                        chatListAdapter.notifyDataSetChanged();
+                if (!newText.equalsIgnoreCase("")) {
+                    searchPerson(newText);
+                    if (dataList != null && dataList.size() > 0) {
+                        if (!newText.isEmpty()) {
+                            final List<BpFinderModel> filteredModelList = filter(dataList, newText);
+                            chatListAdapter.setFilter(filteredModelList);
+                            chatListAdapter.notifyDataSetChanged();
 
-                    } else {
-                        chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
-                        recyclerView.setAdapter(chatListAdapter);
-                        chatListAdapter.notifyDataSetChanged();
+                        } else {
+                            chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                            recyclerView.setAdapter(chatListAdapter);
+                            chatListAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
                 return false;
@@ -167,14 +168,14 @@ public class MessageFragment extends Fragment {
     private void searchPerson(String query) {
 
         if (!query.equals("null")) {
-                searchList.clear();
-                if (userList.size() > 0) {
-                    for (int i = 0; i < userList.size(); i++) {
-                        if (userList.get(i).getBpf_firstName().toLowerCase().contains(query.toLowerCase())) {
-                            searchList.add(userList.get(i));
-                        }
+            searchList.clear();
+            if (userList.size() > 0) {
+                for (int i = 0; i < userList.size(); i++) {
+                    if (userList.get(i).getBpf_firstName().toLowerCase().contains(query.toLowerCase())) {
+                        searchList.add(userList.get(i));
                     }
                 }
+            }
 
             if (searchList.size() > 0) {
                 chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), searchList);
@@ -182,7 +183,7 @@ public class MessageFragment extends Fragment {
                 chatListAdapter.notifyDataSetChanged();
             } else {
                 Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
-                chatListAdapter =new ChatListAdapter(MessageFragment.this, getContext(), userList);
+                chatListAdapter = new ChatListAdapter(MessageFragment.this, getContext(), userList);
                 recyclerView.setAdapter(chatListAdapter);
                 chatListAdapter.notifyDataSetChanged();
             }
@@ -213,6 +214,7 @@ public class MessageFragment extends Fragment {
         }
         return filteredModelList;
     }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -307,7 +309,7 @@ public class MessageFragment extends Fragment {
                 userList.clear();
                 chatList.addAll(hashSet);
                 if (connectionList != null && connectionList.size() > 0) {
-                   
+
                     if (chatList.size() > 0 && chatList != null) {
                         for (int i = 0; i < chatList.size(); i++) {
                             String chatId = chatList.get(i).split("-")[0];
@@ -332,7 +334,7 @@ public class MessageFragment extends Fragment {
                             recyclerView.setAdapter(chatListAdapter);
                             recyclerView.invalidate();
                             chatListAdapter.notifyDataSetChanged();
-                        }else {
+                        } else {
                             progressBar.setVisibility(View.GONE);
                             tv_nomsgs.setVisibility(View.VISIBLE);
                         }

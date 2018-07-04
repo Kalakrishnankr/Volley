@@ -1176,7 +1176,7 @@ public class BPFinderFragment extends Fragment implements MyInterface,SubClickIn
                     switch (response.statusCode) {
                         case 400:
                             if (!usertype.equalsIgnoreCase(AppConstants.USER_TYPE_COACH)) {
-                                showAlertDialouge();
+                                //showAlertDialouge();
                             }
                             json = new String(response.data);
                             json = trimMessage(json, "title");
