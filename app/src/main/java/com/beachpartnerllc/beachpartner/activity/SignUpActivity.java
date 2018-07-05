@@ -861,15 +861,15 @@ public class SignUpActivity extends AppCompatActivity{
                     if(today.get(Calendar.DAY_OF_YEAR) < dateBirth.getCalendar().get(Calendar.DAY_OF_YEAR)){
                         age--;
                     }
-                    Integer ageInt = new Integer(age);
-                    if(ageInt<18){
-                        minorStatus =true;
-                        if(userType!=null){
-                            if(userType.equals("Athlete")){
-                                alertMinor();
-                            }
-                        }
-                    }
+//                    Integer ageInt = new Integer(age);
+//                    if(ageInt<18){
+//                        minorStatus =true;
+//                        if(userType!=null){
+//                            if(userType.equals("Athlete")){
+//                                alertMinor();
+//                            }
+//                        }
+//                    }
                 }
                 dialog.dismiss();
             }

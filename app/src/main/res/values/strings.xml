@@ -161,7 +161,7 @@
 
     <string name="no_events_found">No Events Found</string>
     <string name="hint_logout">Would you like to log out?</string>
-    <string name="message_logout">Logout</string>
+    <string name="message_logout">Log Out</string>
     <string name="no_internet">No internet connection</string>
     <string name="swipe_accept_or_reject_invitations">Swipe below items right or left to accept or reject invitations respectively</string>
     <string name="channel_name">default_channel</string>
