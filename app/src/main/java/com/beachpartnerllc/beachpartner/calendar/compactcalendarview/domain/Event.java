@@ -10,23 +10,6 @@ import java.io.Serializable;
 import java.util.List;
 
 public class Event implements Serializable, Parcelable {
-
-
-
-    public void setTimeInMillis(long timeInMillis) {
-        this.timeInMillis = timeInMillis;
-    }
-
-
-
-    public void setColor(int color) {
-        this.color = color;
-    }
-
-    public void setData(Object data) {
-        this.data = data;
-    }
-
     private Object data;
     private String eventId;
     private String eventName;
@@ -46,7 +29,46 @@ public class Event implements Serializable, Parcelable {
     private String invitationStatus;
     private String eventState;
     private String eventTeamSize;
-
+    
+    public static final Creator<Event> CREATOR = new Creator<Event>() {
+        @Override
+        public Event createFromParcel(Parcel in) {
+            return new Event(in);
+        }
+        
+        @Override
+        public Event[] newArray(int size) {
+            return new Event[size];
+        }
+    };
+    
+    public Event() {
+    }
+    
+    protected Event(Parcel in) {
+        eventId = in.readString();
+        eventName = in.readString();
+        eventDescription = in.readString();
+        eventLocation = in.readString();
+        eventVenue = in.readString();
+        eventStartDate = in.readLong();
+        eventEndDate = in.readLong();
+        eventStatus = in.readString();
+        eventRegStartDate = in.readLong();
+        eventRegEndDate = in.readLong();
+        regType = in.readString();
+        userMessage = in.readString();
+        timeInMillis = in.readLong();
+        color = in.readInt();
+        eventAdmin = in.readString();
+        invitationStatus = in.readString();
+        eventState = in.readString();
+        eventTeamSize = in.readString();
+        eventDates = in.createLongArray();
+        eventUrl = in.readString();
+        invitationList = in.createTypedArrayList(InvitationsModel.CREATOR);
+    }
+    
     public long[] getEventDates() {
         return eventDates;
     }
@@ -64,9 +86,18 @@ public class Event implements Serializable, Parcelable {
     public String getEventState(){
         return eventState;
     }
-
-
-
+    
+    public void setTimeInMillis(long timeInMillis) {
+        this.timeInMillis = timeInMillis;
+    }
+    
+    public void setColor(int color) {
+        this.color = color;
+    }
+    
+    public void setData(Object data) {
+        this.data = data;
+    }
 
     public long getEventRegStartDate() {
         return eventRegStartDate;
@@ -258,9 +289,7 @@ public class Event implements Serializable, Parcelable {
 
         if (color != event.color) return false;
         if (timeInMillis != event.timeInMillis) return false;
-        if (data != null ? !data.equals(event.data) : event.data != null) return false;
-
-        return true;
+        return data != null ? data.equals(event.data) : event.data == null;
     }
 
     @Override
@@ -288,7 +317,27 @@ public class Event implements Serializable, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-
+        dest.writeString(eventId);
+        dest.writeString(eventName);
+        dest.writeString(eventDescription);
+        dest.writeString(eventLocation);
+        dest.writeString(eventVenue);
+        dest.writeLong(eventStartDate);
+        dest.writeLong(eventEndDate);
+        dest.writeString(eventStatus);
+        dest.writeLong(eventRegStartDate);
+        dest.writeLong(eventRegEndDate);
+        dest.writeString(regType);
+        dest.writeString(userMessage);
+        dest.writeLong(timeInMillis);
+        dest.writeInt(color);
+        dest.writeString(eventAdmin);
+        dest.writeString(invitationStatus);
+        dest.writeString(eventState);
+        dest.writeString(eventTeamSize);
+        dest.writeLongArray(eventDates);
+        dest.writeString(eventUrl);
+        dest.writeTypedList(invitationList);
     }
 
 

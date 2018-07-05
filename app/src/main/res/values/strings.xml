@@ -171,6 +171,9 @@
     <string name="hint_invitation_sent">Sent</string>
     <string name="hint_invitation_accept">Accept</string>
     <string name="hint_person_unavailable">Unavailable</string>
+    <string name="did_you_successfully_complete_registration">Did you successfully complete the event registration?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
 
 </resources>

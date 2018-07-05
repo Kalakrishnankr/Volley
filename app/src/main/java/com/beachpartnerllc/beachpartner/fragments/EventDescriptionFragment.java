@@ -28,7 +28,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -236,29 +235,29 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }
     }
     private void initActivity(View view) {
-
-        tview_eventname = (TextView) view.findViewById(R.id.event_name);
-        tview_location = (TextView) view.findViewById(R.id.tv_location);
-        tview_venue = (TextView) view.findViewById(R.id.tv_venue);
-        tview_eventadmin = (TextView) view.findViewById(R.id.tv_admin);
-        tview_TeamSize = (TextView) view.findViewById(R.id.tv_event_team_size);
-        tview_title  =   (TextView) view.findViewById(R.id.top_title);
-
-        tview_startDate = (TextView) view.findViewById(R.id.tv_startDate);
-        tview_endDate = (TextView) view.findViewById(R.id.tv_endDate);
-
-        tview_regStart = (TextView) view.findViewById(R.id.start_date);
-        tview_regClose = (TextView) view.findViewById(R.id.deadline);
-
-        athleteBtnLt = (LinearLayout) view.findViewById(R.id.athleteButtonsLt);
-        coachBtnLt = (LinearLayout) view.findViewById(R.id.coachButtonsLt);
-        btnInvitePartner = (Button) view.findViewById(R.id.btn_invite_partner);
-        btnRegister = (Button) view.findViewById(R.id.btn_register);
-        btnBack = (Button) view.findViewById(R.id.btn_back);
-        btnCoachGoing = (Button) view.findViewById(R.id.coach_going_btn);
-        btnCoachNotGoing = (Button) view.findViewById(R.id.coach_notgoing_btn);
-        athleteGoingBtnLt = (LinearLayout) view.findViewById(R.id.athlete_going_lt);
-        athleteGoingBtn = (Button)view.findViewById(R.id.athlete_going);
+    
+        tview_eventname = view.findViewById(R.id.event_name);
+        tview_location = view.findViewById(R.id.tv_location);
+        tview_venue = view.findViewById(R.id.tv_venue);
+        tview_eventadmin = view.findViewById(R.id.tv_admin);
+        tview_TeamSize = view.findViewById(R.id.tv_event_team_size);
+        tview_title = view.findViewById(R.id.top_title);
+    
+        tview_startDate = view.findViewById(R.id.tv_startDate);
+        tview_endDate = view.findViewById(R.id.tv_endDate);
+    
+        tview_regStart = view.findViewById(R.id.start_date);
+        tview_regClose = view.findViewById(R.id.deadline);
+    
+        athleteBtnLt = view.findViewById(R.id.athleteButtonsLt);
+        coachBtnLt = view.findViewById(R.id.coachButtonsLt);
+        btnInvitePartner = view.findViewById(R.id.btn_invite_partner);
+        btnRegister = view.findViewById(R.id.btn_register);
+        btnBack = view.findViewById(R.id.btn_back);
+        btnCoachGoing = view.findViewById(R.id.coach_going_btn);
+        btnCoachNotGoing = view.findViewById(R.id.coach_notgoing_btn);
+        athleteGoingBtnLt = view.findViewById(R.id.athlete_going_lt);
+        athleteGoingBtn = view.findViewById(R.id.athlete_going);
 
         if (userType.equalsIgnoreCase("Athlete")) {
             athleteBtnLt.setVisibility(View.VISIBLE);
@@ -497,6 +496,82 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
 
     }
+    
+    private void successfulRegisterationPrompt() {
+        //Register Event Api
+        final JSONObject registerObject = new JSONObject();
+        try {
+            registerObject.put("eventId", eventId);
+            registerObject.put("registerType", "Organizer");
+            registerObject.put("userIds", new JSONArray());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        
+        
+        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Registration")
+            .setMessage(R.string.did_you_successfully_complete_registration)
+            .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    registerEvent(registerObject);
+                }
+            })
+            .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    
+                    dialogInterface.cancel();
+                }
+            });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        
+    }
+    
+    private String trimMessage(String json, String detail) {
+        String trimmedString = null;
+        
+        try {
+            JSONObject obj = new JSONObject(json);
+            trimmedString = obj.getString(detail);
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return null;
+        }
+        
+        return trimmedString;
+    }
+    
+    @Override
+    public void onResume() {
+        super.onResume();
+        transparentAlert.dismiss();
+        if (registerCompleted) {
+            //alertAddToSystemCalendar();
+            //successfulRegisterationPrompt();
+            registerCompleted = false;
+        }
+        
+        
+    }
+    
+    private void addToSystemCalendar() {
+        Calendar cal = Calendar.getInstance();
+        Intent intent = new Intent(Intent.ACTION_INSERT);
+        intent.setType("vnd.android.cursor.item/event");
+        intent.putExtra("beginTime", event.getEventStartDate());
+        intent.putExtra("allDay", false);
+//        intent.putExtra("rrule", "FREQ=DAILY");
+        intent.putExtra("endTime", event.getEventEndDate());
+        intent.putExtra(CalendarContract.Events.EVENT_LOCATION, event.getEventLocation());
+        intent.putExtra("title", eventName);
+        startActivityForResult(intent, 1);
+        
+        
+    }
+
     private void registerEvent(JSONObject object) {
         transparentAlert.show();
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(ApiService.REQUEST_METHOD_POST, ApiService.EVENT_REGISTER, object,
@@ -550,7 +625,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         }) {
 
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
+            public Map<String, String> getHeaders() {
                 HashMap<String, String> headers = new HashMap<String, String>();
                 headers.put("Authorization", "Bearer " + user_token);
                 headers.put("Content-Type", "application/json; charset=utf-8");
@@ -562,83 +637,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
         Log.d("Request", jsonObjectRequest.toString());
         requestQueue.add(jsonObjectRequest);
-
-    }
-
-    private String trimMessage(String json, String detail) {
-        String trimmedString = null;
-
-        try {
-            JSONObject obj = new JSONObject(json);
-            trimmedString = obj.getString(detail);
-        } catch (JSONException e) {
-            e.printStackTrace();
-            return null;
-        }
-
-        return trimmedString;
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        transparentAlert.dismiss();
-        if (registerCompleted) {
-            //alertAddToSystemCalendar();
-            //successfulRegisterationPrompt();
-            registerCompleted = false;
-        }
-
-
-    }
-
-    private void addToSystemCalendar() {
-        Calendar cal = Calendar.getInstance();
-        Intent intent = new Intent(Intent.ACTION_INSERT);
-        intent.setType("vnd.android.cursor.item/event");
-        intent.putExtra("beginTime", event.getEventStartDate());
-        intent.putExtra("allDay", false);
-//        intent.putExtra("rrule", "FREQ=DAILY");
-        intent.putExtra("endTime", event.getEventEndDate());
-        intent.putExtra(CalendarContract.Events.EVENT_LOCATION,event.getEventLocation());
-        intent.putExtra("title", eventName);
-        startActivityForResult(intent, 1);
-
-
-    }
-
-
-
-    private void successfulRegisterationPrompt() {
-        //Register Event Api
-        final JSONObject registerObject = new JSONObject();
-        try {
-            registerObject.put("eventId", eventId);
-            registerObject.put("registerType", "Organizer");
-            registerObject.put("userIds", new JSONArray());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setTitle("Registration")
-                .setMessage("Did you successfully completed the event registration?")
-                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        registerEvent(registerObject);
-                    }
-                })
-                .setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-
-                        dialogInterface.cancel();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
 
     }
 
