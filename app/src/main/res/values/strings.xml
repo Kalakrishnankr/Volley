@@ -143,7 +143,7 @@
     <string name="sub_header">GET BEACH PARTNER PREMIUM</string>
     <string name="sub_desc">This is a premium feature. Please subscribe to \n one of the below subscription types to be \n able to use this feature.</string>
 
-    <string name="version">Beach Partner v46</string>
+    <string name="version">Beach Partner v%s</string>
     <string name="no_tournament_requests_sent">No  Tournament requests sent</string>
     <string name="no_tournament_requests_received">No Tournament requests received</string>
     <string name="no_upcoming_tournaments">You have no Upcoming Tournaments</string>

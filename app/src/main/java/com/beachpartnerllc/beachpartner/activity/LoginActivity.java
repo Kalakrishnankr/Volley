@@ -46,6 +46,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationStyle;
+import com.beachpartnerllc.beachpartner.BuildConfig;
 import com.beachpartnerllc.beachpartner.CustomEditText;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.ApiService;
@@ -196,8 +197,8 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         initActivity();
-
-
+    
+        ((TextView) findViewById(R.id.versionTV)).setText(getString(R.string.version, BuildConfig.VERSION_NAME));
     }
 
 
@@ -258,19 +259,18 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void initActivity() {
-
-
-
-        userName        =   (EditText) findViewById(R.id.input_username);
-        password        =   (CustomEditText) findViewById(R.id.input_password);
-        btnLogin        =   (Button)   findViewById(R.id.btnLogin);
-        instaLogin      =   (ImageView)findViewById(R.id.instaLogin);
-        tsignUp         =   (TextView) findViewById(R.id.tSignUp);
-        loginButton     =   (ImageView)findViewById(R.id.login_button);
-        txt_forgotPass  =   (TextView) findViewById(R.id.forgotPass);
-
-
-        password_inputText = (TextInputLayout) findViewById(R.id.float_label_password);
+    
+    
+        userName = findViewById(R.id.input_username);
+        password = findViewById(R.id.input_password);
+        btnLogin = findViewById(R.id.btnLogin);
+        instaLogin = findViewById(R.id.instaLogin);
+        tsignUp = findViewById(R.id.tSignUp);
+        loginButton = findViewById(R.id.login_button);
+        txt_forgotPass = findViewById(R.id.forgotPass);
+    
+    
+        password_inputText = findViewById(R.id.float_label_password);
 
         awesomeValidation = new AwesomeValidation(ValidationStyle.BASIC);
 
@@ -947,18 +947,18 @@ public class LoginActivity extends AppCompatActivity {
         View view     = inflater.inflate(R.layout.alert_dialog_box,null);
         alerts.setView(view);
         alerts.setCancelable(false);
-
-        editText_key =  (EditText) view.findViewById(R.id.edittxt_key);
-        editText_pass=  (EditText) view.findViewById(R.id.edittxt_newPassword);
-        editText_confm_pass = (EditText) view.findViewById(R.id.edittxt_confirmPassword);
-
-        txt_keyError       = (TextView)view.findViewById(R.id.txt_keyError);
-        txt_pwdError       = (TextView)view.findViewById(R.id.txt_pwdError);
-        txt_confPwdError   = (TextView) view.findViewById(R.id.txt_confPwdError);
-
-
-        Button   btn_confirm =   (Button) view.findViewById(R.id.btn_resetOk);
-        Button   btn_cancel  =   (Button) view.findViewById(R.id.btn_resetCancel);
+    
+        editText_key = view.findViewById(R.id.edittxt_key);
+        editText_pass = view.findViewById(R.id.edittxt_newPassword);
+        editText_confm_pass = view.findViewById(R.id.edittxt_confirmPassword);
+    
+        txt_keyError = view.findViewById(R.id.txt_keyError);
+        txt_pwdError = view.findViewById(R.id.txt_pwdError);
+        txt_confPwdError = view.findViewById(R.id.txt_confPwdError);
+    
+    
+        Button btn_confirm = view.findViewById(R.id.btn_resetOk);
+        Button btn_cancel = view.findViewById(R.id.btn_resetCancel);
 
         final AlertDialog alertDialog  = alerts.create();
         alertDialog.show();
