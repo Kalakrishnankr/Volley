@@ -10,12 +10,10 @@ android {
         minSdkVersion 16
         targetSdkVersion 27
         versionCode 1
-        versionName "0.9.1"
+        versionName "0.9.2"
         vectorDrawables.useSupportLibrary = true
         useLibrary 'org.apache.http.legacy'
         multiDexEnabled true
-
-
     }
     packagingOptions {
         exclude 'META-INF/DEPENDENCIES'
