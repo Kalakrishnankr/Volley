@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
+import com.beachpartnerllc.beachpartner.connections.PrefManager;
 import com.beachpartnerllc.beachpartner.fragments.CoachProfileFragment;
 import com.beachpartnerllc.beachpartner.fragments.ConnectionFragment;
 import com.beachpartnerllc.beachpartner.fragments.ProfileFragment;
@@ -31,6 +32,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.view.View.GONE;
+
 /**
  * Created by seq-kala on 23/2/18.
  */
@@ -41,6 +44,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
     private ArrayList<ConnectionResultModel> dataLists;
     public ConnectionInterface connectionInterface;
     private ArrayList<BpFinderModel> mCountryModel;
+    private PrefManager prefManager;
 
     //    public static boolean isExpanded =false;
 
@@ -79,7 +83,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
             } else {
                 //mAnimationManager.expand(holder.rrHeaderTwo, 1000, -250);
 
-                holder.rrHeaderTwo.setVisibility(View.GONE);
+                holder.rrHeaderTwo.setVisibility(GONE);
             }
             holder.topIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -89,7 +93,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                         //Toast.makeText(mContext, "Collapse", Toast.LENGTH_SHORT).show();
                         ///mAnimationManager.collapse(holder.rrHeaderTwo, 1000, -300);
 
-                        holder.rrHeaderTwo.setVisibility(View.GONE);
+                        holder.rrHeaderTwo.setVisibility(GONE);
                         model.isExpanded = false;
                     } else {
                         // Toast.makeText(mContext, "Expand", Toast.LENGTH_SHORT).show();
@@ -119,6 +123,8 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 }
             });
 
+            int myAge = prefManager.getAge();
+            int friend_age = Integer.parseInt(model.getBpFinderModel().getBpf_age());
             holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim()+ " " +dataLists.get(position).getBpFinderModel().getBpf_lastName().trim());
             holder.txtv_age.setText("Age: "+dataLists.get(position).getBpFinderModel().getBpf_age());
 
@@ -146,16 +152,23 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
             final String active_status = model.getStatus() ;
             if (!active_status.equals("null") && !active_status.isEmpty()) {
-                if(active_status.equalsIgnoreCase("Blocked")){
+                if (active_status.equalsIgnoreCase("Blocked")) {
                     holder.txtv_block.setText("UNBLOCK");
-                    holder.viewOne.setVisibility(View.GONE);
-                    holder.txtv_message.setVisibility(View.GONE);
+                    holder.viewOne.setVisibility(GONE);
+                    holder.txtv_message.setVisibility(GONE);
                     holder.cardView.setBackgroundResource(R.color.lightGrey);
 
-                }else  {
+                } else {
                     holder.txtv_block.setText("BLOCK");
                     holder.viewOne.setVisibility(View.VISIBLE);
-                    holder.txtv_message.setVisibility(View.VISIBLE);
+                    if (friend_age >= 18 && myAge >= 18 )  {
+                        holder.txtv_message.setVisibility(View.VISIBLE);
+                    }else if(friend_age <= 18 && myAge <= 18){
+                        holder.txtv_message.setVisibility(View.VISIBLE);
+                    }
+                    else{
+                        holder.txtv_message.setVisibility(GONE);
+                    }
                     holder.cardView.setBackgroundResource(R.color.white);
                 }
             }

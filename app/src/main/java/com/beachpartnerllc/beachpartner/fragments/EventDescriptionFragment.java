@@ -368,6 +368,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                         invitationList.clear();
                         Event eventModel = new Gson().fromJson(response.toString(), Event.class);
                         invitationList = eventModel.getInvitationList();
+
                         transparentAlert.dismiss();
                         viewPartners();
 
@@ -504,7 +505,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
                     @Override
                     public void onResponse(JSONObject response) {
                         if (response != null) {
-                            Toast.makeText(getActivity(), "User Registration Successful", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Event Registered Successfully", Toast.LENGTH_SHORT).show();
                             athleteGoingBtn.setClickable(false);
                             athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
                             btnInvitePartner.setClickable(false);
@@ -623,7 +624,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Registration")
-                .setMessage("Did you successfully completed the event registration?")
+                .setMessage("Did you successfully complete the event registration?")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {

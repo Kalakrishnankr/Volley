@@ -72,6 +72,8 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -499,6 +501,17 @@ public class LoginActivity extends AppCompatActivity {
                                         }
                                     }
 
+                                    long millisecond = Long.parseLong(userObj.getString("dob"));
+                                    Date datef = new Date(millisecond);
+                                    Calendar today = Calendar.getInstance();
+                                    Calendar cal = Calendar.getInstance();
+                                    cal.setTime(datef);
+                                    int age = today.get(Calendar.YEAR) - cal.get(Calendar.YEAR);
+                                    if (today.get(Calendar.DAY_OF_YEAR) < cal.get(Calendar.DAY_OF_YEAR)) {
+                                        age--;
+                                    }
+                                    int ageInt = new Integer(age);
+
                                     String subscribe =  userDataModel.getSubscriptionType();
                                     String userType =   userObj.getString("userType");
                                     String userId   =   userObj.getString("id");
@@ -512,7 +525,7 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                     //save username password and token in shared preference
                                     new PrefManager(getApplicationContext()).saveLoginDetails(uname,passwd,token);
-                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation);
+                                    new PrefManager(getApplicationContext()).saveUserDetails(userId,userType,userName,userPic,userLocation,ageInt);
 
                                     SharedPreferences prefs = new PrefManager(getApplicationContext()).getSettingsData();
                                     if (prefs.getString("location",null) == null && prefs.getString("gender", null) == null) {

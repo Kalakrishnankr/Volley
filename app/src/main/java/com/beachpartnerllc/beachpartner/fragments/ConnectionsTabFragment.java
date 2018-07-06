@@ -138,7 +138,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
         upDownToggle        =  view.findViewById(R.id.upDown);
         btnInvitefrnd       =  view.findViewById(R.id.btn_invite);
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottom_sheet));
-
+        btnInvitefrnd.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
         btnInvitefrnd.setOnClickListener(this);
         // Capturing the callbacks for bottom sheet
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -483,6 +483,7 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
     //adding member from connection list to my teamlist using interface
     @Override
     public void onAddListener(ConnectionModel member,int position) {
+        btnInvitefrnd.setBackground(getResources().getDrawable(R.drawable.event_desc_buttons));
         if(bottomSheetBehavior.getState()==BottomSheetBehavior.STATE_COLLAPSED){
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
@@ -531,6 +532,9 @@ public class ConnectionsTabFragment extends Fragment implements View.OnClickList
                 athleteList.add(myTeamList.remove(position));
                 mConnectionAdapter.notifyDataSetChanged();
                 myTeamAdapter.notifyDataSetChanged();
+                if (myTeamList.size() == 0) {
+                    btnInvitefrnd.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+                }
 
             }
         });

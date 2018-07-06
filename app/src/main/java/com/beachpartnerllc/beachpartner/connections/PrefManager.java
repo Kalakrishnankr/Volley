@@ -24,7 +24,7 @@ public class PrefManager {
     }
 
     //Save logged userid
-    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation ){
+    public void saveUserDetails(String user_id,String userType,String userName,String userPic,String userLocation,int age){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.putString("userId",user_id);
@@ -32,6 +32,7 @@ public class PrefManager {
         editor.putString("userName",userName);
         editor.putString("userProfilePic",userPic);
         editor.putString("userLocation",userLocation);
+        editor.putInt("age",age);
         editor.commit();
     }
 
@@ -126,6 +127,11 @@ public class PrefManager {
     public String getLocation(){
         SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
         return sharedPreferences.getString("userLocation", "");
+    }
+
+    public int getAge(){
+        SharedPreferences sharedPreferences = context.getSharedPreferences("LoginDetails", Context.MODE_PRIVATE);
+        return sharedPreferences.getInt("age",0);
     }
 
 
