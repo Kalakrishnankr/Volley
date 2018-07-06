@@ -2,6 +2,7 @@ package com.beachpartnerllc.beachpartner.fragments;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -10,7 +11,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.style.ForegroundColorSpan;
@@ -41,6 +41,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.beachpartnerllc.beachpartner.EventViewModel;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.adpters.BenefitListItemAdapter;
@@ -79,11 +80,13 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import kotlin.Pair;
+
 import static com.beachpartnerllc.beachpartner.utils.CheckPlan.selectedIndex;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-public class CalendarFragment extends Fragment implements View.OnClickListener, SubClickInterface {
+public class CalendarFragment extends BaseFragment implements View.OnClickListener, SubClickInterface {
 
     private static final String TAG = "CalendarFragment";
     private static boolean isMycal = false;
@@ -137,21 +140,19 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
-
-        token = new PrefManager(getActivity()).getToken();
-        initActivity(view);
-        getAllEvents();
-        return view;
+	    // Inflate the layout for this fragment
+	    View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+	
+	    token = new PrefManager(getActivity()).getToken();
+	    initActivity(view);
+	    getAllEvents();
+	    return view;
     }
-
 
     private void initActivity(View view) {
 
@@ -381,64 +382,18 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         }
 
     }
-
-    //Show alert subscription alert dialouge
-    private void showAlertDialouge() {
-
-        LayoutInflater inflater = getLayoutInflater();
-        //View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);//Alert dialogue previous one
-        View alertLayout = inflater.inflate(R.layout.alert_subscription_layout, null);
-
-        btnProceed = alertLayout.findViewById(R.id.btn_proceed);
-        btnCancel = alertLayout.findViewById(R.id.btn_sub_cancel);
-        RecyclerView rc_view = alertLayout.findViewById(R.id.rcv_subscribe);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
-        rc_view.setLayoutManager(layoutManager);
-        btnProceed.setClickable(false);
-        /*userPlanList.clear();
-        if (plansModelList.size() > 0 && plansModelList != null) {
-            for (int i = 0; i <plansModelList.size() ; i++) {
-                if (!plansModelList.get(i).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
-                    userPlanList.add(plansModelList.get(i));
-                }
-            }
-
-        }*/
-
-        subscriptionAdapter = new SubscriptionAdapter(getContext(), userPlanList, (SubClickInterface) this, subScriptionPlan);
-        rc_view.setAdapter(subscriptionAdapter);
-
-
-        android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
-        // Initialize a new foreground color span instance
-        ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
-        alert.setView(alertLayout);
-        alert.setCancelable(true);
-        final android.app.AlertDialog dialog = alert.create();
-        dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+	
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		super.onActivityCreated(savedInstanceState);
+		filterViewModel = ViewModelProviders.of(this).get(FilterViewModel.class);
+		EventViewModel eventVM = ViewModelProviders.of(getActivity()).get(EventViewModel.class);
+		eventVM.getEvent().observe(getViewLifecycleOwner(), new Observer<Pair<Integer, Event>>() {
             @Override
-            public void onShow(DialogInterface arg0) {
-                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
-                //dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+            public void onChanged(@Nullable Pair<Integer, Event> eveeventPositionPair) {
+	            eventsAdapter.setEvent(eveeventPositionPair.getFirst(), eveeventPositionPair.getSecond());
             }
         });
-        dialog.show();
-        btnProceed.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                if (splanModels != null) {
-                    subscriptionsModels(splanModels);
-                }
-            }
-        });
-        btnCancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-
     }
 
     private void currentDateEventSetter() {
@@ -595,11 +550,64 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
         }
         return false;
     }
+	
+	//Show alert subscription alert dialouge
+	private void showAlertDialouge() {
+		
+		LayoutInflater inflater = getLayoutInflater();
+		//View alertLayout = inflater.inflate(R.layout.popup_no_of_likes_layout, null);//Alert dialogue previous one
+		View alertLayout = inflater.inflate(R.layout.alert_subscription_layout, null);
+		
+		btnProceed = alertLayout.findViewById(R.id.btn_proceed);
+		btnCancel = alertLayout.findViewById(R.id.btn_sub_cancel);
+		RecyclerView rc_view = alertLayout.findViewById(R.id.rcv_subscribe);
+		LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+		rc_view.setLayoutManager(layoutManager);
+		btnProceed.setClickable(false);
+        /*userPlanList.clear();
+        if (plansModelList.size() > 0 && plansModelList != null) {
+            for (int i = 0; i <plansModelList.size() ; i++) {
+                if (!plansModelList.get(i).getPlanName().equalsIgnoreCase(subScriptionPlan)) {
+                    userPlanList.add(plansModelList.get(i));
+                }
+            }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        filterViewModel = ViewModelProviders.of(this).get(FilterViewModel.class);
+        }*/
+		
+		subscriptionAdapter = new SubscriptionAdapter(getContext(), userPlanList, this, subScriptionPlan);
+		rc_view.setAdapter(subscriptionAdapter);
+		
+		
+		android.app.AlertDialog.Builder alert = new android.app.AlertDialog.Builder(getContext());
+		// Initialize a new foreground color span instance
+		ForegroundColorSpan foregroundColorSpan = new ForegroundColorSpan(getResources().getColor(R.color.blueDark));
+		alert.setView(alertLayout);
+		alert.setCancelable(true);
+		final android.app.AlertDialog dialog = alert.create();
+		dialog.setOnShowListener(new DialogInterface.OnShowListener() {
+			@Override
+			public void onShow(DialogInterface arg0) {
+				//dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setBackgroundColor(getResources().getColor(R.color.blueDark));
+				//dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setGravity(Gravity.CENTER);
+			}
+		});
+		dialog.show();
+		btnProceed.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				dialog.dismiss();
+				if (splanModels != null) {
+					subscriptionsModels(splanModels);
+				}
+			}
+		});
+		btnCancel.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View view) {
+				dialog.dismiss();
+			}
+		});
+
     }
 
 
@@ -1311,7 +1319,6 @@ public class CalendarFragment extends Fragment implements View.OnClickListener, 
 
         return trimmedString;
     }
-
 
     @Override
     public void changeViews(SubscriptonPlansModel plansModel) {

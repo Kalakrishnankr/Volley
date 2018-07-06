@@ -473,7 +473,8 @@
                             android:layout_weight="2"
                             android:textAllCaps="false"
                             android:textSize="@dimen/text_size_event_button"
-                            android:background="@drawable/event_desc_buttons"
+                            android:enabled="false"
+                            android:background="@drawable/selector_event_desc_buttons"
                             android:text="Invite Partner"
                             android:textColor="@color/white" />
 
