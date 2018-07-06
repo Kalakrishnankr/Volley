@@ -122,7 +122,7 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
 
                 }
             });
-
+            prefManager = new PrefManager(mContext);
             int myAge = prefManager.getAge();
             int friend_age = Integer.parseInt(model.getBpFinderModel().getBpf_age());
             holder.txtv_name.setText(dataLists.get(position).getBpFinderModel().getBpf_firstName().trim()+ " " +dataLists.get(position).getBpFinderModel().getBpf_lastName().trim());
