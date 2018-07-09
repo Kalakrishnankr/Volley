@@ -530,43 +530,43 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 		
 		filterDialogue.show();
 		initView(filterDialogue);
+
+		int eventValuePos = adapterEventTypes.getPosition(filterViewModel.getFilter().getEventType());
+		spinner_events.setSelection(eventValuePos);
+
+
+		int eventSubValuePos = adapterSubEvents.getPosition(filterViewModel.getFilter().getSubType());
+		spinner_subEvents.setSelection(eventSubValuePos);
+
+		int yearValuePos = adapterYear.getPosition(filterViewModel.getFilter().getYear());
+		spinner_year.setSelection(yearValuePos);
+
+		int monthValuePos = adapterMonths.getPosition(filterViewModel.getFilter().getMonth());
+		spinner_month.setSelection(monthValuePos);
+
+		int stateValuePos = adapterStates.getPosition(filterViewModel.getFilter().getState());
+		tv_state.setSelection(stateValuePos);
+
+		int regionValuePos = adapterRegion.getPosition(filterViewModel.getFilter().getRegion());
+		tv_region.setSelection(regionValuePos);
 	}
-	
-	private void initView(final Dialog dialogue) {
-		spinner_events = dialogue.findViewById(R.id.event_spinner);
-		spinner_subEvents = dialogue.findViewById(R.id.subtypes_spinner);
-		spinner_year = dialogue.findViewById(R.id.year_spinner);
-		spinner_month = dialogue.findViewById(R.id.month_spinner);
-		final TextView clearAll = dialogue.findViewById(R.id.clear_all_txtv);
-		tv_state = dialogue.findViewById(R.id.state_List);
-		tv_region = dialogue.findViewById(R.id.region_list);
-		
-		final Button btn_search = dialogue.findViewById(R.id.btn_invite_partner);
-		if (adapterEventTypes != null) {
-			int eventValuePos = adapterEventTypes.getPosition(filterViewModel.getFilter().getEventType());
-			spinner_events.setSelection(eventValuePos);
-		}
-		if (adapterSubEvents != null) {
-			int eventSubValuePos = adapterSubEvents.getPosition(filterViewModel.getFilter().getSubType());
-			spinner_subEvents.setSelection(eventSubValuePos);
-		}
-		if (adapterYear != null) {
-			int yearValuePos = adapterYear.getPosition(filterViewModel.getFilter().getYear());
-			spinner_year.setSelection(yearValuePos);
-		}
-		if (adapterMonths != null) {
-			int monthValuePos = adapterMonths.getPosition(filterViewModel.getFilter().getMonth());
-			spinner_month.setSelection(monthValuePos);
-		}
-		if (adapterStates != null) {
-			int stateValuePos = adapterStates.getPosition(filterViewModel.getFilter().getState());
-			tv_state.setSelection(stateValuePos);
-		}
-		if (adapterRegion != null) {
-			int regionValuePos = adapterRegion.getPosition(filterViewModel.getFilter().getRegion());
-			tv_region.setSelection(regionValuePos);
-		}
+
+	private void initView(final Dialog filterDialogue) {
+		spinner_events = (Spinner) filterDialogue.findViewById(R.id.event_spinner);
+		spinner_subEvents = (Spinner) filterDialogue.findViewById(R.id.subtypes_spinner);
+		spinner_year = (Spinner) filterDialogue.findViewById(R.id.year_spinner);
+		spinner_month = (Spinner) filterDialogue.findViewById(R.id.month_spinner);
+		final TextView clearAll     =  (TextView) filterDialogue.findViewById(R.id.clear_all_txtv);
+		tv_state = (Spinner) filterDialogue.findViewById(R.id.state_List);
+		tv_region = (Spinner) filterDialogue.findViewById(R.id.region_list);
+
+		final Button btn_search = (Button) filterDialogue.findViewById(R.id.btn_invite_partner);
+
 		spinnerInit();
+
+
+
+
 		clearAll.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -583,68 +583,74 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 				top_tabs.setVisibility(View.VISIBLE);
 				calendar_llt.setVisibility(View.VISIBLE);
 				container_llt.setWeightSum((float) 4);
-				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, (float) 0.3);
+				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,0, (float) 0.3);
 				eventHeader_llt.setLayoutParams(param);
 				getAllEvents();
-				filterViewModel.setFilter(new Filter("", "", "", "", "", ""));
+				filterViewModel.setFilter(new Filter("", "", "", "", "",""));
 //                filterDialogue.cancel();
-			
+
 			}
 		});
-		
-		
+
+
 		btn_search.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View view) {
-				
+
 				eventType = spinner_events.getSelectedItem().toString();
 				subType = spinner_subEvents.getSelectedItem().toString();
 				year = spinner_year.getSelectedItem().toString();
 				month = spinner_month.getSelectedItem().toString();
-				state = tv_state.getSelectedItem().toString();
-				region = tv_region.getSelectedItem().toString();
+				state    = tv_state.getSelectedItem().toString();
+				region   = tv_region.getSelectedItem().toString();
 				eventType_clear = eventType.replaceAll("\\s", "");
-				
-				filterViewModel.setFilter(new Filter(eventType, subType, year, month, state, region));
+
+				filterViewModel.setFilter(new Filter(eventType, subType, year, month, state,region));
 				String searchCriteriaString = "Events for ";
-				if (eventType.equalsIgnoreCase("Please Select")) {
-					eventType = "";
-				} else {
-					searchCriteriaString = eventType + " ->";
+				if(eventType.equalsIgnoreCase("Please Select")){
+					eventType="";
 				}
-				
-				if (subType.equalsIgnoreCase("Please Select") || subType.equalsIgnoreCase("Not Applicable")) {
-					subType = "";
-				} else {
-					searchCriteriaString += subType + " ->";
+				else{
+					searchCriteriaString=eventType+ " ->";
 				}
-				if (year.equalsIgnoreCase("Please Select")) {
-					year = "";
-				} else {
-					searchCriteriaString += year + " ->";
+
+				if(subType.equalsIgnoreCase("Please Select")||subType.equalsIgnoreCase("Not Applicable")){
+					subType="";
 				}
-				
-				if (month.equalsIgnoreCase("Please Select")) {
-					month = "";
-				} else {
-					searchCriteriaString += month + " ->";
+				else{
+					searchCriteriaString+=subType+ " ->";
 				}
-				
-				
-				if (state.equalsIgnoreCase("Please Select")) {
-					state = "";
-				} else {
-					searchCriteriaString += state + " ->";
+				if(year.equalsIgnoreCase("Please Select")){
+					year="";
 				}
-				
-				if (region.equalsIgnoreCase("Please Select")) {
-					region = "";
-				} else {
-					searchCriteriaString += region + " ->";
+				else{
+					searchCriteriaString+=year+ " ->";
 				}
-				
-				if (month != "") {
-					String dateYear = month + " " + year;
+
+				if(month.equalsIgnoreCase("Please Select")){
+					month="";
+				}
+				else{
+					searchCriteriaString+=month+ " ->";
+				}
+
+
+				if(state.equalsIgnoreCase("Please Select")){
+					state="";
+				}
+				else{
+					searchCriteriaString+=state+ " ->";
+				}
+
+				if(region.equalsIgnoreCase("Please Select")){
+					region="";
+				}
+				else{
+					searchCriteriaString+=region+ " ->";
+				}
+
+				if(month!=""){
+					String dateYear = month+" "+ year;
 					Date startDate = null;
 					DateFormat df = new SimpleDateFormat("MMMM yyyy");
 					try {
@@ -655,29 +661,30 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 					tview_month.setText(dateFormatForMonth.format(startDate));
 					compactCalendarView.setCurrentDate(startDate);
 				}
-				
+
 				tview_date.setText(searchCriteriaString);
-				
+
 				compactCalendarView.invalidate();
-				
+
 				JSONObject objects = new JSONObject();
 				try {
-					objects.put("eventType", eventType);
-					objects.put("month", month);
-					objects.put("region", "");
-					objects.put("state", state);
-					objects.put("subType", subType);
-					objects.put("year", year);
-					objects.put("region", region);
-					
+					objects.put("eventType",eventType);
+					objects.put("month",month);
+					objects.put("region","");
+					objects.put("state",state);
+					objects.put("subType",subType);
+					objects.put("year",year);
+					objects.put("region",region);
+
 				} catch (JSONException e) {
 					e.printStackTrace();
 				}
-				
+
 				searchEvents(objects);
-				dialogue.dismiss();
+				filterDialogue.dismiss();
 			}
 		});
+
 	}
 	
 	private void spinnerInit() {

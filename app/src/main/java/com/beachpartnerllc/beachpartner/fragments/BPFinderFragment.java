@@ -458,28 +458,30 @@ public class BPFinderFragment extends Fragment implements MyInterface,SubClickIn
             }
         });
 
-
         //age range bar
         age_bar.setOnThumbValueChangeListener(new MultiSlider.OnThumbValueChangeListener() {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
-
-                if (thumbIndex == 0) {
-                    if (value < 5) {
-                        tvMin.setText("5");
-
-                    } else {
+                int myage = prefManager.getAge();
+                if(myage>=19){
+                    age_bar.setMin(19);
+                    age_bar.setMax(80);
+                    if (thumbIndex == 0) {
                         tvMin.setText(String.valueOf(value));
+                    } else {
+                            tvMax.setText(String.valueOf(value));
                     }
-                } else {
-                    if (5 > value) {
-                        thumb.setValue(30);
-                        tvMax.setText("30");
+                }
+                else{
+                    age_bar.setMin(5);
+                    age_bar.setMax(18);
+                    if (thumbIndex == 0) {
+                            tvMin.setText(String.valueOf(value));
                     } else {
                         tvMax.setText(String.valueOf(value));
                     }
-
                 }
+
 
             }
         });

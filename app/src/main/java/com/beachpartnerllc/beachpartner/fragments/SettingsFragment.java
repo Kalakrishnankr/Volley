@@ -67,7 +67,9 @@ public class SettingsFragment extends Fragment {
     private int minAge, maxAge;
     private TabActivity tabActivity;
     private String location_change, token;
+    private PrefManager prefManager;
     private AlertDialog b;
+    private     int myage;
 
     public SettingsFragment() {
         // Required empty public constructor
@@ -173,21 +175,36 @@ public class SettingsFragment extends Fragment {
             sgender = prefs.getString("gender", null);
             minAge = prefs.getInt("minAge", 0);
             maxAge = prefs.getInt("maxAge", 0);
+            prefManager = new PrefManager(getActivity());
+            myage = prefManager.getAge();
+            if(myage>=19) {
+                age_bar.setMin(19);
+                age_bar.setMax(80);
+                tvMin.setText(String.valueOf(19));
+                tvMax.setText(String.valueOf(80));
+            }else{
+                age_bar.setMin(5);
+                age_bar.setMax(18);
+                tvMin.setText(String.valueOf(5));
+                tvMax.setText(String.valueOf(18));
+            }
             if (minAge == 0 && maxAge == 0) {
-                minAge = 5;
-                maxAge = 30;
-                age_bar.getThumb(0).setValue(0).setEnabled(true);
+                if(myage>=19) {
+                    minAge = 19;
+                    maxAge = 80;
+                }
+                else{
+                    minAge = 5;
+                    maxAge = 18;
+                }
+
+                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
 
-
             } else {
-                if (minAge == 5) {
-                    age_bar.getThumb(0).setValue(0).setEnabled(true);
-                } else {
-                    age_bar.getThumb(0).setValue(minAge).setEnabled(true);
-                }
+                age_bar.getThumb(0).setValue(minAge).setEnabled(true);
                 age_bar.getThumb(1).setValue(maxAge).setEnabled(true);
                 tvMin.setText(String.valueOf(minAge));
                 tvMax.setText(String.valueOf(maxAge));
@@ -223,21 +240,26 @@ public class SettingsFragment extends Fragment {
             @Override
             public void onValueChanged(MultiSlider multiSlider, MultiSlider.Thumb thumb, int thumbIndex, int value) {
 
-                if (thumbIndex == 0) {
-                    if (value < 5) {
-                        tvMin.setText("5");
 
-                    } else {
+
+
+                if(myage>=19){
+                    age_bar.setMin(19);
+                    age_bar.setMax(80);
+                    if (thumbIndex == 0) {
                         tvMin.setText(String.valueOf(value));
-                    }
-                } else {
-                    if (5 > value) {
-                        thumb.setValue(30);
-                        tvMax.setText("30");
                     } else {
                         tvMax.setText(String.valueOf(value));
                     }
-
+                }
+                else{
+                    age_bar.setMin(5);
+                    age_bar.setMax(18);
+                    if (thumbIndex == 0) {
+                        tvMin.setText(String.valueOf(value));
+                    } else {
+                        tvMax.setText(String.valueOf(value));
+                    }
                 }
 
             }
