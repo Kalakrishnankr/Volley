@@ -144,10 +144,10 @@
     <string name="sub_desc">This is a premium feature. Please subscribe to \n one of the below subscription types to be \n able to use this feature.</string>
 
     <string name="version">Beach Partner v%s</string>
-    <string name="no_tournament_requests_sent">No  Tournament requests sent</string>
-    <string name="no_tournament_requests_received">No Tournament requests received</string>
-    <string name="no_upcoming_tournaments">You have no Upcoming Tournaments</string>
-    <string name="no_new_messages">You have no new Messages</string>
+    <string name="no_tournament_requests_sent">No  Tournament Requests Sent</string>
+    <string name="no_tournament_requests_received">No Tournament Requests Received</string>
+    <string name="no_upcoming_tournaments">You Have No Upcoming Tournaments</string>
+    <string name="no_new_messages">You Have No New Messages</string>
     <string name="team_size">Team Size</string>
     <string name="no_messsages_message_fragment">Messages sent or received will appear here</string>
     <string name="clear_all">Clear All</string>
