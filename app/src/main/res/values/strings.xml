@@ -174,8 +174,9 @@
     <string name="did_you_successfully_complete_registration">Did you successfully complete the event registration?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
-    <string
-        name="you_have_been_successfully_registered_for_the_event">You have been successfully registered for the event</string>
+    <string name="you_have_been_successfully_registered_for_the_event">You have been successfully registered for the event</string>
+    <string name="going_for_this_event">I\'m going for this event</string>
+    <string name="add_ons">Add-Ons</string>
 
 
 </resources>
