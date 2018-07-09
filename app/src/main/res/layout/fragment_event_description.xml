@@ -542,7 +542,7 @@
                     android:textSize="@dimen/text_size_event_button"
                     android:textAllCaps="false"
                     android:background="@drawable/event_desc_going"
-                    android:text="Going"
+                    android:text="@string/going_for_this_event"
                     android:textColor="@color/white" />
             </LinearLayout>
 

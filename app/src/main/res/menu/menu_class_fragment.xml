@@ -19,7 +19,7 @@
         app:showAsAction="collapseActionView"/>
     <!--AddOns-->
     <item android:id="@+id/addOns"
-        android:title="Addons"
+        android:title="@string/add_ons"
         app:showAsAction="collapseActionView"/>
 
     <!--Settings-->
