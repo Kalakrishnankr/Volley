@@ -60,10 +60,12 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
         if (user_subscription != null) {
             if (!user_subscription.equalsIgnoreCase("null")) {
                 if (plansModel != null && plansModel.getPlanCode().equalsIgnoreCase(user_subscription)){
+                    holder.txtvCurrentPlan.setVisibility(View.VISIBLE);
                     holder.txtvCurrentPlan.setText(R.string.current_plan);
                     holder.img_toggle.setVisibility(View.INVISIBLE);
+                } else {
+                    holder.txtvCurrentPlan.setVisibility(View.GONE);
                 }
-
             }
         }
         holder.img_toggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -84,15 +86,15 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                 plansModel.isExpanded = !plansModel.isExpanded;
                 if(plansModel.isExpanded){
                     ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
-                    params.height = 400;
+                    params.height = holder.txt_desc.getLayoutParams().WRAP_CONTENT;
                     holder.txt_desc.setLayoutParams(params);
                     holder.txt_desc.setMaxLines(10);
                     holder.txtReadMore.setText("Read less");
                 }else {
                     ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
-                    params.height = 0;
+                    params.height = holder.txt_desc.getLayoutParams().WRAP_CONTENT;
                     holder.txt_desc.setLayoutParams(params);
-                    holder.txt_desc.setMaxLines(1);
+                    holder.txt_desc.setMaxLines(2);
                     holder.txtReadMore.setText(R.string.read_more);
                 }
             }

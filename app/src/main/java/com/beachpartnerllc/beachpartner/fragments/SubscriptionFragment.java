@@ -207,7 +207,7 @@ public class SubscriptionFragment extends Fragment implements SubClickInterface 
     }
 
     private void setAdapter() {
-        if (plansModelList.size() > 0 && plansModelList != null) {
+        if (plansModelList != null && plansModelList.size() > 0) {
             prgressSub.setVisibility(View.INVISIBLE);
             subscriptionAdapter = new SubscriptionAdapter(getContext(),plansModelList, this,subscription);
             subscriptionAdapter.notifyDataSetChanged();

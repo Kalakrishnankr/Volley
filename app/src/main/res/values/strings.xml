@@ -177,6 +177,8 @@
     <string name="you_have_been_successfully_registered_for_the_event">You have been successfully registered for the event</string>
     <string name="going_for_this_event">I\'m going for this event</string>
     <string name="add_ons">Add-Ons</string>
+    <string name="string_proceed">PROCEED</string>
+    <string name="proceed">Proceed</string>
 
 
 </resources>

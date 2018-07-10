@@ -90,7 +90,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 	
 	public void setEvent(int position, @Nullable Event event) {
 		if (event == null) return;
-		
 		list.set(position, event);
 		notifyItemChanged(position);
 	}
@@ -105,14 +104,12 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 		
 		public MyViewHolder(View itemView) {
 			super(itemView);
-			
 			tview_events = itemView.findViewById(R.id.event);
 			event_view = itemView.findViewById(R.id.event_color);
 			cardview = itemView.findViewById(R.id.cardview_item);
 			inviteStatus = itemView.findViewById(R.id.requests_img);
 			bg_layout = itemView.findViewById(R.id.bg_status);
 			itemView.setOnClickListener(this);
-			
 		}
 		
 		@Override
@@ -121,7 +118,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 			Event model = list.get(position);
 			//Activate My calendar
 			if (isMycalActive) {
-				
 				MyCalendarEvents myCalendarEvents = new MyCalendarEvents();
 				Bundle bundle = new Bundle();
 				bundle.putSerializable("mycal_event_clicked", model);
@@ -131,7 +127,6 @@ public class EventsAdapter extends RecyclerView.Adapter<EventsAdapter.MyViewHold
 				ctrans.add(R.id.container, myCalendarEvents);
 				ctrans.addToBackStack(null);
 				ctrans.commit();
-				
 			} else {
 				//Activate Master Calendar
 				try {

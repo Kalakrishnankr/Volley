@@ -67,15 +67,15 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
                 plansModel.isExpanded = !plansModel.isExpanded;
                 if(plansModel.isExpanded){
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
-                    params.height = 400;
+                    params.height = holder.txtDesc.getLayoutParams().WRAP_CONTENT;
                     holder.txtDesc.setLayoutParams(params);
                     holder.txtDesc.setMaxLines(10);
                     holder.txtvRead.setText("Read less");
                 }else {
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
-                    params.height = 0;
+                    params.height = holder.txtDesc.getLayoutParams().WRAP_CONTENT;
                     holder.txtDesc.setLayoutParams(params);
-                    holder.txtDesc.setMaxLines(1);
+                    holder.txtDesc.setMaxLines(2);
                     holder.txtvRead.setText(R.string.read_more);
                 }
 

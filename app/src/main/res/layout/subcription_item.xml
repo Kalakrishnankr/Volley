@@ -1,16 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
     app:cardCornerRadius="4dp"
-    app:contentPadding="6dp"
+    app:contentPaddingLeft="6dp"
+    app:contentPaddingRight="6dp"
+    app:contentPaddingTop="6dp"
     app:layout_constraintLeft_toLeftOf="parent"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toTopOf="parent">
 
-    <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -34,19 +38,22 @@
             android:textColor="@color/btnColor"
             android:textStyle="bold"
             app:layout_constraintStart_toEndOf="@+id/img_toggle"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Sample Subscription" />
 
         <TextView
             android:id="@+id/txtv_payment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="30dp"
             android:layout_marginTop="20dp"
             android:gravity="center"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
             android:textColor="@color/dark_orange"
             android:textStyle="bold"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$200" />
 
         <TextView
             android:id="@+id/txtv_currentplan"
@@ -54,32 +61,39 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:layout_marginTop="8dp"
-            android:gravity="left"
-            android:textAlignment="textStart"
             android:textColor="@color/dark_orange"
-            app:layout_constraintTop_toBottomOf="@+id/txtv_payment" />
+            app:layout_constraintTop_toBottomOf="@+id/txtv_payment"
+            tools:text="Current Plan" />
 
         <TextView
             android:id="@+id/txtv_desc"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:gravity="top"
-            android:maxLines="1"
             android:ellipsize="end"
-            android:textAlignment="textStart"
-            app:layout_constraintTop_toBottomOf="@+id/txtv_currentplan" />
+            android:maxLines="2"
+            android:paddingEnd="12dp"
+            android:paddingRight="12dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/txtv_currentplan"
+            app:layout_constraintTop_toBottomOf="@+id/txtv_currentplan"
+            tools:text="Lorem ipsum is a dummy text that is used to edmo text styles and alignment" />
 
         <TextView
             android:id="@+id/txtv_readMore"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:paddingBottom="8dp"
+            android:paddingEnd="12dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="12dp"
+            android:paddingStart="8dp"
+            android:paddingTop="4dp"
             android:text="@string/read_more"
             android:textAlignment="center"
             android:textColor="@color/btn_sub"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txtv_desc" />
 
