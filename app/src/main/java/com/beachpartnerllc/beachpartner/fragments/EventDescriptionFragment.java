@@ -400,6 +400,9 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 						athleteGoingBtn.setClickable(false);
 						athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
 					}
+					else{
+						btnInvitePartner.setEnabled(true);
+					}
 				} else if (regType.equalsIgnoreCase("Invitee")) {
 					athleteGoingBtn.setClickable(false);
 					athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));

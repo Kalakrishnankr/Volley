@@ -69,11 +69,13 @@ public class AddonAdapter extends RecyclerView.Adapter<AddonAdapter.MyViewHolder
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
                     params.height = 400;
                     holder.txtDesc.setLayoutParams(params);
+                    holder.txtDesc.setMaxLines(10);
                     holder.txtvRead.setText("Read less");
                 }else {
                     ViewGroup.LayoutParams params = holder.txtDesc.getLayoutParams();
                     params.height = 0;
                     holder.txtDesc.setLayoutParams(params);
+                    holder.txtDesc.setMaxLines(1);
                     holder.txtvRead.setText(R.string.read_more);
                 }
 

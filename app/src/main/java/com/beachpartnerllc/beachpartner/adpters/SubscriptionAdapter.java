@@ -86,11 +86,13 @@ public class SubscriptionAdapter extends RecyclerView.Adapter<SubscriptionAdapte
                     ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
                     params.height = 400;
                     holder.txt_desc.setLayoutParams(params);
+                    holder.txt_desc.setMaxLines(10);
                     holder.txtReadMore.setText("Read less");
                 }else {
                     ViewGroup.LayoutParams params = holder.txt_desc.getLayoutParams();
                     params.height = 0;
                     holder.txt_desc.setLayoutParams(params);
+                    holder.txt_desc.setMaxLines(1);
                     holder.txtReadMore.setText(R.string.read_more);
                 }
             }
