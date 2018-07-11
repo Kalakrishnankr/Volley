@@ -28,11 +28,8 @@
 	<dimen name="circular_img_marginTop_coach_profile">30dp</dimen>
     <dimen name="circular_img_marginLeft_coach_profile">10dp</dimen>
     <dimen name="coach_name_marginTop_coach_profile">45dp</dimen>
-	<dimen name="event_description_height">600dp</dimen>
-	<dimen name="rv_height_subscription">250dp</dimen>
 	<dimen name="rv_width_subscription">330dp</dimen>
 
-	<dimen name="rv_height_add_on">230dp</dimen>
 	<dimen name="rv_width_add_on">380dp</dimen>
 
 </resources>
