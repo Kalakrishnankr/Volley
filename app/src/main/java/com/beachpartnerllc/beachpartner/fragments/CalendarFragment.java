@@ -784,6 +784,7 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 		
 		b.show();
 		eventModelList.clear();
+		toDayEvents.clear();
 		MyJsonArrayRequest arrayRequest = new MyJsonArrayRequest(ApiService.REQUEST_METHOD_POST, ApiService.SEARCH_EVENTS, obj,
 		    new Response.Listener<JSONArray>() {
 			    @Override
@@ -877,7 +878,7 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 		};
 		if (getActivity() != null) {
 			RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-			Log.d("Request", arrayRequest.toString());
+			Log.d("Search Request", arrayRequest.toString());
 			requestQueue.add(arrayRequest);
 		}
 	}
@@ -892,7 +893,6 @@ public class CalendarFragment extends BaseFragment implements View.OnClickListen
 				compactCalendarView.addEvent(eventModelList.get(i));
 			}
 		}
-		toDayEvents.clear();
 		List<Event> bookingsFromMap = compactCalendarView.getEventsForMonth(compactCalendarView.getCurrentDate());
 		if (bookingsFromMap != null) {
 			

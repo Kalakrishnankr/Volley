@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.beachpartnerllc.beachpartner.CircularImageView;
 import com.beachpartnerllc.beachpartner.ConnectionInterface;
 import com.beachpartnerllc.beachpartner.R;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
@@ -28,7 +27,6 @@ import com.beachpartnerllc.beachpartner.utils.AppConstants;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,14 +159,14 @@ public class ConnectionAdapter extends RecyclerView.Adapter<ConnectionAdapter.My
                 } else {
                     holder.txtv_block.setText("BLOCK");
                     holder.viewOne.setVisibility(View.VISIBLE);
-                    if (friend_age >= 18 && myAge >= 18 )  {
+                    /*if (friend_age >= 18 && myAge >= 18 )  {
                         holder.txtv_message.setVisibility(View.VISIBLE);
                     }else if(friend_age <= 18 && myAge <= 18){
                         holder.txtv_message.setVisibility(View.VISIBLE);
                     }
-                    else{
+                    else{*/
                         holder.txtv_message.setVisibility(GONE);
-                    }
+                   // }
                     holder.cardView.setBackgroundResource(R.color.white);
                 }
             }

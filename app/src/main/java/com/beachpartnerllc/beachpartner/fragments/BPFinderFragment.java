@@ -1854,13 +1854,13 @@ public class BPFinderFragment extends Fragment implements MyInterface,SubClickIn
 
         int partnerAge = Integer.parseInt(cModel.getBpf_age());
         int myage = prefManager.getAge();
-        if (partnerAge >18 && myage > 18) {
+        /*if (partnerAge >18 && myage > 18) {
             btnMsg.setVisibility(View.VISIBLE);
         }else if(partnerAge < 18 && myage < 18){
             btnMsg.setVisibility(View.VISIBLE);
         }else {
             btnMsg.setVisibility(View.GONE);
-        }
+        }*/
         //Button Send Message
         btnMsg.setOnClickListener(new View.OnClickListener() {
             @Override

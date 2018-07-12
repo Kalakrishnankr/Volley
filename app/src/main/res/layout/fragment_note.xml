@@ -5,6 +5,7 @@
     android:orientation="vertical"
     android:focusableInTouchMode="true"
     android:weightSum="2"
+    android:background="@color/white"
     tools:context="com.beachpartnerllc.beachpartner.fragments.NoteFragment">
 
     <!-- TODO: Update blank fragment layout -->

@@ -2553,16 +2553,16 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                     }
 
                     //reloadFragment();
-                    if (!editStatus){
+                    //if (!editStatus){
                         Toast.makeText(getApplicationContext(), "Successfully updated your details", Toast.LENGTH_LONG).show();
-                    }
+                    //}
 
                 }
 
                 @Override
                 public void onFailure(Call<UploadObject> call, Throwable t) {
                     // progressDialog.dismiss();
-
+                    progress.dismiss();
                     Log.d(TAG, "Error " + t.getMessage());
                 }
 
@@ -2625,7 +2625,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener,
                                     break;
                             }
                         }else{
-                            Toast.makeText(mContext, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(getActivity(), R.string.no_internet, Toast.LENGTH_SHORT).show();
                         }
                     }
                 }) {

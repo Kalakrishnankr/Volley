@@ -581,9 +581,11 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void connectionToNote(Bundle bundle) {
-        NoteFragment noteFragment =new NoteFragment();
-        noteFragment.setArguments(bundle);
-        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
+        if (getActivity() != null) {
+            NoteFragment noteFragment =new NoteFragment();
+            noteFragment.setArguments(bundle);
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.container, noteFragment).addToBackStack(null).commit();
+        }
     }
 
     private String trimMessage(String json, String detail) {
@@ -720,18 +722,7 @@ public class ConnectionFragment extends Fragment implements View.OnClickListener
         return filteredModelList;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId()) {
-            case R.id.action_search:
-                //searchPerson();
-                break;
-            default:
-                break;
-        }
-        return false;
-    }
 
     private void searchPerson(String query) {
 

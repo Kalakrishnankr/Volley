@@ -390,7 +390,7 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 			String eventAdmin = event.getEventAdmin();
 			regType = event.getRegType();
 			eventUrl = event.getEventUrl();
-			
+
 			//Case1:coming from MAstercalendar to Eventdescription--->disabling event register button till the team size is met that is when the event status is Active
 			if (regType != null) {
 				if (regType.equalsIgnoreCase("Organizer")) {

@@ -12,15 +12,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 
-import com.beachpartnerllc.beachpartner.activity.LoginActivity;
-
 import com.beachpartnerllc.beachpartner.activity.TabActivity;
 import com.beachpartnerllc.beachpartner.connections.PrefManager;
-import com.beachpartnerllc.beachpartner.fragments.HiFiveFragment;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
@@ -81,7 +77,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             else if(redirect.equalsIgnoreCase("INVITATION")){
                 intent.putExtra("reDirectPage", "INVITATION");
                 intent.putExtra("event_id",eventId);
-            }
+            }/*else if(redirect.equalsIgnoreCase("ACCEPTED")){
+                intent.putExtra("reDirectPage", "ACCEPTED");
+                intent.putExtra("event_id",eventId);
+            }*/
             else{
                 intent.putExtra("reDirectPage", "hifive");
             }

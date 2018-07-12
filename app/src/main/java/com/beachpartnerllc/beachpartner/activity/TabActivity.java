@@ -284,8 +284,10 @@ public class TabActivity extends AppCompatActivity  {
                 FragmentTransaction arTrans = arMang.beginTransaction();
                 arTrans.replace(R.id.container, acceptRejectRequestFragment, YOUR_FRAGMENT_STRING_TAG);
                 arTrans.commit();
-            }
-            else if(value.equalsIgnoreCase("ACTIVE")){
+            } else if (value.equalsIgnoreCase("ACCEPTED")) {
+
+
+            } else if (value.equalsIgnoreCase("ACTIVE")) {
                 ConnectionFragment connectionFragment = new ConnectionFragment();
                 getSupportActionBar().setTitle("Connections");
                 FragmentManager connectionMngr = getSupportFragmentManager();
@@ -293,35 +295,33 @@ public class TabActivity extends AppCompatActivity  {
                 connectionTrans.replace(R.id.container, connectionFragment, YOUR_FRAGMENT_STRING_TAG);
                 connectionTrans.commit();
                 disableFloatButtons();
-            }
-            else {
-                    if (tips) {
-                        if (userType.equalsIgnoreCase("Athlete")) {
-                            ProfileFragment pf = new ProfileFragment();
-                            getSupportActionBar().setTitle("Profile");
-                            FragmentManager mang = getSupportFragmentManager();
-                            FragmentTransaction trans = mang.beginTransaction();
-                            trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
-                            trans.commit();
-                            disableFloatButtons();
-                        }
-                        if (userType.equalsIgnoreCase("Coach")) {
-                            CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
-                            getSupportActionBar().setTitle("Profile");
-                            FragmentManager mang = getSupportFragmentManager();
-                            FragmentTransaction trans = mang.beginTransaction();
-                            trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
-                            trans.commit();
-                            disableFloatButtons();
-                        }
-
-                    } else {
-                        Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
-                        intentTips.putExtra("reDirectPage", "profile");
-                        startActivity(intentTips);
-                        finish();
+            } else {
+                if (tips) {
+                    if (userType.equalsIgnoreCase("Athlete")) {
+                        ProfileFragment pf = new ProfileFragment();
+                        getSupportActionBar().setTitle("Profile");
+                        FragmentManager mang = getSupportFragmentManager();
+                        FragmentTransaction trans = mang.beginTransaction();
+                        trans.replace(R.id.container, pf, YOUR_FRAGMENT_STRING_TAG);
+                        trans.commit();
+                        disableFloatButtons();
+                    }
+                    if (userType.equalsIgnoreCase("Coach")) {
+                        CoachProfileFragment coachProfileFragment = new CoachProfileFragment();
+                        getSupportActionBar().setTitle("Profile");
+                        FragmentManager mang = getSupportFragmentManager();
+                        FragmentTransaction trans = mang.beginTransaction();
+                        trans.replace(R.id.container, coachProfileFragment, YOUR_FRAGMENT_STRING_TAG);
+                        trans.commit();
+                        disableFloatButtons();
                     }
 
+                } else {
+                    Intent intentTips = new Intent(TabActivity.this, WelcomeActivity.class);
+                    intentTips.putExtra("reDirectPage", "profile");
+                    startActivity(intentTips);
+                    finish();
+                }
 
 
             }
