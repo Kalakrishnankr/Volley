@@ -410,7 +410,6 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 				} else {
 					btnBack.setClickable(false);
 					btnBack.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
-					
 					btnInvitePartner.setEnabled(true);
 					
 					if (event.getEventStatus().equalsIgnoreCase("Registered")) {
@@ -483,14 +482,12 @@ public class EventDescriptionFragment extends Fragment implements View.OnClickLi
 			tview_endDate.setText(dft.format(e_end));
 			tview_regStart.setText(dft.format(reg_startDate));
 			tview_regClose.setText(dft.format(reg_endDate));
-			tview_venue.setText(event.getEventVenue());
+			tview_venue.setText(event.getEventVenue().trim());
 			
 			if (new Date(event_regEnd).before(new Date())) {
 				btnInvitePartner.setEnabled(false);
-
-
-//                athleteGoingBtn.setClickable(false);
-//                athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
+				athleteGoingBtn.setClickable(false);
+				athleteGoingBtn.setBackground(getResources().getDrawable(R.drawable.event_desc_btns_inactive));
 			}
 		}
 		return view;

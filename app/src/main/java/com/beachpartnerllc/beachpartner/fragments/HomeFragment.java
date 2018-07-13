@@ -728,8 +728,6 @@ public class HomeFragment extends Fragment implements View.OnClickListener,Event
                             bpList = new Gson().fromJson(response.toString(), listType);
 
                          setblueBpstrip();//Set BlueBP views
-
-
                         }
 
 
